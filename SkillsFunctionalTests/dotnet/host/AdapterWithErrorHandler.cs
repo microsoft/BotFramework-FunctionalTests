@@ -80,7 +80,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot
             {
                 // Inform the active skill that the conversation is ended so that it has
                 // a chance to clean up.
-                // Note: ActiveSkillPropertyName is set by the RooBot while messages are being
+                // Note: ActiveSkillPropertyName is set by the HostBot while messages are being
                 // forwarded to a Skill.
                 var activeSkill = await _conversationState.CreateProperty<BotFrameworkSkill>(HostBot.ActiveSkillPropertyName).GetAsync(turnContext, () => null);
                 if (activeSkill != null)
