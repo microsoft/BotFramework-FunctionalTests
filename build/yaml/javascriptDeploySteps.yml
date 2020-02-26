@@ -1,0 +1,20 @@
+steps:
+- task: AzureCLI@1
+  displayName: 'Prepare Bot'
+  inputs:
+    azureSubscription: $(AzureSubscription)
+    scriptLocation: inlineScript
+    inlineScript: 'call az bot prepare-deploy --code-dir "$(Parameters.project)" --lang Javascript'
+
+- powershell: |
+   Compress-Archive "$(Parameters.project)\*" "$(System.DefaultWorkingDirectory)\bot.zip" -Update
+  displayName: 'Zip Bot'
+
+- task: AzureCLI@1
+  displayName: 'Create resource group and deploy bot'
+  inputs:
+    azureSubscription: $(AzureSubscription)
+    scriptLocation: inlineScript
+    inlineScript: |
+    call az deployment create --name "$(BotGroup)" --template-file "$(TemplateLocation)" --location "westus" --parameters appId="$(DeployAppId)" appSecret="$(DeployAppSecret)" botId="$(BotName)" botSku=F0 newAppServicePlanName="$(BotName)" newWebAppName="$(BotName)" groupName="$(BotGroup)" groupLocation="westus" newAppServicePlanLocation="westus"
+    call az webapp deployment source config-zip --resource-group "$(BotGroup)" --name "$(BotName)" --src "$(System.DefaultWorkingDirectory)\bot.zip"
