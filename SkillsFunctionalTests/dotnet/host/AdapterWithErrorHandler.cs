@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
 using System;
@@ -34,10 +34,10 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot
             _skillClient = skillClient;
             _skillsConfig = skillsConfig;
 
-            OnTurnError = HandleTurnError;
+            OnTurnError = HandleTurnErrorAsync;
         }
 
-        private async Task HandleTurnError(ITurnContext turnContext, Exception exception)
+        private async Task HandleTurnErrorAsync(ITurnContext turnContext, Exception exception)
         {
             // Log any leaked exception from the application.
             _logger.LogError(exception, $"[OnTurnError] unhandled error : {exception.Message}");

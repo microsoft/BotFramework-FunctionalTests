@@ -11,38 +11,38 @@ namespace FunctionalTests
     [TestCategory("FunctionalTests")]
     public class SimpleHostBotToEchoSkillTest
     {
-        private static string directLineSecret = "";
-        private static string botId = "";
-        private static List<string> messages = new List<string>();
-        private static string user = "DirectLineClientTestUser";
-        private static string input = "Testing skill bot, GUID: ";
-        private static string endUtterance = "end";
+        private static string _directLineSecret = "";
+        private static string _botId = "";
+        private static List<string> _messages = new List<string>();
+        private static string _user = "DirectLineClientTestUser";
+        private static string _input = "Testing skill bot, GUID: ";
+        private static string _endUtterance = "end";
 
         [TestMethod]
-        public async Task ShouldReceiveDotNetSkillAnswer()
+        public async Task ShouldReceiveDotNetSkillAnswerAsync()
         {            
             string echoGuid = string.Empty;
 
             echoGuid = Guid.NewGuid().ToString();
-            input += echoGuid;
-            messages.Add(input);
-            messages.Add(endUtterance);
+            _input += echoGuid;
+            _messages.Add(_input);
+            _messages.Add(_endUtterance);
 
             GetEnvironmentVars();
 
-            var botAnswer = await SendMessagesToBot(user, messages);
+            var botAnswer = await SendMessagesToBotAsync(_user, _messages);
 
-            Assert.AreEqual($"Echo: {input}", botAnswer);
+            Assert.AreEqual($"Echo: {_input}", botAnswer);
         }
 
         /// <summary>
         /// Starts a conversation with a bot. Sends a message and waits for the response.
         /// </summary>
         /// <returns>Returns the bot's answer.</returns>
-        private static async Task<string> SendMessagesToBot(string user, List<string> messages)
+        private static async Task<string> SendMessagesToBotAsync(string user, List<string> messages)
         {
             // Create a new Direct Line client.
-            var client = new DirectLineClient(directLineSecret);
+            var client = new DirectLineClient(_directLineSecret);
 
             // Start the conversation.
             var conversation = await client.Conversations.StartConversationAsync();
@@ -88,7 +88,7 @@ namespace FunctionalTests
 
                 // Extract the activities sent from the bot.
                 var activities = from x in activitySet.Activities
-                                 where x.From.Id == botId
+                                 where x.From.Id == _botId
                                  select x;
 
                 // Select the message that matches with Echo
@@ -109,16 +109,16 @@ namespace FunctionalTests
         /// </summary>
         private void GetEnvironmentVars()
         {
-            if (string.IsNullOrWhiteSpace(directLineSecret) || string.IsNullOrWhiteSpace(botId))
+            if (string.IsNullOrWhiteSpace(_directLineSecret) || string.IsNullOrWhiteSpace(_botId))
             {
-                directLineSecret = Environment.GetEnvironmentVariable("DIRECTLINE");
-                if (string.IsNullOrWhiteSpace(directLineSecret))
+                _directLineSecret = Environment.GetEnvironmentVariable("DIRECTLINE");
+                if (string.IsNullOrWhiteSpace(_directLineSecret))
                 {
                     Assert.Inconclusive("Environment variable 'DIRECTLINE' not found.");
                 }
 
-                botId = Environment.GetEnvironmentVariable("BOTID");
-                if (string.IsNullOrWhiteSpace(botId))
+                _botId = Environment.GetEnvironmentVariable("BOTID");
+                if (string.IsNullOrWhiteSpace(_botId))
                 {
                     Assert.Inconclusive("Environment variable 'BOTID' not found.");
                 }
