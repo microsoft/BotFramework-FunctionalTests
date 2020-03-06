@@ -1,0 +1,31 @@
+steps:
+- task: AzureCLI@1
+  displayName: 'Create DirectLine Channel'
+  inputs:
+    azureSubscription: $(AzureSubscription)
+    scriptLocation: inlineScript
+    inlineScript: |
+      call az bot directline create -n "$(HostBotName)" -g "$(BotGroup)" > "$(System.DefaultWorkingDirectory)\DirectLineCreate.json"
+- powershell: |
+    $json = Get-Content '$(System.DefaultWorkingDirectory)\DirectLineCreate.json' | Out-String | ConvertFrom-Json;
+    $key = $json.properties.properties.sites.key;
+    echo "##vso[task.setvariable variable=DIRECTLINE;]$key";
+    echo "##vso[task.setvariable variable=BOTID;]$(HostBotName)";
+  displayName: 'Get Bot Keys'
+    
+- template: dotnetBuildSteps.yml
+
+- task: DotNetCoreCLI@2
+  displayName: 'Dotnet Test'
+  inputs:
+    command: test
+    projects: $(Parameters.project)
+    arguments: '-v n  --configuration $(BuildConfiguration) --no-build --no-restore --filter TestCategory!=IgnoreInAutomatedBuild'
+
+- task: AzureCLI@1
+  displayName: 'Delete Resources'
+  inputs:
+    azureSubscription: $(AzureSubscription)
+    scriptLocation: inlineScript
+    inlineScript: 'call az group delete -n "$(BotGroup)" --yes'
+  condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
