@@ -1,0 +1,130 @@
+#
+# This YAML builds de Host and Skill bots for C# and run a functional test
+#
+
+# "name" here defines the build number format. Build number is accessed via $(Build.BuildNumber)
+name: $(Build.BuildId)
+trigger: none
+pr: none
+
+variables:
+  BuildPlatform: 'any cpu'
+  BuildConfiguration: 'Debug'
+  BotGroup: CI-SkillsFunctionalTestsPipeline
+  HostBotName: CI-HostBotTestDotNet
+  SkillBotName: CI-EchoSkillBotTestDotNet
+  # AzureSubscription: define this in Azure
+  # HostAppId: define this in Azure
+  # HostAppSecret: define this in Azure
+  # SkillAppId: define this in Azure
+  # SkillAppSecret: define this in Azure
+
+pool:
+  vmImage: 'windows-2019'
+
+stages:
+- stage: Build
+  jobs:
+    - job: Build_Host_Bot
+      variables:
+        Parameters.solution: 'SkillsFunctionalTests/dotnet/host/SimpleHostBot.sln'
+        Parameters.project: 'SkillsFunctionalTests/dotnet/host/SimpleHostBot.csproj'
+        UpdateBotBuilder: 'true'
+      steps:
+      - template: dotnetBuildSteps.yml
+
+    - job: Build_Skill_Bot
+      variables:
+        Parameters.solution: 'SkillsFunctionalTests/dotnet/skill/EchoSkillBot.sln'
+        Parameters.project: 'SkillsFunctionalTests/dotnet/skill/EchoSkillBot.csproj'
+        UpdateBotBuilder: 'true'
+      steps:
+      - template: dotnetBuildSteps.yml
+
+- stage: Deploy
+  dependsOn: Build
+  jobs:
+    - job: Deploy_Host
+      variables:
+        Parameters.project: 'SkillsFunctionalTests/dotnet/host/SimpleHostBot.csproj'
+        BotName: $(HostBotName)
+        DeployAppId: $(HostAppId)
+        DeployAppSecret: $(HostAppSecret)
+        ProjectName: SimpleHostBot
+        TemplateLocation: 'SkillsFunctionalTests/dotnet/host/DeploymentTemplates/template-with-new-rg.json'
+      steps:
+      - powershell: |
+         # Set values in appsettings.json file.
+         $file = "$(System.DefaultWorkingDirectory)\SkillsFunctionalTests\dotnet\host\appsettings.json";
+         $content = Get-Content -Raw $file | ConvertFrom-Json;
+         $content.SkillHostEndpoint = "https://$(HostBotName).azurewebsites.net/api/skills";
+
+         # Create Skill Class
+         class Skill{[String] $Id; [String] $AppId; [String] $SkillEndpoint;};
+
+         # Create list of botframework skills
+         $botFrameworkSkills = New-Object -TypeName System.Collections.Generic.List[Skill];
+
+         # Create Skill object
+         $dotnetSkill = New-Object -TypeName Skill;
+         $dotnetSkill.Id = "EchoSkillBot";
+         $dotnetSkill.AppId = "$(SkillAppId)";
+         $dotnetSkill.SkillEndpoint = "https://$(SkillBotName).azurewebsites.net/api/messages";
+
+         # Add skill to botframework skill list
+         $botFrameworkSkills.Add($dotnetSkill);
+         $content.BotFrameworkSkills = $botFrameworkSkills;
+         $content | ConvertTo-Json | Set-Content $file;
+        displayName: 'Set Host appsettings.json file.'
+
+      - template: dotnetDeploySteps.yml
+
+    - job: Deploy_Skill
+      variables:
+        Parameters.project: 'SkillsFunctionalTests/dotnet/skill/EchoSkillBot.csproj'
+        BotName: $(SkillBotName)
+        DeployAppId: $(SkillAppId)
+        DeployAppSecret: $(SkillAppSecret)
+        ProjectName: EchoSkillBot
+        TemplateLocation: 'SkillsFunctionalTests/dotnet/skill/DeploymentTemplates/template-with-new-rg.json'
+      steps:
+      - template: dotnetDeploySteps.yml
+
+- stage: Test
+  dependsOn: Deploy
+  jobs:
+    - job: Run_Functional_Test
+      variables:
+        Parameters.project: 'SkillsFunctionalTests/tests/SkillFunctionalTests/SkillFunctionalTests.csproj'
+        Parameters.solution: 'SkillsFunctionalTests/tests/SkillFunctionalTests.sln'
+      steps:
+      - task: AzureCLI@1
+        displayName: 'Create DirectLine Channel'
+        inputs:
+          azureSubscription: $(AzureSubscription)
+          scriptLocation: inlineScript
+          inlineScript: |
+           call az bot directline create -n "$(HostBotName)" -g "$(BotGroup)" > "$(System.DefaultWorkingDirectory)\DirectLineCreate.json"
+      - powershell: |
+         $json = Get-Content '$(System.DefaultWorkingDirectory)\DirectLineCreate.json' | Out-String | ConvertFrom-Json;
+         $key = $json.properties.properties.sites.key;
+         echo "##vso[task.setvariable variable=DIRECTLINE;]$key";
+         echo "##vso[task.setvariable variable=BOTID;]$(HostBotName)";
+        displayName: 'Get Bot Keys'
+        
+      - template: dotnetBuildSteps.yml
+
+      - task: DotNetCoreCLI@2
+        displayName: 'Dotnet Test'
+        inputs:
+          command: test
+          projects: $(Parameters.project)
+          arguments: '-v n  --configuration $(BuildConfiguration) --no-build --no-restore --filter TestCategory!=IgnoreInAutomatedBuild'
+
+      - task: AzureCLI@1
+        displayName: 'Delete Resources'
+        inputs:
+          azureSubscription: $(AzureSubscription)
+          scriptLocation: inlineScript
+          inlineScript: 'call az group delete -n "$(BotGroup)" --yes'
+        condition: always()

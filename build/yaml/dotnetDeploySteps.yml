@@ -1,0 +1,26 @@
+steps:
+- task: DotNetCoreCLI@2
+  displayName: 'Add latest BotBuilder version'
+  inputs:
+    command: custom
+    projects: $(Parameters.project)
+    custom: add
+    arguments: 'package Microsoft.Bot.Builder.Integration.AspNet.Core --source "https://botbuilder.myget.org/F/botbuilder-v4-dotnet-daily/api/v3/index.json"'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Dotnet Publish Bot'
+  inputs:
+    command: publish
+    publishWebProjects: false
+    projects: '$(Parameters.project)'
+    arguments: '--output $(System.DefaultWorkingDirectory)\publishedbot\$(BotName)'
+    modifyOutputPath: false
+
+- task: AzureCLI@1
+  displayName: 'Create resource group and deploy bot'
+  inputs:
+    azureSubscription: $(AzureSubscription)
+    scriptLocation: inlineScript
+    inlineScript: |
+     call az deployment create --name "$(BotName)" --template-file "$(TemplateLocation)" --location "westus" --parameters appId="$(DeployAppId)" appSecret="$(DeployAppSecret)" botId="$(BotName)" botSku=F0 newAppServicePlanName="$(BotName)" newWebAppName="$(BotName)" groupName="$(BotGroup)" groupLocation="westus" newAppServicePlanLocation="westus"
+     call az webapp deployment source config-zip --resource-group "$(BotGroup)" --name "$(BotName)" --src "$(System.DefaultWorkingDirectory)\publishedbot\$(BotName)\$(BotName).zip"
