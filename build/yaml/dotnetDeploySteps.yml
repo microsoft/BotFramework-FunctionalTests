@@ -1,11 +1,5 @@
 steps:
-- task: DotNetCoreCLI@2
-  displayName: 'Add latest BotBuilder version'
-  inputs:
-    command: custom
-    projects: $(Parameters.project)
-    custom: add
-    arguments: 'package Microsoft.Bot.Builder.Integration.AspNet.Core --source "https://botbuilder.myget.org/F/botbuilder-v4-dotnet-daily/api/v3/index.json"'
+- template: dotnetInstallPackagesSteps.yml
 
 - task: DotNetCoreCLI@2
   displayName: 'Dotnet Publish Bot'

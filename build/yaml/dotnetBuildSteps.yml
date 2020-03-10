@@ -17,15 +17,6 @@ steps:
   inputs:
     restoreSolution: '$(Parameters.solution)'
 
-- task: DotNetCoreCLI@2
-  displayName: 'Add latest BotBuilder version'
-  condition: eq(variables['UpdateBotBuilder'],'true')
-  inputs:
-    command: custom
-    projects: $(Parameters.project)
-    custom: add
-    arguments: 'package Microsoft.Bot.Builder.Integration.AspNet.Core --source "https://botbuilder.myget.org/F/botbuilder-v4-dotnet-daily/api/v3/index.json"'
-
 - task: VSBuild@1
   displayName: 'Build solution'
   inputs:
