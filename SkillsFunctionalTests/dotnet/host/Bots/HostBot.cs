@@ -26,12 +26,21 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Bots
         private readonly BotFrameworkSkill _targetSkill;
 
         public const string ActiveSkillPropertyName = "activeSkillProperty";
+        // We use a single skill in this example.
+        public const string TargetSkillId = "EchoSkillBot";
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HostBot"/> class.
+        /// </summary>
+        /// <param name="conversationState">A state management object for the conversation.</param>
+        /// <param name="skillsConfig">The skills configuration.</param>
+        /// <param name="skillClient">The HTTP client for the skills.</param>
+        /// <param name="configuration">The configuration properties.</param>
         public HostBot(ConversationState conversationState, SkillsConfiguration skillsConfig, SkillHttpClient skillClient, IConfiguration configuration)
         {
             _conversationState = conversationState ?? throw new ArgumentNullException(nameof(conversationState));
             _skillsConfig = skillsConfig ?? throw new ArgumentNullException(nameof(skillsConfig));
-            _skillClient = skillClient ?? throw new ArgumentNullException(nameof(skillsConfig));
+            _skillClient = skillClient ?? throw new ArgumentNullException(nameof(skillClient));
             if (configuration == null)
             {
                 throw new ArgumentNullException(nameof(configuration));
@@ -43,17 +52,22 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Bots
                 throw new ArgumentException($"{MicrosoftAppCredentials.MicrosoftAppIdKey} is not set in configuration");
             }
 
-            // We use a single skill in this example.
-            var targetSkillId = "EchoSkillBot";
-            if (!_skillsConfig.Skills.TryGetValue(targetSkillId, out _targetSkill))
+            
+            if (!_skillsConfig.Skills.TryGetValue(TargetSkillId, out _targetSkill))
             {
-                throw new ArgumentException($"Skill with ID \"{targetSkillId}\" not found in configuration");
+                throw new ArgumentException($"Skill with ID \"{TargetSkillId}\" not found in configuration");
             }
 
             // Create state property to track the active skill
             _activeSkillProperty = conversationState.CreateProperty<BotFrameworkSkill>(ActiveSkillPropertyName);
         }
 
+        /// <summary>
+        /// Processes a message activity.
+        /// </summary>
+        /// <param name="turnContext">Context for the current turn of conversation.</param>
+        /// <param name="cancellationToken">CancellationToken propagates notifications that operations should be cancelled.</param>
+        /// <returns>A <see cref="Task{TResult}"/> representing the result of the asynchronous operation.</returns>
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
             // Try to get the active skill
@@ -85,6 +99,12 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Bots
             await _conversationState.SaveChangesAsync(turnContext, force: true, cancellationToken: cancellationToken);
         }
 
+        /// <summary>
+        /// Processes an end of conversation activity.
+        /// </summary>
+        /// <param name="turnContext">Context for the current turn of conversation.</param>
+        /// <param name="cancellationToken">CancellationToken propagates notifications that operations should be cancelled.</param>
+        /// <returns>A <see cref="Task{TResult}"/> representing the result of the asynchronous operation.</returns>
         protected override async Task OnEndOfConversationActivityAsync(ITurnContext<IEndOfConversationActivity> turnContext, CancellationToken cancellationToken)
         {
             // forget skill invocation
@@ -111,6 +131,13 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Bots
             await _conversationState.SaveChangesAsync(turnContext, cancellationToken: cancellationToken);
         }
 
+        /// <summary>
+        /// Processes a member added event.
+        /// </summary>
+        /// <param name="membersAdded">The list of members added to the conversation.</param>
+        /// <param name="turnContext">Context for the current turn of conversation.</param>
+        /// <param name="cancellationToken">CancellationToken propagates notifications that operations should be cancelled.</param>
+        /// <returns>A <see cref="Task{TResult}"/> representing the result of the asynchronous operation.</returns>
         protected override async Task OnMembersAddedAsync(IList<ChannelAccount> membersAdded, ITurnContext<IConversationUpdateActivity> turnContext, CancellationToken cancellationToken)
         {
             foreach (var member in membersAdded)
@@ -122,6 +149,13 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Bots
             }
         }
 
+        /// <summary>
+        /// Sends an activity to the skill bot.
+        /// </summary>
+        /// <param name="turnContext">Context for the current turn of conversation.</param>
+        /// <param name="targetSkill">The skill that will receive the activity.</param>
+        /// <param name="cancellationToken">CancellationToken propagates notifications that operations should be cancelled.</param>
+        /// <returns>A <see cref="Task{TResult}"/> representing the result of the asynchronous operation.</returns>
         private async Task SendToSkillAsync(ITurnContext<IMessageActivity> turnContext, BotFrameworkSkill targetSkill, CancellationToken cancellationToken)
         {
             // NOTE: Always SaveChanges() before calling a skill so that any activity generated by the skill

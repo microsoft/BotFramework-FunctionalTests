@@ -18,6 +18,12 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot
     {
         private readonly ConcurrentDictionary<string, string> _conversationRefs = new ConcurrentDictionary<string, string>();
 
+        /// <summary>
+        /// Creates a skill conversation id.
+        /// </summary>
+        /// <param name="conversationReference">The reference to a particular point of the conversation.</param>
+        /// <param name="cancellationToken">CancellationToken propagates notifications that operations should be cancelled.</param>
+        /// <returns>The generated conversation id.</returns>
         public override Task<string> CreateSkillConversationIdAsync(ConversationReference conversationReference, CancellationToken cancellationToken)
         {
             var crJson = JsonConvert.SerializeObject(conversationReference);
@@ -26,12 +32,24 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot
             return Task.FromResult(key);
         }
 
+        /// <summary>
+        /// Gets the corresponding conversation reference of a conversation.
+        /// </summary>
+        /// <param name="skillConversationId">The id that identifies the skill conversation.</param>
+        /// <param name="cancellationToken">CancellationToken propagates notifications that operations should be cancelled.</param>
+        /// <returns>The generated conversation reference.</returns>
         public override Task<ConversationReference> GetConversationReferenceAsync(string skillConversationId, CancellationToken cancellationToken)
         {
             var conversationReference = JsonConvert.DeserializeObject<ConversationReference>(_conversationRefs[skillConversationId]);
             return Task.FromResult(conversationReference);
         }
 
+        /// <summary>
+        /// Deletes the conversation reference of a conversation.
+        /// </summary>
+        /// <param name="skillConversationId">The id that identifies the skill conversation.</param>
+        /// <param name="cancellationToken">CancellationToken propagates notifications that operations should be cancelled.</param>
+        /// <returns>A task that represents the work queued to execute.</returns>
         public override Task DeleteConversationReferenceAsync(string skillConversationId, CancellationToken cancellationToken)
         {
             _conversationRefs.TryRemove(skillConversationId, out _);

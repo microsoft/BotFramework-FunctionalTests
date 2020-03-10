@@ -18,7 +18,10 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot
 {
     public class Startup
     {
-        // This method gets called by the runtime. Use this method to add services to the container.
+        /// <summary>
+        /// This method gets called by the runtime. Use this method to add services to the container.
+        /// </summary>
+        /// <param name="services">The collection of services to add to the container.</param>
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
@@ -52,7 +55,11 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot
             services.AddTransient<IBot, HostBot>();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /// <summary>
+        /// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /// </summary>
+        /// <param name="app">The application request pipeline to be configured.</param>
+        /// <param name="env">The web hosting environment.</param>
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
