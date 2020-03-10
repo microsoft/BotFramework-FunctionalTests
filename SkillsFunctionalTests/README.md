@@ -56,7 +56,11 @@ The following steps will guide you trough the creation of a pipeline that runs o
    | **HostAppSecret***     | [App Registration](https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade) Portal  | The secret’s value from the table under *Client secrets* of the App Registration for your HostBot.   |
    | **SkillAppId***        | [App Registration](https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade) Portal  | The *Application (client) ID* of the App Registration for your SkillBot.                             |
    | **SkillAppSecret***    | [App Registration](https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade) Portal  | The secret’s value from the table under *Client secrets* of the App Registration for your SkillBot.  |
-   | **AzureSubscription**  | User                                                                                                           | The name of the *Azure Resource Manager service connection* configured in the pipeline               |
+   | **AzureSubscription**  | User                                                                                                           | The name of the *Azure Resource Manager service connection* configured in the pipeline.              |
+   | **BotGroup**           | User                                                                                                           | The name of the Resource Group your bots will use to be deployed to Azure.                           |
+   | **HostBotName**        | User                                                                                                           | The name of the HostBot that will be used to deploy it to Azure.                                     |
+   | **SkillBotName**       | User                                                                                                           | The name of the SkillBot that will be used to deploy it to Azure.                                    |
+   | **DeleteResourceGroup** _(Optional)_| User                                                                                              | Set this variable to **false** if you want to skip the step to delete the resources in Azure after the tests.|
 
    *Set these variables as private.
 
