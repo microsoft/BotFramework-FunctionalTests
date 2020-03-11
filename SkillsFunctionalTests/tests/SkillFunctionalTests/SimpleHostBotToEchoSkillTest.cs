@@ -22,6 +22,7 @@ namespace FunctionalTests
         public async Task ShouldReceiveDotNetSkillAnswerAsync()
         {            
             string echoGuid = string.Empty;
+            int timeoutSeconds = 5;
 
             echoGuid = Guid.NewGuid().ToString();
             _input += echoGuid;
@@ -30,7 +31,7 @@ namespace FunctionalTests
 
             GetEnvironmentVars();
 
-            var botAnswer = await SendMessagesToBotAsync(_user, _messages);
+            var botAnswer = await SendMessagesToBotAsync(_user, _messages, timeoutSeconds);
 
             Assert.AreEqual($"Echo: {_input}", botAnswer);
         }
@@ -39,7 +40,7 @@ namespace FunctionalTests
         /// Starts a conversation with a bot. Sends a message and waits for the response.
         /// </summary>
         /// <returns>Returns the bot's answer.</returns>
-        private static async Task<string> SendMessagesToBotAsync(string user, List<string> messages)
+        private static async Task<string> SendMessagesToBotAsync(string user, List<string> messages, int timeoutSeconds)
         {
             // Create a new Direct Line client.
             var client = new DirectLineClient(_directLineSecret);
@@ -60,12 +61,10 @@ namespace FunctionalTests
 
                 // Send the message activity to the bot.
                 await client.Conversations.PostActivityAsync(conversation.ConversationId, userMessage);
-            } 
+            }
 
             // Read the bot's message.
-            var botAnswer = await ReadBotMessagesAsync(client, conversation.ConversationId);
-
-            return botAnswer;
+            return await ReadBotMessagesAsync(client, conversation.ConversationId, timeoutSeconds);
         }
 
         /// <summary>
@@ -74,14 +73,16 @@ namespace FunctionalTests
         /// <param name="client">The Direct Line client.</param>
         /// <param name="conversationId">The conversation ID.</param>
         /// <returns>Returns the bot's answer.</returns>
-        private static async Task<string> ReadBotMessagesAsync(DirectLineClient client, string conversationId)
+        private static async Task<string> ReadBotMessagesAsync(DirectLineClient client, string conversationId, int timeoutSeconds)
         {
             string watermark = null;
             var answer = string.Empty;
 
             // Poll the bot for replies once per second.
-            while (answer.Equals(string.Empty))
+            while (answer.Equals(string.Empty) && timeoutSeconds > 0)
             {
+                timeoutSeconds--;
+
                 // Retrieve the activity sent from the bot.
                 var activitySet = await client.Conversations.GetActivitiesAsync(conversationId, watermark);
                 watermark = activitySet?.Watermark;
@@ -93,12 +94,10 @@ namespace FunctionalTests
 
                 // Select the message that matches with Echo
                 answer = activities
-                    .Where(activity => activity.Text.Contains("Echo")).FirstOrDefault().Text;
+                    .FirstOrDefault(activity => activity.Text.Contains("Echo"))?.Text;
 
                 // Wait for one second before polling the bot again.
                 await Task.Delay(TimeSpan.FromSeconds(1)).ConfigureAwait(false);
-
-                return answer;
             }
 
             return answer;
