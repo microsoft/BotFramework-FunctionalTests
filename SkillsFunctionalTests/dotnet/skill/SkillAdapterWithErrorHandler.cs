@@ -14,6 +14,14 @@ namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot
 {
     public class SkillAdapterWithErrorHandler : BotFrameworkHttpAdapter
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SkillAdapterWithErrorHandler"/> class to handle errors.
+        /// </summary>
+        /// <param name="configuration">The configuration properties.</param>
+        /// <param name="credentialProvider">An implementation of the bots credentials.</param>
+        /// <param name="authConfig">The configuration setting for the authentication.</param>
+        /// <param name="logger">An instance of a logger.</param>
+        /// <param name="conversationState">A state management object for the conversation.</param>
         public SkillAdapterWithErrorHandler(IConfiguration configuration, ICredentialProvider credentialProvider, AuthenticationConfiguration authConfig, ILogger<BotFrameworkHttpAdapter> logger, ConversationState conversationState = null)
             : base(configuration, credentialProvider, authConfig, logger: logger)
         {

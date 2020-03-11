@@ -13,6 +13,10 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot
     /// </summary>
     public class SkillsConfiguration
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SkillsConfiguration"/> class to load skills information from configuration.
+        /// </summary>
+        /// <param name="configuration">The configuration properties.</param>
         public SkillsConfiguration(IConfiguration configuration)
         {
             var section = configuration?.GetSection("BotFrameworkSkills");
@@ -32,8 +36,14 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot
             }
         }
 
+        /// <summary>
+        /// The URI representing the endpoint of the host bot.
+        /// </summary>
         public Uri SkillHostEndpoint { get; }
 
+        /// <summary>
+        /// The key-value pairs with the skills bots.
+        /// </summary>
         public Dictionary<string, BotFrameworkSkill> Skills { get; } = new Dictionary<string, BotFrameworkSkill>();
     }
 }

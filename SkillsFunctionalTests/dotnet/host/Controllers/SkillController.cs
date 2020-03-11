@@ -16,6 +16,10 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Controllers
     [Route("api/skills")]
     public class SkillController : ChannelServiceController
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SkillController"/> class.
+        /// </summary>
+        /// <param name="handler">The skill handler registered as ChannelServiceHandler.</param>
         public SkillController(ChannelServiceHandler handler)
             : base(handler)
         {

@@ -19,6 +19,10 @@ namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot.Authentication
         private const string ConfigKey = "AllowedCallers";
         private readonly List<string> _allowedCallers;
 
+        /// <summary>
+        /// Loads the appIds for the configured callers. Only allows access to callers it has configured.
+        /// </summary>
+        /// <param name="config">The list of configured callers.</param>
         public AllowedCallersClaimsValidator(IConfiguration config)
         {
             if (config == null)
@@ -35,12 +39,16 @@ namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot.Authentication
             _allowedCallers = appsList != null ? new List<string>(appsList) : null;
         }
 
+        /// <summary>
+        /// Checks that the appId claim in the skill request is in the list of callers configured for this bot.
+        /// </summary>
+        /// <param name="claims">The list of claims to validate.</param>
+        /// <returns>A task that represents the work queued to execute.</returns>
         public override Task ValidateClaimsAsync(IList<Claim> claims)
         {
             // if _allowedCallers is null we allow all calls
             if (_allowedCallers != null && SkillValidation.IsSkillClaim(claims))
             {
-                // Check that the appId claim in the skill request is in the list of skills configured for this bot.
                 var appId = JwtTokenValidation.GetAppIdFromClaims(claims);
                 if (!_allowedCallers.Contains(appId))
                 {

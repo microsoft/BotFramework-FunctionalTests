@@ -18,6 +18,10 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Authentication
     {
         private readonly List<string> _allowedSkills;
 
+        /// <summary>
+        /// Loads the appIds for the configured skills. Only allows responses from skills it has configured.
+        /// </summary>
+        /// <param name="skillsConfig">The list of configured skills.</param>
         public AllowedSkillsClaimsValidator(SkillsConfiguration skillsConfig)
         {
             if (skillsConfig == null)
@@ -25,15 +29,18 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Authentication
                 throw new ArgumentNullException(nameof(skillsConfig));
             }
 
-            // Load the appIds for the configured skills (we will only allow responses from skills we have configured).
             _allowedSkills = (from skill in skillsConfig.Skills.Values select skill.AppId).ToList();
         }
 
+        /// <summary>
+        /// Checks that the appId claim in the skill request is in the list of skills configured for this bot.
+        /// </summary>
+        /// <param name="claims">The list of claims to validate.</param>
+        /// <returns>A task that represents the work queued to execute.</returns>
         public override Task ValidateClaimsAsync(IList<Claim> claims)
         {
             if (SkillValidation.IsSkillClaim(claims))
             {
-                // Check that the appId claim in the skill request is in the list of skills configured for this bot.
                 var appId = JwtTokenValidation.GetAppIdFromClaims(claims);
                 if (!_allowedSkills.Contains(appId))
                 {
