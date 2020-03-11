@@ -1,5 +1,5 @@
 #
-# This YAML builds de Host and Skill bots for C# and run a functional test
+# This YAML builds the Host and Skill bots for C# and run a functional test
 #
 
 # "name" here defines the build number format. Build number is accessed via $(Build.BuildNumber)
