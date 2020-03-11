@@ -8,6 +8,10 @@ steps:
 
 - powershell: |
    move-item -path $(Parameters.sourceLocation)/deployment-scripts/* -destination $(Parameters.sourceLocation)
+   if(-Not ($env:SdkVersion -eq $null))
+   {
+      Add-Content $(Parameters.sourceLocation)/.deployment "`nSDK_VERSION = $(SdkVersion)"
+   }
    Compress-Archive "$(Parameters.sourceLocation)/*" "$(Parameters.sourceLocation)/bot.zip" -Update
   displayName: 'Zip Bot'
 

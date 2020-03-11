@@ -38,6 +38,10 @@ IF NOT DEFINED NEXT_MANIFEST_PATH (
   )
 )
 
+IF NOT DEFINED SDK_VERSION (
+  SET SDK_VERSION=preview
+)
+
 IF NOT DEFINED KUDU_SYNC_CMD (
   :: Install kudu sync
   echo Installing Kudu Sync
@@ -100,9 +104,23 @@ call :SelectNodeVersion
 :: 3. Set MyGet registry and install packages
 IF EXIST "%DEPLOYMENT_TARGET%\package.json" (
   pushd "%DEPLOYMENT_TARGET%"
-  call :ExecuteCmd !NPM_CMD! config set registry https://botbuilder.myget.org/F/botbuilder-v4-js-daily/npm/
-  call :ExecuteCmd !NPM_CMD! install --save botbuilder@latest
-  call :ExecuteCmd !NPM_CMD! install --save botframework-connector@latest
+  
+  IF %SDK_VERSION% EQU stable (
+    echo Installing stable version
+    call :ExecuteCmd !NPM_CMD! install --save botbuilder@latest
+    call :ExecuteCmd !NPM_CMD! install --save botframework-connector@latest
+  ) ELSE (
+    call :ExecuteCmd !NPM_CMD! config set registry https://botbuilder.myget.org/F/botbuilder-v4-js-daily/npm/
+    IF %SDK_VERSION% EQU preview (
+      echo Installing preview version
+      call :ExecuteCmd !NPM_CMD! install --save botbuilder@latest
+      call :ExecuteCmd !NPM_CMD! install --save botframework-connector@latest
+    ) ELSE (
+      echo Installing %SDK_VERSION% version
+      call :ExecuteCmd !NPM_CMD! install --save botbuilder@%SDK_VERSION%
+      call :ExecuteCmd !NPM_CMD! install --save botframework-connector@%SDK_VERSION%
+    )
+  )
   call :ExecuteCmd !NPM_CMD! install --production
   IF !ERRORLEVEL! NEQ 0 goto error
   popd

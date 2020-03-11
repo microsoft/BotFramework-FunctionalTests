@@ -18,6 +18,8 @@ variables:
   # HostAppSecret: define this in Azure
   # SkillAppId: define this in Azure
   # SkillAppSecret: define this in Azure
+  # DeleteResourceGroup (Optional): define this in Azure
+  # SdkVersion (Optional): define this in Azure
 
 pool:
   vmImage: 'windows-2019'
