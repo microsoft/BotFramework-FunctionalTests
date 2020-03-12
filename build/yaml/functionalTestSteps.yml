@@ -21,11 +21,3 @@ steps:
     command: test
     projects: $(Parameters.project)
     arguments: '-v n  --configuration $(BuildConfiguration) --no-build --no-restore --filter TestCategory!=IgnoreInAutomatedBuild'
-
-- task: AzureCLI@1
-  displayName: 'Delete Resource Group'
-  inputs:
-    azureSubscription: $(AzureSubscription)
-    scriptLocation: inlineScript
-    inlineScript: 'call az group delete -n "$(BotGroup)" --yes'
-  condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
