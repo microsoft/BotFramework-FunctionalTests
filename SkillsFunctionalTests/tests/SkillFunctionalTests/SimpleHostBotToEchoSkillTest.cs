@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Bot.Connector.DirectLine;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace SkillFunctionalTests
+namespace FunctionalTests
 {
     [TestClass]
     [TestCategory("FunctionalTests")]
@@ -13,22 +13,25 @@ namespace SkillFunctionalTests
     {
         private static string _directLineSecret = "";
         private static string _botId = "";
+        private static List<string> _messages = new List<string>();
+        private static string _user = "DirectLineClientTestUser";
         private static string _input = "Testing skill bot, GUID: ";
-        private static readonly List<string> Messages = new List<string>();
-        private const string User = "DirectLineClientTestUser";
-        private const string EndUtterance = "end";
+        private static string _endUtterance = "end";
 
         [TestMethod]
         public async Task ShouldReceiveSkillAnswerAsync()
         {            
-            var echoGuid = Guid.NewGuid().ToString();
+            string echoGuid = string.Empty;
+            int timeoutSeconds = 5;
+
+            echoGuid = Guid.NewGuid().ToString();
             _input += echoGuid;
-            Messages.Add(_input);
-            Messages.Add(EndUtterance);
+            _messages.Add(_input);
+            _messages.Add(_endUtterance);
 
             GetEnvironmentVars();
 
-            var botAnswer = await SendMessagesToBotAsync(User, Messages);
+            var botAnswer = await SendMessagesToBotAsync(_user, _messages, timeoutSeconds);
 
             Assert.AreEqual($"Echo: {_input}", botAnswer);
         }
@@ -37,7 +40,7 @@ namespace SkillFunctionalTests
         /// Starts a conversation with a bot. Sends a message and waits for the response.
         /// </summary>
         /// <returns>Returns the bot's answer.</returns>
-        private static async Task<string> SendMessagesToBotAsync(string user, List<string> messages)
+        private static async Task<string> SendMessagesToBotAsync(string user, List<string> messages, int timeoutSeconds)
         {
             // Create a new Direct Line client.
             var client = new DirectLineClient(_directLineSecret);
@@ -58,12 +61,10 @@ namespace SkillFunctionalTests
 
                 // Send the message activity to the bot.
                 await client.Conversations.PostActivityAsync(conversation.ConversationId, userMessage);
-            } 
+            }
 
             // Read the bot's message.
-            var botAnswer = await ReadBotMessagesAsync(client, conversation.ConversationId);
-
-            return botAnswer;
+            return await ReadBotMessagesAsync(client, conversation.ConversationId, timeoutSeconds);
         }
 
         /// <summary>
@@ -72,14 +73,16 @@ namespace SkillFunctionalTests
         /// <param name="client">The Direct Line client.</param>
         /// <param name="conversationId">The conversation ID.</param>
         /// <returns>Returns the bot's answer.</returns>
-        private static async Task<string> ReadBotMessagesAsync(DirectLineClient client, string conversationId)
+        private static async Task<string> ReadBotMessagesAsync(DirectLineClient client, string conversationId, int timeoutSeconds)
         {
             string watermark = null;
             var answer = string.Empty;
 
             // Poll the bot for replies once per second.
-            while (answer.Equals(string.Empty))
+            while (string.IsNullOrWhiteSpace(answer) && timeoutSeconds > 0)
             {
+                timeoutSeconds--;
+
                 // Retrieve the activity sent from the bot.
                 var activitySet = await client.Conversations.GetActivitiesAsync(conversationId, watermark);
                 watermark = activitySet?.Watermark;
@@ -91,12 +94,10 @@ namespace SkillFunctionalTests
 
                 // Select the message that matches with Echo
                 answer = activities
-                    .Where(activity => activity.Text.Contains("Echo")).FirstOrDefault().Text;
+                    .FirstOrDefault(activity => activity.Text.Contains("Echo"))?.Text;
 
                 // Wait for one second before polling the bot again.
                 await Task.Delay(TimeSpan.FromSeconds(1)).ConfigureAwait(false);
-
-                return answer;
             }
 
             return answer;
@@ -105,7 +106,7 @@ namespace SkillFunctionalTests
         /// <summary>
         /// Get the values for the environment variables.
         /// </summary>
-        private static void GetEnvironmentVars()
+        private void GetEnvironmentVars()
         {
             if (string.IsNullOrWhiteSpace(_directLineSecret) || string.IsNullOrWhiteSpace(_botId))
             {

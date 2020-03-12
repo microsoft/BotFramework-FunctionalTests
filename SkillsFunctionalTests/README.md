@@ -61,6 +61,7 @@ The following steps will guide you trough the creation of a pipeline that runs o
    | **HostBotName**        | User                                                                                                           | The name of the HostBot that will be used to deploy it to Azure.                                     |
    | **SkillBotName**       | User                                                                                                           | The name of the SkillBot that will be used to deploy it to Azure.                                    |
    | **DeleteResourceGroup** _(Optional)_| User                                                                                              | Set this variable to **false** if you want to skip the step to delete the resources in Azure after the tests.|
+   | **SdkVersion** _(Optional)_| User     | The version of the BotBuilder SDK the bots will use. If not set, the latest preview version will be used, set it to **stable** to install latest stable version or specify the version you want to use.|
 
    *Set these variables as private.
 
