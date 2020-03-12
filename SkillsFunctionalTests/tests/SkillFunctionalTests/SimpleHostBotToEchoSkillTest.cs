@@ -79,7 +79,7 @@ namespace FunctionalTests
             var answer = string.Empty;
 
             // Poll the bot for replies once per second.
-            while (answer.Equals(string.Empty) && timeoutSeconds > 0)
+            while (string.IsNullOrWhiteSpace(answer) && timeoutSeconds > 0)
             {
                 timeoutSeconds--;
 
