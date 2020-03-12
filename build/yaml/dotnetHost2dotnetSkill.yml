@@ -104,8 +104,8 @@ stages:
       - template: functionalTestSteps.yml
 
 - stage: Cleanup
-  dependsOn: Deploy
-  condition: failed()
+  dependsOn: Deploy | Test
+  condition: always()
   jobs:
     - job: Delete_RG
       steps:
