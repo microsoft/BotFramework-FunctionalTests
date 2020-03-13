@@ -19,7 +19,7 @@ namespace FunctionalTests
         private static string _endUtterance = "end";
 
         [TestMethod]
-        public async Task ShouldReceiveDotNetSkillAnswerAsync()
+        public async Task ShouldReceiveSkillAnswerAsync()
         {            
             string echoGuid = string.Empty;
             int timeoutSeconds = 5;
