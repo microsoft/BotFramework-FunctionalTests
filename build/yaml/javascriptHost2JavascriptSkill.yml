@@ -78,9 +78,9 @@ stages:
     - job: Delete_RG
       steps:
         - task: AzureCLI@1
-        displayName: 'Delete Resource Group'
-        inputs:
+          displayName: 'Delete Resource Group'
+          inputs:
             azureSubscription: $(AzureSubscription)
             scriptLocation: inlineScript
             inlineScript: 'call az group delete -n "$(BotGroup)" --yes'
-        condition: and(always(), ne(variables['DeleteResourceGroup'],'false'))
+          condition: and(always(), ne(variables['DeleteResourceGroup'],'false'))
