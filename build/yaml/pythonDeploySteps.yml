@@ -1,0 +1,31 @@
+steps:
+- task: AzureCLI@1
+  displayName: 'Create resource group and deploy bot'
+  inputs:
+    azureSubscription: $(AzureSubscription)
+    scriptLocation: inlineScript
+    inlineScript: |
+     az deployment create --name "$(BotGroup)" --template-file "$(System.DefaultWorkingDirectory)/$(TemplateLocation)" --location "westus" --parameters appId="$(DeployAppId)" appSecret="$(DeployAppSecret)" botId="$(BotName)" botSku=F0 newAppServicePlanName="$(BotName)" newWebAppName="$(BotName)" groupName="$(BotGroup)" groupLocation="westus" newAppServicePlanLocation="westus"
+
+- powershell: |
+    if(-Not ($null -eq $env:SDKVERSION))
+    {    
+        $file = '$(System.DefaultWorkingDirectory)/$(Parameters.sourceLocation)/deployment-scripts/postbuild.sh'
+        $oldContent = Get-Content $file
+        Set-Content -Path $file -Value "SDK_VERSION=$env:SDKVERSION"
+        Add-Content -Path $file -Value $oldContent
+    }   
+  displayName: 'Set Sdk version value'
+  condition: ne(variables['SdkVersion'], '')
+     
+- script: |
+   mv $(System.DefaultWorkingDirectory)/$(Parameters.sourceLocation)/deployment-scripts/* $(System.DefaultWorkingDirectory)/$(Parameters.sourceLocation)
+   git config --global user.name "GitPythonDeploymentUser"
+   git config --global user.email GitPythonDeploymentUser@Pipeline.com
+   git init
+   git add .
+   git commit -m "cibuildtest"
+   git remote add azure https://$(AzureDeploymentUser):$(AzureDeploymentPassword)@$(BotName).scm.azurewebsites.net:443/$(BotName).git
+   git push azure master
+  workingDirectory: '$(System.DefaultWorkingDirectory)/$(Parameters.sourceLocation)'
+  displayName: 'Git bot deployment'

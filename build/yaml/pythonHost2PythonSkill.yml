@@ -1,0 +1,74 @@
+#
+# This YAML deploys the Host and Skill bots for Python and run the functional test
+#
+
+# "name" here defines the build number format. Build number is accessed via $(Build.BuildNumber)
+name: $(Build.BuildId)
+trigger: none
+pr: none
+
+variables:
+  BuildPlatform: 'any cpu'
+  BuildConfiguration: 'Debug'
+  # BotGroup: define this in Azure
+  # HostBotName: define this in Azure
+  # SkillBotName: define this in Azure
+  # AzureSubscription: define this in Azure
+  # HostAppId: define this in Azure
+  # HostAppSecret: define this in Azure
+  # SkillAppId: define this in Azure
+  # SkillAppSecret: define this in Azure
+  # AzureDeploymentUser: define this in Azure
+  # AzureDeploymentPassword: define this in Azure
+  # DeleteResourceGroup (Optional): define this in Azure
+  # SdkVersion (Optional): define this in Azure
+
+pool:
+  vmImage: 'windows-2019'
+
+stages:
+- stage: Deploy
+  pool:
+    vmImage: 'ubuntu-latest'
+  jobs:
+    - job: Deploy_Host
+      variables:
+        Parameters.sourceLocation: 'SkillsFunctionalTests/python/host'
+        BotName: $(HostBotName)
+        DeployAppId: $(HostAppId)
+        DeployAppSecret: $(HostAppSecret)
+        TemplateLocation: 'SkillsFunctionalTests/python/host/deploymentTemplates/template-with-new-rg.json'
+      steps:
+      - powershell: |
+         Write-host "Setting config file"
+         $file = "$(System.DefaultWorkingDirectory)/$(Parameters.sourceLocation)/.env";
+         $content = Get-Content -Raw $file | ConvertFrom-StringData;
+         $content.SKILL_BOT_APP_ID = "$(SkillAppId)";
+         $content.SKILL_BOT_ENDPOINT = "https://$(SkillBotName).azurewebsites.net/api/messages";
+         $content.SKILL_HOST_ENDPOINT = "https://$(HostBotName).azurewebsites.net/api/skills";
+
+         Clear-Content $file;
+         foreach ($key in $content.keys) { Add-Content $file "$key=$($content.$key)" };
+        displayName: 'Update .env file'
+      
+      - template: pythonDeploySteps.yml
+
+    - job: Deploy_Skill
+      variables:
+        Parameters.sourceLocation: 'SkillsFunctionalTests/python/skill'
+        BotName: $(SkillBotName)
+        DeployAppId: $(SkillAppId)
+        DeployAppSecret: $(SkillAppSecret)
+        TemplateLocation: 'SkillsFunctionalTests/python/skill/deploymentTemplates/template-with-new-rg.json'
+      steps:
+      - template: pythonDeploySteps.yml
+
+- stage: Test
+  dependsOn: Deploy
+  jobs:
+    - job: Run_Functional_Test
+      variables:
+        Parameters.project: 'SkillsFunctionalTests/tests/SkillFunctionalTests/SkillFunctionalTests.csproj'
+        Parameters.solution: 'SkillsFunctionalTests/tests/SkillFunctionalTests.sln'
+      steps:
+      - template: functionalTestSteps.yml
