@@ -10,7 +10,6 @@ pr: none
 variables:
   BuildPlatform: 'any cpu'
   BuildConfiguration: 'Debug'
-  # BotGroup: define this in Azure
   # HostBotName: define this in Azure
   # SkillBotName: define this in Azure
   # AzureSubscription: define this in Azure
@@ -116,5 +115,7 @@ stages:
         inputs:
           azureSubscription: $(AzureSubscription)
           scriptLocation: inlineScript
-          inlineScript: 'call az group delete -n "$(BotGroup)" --yes'
+          inlineScript: |
+           call az group delete -n "$(HostBotName)-RG" --yes
+           call az group delete -n "$(SkillBotName)-RG" --yes
         condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
