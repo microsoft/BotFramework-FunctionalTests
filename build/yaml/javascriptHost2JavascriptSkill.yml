@@ -76,7 +76,7 @@ stages:
   condition: failed()
   jobs:
     - job: Delete_RG
-    steps:
+      steps:
         - task: AzureCLI@1
         displayName: 'Delete Resource Group'
         inputs:
