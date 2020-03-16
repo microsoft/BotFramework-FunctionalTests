@@ -5,7 +5,7 @@ steps:
     azureSubscription: $(AzureSubscription)
     scriptLocation: inlineScript
     inlineScript: |
-     az deployment create --name "$(BotGroup)" --template-file "$(System.DefaultWorkingDirectory)/$(TemplateLocation)" --location "westus" --parameters appId="$(DeployAppId)" appSecret="$(DeployAppSecret)" botId="$(BotName)" botSku=F0 newAppServicePlanName="$(BotName)" newWebAppName="$(BotName)" groupName="$(BotGroup)" groupLocation="westus" newAppServicePlanLocation="westus"
+     az deployment create --name "$(BotName)-RG" --template-file "$(System.DefaultWorkingDirectory)/$(TemplateLocation)" --location "westus" --parameters appId="$(DeployAppId)" appSecret="$(DeployAppSecret)" botId="$(BotName)" botSku=F0 newAppServicePlanName="$(BotName)" newWebAppName="$(BotName)" groupName="$(BotName)-RG" groupLocation="westus" newAppServicePlanLocation="westus"
 
 - powershell: |
     if(-Not ($null -eq $env:SDKVERSION))
