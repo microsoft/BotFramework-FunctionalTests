@@ -45,8 +45,8 @@ The following steps will guide you trough the creation of a pipeline that runs o
    | Host\Skill      | DotNet                                                                   | JavaScript                                                                            | Python  |
    |---------------- |------------------------------------------------------------------------- |-------------------------------------------------------------------------------------- |-------- |
    | **DotNet**      | [dotnetHost2dotnetSkill.yml ](../build/yaml/dotnetHost2dotnetSkill.yml ) |                                                                                       |         |
-   | **JavaScript**  |                                                                          |[javascriptHost2javascriptSkill.yml ](../build/yaml/javascriptHost2javascriptSkill.yml)|         |
-   | **Python**      |                                                                          |                                                                                       |         |
+   | **JavaScript**  |                                                                          |[javascriptHost2JavascriptSkill.yml ](../build/yaml/javascriptHost2JavascriptSkill.yml)|         |
+   | **Python**      |                                                                          |                                                                                       |[pythonHost2PythonSkill.yml](../build/yaml/pythonHost2PythonSkill.yml)         |
 
 4. In the variables section add the following variables.
 
@@ -56,6 +56,8 @@ The following steps will guide you trough the creation of a pipeline that runs o
    | **HostAppSecret***     | [App Registration](https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade) Portal  | The secret’s value from the table under *Client secrets* of the App Registration for your HostBot.   |
    | **SkillAppId***        | [App Registration](https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade) Portal  | The *Application (client) ID* of the App Registration for your SkillBot.                             |
    | **SkillAppSecret***    | [App Registration](https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade) Portal  | The secret’s value from the table under *Client secrets* of the App Registration for your SkillBot.  |
+   | **AzureDeploymentUser**** | [Webapp Deployment User](https://docs.microsoft.com/en-us/cli/azure/webapp/deployment/user?view=azure-cli-latest#az-webapp-deployment-user-set)| The Azure deployment user required to deploy using git.           |
+   | **AzureDeploymentPassword**** | [Webapp Deployment User](https://docs.microsoft.com/en-us/cli/azure/webapp/deployment/user?view=azure-cli-latest#az-webapp-deployment-user-set)| The Azure deployment password required to deploy using git.   |
    | **AzureSubscription**  | User                                                                                                           | The name of the *Azure Resource Manager service connection* configured in the pipeline.              |
    | **BotGroup**           | User                                                                                                           | The name of the Resource Group your bots will use to be deployed to Azure.                           |
    | **HostBotName**        | User                                                                                                           | The name of the HostBot that will be used to deploy it to Azure.                                     |
@@ -64,5 +66,7 @@ The following steps will guide you trough the creation of a pipeline that runs o
    | **SdkVersion** _(Optional)_| User     | The version of the BotBuilder SDK the bots will use. If not set, the latest preview version will be used, set it to **stable** to install latest stable version or specify the version you want to use.|
 
    *Set these variables as private.
+
+   **Set these variables only when a python bot is used.
 
 5. (Optional) Configure the triggers for the pipeline. By default, this pipeline runs every night at midnight.
