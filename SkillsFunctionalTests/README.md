@@ -42,11 +42,11 @@ The following steps will guide you trough the creation of a pipeline that runs o
   
    In the following table, you can see which YAML corresponds with each host-skill pair to be tested.
 
-   | Host\Skill      | DotNet                                                                   | JavaScript                                                                            | Python  |
-   |---------------- |------------------------------------------------------------------------- |-------------------------------------------------------------------------------------- |-------- |
-   | **DotNet**      | [dotnetHost2dotnetSkill.yml ](../build/yaml/dotnetHost2dotnetSkill.yml ) |                                                                                       |         |
-   | **JavaScript**  |                                                                          |[javascriptHost2JavascriptSkill.yml ](../build/yaml/javascriptHost2JavascriptSkill.yml)|         |
-   | **Python**      |                                                                          |                                                                                       |[pythonHost2PythonSkill.yml](../build/yaml/pythonHost2PythonSkill.yml)         |
+   | Host\Skill     | DotNet                                                       | JavaScript                                                   | Python                                                       |
+   | -------------- | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+   | **DotNet**     | [dotnetHost2dotnetSkill.yml ](../build/yaml/dotnetHost2dotnetSkill.yml ) |                                                              |                                                              |
+   | **JavaScript** |                                                              | [javascriptHost2JavascriptSkill.yml ](../build/yaml/javascriptHost2JavascriptSkill.yml) |                                                              |
+   | **Python**     | [pythonHost2DotnetSkill.yml](../build/yaml/pythonHost2DotnetSkill.yml)                                   |                                                              | [pythonHost2PythonSkill.yml](../build/yaml/pythonHost2PythonSkill.yml) |
 
 4. In the variables section add the following variables.
 
