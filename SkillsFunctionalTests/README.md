@@ -44,7 +44,7 @@ The following steps will guide you trough the creation of a pipeline that runs o
 
    | Host\Skill      | DotNet                                                                   | JavaScript                                                                            | Python  |
    |---------------- |------------------------------------------------------------------------- |-------------------------------------------------------------------------------------- |-------- |
-   | **DotNet**      | [dotnetHost2dotnetSkill.yml ](../build/yaml/dotnetHost2dotnetSkill.yml ) |                                                                                       |[dotnetHost2PythonSkill.yml](../build/yaml/dotnetHost2PythonSkill.yml)         |
+   | **DotNet**      | [dotnetHost2dotnetSkill.yml ](../build/yaml/dotnetHost2dotnetSkill.yml ) |        [ dotnetHost2JavascriptSkill.yml ](../build/yaml/dotnetHost2JavascriptSkill.yml )                                                                               |   [dotnetHost2PythonSkill.yml](../build/yaml/dotnetHost2PythonSkill.yml)      |
    | **JavaScript**  |                                                                          |[javascriptHost2JavascriptSkill.yml ](../build/yaml/javascriptHost2JavascriptSkill.yml)|         |
    | **Python**      |                                                                          |                                                                                       |[pythonHost2PythonSkill.yml](../build/yaml/pythonHost2PythonSkill.yml)         |
 
