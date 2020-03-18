@@ -5,7 +5,7 @@ steps:
     azureSubscription: $(AzureSubscription)
     scriptLocation: inlineScript
     inlineScript: |
-     az deployment create --name "$(BotName)-RG" --template-file "$(System.DefaultWorkingDirectory)/$(TemplateLocation)" --location "westus" --parameters appId="$(DeployAppId)" appSecret="$(DeployAppSecret)" botId="$(BotName)" botSku=F0 newAppServicePlanName="$(BotName)" newWebAppName="$(BotName)" groupName="$(BotName)-RG" groupLocation="westus" newAppServicePlanLocation="westus"
+     az deployment create --name "$(BotName)-RG" --template-file "$(System.DefaultWorkingDirectory)/$(TemplateLocation)" --location "westus" --parameters appId="$(DeployAppId)" appSecret="$(DeployAppSecret)" botId="$(BotName)" botSku=F0 newAppServicePlanName="$(BotName)" newWebAppName="$(BotName)-$(Build.BuildId)" groupName="$(BotName)-RG" groupLocation="westus" newAppServicePlanLocation="westus"
 
 - powershell: |
     if(-Not ($null -eq $env:SDKVERSION))
@@ -25,7 +25,7 @@ steps:
    git init
    git add .
    git commit -m "cibuildtest"
-   git remote add azure https://$(AzureDeploymentUser):$(AzureDeploymentPassword)@$(BotName).scm.azurewebsites.net:443/$(BotName).git
+   git remote add azure https://$(AzureDeploymentUser):$(AzureDeploymentPassword)@$(BotName)-$(Build.BuildId).scm.azurewebsites.net:443/$(BotName)-$(Build.BuildId).git
    git push azure master
   workingDirectory: '$(System.DefaultWorkingDirectory)/$(Parameters.sourceLocation)'
   displayName: 'Git bot deployment'
