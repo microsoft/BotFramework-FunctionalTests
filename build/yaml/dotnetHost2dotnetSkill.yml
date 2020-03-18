@@ -58,7 +58,7 @@ stages:
          # Set values in appsettings.json file.
          $file = "$(System.DefaultWorkingDirectory)\SkillsFunctionalTests\dotnet\host\appsettings.json";
          $content = Get-Content -Raw $file | ConvertFrom-Json;
-         $content.SkillHostEndpoint = "https://$(HostBotName).azurewebsites.net/api/skills";
+         $content.SkillHostEndpoint = "https://$(HostBotName)-$(Build.BuildId).azurewebsites.net/api/skills";
 
          # Create Skill Class
          class Skill{[String] $Id; [String] $AppId; [String] $SkillEndpoint;};
@@ -70,7 +70,7 @@ stages:
          $dotnetSkill = New-Object -TypeName Skill;
          $dotnetSkill.Id = "EchoSkillBot";
          $dotnetSkill.AppId = "$(SkillAppId)";
-         $dotnetSkill.SkillEndpoint = "https://$(SkillBotName).azurewebsites.net/api/messages";
+         $dotnetSkill.SkillEndpoint = "https://$(SkillBotName)-$(Build.BuildId).azurewebsites.net/api/messages";
 
          # Add skill to botframework skill list
          $botFrameworkSkills.Add($dotnetSkill);
