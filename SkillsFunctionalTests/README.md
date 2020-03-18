@@ -44,9 +44,9 @@ The following steps will guide you trough the creation of a pipeline that runs o
 
    | Host\Skill     | DotNet                                                       | JavaScript                                                   | Python                                                       |
    | -------------- | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
-   | **DotNet**     | [dotnetHost2dotnetSkill.yml ](../build/yaml/dotnetHost2dotnetSkill.yml ) |                                                              |                                                              |
+   | **DotNet**     | [dotnetHost2dotnetSkill.yml ](../build/yaml/dotnetHost2dotnetSkill.yml ) |                                                              | [dotnetHost2PythonSkill.yml](../build/yaml/dotnetHost2PythonSkill.yml) |
    | **JavaScript** |                                                              | [javascriptHost2JavascriptSkill.yml ](../build/yaml/javascriptHost2JavascriptSkill.yml) |                                                              |
-   | **Python**     | [pythonHost2DotnetSkill.yml](../build/yaml/pythonHost2DotnetSkill.yml)                                   |                                                              | [pythonHost2PythonSkill.yml](../build/yaml/pythonHost2PythonSkill.yml) |
+   | **Python**     | [pythonHost2DotnetSkill.yml](../build/yaml/pythonHost2DotnetSkill.yml) |                                                              | [pythonHost2PythonSkill.yml](../build/yaml/pythonHost2PythonSkill.yml) |
 
 4. In the variables section add the following variables.
 
@@ -59,7 +59,6 @@ The following steps will guide you trough the creation of a pipeline that runs o
    | **AzureDeploymentUser**** | [Webapp Deployment User](https://docs.microsoft.com/en-us/cli/azure/webapp/deployment/user?view=azure-cli-latest#az-webapp-deployment-user-set)| The Azure deployment user required to deploy using git.           |
    | **AzureDeploymentPassword**** | [Webapp Deployment User](https://docs.microsoft.com/en-us/cli/azure/webapp/deployment/user?view=azure-cli-latest#az-webapp-deployment-user-set)| The Azure deployment password required to deploy using git.   |
    | **AzureSubscription**  | User                                                                                                           | The name of the *Azure Resource Manager service connection* configured in the pipeline.              |
-   | **BotGroup**           | User                                                                                                           | The name of the Resource Group your bots will use to be deployed to Azure.                           |
    | **HostBotName**        | User                                                                                                           | The name of the HostBot that will be used to deploy it to Azure.                                     |
    | **SkillBotName**       | User                                                                                                           | The name of the SkillBot that will be used to deploy it to Azure.                                    |
    | **DeleteResourceGroup** _(Optional)_| User                                                                                              | Set this variable to **false** if you want to skip the step to delete the resources in Azure after the tests.|

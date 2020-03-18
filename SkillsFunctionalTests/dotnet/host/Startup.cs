@@ -3,7 +3,6 @@
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.BotFramework;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
@@ -13,6 +12,7 @@ using Microsoft.Bot.Connector.Authentication;
 using Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Authentication;
 using Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Bots;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot
 {
@@ -24,7 +24,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot
         /// <param name="services">The collection of services to add to the container.</param>
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddControllers().AddNewtonsoftJson();
 
             // Configure credentials
             services.AddSingleton<ICredentialProvider, ConfigurationCredentialProvider>();
@@ -60,22 +60,21 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot
         /// </summary>
         /// <param name="app">The application request pipeline to be configured.</param>
         /// <param name="env">The web hosting environment.</param>
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
-            else
-            {
-                app.UseHsts();
-            }
 
-            app.UseDefaultFiles();
-            app.UseStaticFiles();
-
-            // app.UseHttpsRedirection();
-            app.UseMvc();
+            app.UseDefaultFiles()
+                .UseStaticFiles()
+                .UseRouting()
+                .UseAuthorization()
+                .UseEndpoints(endpoints =>
+                {
+                    endpoints.MapControllers();
+                });
         }
     }
 }

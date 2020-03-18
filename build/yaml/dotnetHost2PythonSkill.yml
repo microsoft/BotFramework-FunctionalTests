@@ -1,5 +1,5 @@
 #
-# This YAML builds the Host and Skill bots for C# and run a functional test
+# This YAML builds and deploys a Host C# bot and deploys a Python Skill bot, then runs the functional test
 #
 
 # "name" here defines the build number format. Build number is accessed via $(Build.BuildNumber)
@@ -17,8 +17,10 @@ variables:
   # HostAppSecret: define this in Azure
   # SkillAppId: define this in Azure
   # SkillAppSecret: define this in Azure
-  # DeleteResourceGroup (Optional): define this in Azure
+  # AzureDeploymentUser: define this in Azure
+  # AzureDeploymentPassword: define this in Azure
   # SdkVersion (Optional): define this in Azure
+  # DeleteResourceGroup (Optional): define this in Azure
 
 pool:
   vmImage: 'windows-2019'
@@ -30,14 +32,6 @@ stages:
       variables:
         Parameters.solution: 'SkillsFunctionalTests/dotnet/host/SimpleHostBot.sln'
         Parameters.project: 'SkillsFunctionalTests/dotnet/host/SimpleHostBot.csproj'        
-      steps:
-      - template: dotnetInstallPackagesSteps.yml
-      - template: dotnetBuildSteps.yml
-
-    - job: Build_Skill_Bot
-      variables:
-        Parameters.solution: 'SkillsFunctionalTests/dotnet/skill/EchoSkillBot.sln'
-        Parameters.project: 'SkillsFunctionalTests/dotnet/skill/EchoSkillBot.csproj'
       steps:
       - template: dotnetInstallPackagesSteps.yml
       - template: dotnetBuildSteps.yml
@@ -81,16 +75,16 @@ stages:
       - template: dotnetDeploySteps.yml
 
     - job: Deploy_Skill
-      dependsOn: Deploy_Host
+      pool:
+        vmImage: 'ubuntu-latest'
       variables:
-        Parameters.project: 'SkillsFunctionalTests/dotnet/skill/EchoSkillBot.csproj'
+        Parameters.sourceLocation: 'SkillsFunctionalTests/python/skill'
         BotName: $(SkillBotName)
         DeployAppId: $(SkillAppId)
         DeployAppSecret: $(SkillAppSecret)
-        ProjectName: EchoSkillBot
-        TemplateLocation: 'SkillsFunctionalTests/dotnet/skill/DeploymentTemplates/template-with-new-rg.json'
+        TemplateLocation: 'SkillsFunctionalTests/python/skill/deploymentTemplates/template-with-new-rg.json'
       steps:
-      - template: dotnetDeploySteps.yml
+      - template: pythonDeploySteps.yml
 
 - stage: Test
   dependsOn: Deploy
@@ -118,4 +112,4 @@ stages:
           inlineScript: |
            call az group delete -n "$(HostBotName)-RG" --yes
            call az group delete -n "$(SkillBotName)-RG" --yes
-        condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
+        condition: and(always(), ne(variables['DeleteResourceGroup'], 'false')) 

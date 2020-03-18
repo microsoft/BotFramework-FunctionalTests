@@ -5,7 +5,7 @@ steps:
     azureSubscription: $(AzureSubscription)
     scriptLocation: inlineScript
     inlineScript: |
-      call az bot directline create -n "$(HostBotName)" -g "$(BotGroup)" > "$(System.DefaultWorkingDirectory)\DirectLineCreate.json"
+      call az bot directline create -n "$(HostBotName)" -g "$(HostBotName)-RG" > "$(System.DefaultWorkingDirectory)\DirectLineCreate.json"
 - powershell: |
     $json = Get-Content '$(System.DefaultWorkingDirectory)\DirectLineCreate.json' | Out-String | ConvertFrom-Json;
     $key = $json.properties.properties.sites.key;
