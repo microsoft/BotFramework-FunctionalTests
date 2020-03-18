@@ -1,0 +1,115 @@
+#
+# This YAML builds and deploys a Host C# bot and deploys a Python Skill bot, then runs the functional test
+#
+
+# "name" here defines the build number format. Build number is accessed via $(Build.BuildNumber)
+name: $(Build.BuildId)
+trigger: none
+pr: none
+
+variables:
+  BuildPlatform: 'any cpu'
+  BuildConfiguration: 'Debug'
+  # HostBotName: define this in Azure
+  # SkillBotName: define this in Azure
+  # AzureSubscription: define this in Azure
+  # HostAppId: define this in Azure
+  # HostAppSecret: define this in Azure
+  # SkillAppId: define this in Azure
+  # SkillAppSecret: define this in Azure
+  # AzureDeploymentUser: define this in Azure
+  # AzureDeploymentPassword: define this in Azure
+  # SdkVersion (Optional): define this in Azure
+  # DeleteResourceGroup (Optional): define this in Azure
+
+pool:
+  vmImage: 'windows-2019'
+
+stages:
+- stage: Build
+  jobs:
+    - job: Build_Host_Bot
+      variables:
+        Parameters.solution: 'SkillsFunctionalTests/dotnet/host/SimpleHostBot.sln'
+        Parameters.project: 'SkillsFunctionalTests/dotnet/host/SimpleHostBot.csproj'        
+      steps:
+      - template: dotnetInstallPackagesSteps.yml
+      - template: dotnetBuildSteps.yml
+
+- stage: Deploy
+  dependsOn: Build
+  jobs:
+    - job: Deploy_Host
+      variables:
+        Parameters.project: 'SkillsFunctionalTests/dotnet/host/SimpleHostBot.csproj'
+        BotName: $(HostBotName)
+        DeployAppId: $(HostAppId)
+        DeployAppSecret: $(HostAppSecret)
+        ProjectName: SimpleHostBot
+        TemplateLocation: 'SkillsFunctionalTests/dotnet/host/DeploymentTemplates/template-with-new-rg.json'
+      steps:
+      - powershell: |
+         # Set values in appsettings.json file.
+         $file = "$(System.DefaultWorkingDirectory)\SkillsFunctionalTests\dotnet\host\appsettings.json";
+         $content = Get-Content -Raw $file | ConvertFrom-Json;
+         $content.SkillHostEndpoint = "https://$(HostBotName).azurewebsites.net/api/skills";
+
+         # Create Skill Class
+         class Skill{[String] $Id; [String] $AppId; [String] $SkillEndpoint;};
+
+         # Create list of botframework skills
+         $botFrameworkSkills = New-Object -TypeName System.Collections.Generic.List[Skill];
+
+         # Create Skill object
+         $dotnetSkill = New-Object -TypeName Skill;
+         $dotnetSkill.Id = "EchoSkillBot";
+         $dotnetSkill.AppId = "$(SkillAppId)";
+         $dotnetSkill.SkillEndpoint = "https://$(SkillBotName).azurewebsites.net/api/messages";
+
+         # Add skill to botframework skill list
+         $botFrameworkSkills.Add($dotnetSkill);
+         $content.BotFrameworkSkills = $botFrameworkSkills;
+         $content | ConvertTo-Json | Set-Content $file;
+        displayName: 'Set Host appsettings.json file.'
+
+      - template: dotnetDeploySteps.yml
+
+    - job: Deploy_Skill
+      pool:
+        vmImage: 'ubuntu-latest'
+      variables:
+        Parameters.sourceLocation: 'SkillsFunctionalTests/python/skill'
+        BotName: $(SkillBotName)
+        DeployAppId: $(SkillAppId)
+        DeployAppSecret: $(SkillAppSecret)
+        TemplateLocation: 'SkillsFunctionalTests/python/skill/deploymentTemplates/template-with-new-rg.json'
+      steps:
+      - template: pythonDeploySteps.yml
+
+- stage: Test
+  dependsOn: Deploy
+  jobs:
+    - job: Run_Functional_Test
+      variables:
+        Parameters.project: 'SkillsFunctionalTests/tests/SkillFunctionalTests/SkillFunctionalTests.csproj'
+        Parameters.solution: 'SkillsFunctionalTests/tests/SkillFunctionalTests.sln'
+      steps:
+      - template: functionalTestSteps.yml
+
+- stage: Cleanup
+  dependsOn: 
+  - Deploy 
+  - Test
+  condition: always()
+  jobs:
+    - job: Delete_RG
+      steps:
+      - task: AzureCLI@1
+        displayName: 'Delete Resource Group'
+        inputs:
+          azureSubscription: $(AzureSubscription)
+          scriptLocation: inlineScript
+          inlineScript: |
+           call az group delete -n "$(HostBotName)-RG" --yes
+           call az group delete -n "$(SkillBotName)-RG" --yes
+        condition: and(always(), ne(variables['DeleteResourceGroup'], 'false')) 
