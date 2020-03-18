@@ -1,5 +1,5 @@
 #
-# This YAML deploys a Python Host bot, then builds and deploys a Skill JS bot, then runs the functional test
+# This YAML deploys a Python Host bot, deploys a Skill JS bot, then runs the functional test
 #
 
 # "name" here defines the build number format. Build number is accessed via $(Build.BuildNumber)
