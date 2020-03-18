@@ -46,7 +46,7 @@ The following steps will guide you trough the creation of a pipeline that runs o
    | -------------- | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
    | **DotNet**     | [dotnetHost2dotnetSkill.yml ](../build/yaml/dotnetHost2dotnetSkill.yml ) | [ dotnetHost2JavascriptSkill.yml ](../build/yaml/dotnetHost2JavascriptSkill.yml ) | [dotnetHost2PythonSkill.yml](../build/yaml/dotnetHost2PythonSkill.yml) |
    | **JavaScript** | [javascriptHost2DotnetSkill.yml](../build/yaml/javascriptHost2DotnetSkill.yml)                               | [javascriptHost2JavascriptSkill.yml ](../build/yaml/javascriptHost2JavascriptSkill.yml) |                                                              |
-   | **Python**     |                                                              |                                                              | [pythonHost2PythonSkill.yml](../build/yaml/pythonHost2PythonSkill.yml) |
+   | **Python**     | [pythonHost2DotnetSkill.yml](../build/yaml/pythonHost2DotnetSkill.yml) |                                                              | [pythonHost2PythonSkill.yml](../build/yaml/pythonHost2PythonSkill.yml) |
 
 4. In the variables section add the following variables.
 

@@ -1,0 +1,104 @@
+#
+# This YAML deploys a Python Host bot, then builds and deploys a Skill C# bot, then runs the functional test
+#
+
+# "name" here defines the build number format. Build number is accessed via $(Build.BuildNumber)
+name: $(Build.BuildId)
+trigger: none
+pr: none
+
+variables:
+  BuildPlatform: 'any cpu'
+  BuildConfiguration: 'Debug'
+  # HostBotName: define this in Azure
+  # SkillBotName: define this in Azure
+  # AzureSubscription: define this in Azure
+  # HostAppId: define this in Azure
+  # HostAppSecret: define this in Azure
+  # SkillAppId: define this in Azure
+  # SkillAppSecret: define this in Azure
+  # AzureDeploymentUser: define this in Azure
+  # AzureDeploymentPassword: define this in Azure
+  # SdkVersion (Optional): define this in Azure
+  # DeleteResourceGroup (Optional): define this in Azure
+
+pool:
+  vmImage: 'windows-2019'
+
+stages:
+- stage: Build
+  jobs:
+    - job: Build_Skill_Bot
+      variables:
+        Parameters.solution: 'SkillsFunctionalTests/dotnet/skill/EchoSkillBot.sln'
+        Parameters.project: 'SkillsFunctionalTests/dotnet/skill/EchoSkillBot.csproj'
+      steps:
+      - template: dotnetInstallPackagesSteps.yml
+      - template: dotnetBuildSteps.yml
+
+- stage: Deploy
+  dependsOn: Build
+  jobs:
+    - job: Deploy_Host
+      pool:
+        vmImage: 'ubuntu-latest'
+      variables:
+        Parameters.sourceLocation: 'SkillsFunctionalTests/python/host'
+        BotName: $(HostBotName)
+        DeployAppId: $(HostAppId)
+        DeployAppSecret: $(HostAppSecret)
+        TemplateLocation: 'SkillsFunctionalTests/python/host/deploymentTemplates/template-with-new-rg.json'
+      steps:
+      - powershell: |
+         Write-host "Setting config file"
+         $file = "$(System.DefaultWorkingDirectory)/$(Parameters.sourceLocation)/.env";
+         $content = Get-Content -Raw $file | ConvertFrom-StringData;
+         $content.SKILL_BOT_APP_ID = "$(SkillAppId)";
+         $content.SKILL_BOT_ENDPOINT = "https://$(SkillBotName).azurewebsites.net/api/messages";
+         $content.SKILL_HOST_ENDPOINT = "https://$(HostBotName).azurewebsites.net/api/skills";
+
+         Clear-Content $file;
+         foreach ($key in $content.keys) { Add-Content $file "$key=$($content.$key)" };
+        displayName: 'Update .env file'
+
+      - template: pythonDeploySteps.yml
+
+    - job: Deploy_Skill
+      dependsOn: Deploy_Host
+      variables:
+        Parameters.project: 'SkillsFunctionalTests/dotnet/skill/EchoSkillBot.csproj'
+        BotName: $(SkillBotName)
+        DeployAppId: $(SkillAppId)
+        DeployAppSecret: $(SkillAppSecret)
+        ProjectName: EchoSkillBot
+        TemplateLocation: 'SkillsFunctionalTests/dotnet/skill/DeploymentTemplates/template-with-new-rg.json'
+      steps:
+      - template: dotnetDeploySteps.yml
+
+- stage: Test
+  dependsOn: Deploy
+  jobs:
+    - job: Run_Functional_Test
+      variables:
+        Parameters.project: 'SkillsFunctionalTests/tests/SkillFunctionalTests/SkillFunctionalTests.csproj'
+        Parameters.solution: 'SkillsFunctionalTests/tests/SkillFunctionalTests.sln'
+      steps:
+      - template: functionalTestSteps.yml
+
+- stage: Cleanup
+  dependsOn:
+  - Deploy
+  - Test
+  condition: always()
+  jobs:
+    - job: Delete_RG
+      steps:
+      - task: AzureCLI@1
+        displayName: 'Delete Resource Group'
+        inputs:
+          azureSubscription: $(AzureSubscription)
+          scriptLocation: inlineScript
+          inlineScript: |
+           call az group delete -n "$(HostBotName)-RG" --yes
+           call az group delete -n "$(SkillBotName)-RG" --yes
+        condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
