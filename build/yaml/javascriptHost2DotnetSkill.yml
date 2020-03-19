@@ -18,8 +18,7 @@ variables:
   # SkillAppId: define this in Azure
   # SkillAppSecret: define this in Azure
   # DeleteResourceGroup (Optional): define this in Azure
-  # HostSdkVersion (Optional): define this in Azure
-  # SkillSdkVersion (Optional): define this in Azure
+  # SdkVersion (Optional): define this in Azure
 
 pool:
   vmImage: 'windows-2019'
@@ -30,8 +29,7 @@ stages:
     - job: Build_Skill_Bot
       variables:
         Parameters.solution: 'SkillsFunctionalTests/dotnet/skill/EchoSkillBot.sln'
-        Parameters.project: 'SkillsFunctionalTests/dotnet/skill/EchoSkillBot.csproj'
-        SdkVersion: '$(SkillSdkVersion)'
+        Parameters.project: 'SkillsFunctionalTests/dotnet/skill/EchoSkillBot.csproj'        
       steps:
       - template: dotnetInstallPackagesSteps.yml
       - template: dotnetBuildSteps.yml
@@ -44,7 +42,6 @@ stages:
         BotName: $(HostBotName)
         DeployAppId: $(HostAppId)
         DeployAppSecret: $(HostAppSecret)
-        SdkVersion: '$(HostSdkVersion)'
         TemplateLocation: 'SkillsFunctionalTests/javascript/host/DeploymentTemplates/template-with-new-rg.json'
       steps:
       - powershell: |
@@ -69,7 +66,6 @@ stages:
         BotName: $(SkillBotName)
         DeployAppId: $(SkillAppId)
         DeployAppSecret: $(SkillAppSecret)
-        SdkVersion: '$(SkillSdkVersion)'
         ProjectName: EchoSkillBot
         TemplateLocation: 'SkillsFunctionalTests/dotnet/skill/DeploymentTemplates/template-with-new-rg.json'
       steps:
