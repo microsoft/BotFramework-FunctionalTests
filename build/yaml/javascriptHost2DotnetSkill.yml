@@ -85,7 +85,6 @@ stages:
   dependsOn: 
   - Deploy 
   - Test
-  condition: failed()
   jobs:
     - job: Delete_RG
       steps:
