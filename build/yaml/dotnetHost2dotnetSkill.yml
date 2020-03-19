@@ -81,7 +81,6 @@ stages:
       - template: dotnetDeploySteps.yml
 
     - job: Deploy_Skill
-      dependsOn: Deploy_Host
       variables:
         Parameters.project: 'SkillsFunctionalTests/dotnet/skill/EchoSkillBot.csproj'
         BotName: $(SkillBotName)
