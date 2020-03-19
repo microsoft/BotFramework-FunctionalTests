@@ -82,7 +82,9 @@ stages:
       - template: functionalTestSteps.yml
 
 - stage: Cleanup
-  dependsOn: Deploy
+  dependsOn: 
+  - Deploy 
+  - Test
   condition: failed()
   jobs:
     - job: Delete_RG
