@@ -64,7 +64,7 @@ stages:
       - template: javascriptDeploySteps.yml
 
 - stage: Test
-  dependsOn: Deploy
+  #dependsOn: Deploy
   jobs:
     - job: Run_Functional_Test
       variables:

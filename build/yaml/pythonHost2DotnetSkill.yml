@@ -37,7 +37,7 @@ stages:
       - template: dotnetBuildSteps.yml
 
 - stage: Deploy
-  dependsOn: Build
+  #dependsOn: Build
   jobs:
     - job: Deploy_Host
       pool:
