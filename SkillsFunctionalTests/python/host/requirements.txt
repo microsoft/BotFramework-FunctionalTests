@@ -1,4 +1,4 @@
-botbuilder-core==4.7.1
+botbuilder-core>=4.7.1
 botbuilder-integration-aiohttp>=4.8.0
 python-dotenv
 aiohttp
