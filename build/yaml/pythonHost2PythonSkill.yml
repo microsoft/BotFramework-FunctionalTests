@@ -53,7 +53,7 @@ stages:
       - template: pythonDeploySteps.yml
 
     - job: Deploy_Skill
-      dependsOn: Deploy_Host
+      #dependsOn: Deploy_Host
       variables:
         Parameters.sourceLocation: 'SkillsFunctionalTests/python/skill'
         BotName: $(SkillBotName)
@@ -64,7 +64,7 @@ stages:
       - template: pythonDeploySteps.yml
 
 - stage: Test
-  #dependsOn: Deploy
+  dependsOn: Deploy
   jobs:
     - job: Run_Functional_Test
       variables:
