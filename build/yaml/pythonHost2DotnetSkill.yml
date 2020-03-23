@@ -37,7 +37,7 @@ stages:
       - template: dotnetBuildSteps.yml
 
 - stage: Deploy
-  #dependsOn: Build
+  dependsOn: Build
   jobs:
     - job: Deploy_Host
       pool:
@@ -64,7 +64,7 @@ stages:
       - template: pythonDeploySteps.yml
 
     - job: Deploy_Skill
-      dependsOn: Deploy_Host
+      #dependsOn: Deploy_Host
       variables:
         Parameters.project: 'SkillsFunctionalTests/dotnet/skill/EchoSkillBot.csproj'
         BotName: $(SkillBotName)
