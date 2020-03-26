@@ -10,14 +10,14 @@ pr: none
 variables:
   BuildPlatform: 'any cpu'
   BuildConfiguration: 'Debug'
-  # HostBotName: define this in Azure
-  # SkillBotName: define this in Azure
   # AzureSubscription: define this in Azure
-  # HostAppId: define this in Azure
-  # HostAppSecret: define this in Azure
-  # SkillAppId: define this in Azure
-  # SkillAppSecret: define this in Azure
   # DeleteResourceGroup (Optional): define this in Azure
+  # DotNetDotNetHostAppId: define this in Azure
+  # DotNetDotNetHostAppSecret: define this in Azure
+  # DotNetDotNetHostBotName: define this in Azure
+  # DotNetDotNetSkillAppId: define this in Azure
+  # DotNetDotNetSkillAppSecret: define this in Azure
+  # DotNetDotNetSkillBotName: define this in Azure
   # SdkVersion (Optional): define this in Azure
 
 pool:
@@ -48,9 +48,9 @@ stages:
     - job: Deploy_Host
       variables:
         Parameters.project: 'SkillsFunctionalTests/dotnet/host/SimpleHostBot.csproj'
-        BotName: $(HostBotName)
-        DeployAppId: $(HostAppId)
-        DeployAppSecret: $(HostAppSecret)
+        BotName: $(DotNetDotNetHostBotName)
+        DeployAppId: $(DotNetDotNetHostAppId)
+        DeployAppSecret: $(DotNetDotNetHostAppSecret)
         ProjectName: SimpleHostBot
         TemplateLocation: 'SkillsFunctionalTests/dotnet/host/DeploymentTemplates/template-with-new-rg.json'
       steps:
@@ -58,7 +58,7 @@ stages:
          # Set values in appsettings.json file.
          $file = "$(System.DefaultWorkingDirectory)\SkillsFunctionalTests\dotnet\host\appsettings.json";
          $content = Get-Content -Raw $file | ConvertFrom-Json;
-         $content.SkillHostEndpoint = "https://$(HostBotName).azurewebsites.net/api/skills";
+         $content.SkillHostEndpoint = "https://$(DotNetDotNetHostBotName).azurewebsites.net/api/skills";
 
          # Create Skill Class
          class Skill{[String] $Id; [String] $AppId; [String] $SkillEndpoint;};
@@ -69,8 +69,8 @@ stages:
          # Create Skill object
          $dotnetSkill = New-Object -TypeName Skill;
          $dotnetSkill.Id = "EchoSkillBot";
-         $dotnetSkill.AppId = "$(SkillAppId)";
-         $dotnetSkill.SkillEndpoint = "https://$(SkillBotName).azurewebsites.net/api/messages";
+         $dotnetSkill.AppId = "$(DotNetDotNetSkillAppId)";
+         $dotnetSkill.SkillEndpoint = "https://$(DotNetDotNetSkillBotName).azurewebsites.net/api/messages";
 
          # Add skill to botframework skill list
          $botFrameworkSkills.Add($dotnetSkill);
@@ -83,9 +83,9 @@ stages:
     - job: Deploy_Skill
       variables:
         Parameters.project: 'SkillsFunctionalTests/dotnet/skill/EchoSkillBot.csproj'
-        BotName: $(SkillBotName)
-        DeployAppId: $(SkillAppId)
-        DeployAppSecret: $(SkillAppSecret)
+        BotName: $(DotNetDotNetSkillBotName)
+        DeployAppId: $(DotNetDotNetSkillAppId)
+        DeployAppSecret: $(DotNetDotNetSkillAppSecret)
         ProjectName: EchoSkillBot
         TemplateLocation: 'SkillsFunctionalTests/dotnet/skill/DeploymentTemplates/template-with-new-rg.json'
       steps:
@@ -115,6 +115,6 @@ stages:
           azureSubscription: $(AzureSubscription)
           scriptLocation: inlineScript
           inlineScript: |
-           call az group delete -n "$(HostBotName)-RG" --yes
-           call az group delete -n "$(SkillBotName)-RG" --yes
+           call az group delete -n "$(DotNetDotNetHostBotName)-RG" --yes
+           call az group delete -n "$(DotNetDotNetSkillBotName)-RG" --yes
         condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
