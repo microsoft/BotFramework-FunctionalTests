@@ -65,6 +65,7 @@ stages:
   jobs:
     - job: Run_Functional_Test
       variables:
+        HostBotName: $(JsJsHostBotName)
         Parameters.project: 'SkillsFunctionalTests/tests/SkillFunctionalTests/SkillFunctionalTests.csproj'
         Parameters.solution: 'SkillsFunctionalTests/tests/SkillFunctionalTests.sln'
       steps:
