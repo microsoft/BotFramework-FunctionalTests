@@ -49,6 +49,8 @@ stages:
          Clear-Content $file;
          foreach ($key in $content.keys) { Add-Content $file "$key=$($content.$key)" };
         displayName: 'Update .env file'
+        env:
+          HostBotName: $(JsPyHostBotName)
      
       - template: javascriptDeploySteps.yml
 
