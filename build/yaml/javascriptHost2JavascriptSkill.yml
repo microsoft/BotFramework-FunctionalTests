@@ -10,14 +10,14 @@ pr: none
 variables:
   BuildPlatform: 'any cpu'	
   BuildConfiguration: 'Debug'
-  # HostBotName: define this in Azure
-  # SkillBotName: define this in Azure
   # AzureSubscription: define this in Azure
-  # HostAppId: define this in Azure
-  # HostAppSecret: define this in Azure
-  # SkillAppId: define this in Azure
-  # SkillAppSecret: define this in Azure
   # DeleteResourceGroup (Optional): define this in Azure
+  # JsJsHostAppId: define this in Azure
+  # JsJsHostAppSecret: define this in Azure
+  # JsJsHostBotName: define this in Azure
+  # JsJsSkillAppId: define this in Azure
+  # JsJsSkillAppSecret: define this in Azure
+  # JsJsSkillBotName: define this in Azure
   # SdkVersion (Optional): define this in Azure
 
 pool:
@@ -29,9 +29,9 @@ stages:
     - job: Deploy_Host
       variables:
         Parameters.sourceLocation: 'SkillsFunctionalTests/javascript/host'
-        BotName: $(HostBotName)
-        DeployAppId: $(HostAppId)
-        DeployAppSecret: $(HostAppSecret)
+        BotName: $(JsJsHostBotName)
+        DeployAppId: $(JsJsHostAppId)
+        DeployAppSecret: $(JsJsHostAppSecret)
         TemplateLocation: 'SkillsFunctionalTests/javascript/host/DeploymentTemplates/template-with-new-rg.json'
       steps:
       - powershell: |
@@ -39,10 +39,10 @@ stages:
          $file = "$(System.DefaultWorkingDirectory)/SkillsFunctionalTests/javascript/host/.env";
          $content = Get-Content -Raw $file | ConvertFrom-StringData;
       
-         $content.SkillHostEndpoint = "https://$(HostBotName).azurewebsites.net/api/skills";
+         $content.SkillHostEndpoint = "https://$(JsJsHostBotName).azurewebsites.net/api/skills";
          $content.SkillId = "EchoSkillBot";
-         $content.SkillAppId = "$(SkillAppId)";
-         $content.SkillEndpoint = "https://$(SkillBotName).azurewebsites.net/api/messages";
+         $content.SkillAppId = "$(JsJsSkillAppId)";
+         $content.SkillEndpoint = "https://$(JsJsSkillBotName).azurewebsites.net/api/messages";
       
          Clear-Content $file;
          foreach ($key in $content.keys) { Add-Content $file "$key=$($content.$key)" };
@@ -53,9 +53,9 @@ stages:
     - job: Deploy_Skill
       variables:
         Parameters.sourceLocation: 'SkillsFunctionalTests/javascript/skill'
-        BotName: $(SkillBotName)
-        DeployAppId: $(SkillAppId)
-        DeployAppSecret: $(SkillAppSecret)
+        BotName: $(JsJsSkillBotName)
+        DeployAppId: $(JsJsSkillAppId)
+        DeployAppSecret: $(JsJsSkillAppSecret)
         TemplateLocation: 'SkillsFunctionalTests/javascript/skill/DeploymentTemplates/template-with-new-rg.json'
       steps:
       - template: javascriptDeploySteps.yml
@@ -65,6 +65,7 @@ stages:
   jobs:
     - job: Run_Functional_Test
       variables:
+        HostBotName: $(JsJsHostBotName)
         Parameters.project: 'SkillsFunctionalTests/tests/SkillFunctionalTests/SkillFunctionalTests.csproj'
         Parameters.solution: 'SkillsFunctionalTests/tests/SkillFunctionalTests.sln'
       steps:
@@ -84,6 +85,6 @@ stages:
           azureSubscription: $(AzureSubscription)
           scriptLocation: inlineScript
           inlineScript: |
-           call az group delete -n "$(HostBotName)-RG" --yes
-           call az group delete -n "$(SkillBotName)-RG" --yes
+           call az group delete -n "$(JsJsHostBotName)-RG" --yes
+           call az group delete -n "$(JsJsSkillBotName)-RG" --yes
         condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))

@@ -10,17 +10,17 @@ pr: none
 variables:
   BuildPlatform: 'any cpu'
   BuildConfiguration: 'Debug'
-  # HostBotName: define this in Azure
-  # SkillBotName: define this in Azure
-  # AzureSubscription: define this in Azure
-  # HostAppId: define this in Azure
-  # HostAppSecret: define this in Azure
-  # SkillAppId: define this in Azure
-  # SkillAppSecret: define this in Azure
-  # AzureDeploymentUser: define this in Azure
   # AzureDeploymentPassword: define this in Azure
-  # SdkVersion (Optional): define this in Azure
+  # AzureDeploymentUser: define this in Azure
+  # AzureSubscription: define this in Azure
   # DeleteResourceGroup (Optional): define this in Azure
+  # DotNetPyHostAppId: define this in Azure
+  # DotNetPyHostAppSecret: define this in Azure
+  # DotNetPyHostBotName: define this in Azure
+  # DotNetPySkillAppId: define this in Azure
+  # DotNetPySkillAppSecret: define this in Azure
+  # DotNetPySkillBotName: define this in Azure
+  # SdkVersion (Optional): define this in Azure
 
 pool:
   vmImage: 'windows-2019'
@@ -42,9 +42,9 @@ stages:
     - job: Deploy_Host
       variables:
         Parameters.project: 'SkillsFunctionalTests/dotnet/host/SimpleHostBot.csproj'
-        BotName: $(HostBotName)
-        DeployAppId: $(HostAppId)
-        DeployAppSecret: $(HostAppSecret)
+        BotName: $(DotNetPyHostBotName)
+        DeployAppId: $(DotNetPyHostAppId)
+        DeployAppSecret: $(DotNetPyHostAppSecret)
         ProjectName: SimpleHostBot
         TemplateLocation: 'SkillsFunctionalTests/dotnet/host/DeploymentTemplates/template-with-new-rg.json'
       steps:
@@ -52,7 +52,7 @@ stages:
          # Set values in appsettings.json file.
          $file = "$(System.DefaultWorkingDirectory)\SkillsFunctionalTests\dotnet\host\appsettings.json";
          $content = Get-Content -Raw $file | ConvertFrom-Json;
-         $content.SkillHostEndpoint = "https://$(HostBotName).azurewebsites.net/api/skills";
+         $content.SkillHostEndpoint = "https://$(DotNetPyHostBotName).azurewebsites.net/api/skills";
 
          # Create Skill Class
          class Skill{[String] $Id; [String] $AppId; [String] $SkillEndpoint;};
@@ -63,8 +63,8 @@ stages:
          # Create Skill object
          $dotnetSkill = New-Object -TypeName Skill;
          $dotnetSkill.Id = "EchoSkillBot";
-         $dotnetSkill.AppId = "$(SkillAppId)";
-         $dotnetSkill.SkillEndpoint = "https://$(SkillBotName).azurewebsites.net/api/messages";
+         $dotnetSkill.AppId = "$(DotNetPySkillAppId)";
+         $dotnetSkill.SkillEndpoint = "https://$(DotNetPySkillBotName).azurewebsites.net/api/messages";
 
          # Add skill to botframework skill list
          $botFrameworkSkills.Add($dotnetSkill);
@@ -79,9 +79,9 @@ stages:
         vmImage: 'ubuntu-latest'
       variables:
         Parameters.sourceLocation: 'SkillsFunctionalTests/python/skill'
-        BotName: $(SkillBotName)
-        DeployAppId: $(SkillAppId)
-        DeployAppSecret: $(SkillAppSecret)
+        BotName: $(DotNetPySkillBotName)
+        DeployAppId: $(DotNetPySkillAppId)
+        DeployAppSecret: $(DotNetPySkillAppSecret)
         TemplateLocation: 'SkillsFunctionalTests/python/skill/deploymentTemplates/template-with-new-rg.json'
       steps:
       - template: pythonDeploySteps.yml
@@ -91,6 +91,7 @@ stages:
   jobs:
     - job: Run_Functional_Test
       variables:
+        HostBotName: $(DotNetPyHostBotName)
         Parameters.project: 'SkillsFunctionalTests/tests/SkillFunctionalTests/SkillFunctionalTests.csproj'
         Parameters.solution: 'SkillsFunctionalTests/tests/SkillFunctionalTests.sln'
       steps:
@@ -110,6 +111,6 @@ stages:
           azureSubscription: $(AzureSubscription)
           scriptLocation: inlineScript
           inlineScript: |
-           call az group delete -n "$(HostBotName)-RG" --yes
-           call az group delete -n "$(SkillBotName)-RG" --yes
+           call az group delete -n "$(DotNetPyHostBotName)-RG" --yes
+           call az group delete -n "$(DotNetPySkillBotName)-RG" --yes
         condition: and(always(), ne(variables['DeleteResourceGroup'], 'false')) 
