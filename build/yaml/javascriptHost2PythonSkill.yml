@@ -26,6 +26,12 @@ pool:
   vmImage: 'windows-2019'
 
 stages:
+- stage: Prepare
+  jobs:
+    - job: Delete_Preexisting_Resources
+      steps:
+      - template: cleanResourcesStep.yml
+        
 - stage: Deploy
   jobs:
     - job: Deploy_Host
@@ -40,18 +46,18 @@ stages:
          Write-host "Setting values in .env file"
          $file = "$(System.DefaultWorkingDirectory)/SkillsFunctionalTests/javascript/host/.env";
          $content = Get-Content -Raw $file | ConvertFrom-StringData;
-      
+
          $content.SkillHostEndpoint = "https://$(JsPyHostBotName).azurewebsites.net/api/skills";
          $content.SkillId = "EchoSkillBot";
          $content.SkillAppId = "$(JsPySkillAppId)";
          $content.SkillEndpoint = "https://$(JsPySkillBotName).azurewebsites.net/api/messages";
-      
+
          Clear-Content $file;
          foreach ($key in $content.keys) { Add-Content $file "$key=$($content.$key)" };
         displayName: 'Update .env file'
         env:
           HostBotName: $(JsPyHostBotName)
-     
+
       - template: javascriptDeploySteps.yml
 
     - job: Deploy_Skill
@@ -78,8 +84,8 @@ stages:
       - template: functionalTestSteps.yml
 
 - stage: Cleanup
-  dependsOn: 
-  - Deploy 
+  dependsOn:
+  - Deploy
   - Test
   condition: always()
   jobs:
@@ -93,4 +99,4 @@ stages:
           inlineScript: |
            call az group delete -n "$(JsPyHostBotName)-RG" --yes
            call az group delete -n "$(JsPySkillBotName)-RG" --yes
-        condition: and(always(), ne(variables['DeleteResourceGroup'], 'false')) 
+        condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))

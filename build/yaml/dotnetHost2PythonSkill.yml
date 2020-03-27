@@ -26,12 +26,18 @@ pool:
   vmImage: 'windows-2019'
 
 stages:
+- stage: Prepare
+  jobs:
+    - job: Delete_Preexisting_Resources
+      steps:
+      - template: cleanResourcesStep.yml
+        
 - stage: Build
   jobs:
     - job: Build_Host_Bot
       variables:
         Parameters.solution: 'SkillsFunctionalTests/dotnet/host/SimpleHostBot.sln'
-        Parameters.project: 'SkillsFunctionalTests/dotnet/host/SimpleHostBot.csproj'        
+        Parameters.project: 'SkillsFunctionalTests/dotnet/host/SimpleHostBot.csproj'
       steps:
       - template: dotnetInstallPackagesSteps.yml
       - template: dotnetBuildSteps.yml
@@ -98,8 +104,8 @@ stages:
       - template: functionalTestSteps.yml
 
 - stage: Cleanup
-  dependsOn: 
-  - Deploy 
+  dependsOn:
+  - Deploy
   - Test
   condition: always()
   jobs:
@@ -113,4 +119,4 @@ stages:
           inlineScript: |
            call az group delete -n "$(DotNetPyHostBotName)-RG" --yes
            call az group delete -n "$(DotNetPySkillBotName)-RG" --yes
-        condition: and(always(), ne(variables['DeleteResourceGroup'], 'false')) 
+        condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))

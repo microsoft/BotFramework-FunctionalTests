@@ -24,12 +24,18 @@ pool:
   vmImage: 'windows-2019'
 
 stages:
+- stage: Prepare
+  jobs:
+    - job: Delete_Preexisting_Resources
+      steps:
+      - template: cleanResourcesStep.yml
+        
 - stage: Build
   jobs:
     - job: Build_Skill_Bot
       variables:
         Parameters.solution: 'SkillsFunctionalTests/dotnet/skill/EchoSkillBot.sln'
-        Parameters.project: 'SkillsFunctionalTests/dotnet/skill/EchoSkillBot.csproj'        
+        Parameters.project: 'SkillsFunctionalTests/dotnet/skill/EchoSkillBot.csproj'
       steps:
       - template: dotnetInstallPackagesSteps.yml
       - template: dotnetBuildSteps.yml
@@ -83,8 +89,8 @@ stages:
       - template: functionalTestSteps.yml
 
 - stage: Cleanup
-  dependsOn: 
-  - Deploy 
+  dependsOn:
+  - Deploy
   - Test
   jobs:
     - job: Delete_RG

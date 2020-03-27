@@ -1,0 +1,28 @@
+steps:
+- task: AzureCLI@2
+  displayName: 'Cleanup Step'
+  inputs:
+    azureSubscription: $(AzureSubscription)
+    scriptType: ps
+    scriptLocation: inlineScript
+    inlineScript: |
+     Write-Host "Looking for previously existing resources."
+     $resourcesFound = 'false';
+     if ((az group exists -n "$(HostBotName)-RG") -eq 'true')
+     {
+         Write-Host "Deleting previously existing Resource Group $(HostBotName)-RG."
+         az group delete -n "$(HostBotName)-RG" --yes
+         $resourcesFound = 'true';
+     }
+
+     if ((az group exists -n "$(SkillBotName)-RG") -eq 'true')
+     {
+         Write-Host "Deleting previously existing Resource Group $(SkillBotName)-RG."
+         az group delete -n "$(SkillBotName)-RG" --yes
+         $resourcesFound = 'true';
+     }
+
+     if ($resourcesFound -eq 'false')
+     {
+         Write-Host "No previously existing resources found.";
+     }

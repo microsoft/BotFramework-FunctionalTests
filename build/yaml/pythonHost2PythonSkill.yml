@@ -26,6 +26,12 @@ pool:
   vmImage: 'windows-2019'
 
 stages:
+- stage: Prepare
+  jobs:
+    - job: Delete_Preexisting_Resources
+      steps:
+      - template: cleanResourcesStep.yml
+        
 - stage: Deploy
   pool:
     vmImage: 'ubuntu-latest'
@@ -49,7 +55,7 @@ stages:
          Clear-Content $file;
          foreach ($key in $content.keys) { Add-Content $file "$key=$($content.$key)" };
         displayName: 'Update .env file'
-      
+
       - template: pythonDeploySteps.yml
 
     - job: Deploy_Skill
@@ -74,8 +80,8 @@ stages:
       - template: functionalTestSteps.yml
 
 - stage: Cleanup
-  dependsOn: 
-  - Deploy 
+  dependsOn:
+  - Deploy
   - Test
   condition: always()
   jobs:
