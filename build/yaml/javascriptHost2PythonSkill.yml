@@ -43,7 +43,7 @@ stages:
       
          $content.SkillHostEndpoint = "https://$(JsPyHostBotName).azurewebsites.net/api/skills";
          $content.SkillId = "EchoSkillBot";
-         $content.JsPySkillAppId = "$(JsPySkillAppId)";
+         $content.SkillAppId = "$(JsPySkillAppId)";
          $content.SkillEndpoint = "https://$(JsPySkillBotName).azurewebsites.net/api/messages";
       
          Clear-Content $file;
