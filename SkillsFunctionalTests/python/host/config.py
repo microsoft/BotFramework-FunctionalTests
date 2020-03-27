@@ -17,10 +17,10 @@ class DefaultConfig:
 
     PORT = 3978
     APP_ID = os.environ.get(
-        "MicrosoftAppId", "TODO: Add here the App ID for the host bot"
+        "MicrosoftAppId", ""
     )
     APP_PASSWORD = os.environ.get(
-        "MicrosoftAppPassword", "TODO: Add here the App Password for the host bot"
+        "MicrosoftAppPassword", ""
     )
     SKILL_HOST_ENDPOINT = os.getenv("SKILL_HOST_ENDPOINT")
     SKILLS = [
@@ -30,6 +30,10 @@ class DefaultConfig:
             "skill_endpoint": os.getenv("SKILL_BOT_ENDPOINT"),
         },
     ]
+
+    # Callers to only those specified, '*' allows any caller.
+    # Example: os.environ.get("AllowedCallers", ["54d3bb6a-3b6d-4ccd-bbfd-cad5c72fb53a"])
+    ALLOWED_CALLERS = os.environ.get("AllowedCallers", ["*"])
 
 
 class SkillConfiguration:
