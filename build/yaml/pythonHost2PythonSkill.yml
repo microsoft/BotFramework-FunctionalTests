@@ -10,17 +10,17 @@ pr: none
 variables:
   BuildPlatform: 'any cpu'
   BuildConfiguration: 'Debug'
-  # HostBotName: define this in Azure
-  # SkillBotName: define this in Azure
-  # AzureSubscription: define this in Azure
-  # HostAppId: define this in Azure
-  # HostAppSecret: define this in Azure
-  # SkillAppId: define this in Azure
-  # SkillAppSecret: define this in Azure
-  # AzureDeploymentUser: define this in Azure
   # AzureDeploymentPassword: define this in Azure
-  # SdkVersion (Optional): define this in Azure
+  # AzureDeploymentUser: define this in Azure
+  # AzureSubscription: define this in Azure
   # DeleteResourceGroup (Optional): define this in Azure
+  # PyPyHostAppId: define this in Azure
+  # PyPyHostAppSecret: define this in Azure
+  # PyPyHostBotName: define this in Azure
+  # PyPySkillAppId: define this in Azure
+  # PyPySkillAppSecret: define this in Azure
+  # PyPySkillBotName: define this in Azure
+  # SdkVersion (Optional): define this in Azure
 
 pool:
   vmImage: 'windows-2019'
@@ -33,18 +33,18 @@ stages:
     - job: Deploy_Host
       variables:
         Parameters.sourceLocation: 'SkillsFunctionalTests/python/host'
-        BotName: $(HostBotName)
-        DeployAppId: $(HostAppId)
-        DeployAppSecret: $(HostAppSecret)
+        BotName: $(PyPyHostBotName)
+        DeployAppId: $(PyPyHostAppId)
+        DeployAppSecret: $(PyPyHostAppSecret)
         TemplateLocation: 'SkillsFunctionalTests/python/host/deploymentTemplates/template-with-new-rg.json'
       steps:
       - powershell: |
          Write-host "Setting config file"
          $file = "$(System.DefaultWorkingDirectory)/$(Parameters.sourceLocation)/.env";
          $content = Get-Content -Raw $file | ConvertFrom-StringData;
-         $content.SKILL_BOT_APP_ID = "$(SkillAppId)";
-         $content.SKILL_BOT_ENDPOINT = "https://$(SkillBotName)-$(Build.BuildId).azurewebsites.net/api/messages";
-         $content.SKILL_HOST_ENDPOINT = "https://$(HostBotName)-$(Build.BuildId).azurewebsites.net/api/skills";
+         $content.SKILL_BOT_APP_ID = "$(PyPySkillAppId)";
+         $content.SKILL_BOT_ENDPOINT = "https://$(PyPySkillBotNa)-$(Build.BuildId).azurewebsites.net/api/messages";
+         $content.SKILL_HOST_ENDPOINT = "https://$(PyPyHostBotNa)-$(Build.BuildId).azurewebsites.net/api/skills";
 
          Clear-Content $file;
          foreach ($key in $content.keys) { Add-Content $file "$key=$($content.$key)" };
@@ -53,12 +53,11 @@ stages:
       - template: pythonDeploySteps.yml
 
     - job: Deploy_Skill
-      dependsOn: Deploy_Host
       variables:
         Parameters.sourceLocation: 'SkillsFunctionalTests/python/skill'
-        BotName: $(SkillBotName)
-        DeployAppId: $(SkillAppId)
-        DeployAppSecret: $(SkillAppSecret)
+        BotName: $(PyPySkillBotName)
+        DeployAppId: $(PyPySkillAppId)
+        DeployAppSecret: $(PyPySkillAppSecret)
         TemplateLocation: 'SkillsFunctionalTests/python/skill/deploymentTemplates/template-with-new-rg.json'
       steps:
       - template: pythonDeploySteps.yml
@@ -68,6 +67,7 @@ stages:
   jobs:
     - job: Run_Functional_Test
       variables:
+        HostBotName: $(PyPyHostBotName)
         Parameters.project: 'SkillsFunctionalTests/tests/SkillFunctionalTests/SkillFunctionalTests.csproj'
         Parameters.solution: 'SkillsFunctionalTests/tests/SkillFunctionalTests.sln'
       steps:
@@ -87,6 +87,6 @@ stages:
           azureSubscription: $(AzureSubscription)
           scriptLocation: inlineScript
           inlineScript: |
-           call az group delete -n "$(HostBotName)-RG" --yes
-           call az group delete -n "$(SkillBotName)-RG" --yes
+           call az group delete -n "$(PyPyHostBotName)-RG" --yes
+           call az group delete -n "$(PyPySkillBotName)-RG" --yes
         condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))

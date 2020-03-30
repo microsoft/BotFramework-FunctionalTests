@@ -1,5 +1,5 @@
 #
-# This YAML deploys a Python Host bot, then builds and deploys a Skill C# bot, then runs the functional test
+# This YAML deploys a Python Host bot, deploys a Skill JS bot, then runs the functional test
 #
 
 # "name" here defines the build number format. Build number is accessed via $(Build.BuildNumber)
@@ -14,48 +14,37 @@ variables:
   # AzureDeploymentUser: define this in Azure
   # AzureSubscription: define this in Azure
   # DeleteResourceGroup (Optional): define this in Azure
-  # PyDotNetHostAppId: define this in Azure
-  # PyDotNetHostAppSecret: define this in Azure
-  # PyDotNetHostBotName: define this in Azure
-  # PyDotNetSkillAppId: define this in Azure
-  # PyDotNetSkillAppSecret: define this in Azure
-  # PyDotNetSkillBotName: define this in Azure
+  # PyJsHostAppId: define this in Azure
+  # PyJsHostAppSecret: define this in Azure
+  # PyJsHostBotName: define this in Azure
+  # PyJsSkillAppId: define this in Azure
+  # PyJsSkillAppSecret: define this in Azure
+  # PyJsSkillBotName: define this in Azure
   # SdkVersion (Optional): define this in Azure
 
 pool:
   vmImage: 'windows-2019'
 
 stages:
-- stage: Build
-  jobs:
-    - job: Build_Skill_Bot
-      variables:
-        Parameters.solution: 'SkillsFunctionalTests/dotnet/skill/EchoSkillBot.sln'
-        Parameters.project: 'SkillsFunctionalTests/dotnet/skill/EchoSkillBot.csproj'
-      steps:
-      - template: dotnetInstallPackagesSteps.yml
-      - template: dotnetBuildSteps.yml
-
 - stage: Deploy
-  dependsOn: Build
   jobs:
     - job: Deploy_Host
       pool:
         vmImage: 'ubuntu-latest'
       variables:
         Parameters.sourceLocation: 'SkillsFunctionalTests/python/host'
-        BotName: $(PyDotNetHostBotName)
-        DeployAppId: $(PyDotNetHostAppId)
-        DeployAppSecret: $(PyDotNetHostAppSecret)
+        BotName: $(PyJsHostBotName)
+        DeployAppId: $(PyJsHostAppId)
+        DeployAppSecret: $(PyJsHostAppSecret)
         TemplateLocation: 'SkillsFunctionalTests/python/host/deploymentTemplates/template-with-new-rg.json'
       steps:
       - powershell: |
          Write-host "Setting config file"
          $file = "$(System.DefaultWorkingDirectory)/$(Parameters.sourceLocation)/.env";
          $content = Get-Content -Raw $file | ConvertFrom-StringData;
-         $content.SKILL_BOT_APP_ID = "$(PyDotNetSkillAppId)";
-         $content.SKILL_BOT_ENDPOINT = "https://$(PyDotNetSkillBotName).azurewebsites.net/api/messages";
-         $content.SKILL_HOST_ENDPOINT = "https://$(PyDotNetHostBotName).azurewebsites.net/api/skills";
+         $content.SKILL_BOT_APP_ID = "$(PyJsSkillAppId)";
+         $content.SKILL_BOT_ENDPOINT = "https://$(PyJsSkillBotName).azurewebsites.net/api/messages";
+         $content.SKILL_HOST_ENDPOINT = "https://$(PyJsHostBotName).azurewebsites.net/api/skills";
 
          Clear-Content $file;
          foreach ($key in $content.keys) { Add-Content $file "$key=$($content.$key)" };
@@ -65,21 +54,20 @@ stages:
 
     - job: Deploy_Skill
       variables:
-        Parameters.project: 'SkillsFunctionalTests/dotnet/skill/EchoSkillBot.csproj'
-        BotName: $(PyDotNetSkillBotName)
-        DeployAppId: $(PyDotNetSkillAppId)
-        DeployAppSecret: $(PyDotNetSkillAppSecret)
-        ProjectName: EchoSkillBot
-        TemplateLocation: 'SkillsFunctionalTests/dotnet/skill/DeploymentTemplates/template-with-new-rg.json'
+        Parameters.sourceLocation: 'SkillsFunctionalTests/javascript/skill'
+        BotName: $(PyJsSkillBotName)
+        DeployAppId: $(PyJsSkillAppId)
+        DeployAppSecret: $(PyJsSkillAppSecret)
+        TemplateLocation: 'SkillsFunctionalTests/javascript/skill/DeploymentTemplates/template-with-new-rg.json'
       steps:
-      - template: dotnetDeploySteps.yml
+      - template: javascriptDeploySteps.yml
 
 - stage: Test
   dependsOn: Deploy
   jobs:
     - job: Run_Functional_Test
       variables:
-        HostBotName: $(PyDotNetHostBotName)
+        HostBotName: $(PyJsHostBotName)
         Parameters.project: 'SkillsFunctionalTests/tests/SkillFunctionalTests/SkillFunctionalTests.csproj'
         Parameters.solution: 'SkillsFunctionalTests/tests/SkillFunctionalTests.sln'
       steps:
@@ -99,6 +87,6 @@ stages:
           azureSubscription: $(AzureSubscription)
           scriptLocation: inlineScript
           inlineScript: |
-           call az group delete -n "$(PyDotNetHostBotName)-RG" --yes
-           call az group delete -n "$(PyDotNetSkillBotName)-RG" --yes
+           call az group delete -n "$(PyJsHostBotName)-RG" --yes
+           call az group delete -n "$(PyJsSkillBotName)-RG" --yes
         condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
