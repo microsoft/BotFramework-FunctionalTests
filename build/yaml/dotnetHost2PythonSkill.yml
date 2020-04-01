@@ -31,7 +31,7 @@ stages:
     - job: Build_Host_Bot
       variables:
         Parameters.solution: 'SkillsFunctionalTests/dotnet/host/SimpleHostBot.sln'
-        Parameters.project: 'SkillsFunctionalTests/dotnet/host/SimpleHostBot.csproj'        
+        Parameters.project: 'SkillsFunctionalTests/dotnet/host/SimpleHostBot.csproj'
       steps:
       - template: dotnetInstallPackagesSteps.yml
       - template: dotnetBuildSteps.yml
@@ -52,7 +52,7 @@ stages:
          # Set values in appsettings.json file.
          $file = "$(System.DefaultWorkingDirectory)\SkillsFunctionalTests\dotnet\host\appsettings.json";
          $content = Get-Content -Raw $file | ConvertFrom-Json;
-         $content.SkillHostEndpoint = "https://$(DotNetPyHostBotName).azurewebsites.net/api/skills";
+         $content.SkillHostEndpoint = "https://$(DotNetPyHostBotName)-$(Build.BuildId).azurewebsites.net/api/skills";
 
          # Create Skill Class
          class Skill{[String] $Id; [String] $AppId; [String] $SkillEndpoint;};
@@ -64,7 +64,7 @@ stages:
          $dotnetSkill = New-Object -TypeName Skill;
          $dotnetSkill.Id = "EchoSkillBot";
          $dotnetSkill.AppId = "$(DotNetPySkillAppId)";
-         $dotnetSkill.SkillEndpoint = "https://$(DotNetPySkillBotName).azurewebsites.net/api/messages";
+         $dotnetSkill.SkillEndpoint = "https://$(DotNetPySkillBotName)-$(Build.BuildId).azurewebsites.net/api/messages";
 
          # Add skill to botframework skill list
          $botFrameworkSkills.Add($dotnetSkill);
@@ -98,8 +98,8 @@ stages:
       - template: functionalTestSteps.yml
 
 - stage: Cleanup
-  dependsOn: 
-  - Deploy 
+  dependsOn:
+  - Deploy
   - Test
   condition: always()
   jobs:
@@ -113,4 +113,4 @@ stages:
           inlineScript: |
            call az group delete -n "$(DotNetPyHostBotName)-RG" --yes
            call az group delete -n "$(DotNetPySkillBotName)-RG" --yes
-        condition: and(always(), ne(variables['DeleteResourceGroup'], 'false')) 
+        condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))

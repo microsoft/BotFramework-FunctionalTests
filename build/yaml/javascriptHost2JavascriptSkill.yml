@@ -8,7 +8,7 @@ trigger: none
 pr: none
 
 variables:
-  BuildPlatform: 'any cpu'	
+  BuildPlatform: 'any cpu'
   BuildConfiguration: 'Debug'
   # AzureSubscription: define this in Azure
   # DeleteResourceGroup (Optional): define this in Azure
@@ -38,16 +38,16 @@ stages:
          Write-host "Setting values in .env file"
          $file = "$(System.DefaultWorkingDirectory)/SkillsFunctionalTests/javascript/host/.env";
          $content = Get-Content -Raw $file | ConvertFrom-StringData;
-      
-         $content.SkillHostEndpoint = "https://$(JsJsHostBotNa)-$(Build.BuildId).azurewebsites.net/api/skills";
+
+         $content.SkillHostEndpoint = "https://$(JsJsHostBotName)-$(Build.BuildId).azurewebsites.net/api/skills";
          $content.SkillId = "EchoSkillBot";
          $content.SkillAppId = "$(JsJsSkillApp)";
-         $content.SkillEndpoint = "https://$(JsJsSkillBotNa)-$(Build.BuildId).azurewebsites.net/api/messages";
-      
+         $content.SkillEndpoint = "https://$(JsJsSkillBotName)-$(Build.BuildId).azurewebsites.net/api/messages";
+
          Clear-Content $file;
          foreach ($key in $content.keys) { Add-Content $file "$key=$($content.$key)" };
         displayName: 'Update .env file'
-     
+
       - template: javascriptDeploySteps.yml
 
     - job: Deploy_Skill
@@ -72,8 +72,8 @@ stages:
       - template: functionalTestSteps.yml
 
 - stage: Cleanup
-  dependsOn: 
-  - Deploy 
+  dependsOn:
+  - Deploy
   - Test
   condition: always()
   jobs:
