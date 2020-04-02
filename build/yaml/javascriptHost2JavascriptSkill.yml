@@ -41,7 +41,7 @@ stages:
 
          $content.SkillHostEndpoint = "https://$(JsJsHostBotName)-$(Build.BuildId).azurewebsites.net/api/skills";
          $content.SkillId = "EchoSkillBot";
-         $content.SkillAppId = "$(JsJsSkillApp)";
+         $content.SkillAppId = "$(JsJsSkillAppId)";
          $content.SkillEndpoint = "https://$(JsJsSkillBotName)-$(Build.BuildId).azurewebsites.net/api/messages";
 
          Clear-Content $file;

@@ -69,8 +69,8 @@ stages:
          # Create Skill object
          $dotnetSkill = New-Object -TypeName Skill;
          $dotnetSkill.Id = "EchoSkillBot";
-         $dotnetSkill.AppId = "$(DotNetDotNetSkillApp)";
-         $dotnetSkill.SkillEndpoint = "https://$(DotNetDotNetSkillBotNa)-$(Build.BuildId).azurewebsites.net/api/messages";
+         $dotnetSkill.AppId = "$(DotNetDotNetSkillAppId)";
+         $dotnetSkill.SkillEndpoint = "https://$(DotNetDotNetSkillBotName)-$(Build.BuildId).azurewebsites.net/api/messages";
 
          # Add skill to botframework skill list
          $botFrameworkSkills.Add($dotnetSkill);
