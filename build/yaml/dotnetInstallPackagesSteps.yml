@@ -1,7 +1,7 @@
 steps:
 - task: DotNetCoreCLI@2
   displayName: 'Add stable BotBuilder version'
-  condition: eq(variables['SdkVersion'],'stable')
+  condition: eq(variables['BotBuilderPackageVersion'],'stable')
   inputs:
     command: custom
     projects: $(Parameters.project)
@@ -9,23 +9,23 @@ steps:
     arguments: 'package Microsoft.Bot.Builder.Integration.AspNet.Core'
 
 - powershell: |
-    if ($null -eq $env:SdkVersion -or '' -eq $env:SdkVersion) {
+    if ($null -eq $env:BotBuilderPackageVersion -or '' -eq $env:BotBuilderPackageVersion) {
         $Response = Invoke-WebRequest -URI https://botbuilder.myget.org/F/botbuilder-v4-dotnet-daily/api/v3/registration1/Microsoft.Bot.Builder/index.json | ConvertFrom-Json;
         $LastPackage = $Response.items | Select-Object -Last 1
         $latest_version = $lastpackage.upper
   
-        echo "##vso[task.setvariable variable=SdkVersion;]$latest_version"
+        echo "##vso[task.setvariable variable=BotBuilderPackageVersion;]$latest_version"
         Write-Host "Set package version to install $latest_version"
     }
   workingDirectory: SkillsFunctionalTests/dotnet/host
   displayName: 'Get package BotBuilder preview version'
-  condition: eq(variables['SdkVersion'], '')
+  condition: eq(variables['BotBuilderPackageVersion'], '')
 
 - task: DotNetCoreCLI@2
   displayName: 'Add custom BotBuilder version'
-  condition: and(ne(variables['SdkVersion'],''), ne(variables['SdkVersion'],'stable'))
+  condition: and(ne(variables['BotBuilderPackageVersion'],''), ne(variables['BotBuilderPackageVersion'],'stable'))
   inputs:
     command: custom
     projects: $(Parameters.project)
     custom: add
-    arguments: 'package Microsoft.Bot.Builder.Integration.AspNet.Core --version "$(SdkVersion)" --source "https://botbuilder.myget.org/F/botbuilder-v4-dotnet-daily/api/v3/index.json"'
+    arguments: 'package Microsoft.Bot.Builder.Integration.AspNet.Core --version "$(BotBuilderPackageVersion)" --source "https://botbuilder.myget.org/F/botbuilder-v4-dotnet-daily/api/v3/index.json"'
