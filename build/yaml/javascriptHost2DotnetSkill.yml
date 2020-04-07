@@ -29,7 +29,7 @@ stages:
     - job: Build_Skill_Bot
       variables:
         Parameters.solution: 'SkillsFunctionalTests/dotnet/skill/EchoSkillBot.sln'
-        Parameters.project: 'SkillsFunctionalTests/dotnet/skill/EchoSkillBot.csproj'        
+        Parameters.project: 'SkillsFunctionalTests/dotnet/skill/EchoSkillBot.csproj'
       steps:
       - template: dotnetInstallPackagesSteps.yml
       - template: dotnetBuildSteps.yml
@@ -49,10 +49,10 @@ stages:
          $file = "$(System.DefaultWorkingDirectory)/SkillsFunctionalTests/javascript/host/.env";
          $content = Get-Content -Raw $file | ConvertFrom-StringData;
 
-         $content.SkillHostEndpoint = "https://$(JsDotNetHostBotName).azurewebsites.net/api/skills";
+         $content.SkillHostEndpoint = "https://$(JsDotNetHostBotName)-$(Build.BuildId).azurewebsites.net/api/skills";
          $content.SkillId = "EchoSkillBot";
          $content.SkillAppId = "$(JsDotNetSkillAppId)";
-         $content.SkillEndpoint = "https://$(JsDotNetSkillBotName).azurewebsites.net/api/messages";
+         $content.SkillEndpoint = "https://$(JsDotNetSkillBotName)-$(Build.BuildId).azurewebsites.net/api/messages";
 
          Clear-Content $file;
          foreach ($key in $content.keys) { Add-Content $file "$key=$($content.$key)" };
@@ -83,8 +83,8 @@ stages:
       - template: functionalTestSteps.yml
 
 - stage: Cleanup
-  dependsOn: 
-  - Deploy 
+  dependsOn:
+  - Deploy
   - Test
   jobs:
     - job: Delete_RG

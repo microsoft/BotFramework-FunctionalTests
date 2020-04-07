@@ -29,7 +29,7 @@ stages:
     - job: Build_Host_Bot
       variables:
         Parameters.solution: 'SkillsFunctionalTests/dotnet/host/SimpleHostBot.sln'
-        Parameters.project: 'SkillsFunctionalTests/dotnet/host/SimpleHostBot.csproj'        
+        Parameters.project: 'SkillsFunctionalTests/dotnet/host/SimpleHostBot.csproj'
       steps:
       - template: dotnetInstallPackagesSteps.yml
       - template: dotnetBuildSteps.yml
@@ -50,7 +50,7 @@ stages:
          # Set values in appsettings.json file.
          $file = "$(System.DefaultWorkingDirectory)\SkillsFunctionalTests\dotnet\host\appsettings.json";
          $content = Get-Content -Raw $file | ConvertFrom-Json;
-         $content.SkillHostEndpoint = "https://$(DotNetJsHostBotName).azurewebsites.net/api/skills";
+         $content.SkillHostEndpoint = "https://$(DotNetJsHostBotName)-$(Build.BuildId).azurewebsites.net/api/skills";
 
          # Create Skill Class
          class Skill{[String] $Id; [String] $AppId; [String] $SkillEndpoint;};
@@ -62,7 +62,7 @@ stages:
          $dotnetSkill = New-Object -TypeName Skill;
          $dotnetSkill.Id = "EchoSkillBot";
          $dotnetSkill.AppId = "$(DotNetJsSkillAppId)";
-         $dotnetSkill.SkillEndpoint = "https://$(DotNetJsSkillBotName).azurewebsites.net/api/messages";
+         $dotnetSkill.SkillEndpoint = "https://$(DotNetJsSkillBotName)-$(Build.BuildId).azurewebsites.net/api/messages";
 
          # Add skill to botframework skill list
          $botFrameworkSkills.Add($dotnetSkill);
@@ -94,8 +94,8 @@ stages:
       - template: functionalTestSteps.yml
 
 - stage: Cleanup
-  dependsOn: 
-  - Deploy 
+  dependsOn:
+  - Deploy
   - Test
   condition: always()
   jobs:
