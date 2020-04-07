@@ -96,6 +96,8 @@ The following steps will guide you trough the creation of a pipeline that runs o
    | **SkillBotName**       | User                                                                                                           | The name of the SkillBot that will be used to deploy it to Azure.                                    |
    | **DeleteResourceGroup** _(Optional)_| User                                                                                              | Set this variable to **false** if you want to skip the step to delete the resources in Azure after the tests.|
    | **SdkVersion** _(Optional)_| User     | The version of the BotBuilder SDK the bots will use. If not set, the latest preview version will be used, set it to **stable** to install latest stable version or specify the version you want to use.|
+   | **NetCoreSdkVersionHost** | User     | The version of the NetCore SDK the Host bot will use. This variable is required for dotnet Host bots. The supported values are 2.1 and 3.1, any other value will cause the pipeline to fail.|
+   | **NetCoreSdkVersionSkill** | User     | The version of the NetCore SDK the Skill bot will use. This variable is required for dotnet Skill bots. The supported values are 2.1 and 3.1, any other value will cause the pipeline to fail.|
 
    *Set these variables as private.
 
