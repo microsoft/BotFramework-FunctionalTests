@@ -19,6 +19,8 @@ variables:
   # DotNetDotNetSkillAppSecret: define this in Azure
   # DotNetDotNetSkillBotName: define this in Azure
   # SdkVersion (Optional): define this in Azure
+  # NetCoreSdkVersionHost: define this in Azure
+  # NetCoreSdkVersionSkill: define this in Azure
 
 pool:
   vmImage: 'windows-2019'
@@ -32,18 +34,32 @@ stages:
 
 - stage: Build
   jobs:
-    - job: Build_Host_Bot
+    - job: Validate_Host_NetCore_Version
       variables:
-        Parameters.solution: 'SkillsFunctionalTests/dotnet/host/SimpleHostBot.sln'
-        Parameters.project: 'SkillsFunctionalTests/dotnet/host/SimpleHostBot.csproj'
+        Parameters.netCoreSdkVersion: $(NetCoreSdkVersionHost)
+      steps:
+        - template: dotnetValidateNetCoreSdkVersion.yml
+
+    - job: Build_Host_Bot
+      dependsOn: Validate_Host_NetCore_Version
+      variables:
+        Parameters.solution: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionHost)/host/SimpleHostBot.sln'
+        Parameters.project: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionHost)/host/SimpleHostBot.csproj'
       steps:
       - template: dotnetInstallPackagesSteps.yml
       - template: dotnetBuildSteps.yml
 
-    - job: Build_Skill_Bot
+    - job: Validate_Skill_NetCore_Version
       variables:
-        Parameters.solution: 'SkillsFunctionalTests/dotnet/skill/EchoSkillBot.sln'
-        Parameters.project: 'SkillsFunctionalTests/dotnet/skill/EchoSkillBot.csproj'
+        Parameters.netCoreSdkVersion: $(NetCoreSdkVersionSkill)
+      steps:
+        - template: dotnetValidateNetCoreSdkVersion.yml
+
+    - job: Build_Skill_Bot
+      dependsOn: Validate_Skill_NetCore_Version
+      variables:
+        Parameters.solution: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionSkill)/skill/EchoSkillBot.sln'
+        Parameters.project: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionSkill)/skill/EchoSkillBot.csproj'
       steps:
       - template: dotnetInstallPackagesSteps.yml
       - template: dotnetBuildSteps.yml
@@ -53,16 +69,16 @@ stages:
   jobs:
     - job: Deploy_Host
       variables:
-        Parameters.project: 'SkillsFunctionalTests/dotnet/host/SimpleHostBot.csproj'
+        Parameters.project: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionHost)/host/SimpleHostBot.csproj'
         BotName: $(DotNetDotNetHostBotName)
         DeployAppId: $(DotNetDotNetHostAppId)
         DeployAppSecret: $(DotNetDotNetHostAppSecret)
         ProjectName: SimpleHostBot
-        TemplateLocation: 'SkillsFunctionalTests/dotnet/host/DeploymentTemplates/template-with-new-rg.json'
+        TemplateLocation: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionHost)/host/DeploymentTemplates/template-with-new-rg.json'
       steps:
       - powershell: |
          # Set values in appsettings.json file.
-         $file = "$(System.DefaultWorkingDirectory)\SkillsFunctionalTests\dotnet\host\appsettings.json";
+         $file = "$(System.DefaultWorkingDirectory)\SkillsFunctionalTests\dotnet\$(NetCoreSdkVersionHost)\host\appsettings.json";
          $content = Get-Content -Raw $file | ConvertFrom-Json;
          $content.SkillHostEndpoint = "https://$(DotNetDotNetHostBotName)-$(Build.BuildId).azurewebsites.net/api/skills";
 
@@ -88,12 +104,12 @@ stages:
 
     - job: Deploy_Skill
       variables:
-        Parameters.project: 'SkillsFunctionalTests/dotnet/skill/EchoSkillBot.csproj'
+        Parameters.project: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionSkill)/skill/EchoSkillBot.csproj'
         BotName: $(DotNetDotNetSkillBotName)
         DeployAppId: $(DotNetDotNetSkillAppId)
         DeployAppSecret: $(DotNetDotNetSkillAppSecret)
         ProjectName: EchoSkillBot
-        TemplateLocation: 'SkillsFunctionalTests/dotnet/skill/DeploymentTemplates/template-with-new-rg.json'
+        TemplateLocation: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionSkill)/skill/DeploymentTemplates/template-with-new-rg.json'
       steps:
       - template: dotnetDeploySteps.yml
 

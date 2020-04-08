@@ -21,6 +21,7 @@ variables:
   # DotNetPySkillAppSecret: define this in Azure
   # DotNetPySkillBotName: define this in Azure
   # SdkVersion (Optional): define this in Azure
+  # NetCoreSdkVersionHost: define this in Azure
 
 pool:
   vmImage: 'windows-2019'
@@ -34,10 +35,17 @@ stages:
         
 - stage: Build
   jobs:
-    - job: Build_Host_Bot
+    - job: Validate_Host_NetCore_Version
       variables:
-        Parameters.solution: 'SkillsFunctionalTests/dotnet/host/SimpleHostBot.sln'
-        Parameters.project: 'SkillsFunctionalTests/dotnet/host/SimpleHostBot.csproj'
+        Parameters.netCoreSdkVersion: $(NetCoreSdkVersionHost)
+      steps:
+        - template: dotnetValidateNetCoreSdkVersion.yml
+
+    - job: Build_Host_Bot
+      dependsOn: Validate_Host_NetCore_Version
+      variables:
+        Parameters.solution: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionHost)/host/SimpleHostBot.sln'
+        Parameters.project: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionHost)/host/SimpleHostBot.csproj'
       steps:
       - template: dotnetInstallPackagesSteps.yml
       - template: dotnetBuildSteps.yml
@@ -47,16 +55,16 @@ stages:
   jobs:
     - job: Deploy_Host
       variables:
-        Parameters.project: 'SkillsFunctionalTests/dotnet/host/SimpleHostBot.csproj'
+        Parameters.project: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionHost)/host/SimpleHostBot.csproj'
         BotName: $(DotNetPyHostBotName)
         DeployAppId: $(DotNetPyHostAppId)
         DeployAppSecret: $(DotNetPyHostAppSecret)
         ProjectName: SimpleHostBot
-        TemplateLocation: 'SkillsFunctionalTests/dotnet/host/DeploymentTemplates/template-with-new-rg.json'
+        TemplateLocation: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionHost)/host/DeploymentTemplates/template-with-new-rg.json'
       steps:
       - powershell: |
          # Set values in appsettings.json file.
-         $file = "$(System.DefaultWorkingDirectory)\SkillsFunctionalTests\dotnet\host\appsettings.json";
+         $file = "$(System.DefaultWorkingDirectory)\SkillsFunctionalTests\dotnet\$(NetCoreSdkVersionHost)\host\appsettings.json";
          $content = Get-Content -Raw $file | ConvertFrom-Json;
          $content.SkillHostEndpoint = "https://$(DotNetPyHostBotName)-$(Build.BuildId).azurewebsites.net/api/skills";
 
