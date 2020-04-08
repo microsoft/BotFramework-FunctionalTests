@@ -29,18 +29,18 @@ stages:
   jobs:
     - job: Build_Host_Bot
       variables:
+        BotBuilderPackageVersion: $(BotBuilderPackageVersionHost)
         Parameters.solution: 'SkillsFunctionalTests/dotnet/host/SimpleHostBot.sln'
         Parameters.project: 'SkillsFunctionalTests/dotnet/host/SimpleHostBot.csproj'
-        BotBuilderPackageVersion: $(BotBuilderPackageVersionHost)
       steps:
       - template: dotnetInstallPackagesSteps.yml
       - template: dotnetBuildSteps.yml
 
     - job: Build_Skill_Bot
       variables:
+        BotBuilderPackageVersion: $(BotBuilderPackageVersionSkill)
         Parameters.solution: 'SkillsFunctionalTests/dotnet/skill/EchoSkillBot.sln'
         Parameters.project: 'SkillsFunctionalTests/dotnet/skill/EchoSkillBot.csproj'
-        BotBuilderPackageVersion: $(BotBuilderPackageVersionSkill)
       steps:
       - template: dotnetInstallPackagesSteps.yml
       - template: dotnetBuildSteps.yml

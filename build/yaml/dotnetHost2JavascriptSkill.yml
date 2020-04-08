@@ -17,8 +17,9 @@ variables:
   # DotNetJsHostBotName: define this in Azure
   # DotNetJsSkillAppId: define this in Azure
   # DotNetJsSkillAppSecret: define this in Azure
-  # DotNetJsSkillBotName: define this in Azure
-  # SdkVersion (Optional): define this in Azure
+  # DotNetJsSkillBotName: define this in Azure  
+  # BotBuilderPackageVersionHost (Optional): define this in Azure
+  # BotBuilderPackageVersionSkill (Optional): define this in Azure
 
 pool:
   vmImage: 'windows-2019'
@@ -28,6 +29,7 @@ stages:
   jobs:
     - job: Build_Host_Bot
       variables:
+        BotBuilderPackageVersion: $(BotBuilderPackageVersionHost)
         Parameters.solution: 'SkillsFunctionalTests/dotnet/host/SimpleHostBot.sln'
         Parameters.project: 'SkillsFunctionalTests/dotnet/host/SimpleHostBot.csproj'
       steps:
@@ -39,11 +41,12 @@ stages:
   jobs:
     - job: Deploy_Host
       variables:
-        Parameters.project: 'SkillsFunctionalTests/dotnet/host/SimpleHostBot.csproj'
         BotName: $(DotNetJsHostBotName)
         DeployAppId: $(DotNetJsHostAppId)
         DeployAppSecret: $(DotNetJsHostAppSecret)
+        BotBuilderPackageVersion: $(BotBuilderPackageVersionHost)
         ProjectName: SimpleHostBot
+        Parameters.project: 'SkillsFunctionalTests/dotnet/host/SimpleHostBot.csproj'
         TemplateLocation: 'SkillsFunctionalTests/dotnet/host/DeploymentTemplates/template-with-new-rg.json'
       steps:
       - powershell: |
@@ -74,10 +77,11 @@ stages:
 
     - job: Deploy_Skill
       variables:
-        Parameters.sourceLocation: 'SkillsFunctionalTests/javascript/skill'
         BotName: $(DotNetJsSkillBotName)
         DeployAppId: $(DotNetJsSkillAppId)
         DeployAppSecret: $(DotNetJsSkillAppSecret)
+        BotBuilderPackageVersion: $(BotBuilderPackageVersionSkill)
+        Parameters.sourceLocation: 'SkillsFunctionalTests/javascript/skill'
         TemplateLocation: 'SkillsFunctionalTests/javascript/skill/DeploymentTemplates/template-with-new-rg.json'
       steps:
       - template: javascriptDeploySteps.yml
