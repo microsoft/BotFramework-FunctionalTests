@@ -18,8 +18,8 @@ variables:
   # DotNetDotNetSkillAppId: define this in Azure
   # DotNetDotNetSkillAppSecret: define this in Azure
   # DotNetDotNetSkillBotName: define this in Azure
-  # HostBotBuilderPackageVersion (Optional): define this in Azure
-  # SkillBotBuilderPackageVersion (Optional): define this in Azure
+  # BotBuilderPackageVersionHost (Optional): define this in Azure
+  # BotBuilderPackageVersionSkill (Optional): define this in Azure
 
 pool:
   vmImage: 'windows-2019'
@@ -31,7 +31,7 @@ stages:
       variables:
         Parameters.solution: 'SkillsFunctionalTests/dotnet/host/SimpleHostBot.sln'
         Parameters.project: 'SkillsFunctionalTests/dotnet/host/SimpleHostBot.csproj'
-        BotBuilderPackageVersion: $(HostBotBuilderPackageVersion)
+        BotBuilderPackageVersion: $(BotBuilderPackageVersionHost)
       steps:
       - template: dotnetInstallPackagesSteps.yml
       - template: dotnetBuildSteps.yml
@@ -40,7 +40,7 @@ stages:
       variables:
         Parameters.solution: 'SkillsFunctionalTests/dotnet/skill/EchoSkillBot.sln'
         Parameters.project: 'SkillsFunctionalTests/dotnet/skill/EchoSkillBot.csproj'
-        BotBuilderPackageVersion: $(SkillBotBuilderPackageVersion)
+        BotBuilderPackageVersion: $(BotBuilderPackageVersionSkill)
       steps:
       - template: dotnetInstallPackagesSteps.yml
       - template: dotnetBuildSteps.yml
@@ -50,12 +50,12 @@ stages:
   jobs:
     - job: Deploy_Host
       variables:
-        Parameters.project: 'SkillsFunctionalTests/dotnet/host/SimpleHostBot.csproj'
         BotName: $(DotNetDotNetHostBotName)
         DeployAppId: $(DotNetDotNetHostAppId)
         DeployAppSecret: $(DotNetDotNetHostAppSecret)
-        BotBuilderPackageVersion: $(HostBotBuilderPackageVersion)
+        BotBuilderPackageVersion: $(BotBuilderPackageVersionHost)
         ProjectName: SimpleHostBot
+        Parameters.project: 'SkillsFunctionalTests/dotnet/host/SimpleHostBot.csproj'
         TemplateLocation: 'SkillsFunctionalTests/dotnet/host/DeploymentTemplates/template-with-new-rg.json'
       steps:
       - powershell: |
@@ -86,12 +86,12 @@ stages:
 
     - job: Deploy_Skill
       variables:
-        Parameters.project: 'SkillsFunctionalTests/dotnet/skill/EchoSkillBot.csproj'
         BotName: $(DotNetDotNetSkillBotName)
         DeployAppId: $(DotNetDotNetSkillAppId)
         DeployAppSecret: $(DotNetDotNetSkillAppSecret)
-        BotBuilderPackageVersion: $(SkillBotBuilderPackageVersion)
+        BotBuilderPackageVersion: $(BotBuilderPackageVersionSkill)
         ProjectName: EchoSkillBot
+        Parameters.project: 'SkillsFunctionalTests/dotnet/skill/EchoSkillBot.csproj'
         TemplateLocation: 'SkillsFunctionalTests/dotnet/skill/DeploymentTemplates/template-with-new-rg.json'
       steps:
       - template: dotnetDeploySteps.yml
