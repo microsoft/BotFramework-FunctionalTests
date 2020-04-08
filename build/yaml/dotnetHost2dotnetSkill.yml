@@ -24,6 +24,12 @@ pool:
   vmImage: 'windows-2019'
 
 stages:
+- stage: Prepare
+  jobs:
+    - job: Delete_Preexisting_Resources
+      steps:
+      - template: cleanResourcesStep.yml
+
 - stage: Build
   jobs:
     - job: Build_Host_Bot
