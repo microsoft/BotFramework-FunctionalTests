@@ -1,0 +1,20 @@
+steps:
+- powershell: |
+   #Validate NetCoreSdkVersion variable
+
+   $netCoreVersion = "$(Parameters.netCoreSdkVersion)"
+   $errorMessage = "NetCoreSdkVersion " + "$netCoreVersion" + " is not supported. Please select version 2.1 or 3.1."
+
+   # Override the built-in cmdlet with a custom version
+   function Write-Error($message) {
+       [Console]::ForegroundColor = 'red'
+       [Console]::Error.WriteLine($message)
+       [Console]::ResetColor()
+   }
+
+   if ($netCoreVersion -ne "2.1" -AND $netCoreVersion -ne "3.1")
+   {
+      Write-Error $errorMessage
+   }
+  failOnStderr: true
+  displayName: 'Validate NetCoreSdkVersion'

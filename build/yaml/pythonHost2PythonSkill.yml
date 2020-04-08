@@ -27,6 +27,15 @@ pool:
   vmImage: 'windows-2019'
 
 stages:
+- stage: Prepare
+  jobs:
+    - job: Delete_Preexisting_Resources
+      variables:
+        HostBotName: $(PyPyHostBotName)
+        SkillBotName: $(PyPySkillBotName)
+      steps:
+      - template: cleanResourcesStep.yml
+        
 - stage: Deploy
   pool:
     vmImage: 'ubuntu-latest'

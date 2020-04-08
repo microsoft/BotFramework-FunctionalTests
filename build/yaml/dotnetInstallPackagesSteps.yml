@@ -17,7 +17,6 @@ steps:
         echo "##vso[task.setvariable variable=BotBuilderPackageVersion;]$latest_version"
         Write-Host "Set package version to install $latest_version"
     }
-  workingDirectory: SkillsFunctionalTests/dotnet/host
   displayName: 'Get package BotBuilder preview version'
   condition: eq(variables['BotBuilderPackageVersion'], '')
 

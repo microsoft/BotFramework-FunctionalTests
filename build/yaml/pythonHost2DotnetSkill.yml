@@ -21,17 +21,34 @@ variables:
   # PyDotNetSkillAppSecret: define this in Azure
   # PyDotNetSkillBotName: define this in Azure
   # SdkVersion (Optional): define this in Azure
+  # NetCoreSdkVersionSkill: define this in Azure
 
 pool:
   vmImage: 'windows-2019'
 
 stages:
+- stage: Prepare
+  jobs:
+    - job: Delete_Preexisting_Resources
+      variables:
+        HostBotName: $(PyDotNetHostBotName)
+        SkillBotName: $(PyDotNetSkillBotName)
+      steps:
+      - template: cleanResourcesStep.yml
+        
 - stage: Build
   jobs:
-    - job: Build_Skill_Bot
+    - job: Validate_Skill_NetCore_Version
       variables:
-        Parameters.solution: 'SkillsFunctionalTests/dotnet/skill/EchoSkillBot.sln'
-        Parameters.project: 'SkillsFunctionalTests/dotnet/skill/EchoSkillBot.csproj'
+        Parameters.netCoreSdkVersion: $(NetCoreSdkVersionSkill)
+      steps:
+        - template: dotnetValidateNetCoreSdkVersion.yml
+
+    - job: Build_Skill_Bot
+      dependsOn: Validate_Skill_NetCore_Version
+      variables:
+        Parameters.solution: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionSkill)/skill/EchoSkillBot.sln'
+        Parameters.project: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionSkill)/skill/EchoSkillBot.csproj'
       steps:
       - template: dotnetInstallPackagesSteps.yml
       - template: dotnetBuildSteps.yml
@@ -65,12 +82,12 @@ stages:
 
     - job: Deploy_Skill
       variables:
-        Parameters.project: 'SkillsFunctionalTests/dotnet/skill/EchoSkillBot.csproj'
+        Parameters.project: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionSkill)/skill/EchoSkillBot.csproj'
         BotName: $(PyDotNetSkillBotName)
         DeployAppId: $(PyDotNetSkillAppId)
         DeployAppSecret: $(PyDotNetSkillAppSecret)
         ProjectName: EchoSkillBot
-        TemplateLocation: 'SkillsFunctionalTests/dotnet/skill/DeploymentTemplates/template-with-new-rg.json'
+        TemplateLocation: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionSkill)/skill/DeploymentTemplates/template-with-new-rg.json'
       steps:
       - template: dotnetDeploySteps.yml
 
