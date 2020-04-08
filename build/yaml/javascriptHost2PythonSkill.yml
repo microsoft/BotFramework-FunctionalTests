@@ -29,6 +29,9 @@ stages:
 - stage: Prepare
   jobs:
     - job: Delete_Preexisting_Resources
+      variables:
+        HostBotName: $(JsPyHostBotName)
+        SkillBotName: $(JsPySkillBotName)
       steps:
       - template: cleanResourcesStep.yml
         
