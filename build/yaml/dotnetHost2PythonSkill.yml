@@ -19,8 +19,9 @@ variables:
   # DotNetPyHostBotName: define this in Azure
   # DotNetPySkillAppId: define this in Azure
   # DotNetPySkillAppSecret: define this in Azure
-  # DotNetPySkillBotName: define this in Azure
-  # SdkVersion (Optional): define this in Azure
+  # DotNetPySkillBotName: define this in Azure  
+  # BotBuilderPackageVersionHost (Optional): define this in Azure
+  # BotBuilderPackageVersionSkill (Optional): define this in Azure
 
 pool:
   vmImage: 'windows-2019'
@@ -30,6 +31,7 @@ stages:
   jobs:
     - job: Build_Host_Bot
       variables:
+        BotBuilderPackageVersion: $(BotBuilderPackageVersionHost)
         Parameters.solution: 'SkillsFunctionalTests/dotnet/host/SimpleHostBot.sln'
         Parameters.project: 'SkillsFunctionalTests/dotnet/host/SimpleHostBot.csproj'
       steps:
@@ -41,11 +43,12 @@ stages:
   jobs:
     - job: Deploy_Host
       variables:
-        Parameters.project: 'SkillsFunctionalTests/dotnet/host/SimpleHostBot.csproj'
         BotName: $(DotNetPyHostBotName)
         DeployAppId: $(DotNetPyHostAppId)
         DeployAppSecret: $(DotNetPyHostAppSecret)
+        BotBuilderPackageVersion: $(BotBuilderPackageVersionHost)
         ProjectName: SimpleHostBot
+        Parameters.project: 'SkillsFunctionalTests/dotnet/host/SimpleHostBot.csproj'
         TemplateLocation: 'SkillsFunctionalTests/dotnet/host/DeploymentTemplates/template-with-new-rg.json'
       steps:
       - powershell: |
@@ -78,10 +81,11 @@ stages:
       pool:
         vmImage: 'ubuntu-latest'
       variables:
-        Parameters.sourceLocation: 'SkillsFunctionalTests/python/skill'
         BotName: $(DotNetPySkillBotName)
         DeployAppId: $(DotNetPySkillAppId)
         DeployAppSecret: $(DotNetPySkillAppSecret)
+        BotBuilderPackageVersion: $(BotBuilderPackageVersionSkill)
+        Parameters.sourceLocation: 'SkillsFunctionalTests/python/skill'
         TemplateLocation: 'SkillsFunctionalTests/python/skill/deploymentTemplates/template-with-new-rg.json'
       steps:
       - template: pythonDeploySteps.yml
