@@ -30,6 +30,9 @@ stages:
 - stage: Prepare
   jobs:
     - job: Delete_Preexisting_Resources
+      variables:
+        HostBotName: $(DotNetPyHostBotName)
+        SkillBotName: $(DotNetPySkillBotName)
       steps:
       - template: cleanResourcesStep.yml
         
