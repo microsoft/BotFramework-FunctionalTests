@@ -47,16 +47,14 @@ stages:
          $file = "$(System.DefaultWorkingDirectory)/SkillsFunctionalTests/javascript/host/.env";
          $content = Get-Content -Raw $file | ConvertFrom-StringData;
 
-         $content.SkillHostEndpoint = "https://$(JsPyHostBotName).azurewebsites.net/api/skills";
+         $content.SkillHostEndpoint = "https://$(JsPyHostBotName)-$(Build.BuildId).azurewebsites.net/api/skills";
          $content.SkillId = "EchoSkillBot";
          $content.SkillAppId = "$(JsPySkillAppId)";
-         $content.SkillEndpoint = "https://$(JsPySkillBotName).azurewebsites.net/api/messages";
+         $content.SkillEndpoint = "https://$(JsPySkillBotName)-$(Build.BuildId).azurewebsites.net/api/messages";
 
          Clear-Content $file;
          foreach ($key in $content.keys) { Add-Content $file "$key=$($content.$key)" };
         displayName: 'Update .env file'
-        env:
-          HostBotName: $(JsPyHostBotName)
 
       - template: javascriptDeploySteps.yml
 

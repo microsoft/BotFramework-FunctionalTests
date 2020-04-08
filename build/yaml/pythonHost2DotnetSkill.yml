@@ -60,8 +60,8 @@ stages:
          $file = "$(System.DefaultWorkingDirectory)/$(Parameters.sourceLocation)/.env";
          $content = Get-Content -Raw $file | ConvertFrom-StringData;
          $content.SKILL_BOT_APP_ID = "$(PyDotNetSkillAppId)";
-         $content.SKILL_BOT_ENDPOINT = "https://$(PyDotNetSkillBotName).azurewebsites.net/api/messages";
-         $content.SKILL_HOST_ENDPOINT = "https://$(PyDotNetHostBotName).azurewebsites.net/api/skills";
+         $content.SKILL_BOT_ENDPOINT = "https://$(PyDotNetSkillBotName)-$(Build.BuildId).azurewebsites.net/api/messages";
+         $content.SKILL_HOST_ENDPOINT = "https://$(PyDotNetHostBotName)-$(Build.BuildId).azurewebsites.net/api/skills";
 
          Clear-Content $file;
          foreach ($key in $content.keys) { Add-Content $file "$key=$($content.$key)" };

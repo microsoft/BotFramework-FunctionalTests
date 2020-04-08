@@ -55,10 +55,10 @@ stages:
          $file = "$(System.DefaultWorkingDirectory)/SkillsFunctionalTests/javascript/host/.env";
          $content = Get-Content -Raw $file | ConvertFrom-StringData;
 
-         $content.SkillHostEndpoint = "https://$(JsDotNetHostBotName).azurewebsites.net/api/skills";
+         $content.SkillHostEndpoint = "https://$(JsDotNetHostBotName)-$(Build.BuildId).azurewebsites.net/api/skills";
          $content.SkillId = "EchoSkillBot";
          $content.SkillAppId = "$(JsDotNetSkillAppId)";
-         $content.SkillEndpoint = "https://$(JsDotNetSkillBotName).azurewebsites.net/api/messages";
+         $content.SkillEndpoint = "https://$(JsDotNetSkillBotName)-$(Build.BuildId).azurewebsites.net/api/messages";
 
          Clear-Content $file;
          foreach ($key in $content.keys) { Add-Content $file "$key=$($content.$key)" };

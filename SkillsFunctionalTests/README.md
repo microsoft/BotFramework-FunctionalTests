@@ -4,11 +4,32 @@
 
 Skill functional testing aims to automate the testing matrix for Bot/Skill interactions in all available programming languages.
 
-| Host\Skill      | DotNet  | JavaScript  | Python  |
-|---------------- |-------- |------------ |-------- |
-| **DotNet**      |         |             |         |
-| **JavaScript**  |         |             |         |
-| **Python**      |         |             |         |
+<table>
+    <tr>
+        <th align="center">Host/Skill</th>       
+        <th align="center">DotNet</th>
+        <th align="center">JavaScript</th>
+        <th align="center">Python</th>
+    </tr>
+    <tr align="center">
+        <td>DotNet</td>
+        <td><img src="https://fuselabs.visualstudio.com/SDK_v4/_apis/build/status/SkillBots/DotNetDotNetSkillBotFunctionalTest?branchName=master"></td>
+        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/JsDotNetSkillBotFunctionalTest?branchName=master"></td>
+        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/PyDotNetSkillBotFunctionalTest?branchName=master"></td>
+    </tr>
+    <tr align="center">
+        <td>JavaScript</td>
+        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/DotNetJsSkillBotFunctionalTest?branchName=master"></td>
+        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/JsJsSkillBotFunctionalTest?branchName=master"></td>
+        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/PyJsSkillBotFunctionalTest?branchName=master"></td>
+    </tr>
+    <tr align="center">
+        <td>Python</td>       
+        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/DotNetPySkillBotFunctionalTest?branchName=master"></td>
+        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/JsPySkillBotFunctionalTest?branchName=master"></td>
+        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/PythonPythonSkillBotFunctionalTest?branchName=master"></td>
+    </tr>
+</table>
 
 ### Content
 
