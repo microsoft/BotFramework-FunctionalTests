@@ -18,7 +18,8 @@ variables:
   # JsJsSkillAppId: define this in Azure
   # JsJsSkillAppSecret: define this in Azure
   # JsJsSkillBotName: define this in Azure
-  # SdkVersion (Optional): define this in Azure
+  # HostBotBuilderPackageVersion (Optional): define this in Azure
+  # SkillBotBuilderPackageVersion (Optional): define this in Azure
 
 pool:
   vmImage: 'windows-2019'
@@ -28,10 +29,11 @@ stages:
   jobs:
     - job: Deploy_Host
       variables:
-        Parameters.sourceLocation: 'SkillsFunctionalTests/javascript/host'
         BotName: $(JsJsHostBotName)
         DeployAppId: $(JsJsHostAppId)
         DeployAppSecret: $(JsJsHostAppSecret)
+        BotBuilderPackageVersion: $(HostBotBuilderPackageVersion)
+        Parameters.sourceLocation: 'SkillsFunctionalTests/javascript/host'
         TemplateLocation: 'SkillsFunctionalTests/javascript/host/DeploymentTemplates/template-with-new-rg.json'
       steps:
       - powershell: |
@@ -52,10 +54,11 @@ stages:
 
     - job: Deploy_Skill
       variables:
-        Parameters.sourceLocation: 'SkillsFunctionalTests/javascript/skill'
         BotName: $(JsJsSkillBotName)
         DeployAppId: $(JsJsSkillAppId)
         DeployAppSecret: $(JsJsSkillAppSecret)
+        BotBuilderPackageVersion: $(SkillBotBuilderPackageVersion)
+        Parameters.sourceLocation: 'SkillsFunctionalTests/javascript/skill'
         TemplateLocation: 'SkillsFunctionalTests/javascript/skill/DeploymentTemplates/template-with-new-rg.json'
       steps:
       - template: javascriptDeploySteps.yml
