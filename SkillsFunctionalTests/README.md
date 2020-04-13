@@ -7,13 +7,13 @@ Skill functional testing aims to automate the testing matrix for Bot/Skill inter
 <table>
     <tr>
         <th align="center">Host/Skill</th>       
-        <th align="center">C# Net Core 3</th>
+        <th align="center">C# Net Core 3.1</th>
         <th align="center">JavaScript</th>
         <th align="center">Python</th>
         <th align="center">C# Net Core 2.1</th>
     </tr>
     <tr align="center">
-        <td>C# Net Core 3</td>
+        <td>C# Net Core 3.1</td>
         <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/DotNet31DotNet31SkillBotFunctionalTest?branchName=master"></td>
         <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/DotNet31JsSkillBotFunctionalTest?branchName=master"></td>
         <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/DotNet31PySkillBotFunctionalTest?branchName=master"></td>
