@@ -20,7 +20,8 @@ variables:
   # PyDotNetSkillAppId: define this in Azure
   # PyDotNetSkillAppSecret: define this in Azure
   # PyDotNetSkillBotName: define this in Azure
-  # SdkVersion (Optional): define this in Azure
+  # BotBuilderPackageVersionHost (Optional): define this in Azure
+  # BotBuilderPackageVersionSkill (Optional): define this in Azure
   # NetCoreSdkVersionSkill: define this in Azure
 
 pool:
@@ -47,6 +48,7 @@ stages:
     - job: Build_Skill_Bot
       dependsOn: Validate_Skill_NetCore_Version
       variables:
+        BotBuilderPackageVersion: $(BotBuilderPackageVersionSkill)
         Parameters.solution: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionSkill)/skill/EchoSkillBot.sln'
         Parameters.project: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionSkill)/skill/EchoSkillBot.csproj'
       steps:
@@ -60,10 +62,11 @@ stages:
       pool:
         vmImage: 'ubuntu-latest'
       variables:
-        Parameters.sourceLocation: 'SkillsFunctionalTests/python/host'
         BotName: $(PyDotNetHostBotName)
         DeployAppId: $(PyDotNetHostAppId)
         DeployAppSecret: $(PyDotNetHostAppSecret)
+        BotBuilderPackageVersion: $(BotBuilderPackageVersionHost)
+        Parameters.sourceLocation: 'SkillsFunctionalTests/python/host'
         TemplateLocation: 'SkillsFunctionalTests/python/host/deploymentTemplates/template-with-new-rg.json'
       steps:
       - powershell: |
@@ -82,11 +85,12 @@ stages:
 
     - job: Deploy_Skill
       variables:
-        Parameters.project: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionSkill)/skill/EchoSkillBot.csproj'
         BotName: $(PyDotNetSkillBotName)
         DeployAppId: $(PyDotNetSkillAppId)
         DeployAppSecret: $(PyDotNetSkillAppSecret)
+        BotBuilderPackageVersion: $(BotBuilderPackageVersionSkill)
         ProjectName: EchoSkillBot
+        Parameters.project: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionSkill)/skill/EchoSkillBot.csproj'
         TemplateLocation: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionSkill)/skill/DeploymentTemplates/template-with-new-rg.json'
       steps:
       - template: dotnetDeploySteps.yml
