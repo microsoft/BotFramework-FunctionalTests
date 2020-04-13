@@ -8,7 +8,7 @@ steps:
 
 - powershell: |
    move-item -path $(Parameters.sourceLocation)/deployment-scripts/* -destination $(Parameters.sourceLocation)
-   if(-Not ($env:BotBuilderPackageVersion -eq $null))
+   if(-Not ($env:BotBuilderPackageVersion -eq ''))
    {
       Add-Content $(Parameters.sourceLocation)/.deployment "`nBOT_BUILDER_PACKAGE_VERSION = $(BotBuilderPackageVersion)"
    }
