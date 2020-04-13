@@ -48,7 +48,7 @@ stages:
     - job: Build_Skill_Bot
       dependsOn: Validate_Skill_NetCore_Version
       variables:
-        BotBuilderPackageVersion: $(BotBuilderPackageVersionSkill)
+        BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
         Parameters.solution: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionSkill)/skill/EchoSkillBot.sln'
         Parameters.project: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionSkill)/skill/EchoSkillBot.csproj'
       steps:
@@ -65,7 +65,7 @@ stages:
         BotName: $(PyDotNetHostBotName)
         DeployAppId: $(PyDotNetHostAppId)
         DeployAppSecret: $(PyDotNetHostAppSecret)
-        BotBuilderPackageVersion: $(BotBuilderPackageVersionHost)
+        BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
         Parameters.sourceLocation: 'SkillsFunctionalTests/python/host'
         TemplateLocation: 'SkillsFunctionalTests/python/host/deploymentTemplates/template-with-new-rg.json'
       steps:
@@ -88,7 +88,7 @@ stages:
         BotName: $(PyDotNetSkillBotName)
         DeployAppId: $(PyDotNetSkillAppId)
         DeployAppSecret: $(PyDotNetSkillAppSecret)
-        BotBuilderPackageVersion: $(BotBuilderPackageVersionSkill)
+        BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
         ProjectName: EchoSkillBot
         Parameters.project: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionSkill)/skill/EchoSkillBot.csproj'
         TemplateLocation: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionSkill)/skill/DeploymentTemplates/template-with-new-rg.json'

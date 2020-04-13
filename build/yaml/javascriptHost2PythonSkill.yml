@@ -43,7 +43,7 @@ stages:
         BotName: $(JsPyHostBotName)
         DeployAppId: $(JsPyHostAppId)
         DeployAppSecret: $(JsPyHostAppSecret)
-        BotBuilderPackageVersion: $(BotBuilderPackageVersionHost)
+        BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
         Parameters.sourceLocation: 'SkillsFunctionalTests/javascript/host'
         TemplateLocation: 'SkillsFunctionalTests/javascript/host/DeploymentTemplates/template-with-new-rg.json'
       steps:
@@ -70,7 +70,7 @@ stages:
         BotName: $(JsPySkillBotName)
         DeployAppId: $(JsPySkillAppId)
         DeployAppSecret: $(JsPySkillAppSecret)
-        BotBuilderPackageVersion: $(BotBuilderPackageVersionSkill)
+        BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
         Parameters.sourceLocation: 'SkillsFunctionalTests/python/skill'
         TemplateLocation: 'SkillsFunctionalTests/python/skill/deploymentTemplates/template-with-new-rg.json'
       steps:
