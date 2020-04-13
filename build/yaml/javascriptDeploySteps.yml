@@ -6,12 +6,16 @@ steps:
     scriptLocation: inlineScript
     inlineScript: 'call az bot prepare-deploy --code-dir "$(Parameters.sourceLocation)" --lang Javascript'
 
-- powershell: |
-   move-item -path $(Parameters.sourceLocation)/deployment-scripts/* -destination $(Parameters.sourceLocation)
+- powershell: |   
    if(-Not ($env:BotBuilderPackageVersion -eq ''))
    {
-      Add-Content $(Parameters.sourceLocation)/.deployment "`nBOT_BUILDER_PACKAGE_VERSION = $(BotBuilderPackageVersion)"
-   }
+      Add-Content $(Parameters.sourceLocation)/deployment-scripts/.deployment "`nBOT_BUILDER_PACKAGE_VERSION = $(BotBuilderPackageVersion)"
+   }   
+  displayName: 'Add custom version'
+  condition: ne(variables['BotBuilderPackageVersion'], '')
+
+- powershell: |
+   move-item -path $(Parameters.sourceLocation)/deployment-scripts/* -destination $(Parameters.sourceLocation)
    Compress-Archive "$(Parameters.sourceLocation)/*" "$(Parameters.sourceLocation)/bot.zip" -Update
   displayName: 'Zip Bot'
 
