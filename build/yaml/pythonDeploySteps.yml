@@ -9,15 +9,31 @@ steps:
 
 - powershell: |
     if(-Not ($null -eq $env:BOTBUILDERPACKAGEVERSION))
-    {    
-        $file = '$(System.DefaultWorkingDirectory)/$(Parameters.sourceLocation)/deployment-scripts/postbuild.sh'
-        $oldContent = Get-Content $file
-        Set-Content -Path $file -Value "SDK_VERSION=$env:BOTBUILDERPACKAGEVERSION"
-        Add-Content -Path $file -Value $oldContent
-    }   
-  displayName: 'Set Sdk version value'
+    {
+        Write-Host "SdkVersion variable found. Set to $env:BOTBUILDERPACKAGEVERSION"
+
+        $file = '$(System.DefaultWorkingDirectory)/$(Parameters.sourceLocation)/requirements.txt'
+
+        #Add the test.pypi source at the beginning of requirements
+        $content = Get-Content $file
+        Set-Content -Path $file -Value "--extra-index-url https://test.pypi.org/simple/"
+        Add-Content -Path $file -Value $content
+
+        #Set botbuilder-integration-aiohttp version to value specified
+        $content = Get-Content $file
+        $matchinfo = Select-String -Path $file -Pattern "botbuilder-integration-aiohttp"
+
+        #matchinfo marks the line number from 1 instead of 0
+        $content[$matchinfo.LineNumber - 1] = "botbuilder-integration-aiohttp==$env:BOTBUILDERPACKAGEVERSION"
+        Set-Content -Path $file -Value $content
+
+        $content = Get-Content $file
+        Write-Host "requirements.txt:"
+        Write-Host $content
+    }
+  displayName: 'Set BotBuilder version value'
   condition: ne(variables['BotBuilderPackageVersion'], '')
-     
+
 - script: |
    mv $(System.DefaultWorkingDirectory)/$(Parameters.sourceLocation)/deployment-scripts/* $(System.DefaultWorkingDirectory)/$(Parameters.sourceLocation)
    git config --global user.name "GitPythonDeploymentUser"
