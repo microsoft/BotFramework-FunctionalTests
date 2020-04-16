@@ -19,8 +19,9 @@ variables:
   # DotNetPyHostBotName: define this in Azure
   # DotNetPySkillAppId: define this in Azure
   # DotNetPySkillAppSecret: define this in Azure
-  # DotNetPySkillBotName: define this in Azure
-  # SdkVersion (Optional): define this in Azure
+  # DotNetPySkillBotName: define this in Azure  
+  # BotBuilderPackageVersionHost (Optional): define this in Azure
+  # BotBuilderPackageVersionSkill (Optional): define this in Azure
   # NetCoreSdkVersionHost: define this in Azure
 
 pool:
@@ -47,6 +48,7 @@ stages:
     - job: Build_Host_Bot
       dependsOn: Validate_Host_NetCore_Version
       variables:
+        BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
         Parameters.solution: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionHost)/host/SimpleHostBot.sln'
         Parameters.project: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionHost)/host/SimpleHostBot.csproj'
       steps:
@@ -58,11 +60,12 @@ stages:
   jobs:
     - job: Deploy_Host
       variables:
-        Parameters.project: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionHost)/host/SimpleHostBot.csproj'
         BotName: $(DotNetPyHostBotName)
         DeployAppId: $(DotNetPyHostAppId)
         DeployAppSecret: $(DotNetPyHostAppSecret)
+        BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
         ProjectName: SimpleHostBot
+        Parameters.project: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionHost)/host/SimpleHostBot.csproj'
         TemplateLocation: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionHost)/host/DeploymentTemplates/template-with-new-rg.json'
       steps:
       - powershell: |
@@ -95,10 +98,11 @@ stages:
       pool:
         vmImage: 'ubuntu-latest'
       variables:
-        Parameters.sourceLocation: 'SkillsFunctionalTests/python/skill'
         BotName: $(DotNetPySkillBotName)
         DeployAppId: $(DotNetPySkillAppId)
         DeployAppSecret: $(DotNetPySkillAppSecret)
+        BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
+        Parameters.sourceLocation: 'SkillsFunctionalTests/python/skill'
         TemplateLocation: 'SkillsFunctionalTests/python/skill/deploymentTemplates/template-with-new-rg.json'
       steps:
       - template: pythonDeploySteps.yml

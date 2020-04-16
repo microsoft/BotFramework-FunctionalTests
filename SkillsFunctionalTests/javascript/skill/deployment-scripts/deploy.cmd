@@ -38,8 +38,8 @@ IF NOT DEFINED NEXT_MANIFEST_PATH (
   )
 )
 
-IF NOT DEFINED SDK_VERSION (
-  SET SDK_VERSION=preview
+IF NOT DEFINED BOT_BUILDER_PACKAGE_VERSION (
+  SET BOT_BUILDER_PACKAGE_VERSION=preview
 )
 
 IF NOT DEFINED KUDU_SYNC_CMD (
@@ -105,20 +105,20 @@ call :SelectNodeVersion
 IF EXIST "%DEPLOYMENT_TARGET%\package.json" (
   pushd "%DEPLOYMENT_TARGET%"
   
-  IF %SDK_VERSION% EQU stable (
+  IF %BOT_BUILDER_PACKAGE_VERSION% EQU stable (
     echo Installing stable version
     call :ExecuteCmd !NPM_CMD! install --save botbuilder@latest
     call :ExecuteCmd !NPM_CMD! install --save botframework-connector@latest
   ) ELSE (
     call :ExecuteCmd !NPM_CMD! config set registry https://botbuilder.myget.org/F/botbuilder-v4-js-daily/npm/
-    IF %SDK_VERSION% EQU preview (
+    IF %BOT_BUILDER_PACKAGE_VERSION% EQU preview (
       echo Installing preview version
       call :ExecuteCmd !NPM_CMD! install --save botbuilder@latest
       call :ExecuteCmd !NPM_CMD! install --save botframework-connector@latest
     ) ELSE (
-      echo Installing %SDK_VERSION% version
-      call :ExecuteCmd !NPM_CMD! install --save botbuilder@%SDK_VERSION%
-      call :ExecuteCmd !NPM_CMD! install --save botframework-connector@%SDK_VERSION%
+      echo Installing %BOT_BUILDER_PACKAGE_VERSION% version
+      call :ExecuteCmd !NPM_CMD! install --save botbuilder@%BOT_BUILDER_PACKAGE_VERSION%
+      call :ExecuteCmd !NPM_CMD! install --save botframework-connector@%BOT_BUILDER_PACKAGE_VERSION%
     )
   )
   IF !ERRORLEVEL! NEQ 0 goto error

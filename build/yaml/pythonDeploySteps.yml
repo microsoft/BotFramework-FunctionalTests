@@ -8,15 +8,15 @@ steps:
      az deployment create --name "$(BotName)-RG" --template-file "$(System.DefaultWorkingDirectory)/$(TemplateLocation)" --location "westus" --parameters appId="$(DeployAppId)" appSecret="$(DeployAppSecret)" botId="$(BotName)" botSku=F0 newAppServicePlanName="$(BotName)" newWebAppName="$(BotName)-$(Build.BuildId)" groupName="$(BotName)-RG" groupLocation="westus" newAppServicePlanLocation="westus"
 
 - powershell: |
-    if(-Not ($null -eq $env:SDKVERSION))
+    if(-Not ($null -eq $env:BOTBUILDERPACKAGEVERSION))
     {    
         $file = '$(System.DefaultWorkingDirectory)/$(Parameters.sourceLocation)/deployment-scripts/postbuild.sh'
         $oldContent = Get-Content $file
-        Set-Content -Path $file -Value "SDK_VERSION=$env:SDKVERSION"
+        Set-Content -Path $file -Value "SDK_VERSION=$env:BOTBUILDERPACKAGEVERSION"
         Add-Content -Path $file -Value $oldContent
     }   
   displayName: 'Set Sdk version value'
-  condition: ne(variables['SdkVersion'], '')
+  condition: ne(variables['BotBuilderPackageVersion'], '')
      
 - script: |
    mv $(System.DefaultWorkingDirectory)/$(Parameters.sourceLocation)/deployment-scripts/* $(System.DefaultWorkingDirectory)/$(Parameters.sourceLocation)

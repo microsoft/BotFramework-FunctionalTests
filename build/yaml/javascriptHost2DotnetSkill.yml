@@ -18,7 +18,8 @@ variables:
   # JsDotNetSkillAppId: define this in Azure
   # JsDotNetSkillAppSecret: define this in Azure
   # JsDotNetSkillBotName: define this in Azure
-  # SdkVersion (Optional): define this in Azure
+  # BotBuilderPackageVersionHost (Optional): define this in Azure
+  # BotBuilderPackageVersionSkill (Optional): define this in Azure
   # NetCoreSdkVersionSkill: define this in Azure
 
 pool:
@@ -45,6 +46,7 @@ stages:
     - job: Build_Skill_Bot
       dependsOn: Validate_Skill_NetCore_Version
       variables:
+        BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
         Parameters.solution: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionSkill)/skill/EchoSkillBot.sln'
         Parameters.project: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionSkill)/skill/EchoSkillBot.csproj'
       steps:
@@ -55,10 +57,11 @@ stages:
   jobs:
     - job: Deploy_Host
       variables:
-        Parameters.sourceLocation: 'SkillsFunctionalTests/javascript/host'
         BotName: $(JsDotNetHostBotName)
         DeployAppId: $(JsDotNetHostAppId)
         DeployAppSecret: $(JsDotNetHostAppSecret)
+        BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
+        Parameters.sourceLocation: 'SkillsFunctionalTests/javascript/host'
         TemplateLocation: 'SkillsFunctionalTests/javascript/host/DeploymentTemplates/template-with-new-rg.json'
       steps:
       - powershell: |
@@ -79,11 +82,12 @@ stages:
 
     - job: Deploy_Skill
       variables:
-        Parameters.project: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionSkill)/skill/EchoSkillBot.csproj'
         BotName: $(JsDotNetSkillBotName)
         DeployAppId: $(JsDotNetSkillAppId)
         DeployAppSecret: $(JsDotNetSkillAppSecret)
+        BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
         ProjectName: EchoSkillBot
+        Parameters.project: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionSkill)/skill/EchoSkillBot.csproj'
         TemplateLocation: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionSkill)/skill/DeploymentTemplates/template-with-new-rg.json'
       steps:
       - template: dotnetDeploySteps.yml

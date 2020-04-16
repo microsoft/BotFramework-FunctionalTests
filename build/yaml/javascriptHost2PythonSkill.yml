@@ -20,7 +20,8 @@ variables:
   # JsPySkillAppId: define this in Azure
   # JsPySkillAppSecret: define this in Azure
   # JsPySkillBotName: define this in Azure
-  # SdkVersion (Optional): define this in Azure
+  # BotBuilderPackageVersionHost (Optional): define this in Azure
+  # BotBuilderPackageVersionSkill (Optional): define this in Azure
 
 pool:
   vmImage: 'windows-2019'
@@ -39,10 +40,11 @@ stages:
   jobs:
     - job: Deploy_Host
       variables:
-        Parameters.sourceLocation: 'SkillsFunctionalTests/javascript/host'
         BotName: $(JsPyHostBotName)
         DeployAppId: $(JsPyHostAppId)
         DeployAppSecret: $(JsPyHostAppSecret)
+        BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
+        Parameters.sourceLocation: 'SkillsFunctionalTests/javascript/host'
         TemplateLocation: 'SkillsFunctionalTests/javascript/host/DeploymentTemplates/template-with-new-rg.json'
       steps:
       - powershell: |
@@ -65,10 +67,11 @@ stages:
       pool:
         vmImage: 'ubuntu-latest'
       variables:
-        Parameters.sourceLocation: 'SkillsFunctionalTests/python/skill'
         BotName: $(JsPySkillBotName)
         DeployAppId: $(JsPySkillAppId)
         DeployAppSecret: $(JsPySkillAppSecret)
+        BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
+        Parameters.sourceLocation: 'SkillsFunctionalTests/python/skill'
         TemplateLocation: 'SkillsFunctionalTests/python/skill/deploymentTemplates/template-with-new-rg.json'
       steps:
       - template: pythonDeploySteps.yml
