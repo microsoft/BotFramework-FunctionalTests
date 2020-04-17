@@ -31,7 +31,7 @@ steps:
 
             #Add the test.pypi source at the beginning of requirements
             $content = Get-Content $file
-            Set-Content -Path $file -Value "--extra-index-url https://test.pypi.org/simple/"
+            Set-Content -Path $file -Value "--pre --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/"
             Add-Content -Path $file -Value $content
 
             #Set botbuilder-integration-aiohttp version to latest pre-release
@@ -39,7 +39,7 @@ steps:
             $matchinfo = Select-String -Path $file -Pattern "botbuilder-integration-aiohttp"
 
             #matchinfo marks the line number from 1 instead of 0
-            $content[$matchinfo.LineNumber - 1] = "botbuilder-integration-aiohttp --pre"
+            $content[$matchinfo.LineNumber - 1] = "botbuilder-integration-aiohttp"
         }
         else #specific version value set
         {
