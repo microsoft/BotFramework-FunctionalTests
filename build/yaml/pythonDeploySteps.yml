@@ -10,7 +10,7 @@ steps:
 - powershell: |
     if(-Not ($null -eq $env:BOTBUILDERPACKAGEVERSION))
     {
-        Write-Host "SdkVersion variable found."
+        Write-Host "Botbuilder version variable found."
 
         $file = '$(System.DefaultWorkingDirectory)/$(Parameters.sourceLocation)/requirements.txt'
 
