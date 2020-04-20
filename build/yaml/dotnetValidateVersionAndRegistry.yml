@@ -1,0 +1,85 @@
+steps:
+- powershell: |
+   switch ("$(BotBuilderPackageVersion)".ToUpper())
+   {
+      $null { Write-Host ("##vso[task.setvariable variable=BBVersion]preview") }
+      '' { Write-Host ("##vso[task.setvariable variable=BBVersion]preview") }
+      STABLE { Write-Host ("##vso[task.setvariable variable=BBVersion]stable") }
+      default { Write-Host ("##vso[task.setvariable variable=BBVersion]$(BotBuilderPackageVersion)") }
+   }
+
+   switch ("$(Registry)".ToUpper())
+   {
+      $null { Write-Host ("##vso[task.setvariable variable=RegistryUrl]MyGet") }
+      '' { Write-Host ("##vso[task.setvariable variable=RegistryUrl]MyGet") }
+      NUGET { Write-Host ("##vso[task.setvariable variable=RegistryUrl]NuGet") }
+      MYGET { Write-Host ("##vso[task.setvariable variable=RegistryUrl]MyGet") }
+      default { Write-Host ("##vso[task.setvariable variable=RegistryUrl]$(Registry)") }
+   }
+  displayName: 'Read Variables'
+
+- powershell: |
+   Write-Host "BBVersion: "$(BBVersion)
+
+   if ("$(BBVersion)" -eq "stable")
+   {
+      $version = ""
+   }
+   elseif ("$(BBVersion)" -eq "preview") 
+   {
+      $RegistryUrl = "https://botbuilder.myget.org/F/botbuilder-v4-dotnet-daily/api/v3/index.json"
+      $PackageList = nuget list Microsoft.Bot.Builder.Integration.AspNet.Core -Source "$RegistryUrl" -PreRelease
+      $PackageVersion = $PackageList.Split(" ")[-1]
+
+      $version = " --version " + "$PackageVersion"
+   }
+   else
+   {
+      $version = " --version " + "$(BBVersion)"
+   }
+
+   echo "##vso[task.setvariable variable=BotBuilderVersion;isOutput=true;]$version"
+   Write-Host "Set package version to install $version"
+  failOnStderr: true
+  displayName: 'Set BotBuilder Package Version'
+
+- powershell: |
+   Write-Host "RegistryUrl: "$(RegistryUrl)
+
+   if ("$(RegistryUrl)" -eq "MyGet")
+   {
+      $source = " --source `"https://botbuilder.myget.org/F/botbuilder-v4-dotnet-daily/api/v3/index.json`""
+   }
+   elseif("$(RegistryUrl)" -eq "NuGet")
+   {
+      $source = ""
+   }
+   else
+   {
+      $source = "$(RegistryUrl)"
+   }
+
+   echo "##vso[task.setvariable variable=RegistrySource;isOutput=true;]$source"
+   Write-Host "Set registry url to: $source"
+  failOnStderr: true
+  displayName: 'Set Registry Url'
+
+- powershell: |
+   Write-Host "BotBuilderPackageVersion: "$(BBVersion)
+   Write-Host "Registry: "$(RegistryUrl)
+
+   $invalidVersionRegistry = "Preview versions of BotBuilder Packages couldn't be found in the NuGet registry."
+
+   # Override the built-in cmdlet with a custom version
+   function Write-Error($message) {
+       [Console]::ForegroundColor = 'red'
+       [Console]::Error.WriteLine($message)
+       [Console]::ResetColor()
+   }
+
+   if ("$(BBVersion)" -eq "preview" -AND "$(RegistryUrl)" -eq "NuGet")
+   {
+     Write-Error $invalidVersionRegistry
+   }
+  failOnStderr: true
+  displayName: 'Validate Version & Registry'

@@ -1,27 +1,5 @@
 steps:
 - task: DotNetCoreCLI@2
-  displayName: 'Add stable BotBuilder version'
-  condition: eq(variables['BotBuilderPackageVersion'],'stable')
-  inputs:
-    command: custom
-    projects: $(Parameters.project)
-    custom: add
-    arguments: 'package Microsoft.Bot.Builder.Integration.AspNet.Core'
-
-- powershell: |
-    if ($null -eq $env:BotBuilderPackageVersion -or '' -eq $env:BotBuilderPackageVersion) {
-        $RegistryUrl = "https://botbuilder.myget.org/F/botbuilder-v4-dotnet-daily/api/v3/index.json"
-        $PackageList = nuget list Microsoft.Bot.Builder.Integration.AspNet.Core -Source "$RegistryUrl" -PreRelease
-        $PackageVersion = $PackageList.Split(" ")[-1]
-        Write-Host $PackageVersion        
-  
-        echo "##vso[task.setvariable variable=BotBuilderPackageVersion;]$PackageVersion"
-        Write-Host "Set package version to install $PackageVersion"
-    }
-  displayName: 'Get BotBuilder package preview version'
-  condition: eq(variables['BotBuilderPackageVersion'], '')
-
-- task: DotNetCoreCLI@2
   displayName: 'Add custom BotBuilder version'
   condition: and(ne(variables['BotBuilderPackageVersion'],''), ne(variables['BotBuilderPackageVersion'],'stable'))
   inputs:
