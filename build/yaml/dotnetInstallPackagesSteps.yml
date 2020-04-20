@@ -10,14 +10,15 @@ steps:
 
 - powershell: |
     if ($null -eq $env:BotBuilderPackageVersion -or '' -eq $env:BotBuilderPackageVersion) {
-        $Response = Invoke-WebRequest -URI https://botbuilder.myget.org/F/botbuilder-v4-dotnet-daily/api/v3/registration1/Microsoft.Bot.Builder/index.json | ConvertFrom-Json;
-        $LastPackage = $Response.items | Select-Object -Last 1
-        $latest_version = $lastpackage.upper
+        $RegistryUrl = "https://botbuilder.myget.org/F/botbuilder-v4-dotnet-daily/api/v3/index.json"
+        $PackageList = nuget list Microsoft.Bot.Builder.Integration.AspNet.Core -Source "$RegistryUrl" -PreRelease
+        $PackageVersion = $PackageList.Split(" ")[-1]
+        Write-Host $PackageVersion        
   
-        echo "##vso[task.setvariable variable=BotBuilderPackageVersion;]$latest_version"
-        Write-Host "Set package version to install $latest_version"
+        echo "##vso[task.setvariable variable=BotBuilderPackageVersion;]$PackageVersion"
+        Write-Host "Set package version to install $PackageVersion"
     }
-  displayName: 'Get package BotBuilder preview version'
+  displayName: 'Get BotBuilder package preview version'
   condition: eq(variables['BotBuilderPackageVersion'], '')
 
 - task: DotNetCoreCLI@2
