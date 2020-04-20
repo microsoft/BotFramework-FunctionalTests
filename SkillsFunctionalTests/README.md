@@ -11,6 +11,8 @@ Skill functional testing aims to automate the testing matrix for Bot/Skill inter
         <th align="center">JavaScript</th>
         <th align="center">Python</th>
         <th align="center">C# Net Core 2.1</th>
+        <th align="center">v3 Javascript</th>
+        <th align="center">v3 C#</th>
     </tr>
     <tr align="center">
         <td>C# Net Core 3.1</td>
@@ -18,6 +20,8 @@ Skill functional testing aims to automate the testing matrix for Bot/Skill inter
         <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/DotNet31JsSkillBotFunctionalTest?branchName=master"></td>
         <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/DotNet31PySkillBotFunctionalTest?branchName=master"></td>
         <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/DotNet31DotNet21SkillBotFunctionalTest?branchName=master"></td>
+        <td></td>
+        <td></td>
     </tr>
     <tr align="center">
         <td>JavaScript</td>
@@ -25,6 +29,8 @@ Skill functional testing aims to automate the testing matrix for Bot/Skill inter
         <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/JsJsSkillBotFunctionalTest?branchName=master"></td>
         <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/JsPySkillBotFunctionalTest?branchName=master"></td>
         <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/JsDotNet21SkillBotFunctionalTest?branchName=master"></td>
+        <td></td>
+        <td></td>
     </tr>
     <tr align="center">
         <td>Python</td>       
@@ -32,6 +38,8 @@ Skill functional testing aims to automate the testing matrix for Bot/Skill inter
         <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/PyJsSkillBotFunctionalTest?branchName=master"></td>
         <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/PyPySkillBotFunctionalTest?branchName=master"></td>
         <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/PyDotNet21SkillBotFunctionalTest?branchName=master"></td>
+        <td></td>
+        <td></td>
     </tr>
     <tr align="center">
         <td>C# Net Core 2.1</td>       
@@ -39,6 +47,8 @@ Skill functional testing aims to automate the testing matrix for Bot/Skill inter
         <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/DotNet21JsSkillBotFunctionalTest?branchName=master"></td>
         <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/DotNet21PySkillBotFunctionalTest?branchName=master"></td>
         <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/DotNet21DotNet21SkillBotFunctionalTest?branchName=master"></td>
+        <td></td>
+        <td></td>
     </tr>
 </table>
 
@@ -74,12 +84,12 @@ The following steps will guide you trough the creation of a pipeline that runs o
   
    In the following table, you can see which YAML corresponds with each host-skill pair to be tested.
 
-   | Host\Skill            | C# Net Core 3                                                                  | JavaScript                                                                              | Python                                                                         |  C# Net Core 2.1                                                               |
-   | --------------------- | ------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |--------------------------------------------------------------------------------|
-   | **C# Net Core 3**     | [dotnetHost2DotnetSkill.yml](../build/yaml/dotnetHost2DotnetSkill.yml)         | [dotnetHost2JavascriptSkill.yml](../build/yaml/dotnetHost2JavascriptSkill.yml)          | [dotnetHost2PythonSkill.yml](../build/yaml/dotnetHost2PythonSkill.yml)         | [dotnetHost2DotnetSkill.yml](../build/yaml/dotnetHost2dotnetSkill.yml)         |
-   | **JavaScript**        | [javascriptHost2DotnetSkill.yml](../build/yaml/javascriptHost2DotnetSkill.yml) | [javascriptHost2JavascriptSkill.yml](../build/yaml/javascriptHost2JavascriptSkill.yml)  | [javascriptHost2PythonSkill.yml](../build/yaml/javascriptHost2PythonSkill.yml) | [javascriptHost2DotnetSkill.yml](../build/yaml/javascriptHost2DotnetSkill.yml) |
-   | **Python**            | [pythonHost2DotnetSkill.yml](../build/yaml/pythonHost2DotnetSkill.yml)         | [pythonHost2JavascriptSkill.yml](../build/yaml/pythonHost2JavascriptSkill.yml)          | [pythonHost2PythonSkill.yml](../build/yaml/pythonHost2PythonSkill.yml)         | [pythonHost2DotnetSkill.yml](../build/yaml/pythonHost2DotnetSkill.yml)         |
-   | **C# Net Core 2.1**   | [dotnetHost2DotnetSkill.yml](../build/yaml/dotnetHost2dotnetSkill.yml)         | [dotnetHost2JavascriptSkill.yml](../build/yaml/dotnetHost2JavascriptSkill.yml)          | [dotnetHost2PythonSkill.yml](../build/yaml/dotnetHost2PythonSkill.yml)         | [dotnetHost2DotnetSkill.yml](../build/yaml/dotnetHost2DotnetSkill.yml)         |
+   | Host\Skill            | C# Net Core 3                                                                  | JavaScript                                                                              | Python                                                                         |  C# Net Core 2.1                                                               |  v3 Javascript                                                               |  v3 C#                                                               |
+   | --------------------- | ------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |--------------------------------------------------------------------------------|--------------------------------------------------------------------------------|--------------------------------------------------------------------------------|
+   | **C# Net Core 3**     | [dotnetHost2DotnetSkill.yml](../build/yaml/dotnetHost2DotnetSkill.yml)         | [dotnetHost2JavascriptSkill.yml](../build/yaml/dotnetHost2JavascriptSkill.yml)          | [dotnetHost2PythonSkill.yml](../build/yaml/dotnetHost2PythonSkill.yml)         | [dotnetHost2DotnetSkill.yml](../build/yaml/dotnetHost2dotnetSkill.yml)         |           |           |
+   | **JavaScript**        | [javascriptHost2DotnetSkill.yml](../build/yaml/javascriptHost2DotnetSkill.yml) | [javascriptHost2JavascriptSkill.yml](../build/yaml/javascriptHost2JavascriptSkill.yml)  | [javascriptHost2PythonSkill.yml](../build/yaml/javascriptHost2PythonSkill.yml) | [javascriptHost2DotnetSkill.yml](../build/yaml/javascriptHost2DotnetSkill.yml) |           |           |
+   | **Python**            | [pythonHost2DotnetSkill.yml](../build/yaml/pythonHost2DotnetSkill.yml)         | [pythonHost2JavascriptSkill.yml](../build/yaml/pythonHost2JavascriptSkill.yml)          | [pythonHost2PythonSkill.yml](../build/yaml/pythonHost2PythonSkill.yml)         | [pythonHost2DotnetSkill.yml](../build/yaml/pythonHost2DotnetSkill.yml)         |           |           |
+   | **C# Net Core 2.1**   | [dotnetHost2DotnetSkill.yml](../build/yaml/dotnetHost2dotnetSkill.yml)         | [dotnetHost2JavascriptSkill.yml](../build/yaml/dotnetHost2JavascriptSkill.yml)          | [dotnetHost2PythonSkill.yml](../build/yaml/dotnetHost2PythonSkill.yml)         | [dotnetHost2DotnetSkill.yml](../build/yaml/dotnetHost2DotnetSkill.yml)         |           |           |
 
 4. In the variables section add the following variables.
 
