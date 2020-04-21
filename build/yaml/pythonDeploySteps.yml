@@ -9,15 +9,62 @@ steps:
 
 - powershell: |
     if(-Not ($null -eq $env:BOTBUILDERPACKAGEVERSION))
-    {    
-        $file = '$(System.DefaultWorkingDirectory)/$(Parameters.sourceLocation)/deployment-scripts/postbuild.sh'
-        $oldContent = Get-Content $file
-        Set-Content -Path $file -Value "SDK_VERSION=$env:BOTBUILDERPACKAGEVERSION"
-        Add-Content -Path $file -Value $oldContent
-    }   
-  displayName: 'Set Sdk version value'
-  condition: ne(variables['BotBuilderPackageVersion'], '')
-     
+    {
+        Write-Host "Botbuilder version variable found."
+
+        $file = '$(System.DefaultWorkingDirectory)/$(Parameters.sourceLocation)/requirements.txt'
+
+        if ($env:BOTBUILDERPACKAGEVERSION -eq 'stable')
+        {
+            Write-Host "Installing latest stable version."
+
+            #Set botbuilder-integration-aiohttp version to empty value
+            $content = @(Get-Content $file)
+            $matchinfo = Select-String -Path $file -Pattern "botbuilder-integration-aiohttp"
+
+            #matchinfo marks the line number from 1 instead of 0
+            $content[$matchinfo.LineNumber - 1] = "botbuilder-integration-aiohttp"
+        }
+        elseif ($env:BOTBUILDERPACKAGEVERSION -eq "")
+        {
+            Write-Host "Installing latest preview version."
+
+            #Add the test.pypi source at the beginning of requirements
+            $content = Get-Content $file
+            Set-Content -Path $file -Value "--pre --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/"
+            Add-Content -Path $file -Value $content
+
+            #Set botbuilder-integration-aiohttp version to latest pre-release
+            $content = @(Get-Content $file)
+            $matchinfo = Select-String -Path $file -Pattern "botbuilder-integration-aiohttp"
+
+            #matchinfo marks the line number from 1 instead of 0
+            $content[$matchinfo.LineNumber - 1] = "botbuilder-integration-aiohttp"
+        }
+        else #specific version value set
+        {
+            Write-Host "Installing version $env:BOTBUILDERPACKAGEVERSION"
+
+            #Add the test.pypi source at the beginning of requirements
+            $content = Get-Content $file
+            Set-Content -Path $file -Value "--extra-index-url https://test.pypi.org/simple/"
+            Add-Content -Path $file -Value $content
+
+            #Set botbuilder-integration-aiohttp version to value specified
+            $content = @(Get-Content $file)
+            $matchinfo = Select-String -Path $file -Pattern "botbuilder-integration-aiohttp"
+
+            #matchinfo marks the line number from 1 instead of 0
+            $content[$matchinfo.LineNumber - 1] = "botbuilder-integration-aiohttp==$env:BOTBUILDERPACKAGEVERSION --pre"
+        }
+
+        Set-Content -Path $file -Value $content
+        $content = Get-Content $file
+        Write-Host "requirements:"
+        Write-Host $content
+    }
+  displayName: 'Set BotBuilder version value'
+
 - script: |
    mv $(System.DefaultWorkingDirectory)/$(Parameters.sourceLocation)/deployment-scripts/* $(System.DefaultWorkingDirectory)/$(Parameters.sourceLocation)
    git config --global user.name "GitPythonDeploymentUser"
