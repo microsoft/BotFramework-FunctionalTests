@@ -43,9 +43,7 @@ class HostBot(ActivityHandler):
 
             if active_skill:
                 # If there is an active skill, forward the Activity to it.
-                await self.__send_to_skill(
-                    turn_context, self._skills_config.SKILLS[active_skill]
-                )
+                await self.__send_to_skill(turn_context, active_skill)
                 return
 
         await super().on_turn(turn_context)
