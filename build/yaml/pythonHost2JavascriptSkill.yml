@@ -1,5 +1,5 @@
 #
-# Optionally deploy a Python Host bot and a JS Skill bot and run functional tests. (No build.)
+# Optionally deploy a Python Host bot and a JS Skill bot and run functional tests. (No build stage.)
 #
 
 # "name" here defines the build number format. Build number is accessed via $(Build.BuildNumber)

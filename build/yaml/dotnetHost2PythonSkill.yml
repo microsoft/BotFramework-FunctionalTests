@@ -1,5 +1,5 @@
 #
-# Build a C# Host bot and a Python Skill bot. Optionally deploy them and run functional tests.
+# Build a C# Host bot. Optionally deploy it and a Python Skill bot and run functional tests.
 #
 
 # "name" here defines the build number format. Build number is accessed via $(Build.BuildNumber)

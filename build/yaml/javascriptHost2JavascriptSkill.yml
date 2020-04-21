@@ -14,7 +14,7 @@ variables:
   # BotBuilderPackageVersionHost (Optional): define this in Azure
   # BotBuilderPackageVersionSkill (Optional): define this in Azure
   # DeleteResourceGroup (Optional): define this in Azure
-  # JsJsHostAppId: define this in Azure
+  # JsJsHostAppId: define this in Azure 
   # JsJsHostAppSecret: define this in Azure
   # JsJsHostBotName: define this in Azure
   # JsJsSkillAppId: define this in Azure
