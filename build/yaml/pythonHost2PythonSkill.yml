@@ -1,5 +1,5 @@
 #
-# This YAML deploys the Host and Skill bots for Python and run the functional test
+# Optionally deploy a Python Host bot and a Python Skill bot and run functional tests.
 #
 
 # "name" here defines the build number format. Build number is accessed via $(Build.BuildNumber)
@@ -13,21 +13,23 @@ variables:
   # AzureDeploymentPassword: define this in Azure
   # AzureDeploymentUser: define this in Azure
   # AzureSubscription: define this in Azure
+  # BotBuilderPackageVersionHost (Optional): define this in Azure
+  # BotBuilderPackageVersionSkill (Optional): define this in Azure
   # DeleteResourceGroup (Optional): define this in Azure
+  # NextBuild (Optional): define this in Azure
   # PyPyHostAppId: define this in Azure
   # PyPyHostAppSecret: define this in Azure
   # PyPyHostBotName: define this in Azure
   # PyPySkillAppId: define this in Azure
   # PyPySkillAppSecret: define this in Azure
   # PyPySkillBotName: define this in Azure
-  # BotBuilderPackageVersionHost (Optional): define this in Azure
-  # BotBuilderPackageVersionSkill (Optional): define this in Azure
 
 pool:
   vmImage: 'windows-2019'
 
 stages:
 - stage: Prepare
+  condition: and(succeeded(), in(variables['Build.Reason'], 'Schedule', 'Manual'))
   jobs:
     - job: Delete_Preexisting_Resources
       variables:
@@ -89,7 +91,7 @@ stages:
   dependsOn:
   - Deploy
   - Test
-  condition: always()
+  condition: and(always(), in(variables['Build.Reason'], 'Schedule', 'Manual'))
   jobs:
     - job: Delete_RG
       steps:
@@ -102,3 +104,15 @@ stages:
            call az group delete -n "$(PyPyHostBotName)-RG" --yes
            call az group delete -n "$(PyPySkillBotName)-RG" --yes
         condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
+
+- stage: QueueNext
+  condition: and(succeededOrFailed(), and(ne(variables['Build.Reason'], 'Manual'), ne(variables['NextBuild'], '')))
+  jobs:
+    - job: TriggerBuild
+      steps:
+      - task: benjhuser.tfs-extensions-build-tasks.trigger-build-task.TriggerBuild@3
+        displayName: 'Trigger build $(NextBuild)'
+        inputs:
+          buildDefinition: '$(NextBuild)'
+          buildParameters: 'MyBuildParameter: MBPValue'
+          authenticationMethod: 'OAuth Token'
