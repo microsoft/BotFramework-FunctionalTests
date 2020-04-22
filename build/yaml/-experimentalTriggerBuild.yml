@@ -8,7 +8,7 @@ steps:
     tags: |
     Build.Reason=$(Build.Reason)
     NextBuild=$(NextBuild)
-continueOnError: true
+  continueOnError: true
 
 - task: benjhuser.tfs-extensions-build-tasks.trigger-build-task.TriggerBuild@3
   displayName: 'Trigger DotNet21DotNet31SkillBotFunctionalTest'
