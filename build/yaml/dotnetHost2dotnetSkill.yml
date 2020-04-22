@@ -10,7 +10,7 @@ pr: none
 variables:
   BuildPlatform: 'any cpu'
   BuildConfiguration: 'Debug'
-  system_accesstoken: $(System.AccessToken)  # Allow OAuth token access.
+  SYSTEM_ACCESSTOKEN: $(System.AccessToken)  # Allow OAuth token access.
   # AzureSubscription: define this in Azure
   # DeleteResourceGroup (Optional): define this in Azure
   # DotNetDotNetHostAppId: define this in Azure
