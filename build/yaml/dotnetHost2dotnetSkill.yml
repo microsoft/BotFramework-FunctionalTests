@@ -11,6 +11,8 @@ variables:
   BuildPlatform: 'any cpu'
   BuildConfiguration: 'Debug'
   # AzureSubscription: define this in Azure
+  # BotBuilderPackageVersionHost (Optional): define this in Azure
+  # BotBuilderPackageVersionSkill (Optional): define this in Azure
   # DeleteResourceGroup (Optional): define this in Azure
   # DotNetDotNetHostAppId: define this in Azure
   # DotNetDotNetHostAppSecret: define this in Azure
@@ -18,13 +20,11 @@ variables:
   # DotNetDotNetSkillAppId: define this in Azure
   # DotNetDotNetSkillAppSecret: define this in Azure
   # DotNetDotNetSkillBotName: define this in Azure
-  # BotBuilderPackageVersionHost (Optional): define this in Azure
-  # BotBuilderPackageVersionSkill (Optional): define this in Azure
-  # RegistryUrlHost (Optional): define this in Azure
-  # RegistryUrlSkill (Optional): define this in Azure 
   # NetCoreSdkVersionHost: define this in Azure
   # NetCoreSdkVersionSkill: define this in Azure
   # NextBuild (Optional): define this in Azure
+  # RegistryUrlHost (Optional): define this in Azure
+  # RegistryUrlSkill (Optional): define this in Azure
 
 pool:
   vmImage: 'windows-2019'
