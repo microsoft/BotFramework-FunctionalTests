@@ -163,7 +163,7 @@ stages:
         condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
 
 - stage: QueueNext
-  condition: and(succeededOrFailed(), and(ne(variables['Build.Reason'], 'Manual'), ne(variables['NextBuild'], '')))
+  condition: always()
   jobs:
     - job: TriggerBuild
       steps:
@@ -175,3 +175,4 @@ stages:
           authenticationMethod: 'OAuth Token'
           enableBuildInQueueCondition: true
           blockingBuildsList: '$(NextBuild)'
+        condition: and(succeededOrFailed(), and(ne(variables['Build.Reason'], 'Manual'), ne(variables['NextBuild'], '')))
