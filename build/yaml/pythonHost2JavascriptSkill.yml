@@ -39,7 +39,7 @@ stages:
       - template: cleanResourcesStep.yml
         
 - stage: Deploy
-  condition: and(succeeded(), in(variables['Build.Reason'], 'Schedule', 'Manual'))
+  condition: and(always(), in(variables['Build.Reason'], 'Schedule', 'Manual'))
   jobs:
     - job: Deploy_Host
       pool:
