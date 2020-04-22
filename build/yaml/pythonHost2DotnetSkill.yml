@@ -10,6 +10,7 @@ pr: none
 variables:
   BuildPlatform: 'any cpu'
   BuildConfiguration: 'Debug'
+  system_accesstoken: $(System.AccessToken)  # Allow OAuth token access.
   # AzureDeploymentPassword: define this in Azure
   # AzureDeploymentUser: define this in Azure
   # AzureSubscription: define this in Azure
