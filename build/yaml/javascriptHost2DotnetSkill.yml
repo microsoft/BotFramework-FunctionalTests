@@ -38,6 +38,7 @@ stages:
       - template: cleanResourcesStep.yml
         
 - stage: Build
+  condition: always()
   jobs:
     - job: Validate_Skill_NetCore_Version
       variables:
