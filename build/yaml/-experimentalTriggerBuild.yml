@@ -1,5 +1,5 @@
 pool:
-  name: Azure Pipelines
+  vmImage: 'windows-2019'
 
 steps:
 - task: benjhuser.tfs-extensions-build-tasks.trigger-build-task.TriggerBuild@3
