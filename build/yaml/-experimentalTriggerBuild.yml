@@ -1,0 +1,16 @@
+pool:
+  name: Azure Pipelines
+
+steps:
+- task: benjhuser.tfs-extensions-build-tasks.trigger-build-task.TriggerBuild@3
+  displayName: 'Trigger DotNet21DotNet31SkillBotFunctionalTest'
+  inputs:
+    buildDefinition: DotNet21DotNet31SkillBotFunctionalTest
+    queueBuildForUserThatTriggeredBuild: false
+    storeInEnvironmentVariable: true
+    authenticationMethod: 'OAuth Token'
+    enableBuildInQueueCondition: true
+    blockingBuildsList: 'DotNet21DotNet21SkillBotFunctionalTest,DotNet21DotNet31SkillBotFunctionalTest,DotNet31DotNet21SkillBotFunctionalTest,DotNet31DotNet31SkillBotFunctionalTest'
+    blockInProgressBuilds: true
+    failTaskIfConditionsAreNotFulfilled: true
+  continueOnError: true
