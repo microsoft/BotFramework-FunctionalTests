@@ -22,6 +22,7 @@ variables:
   # DotNetJsSkillBotName: define this in Azure  
   # NetCoreSdkVersionHost: define this in Azure
   # NextBuild (Optional): define this in Azure
+  # RegistryUrlHost (Optional): define this in Azure  
 
 pool:
   vmImage: 'windows-2019'
@@ -49,6 +50,7 @@ stages:
     - job: Build_Host_Bot
       dependsOn: Validate_Host_NetCore_Version
       variables:
+        Registry: $[variables.RegistryUrlHost]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
         Parameters.solution: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionHost)/host/SimpleHostBot.sln'
         Parameters.project: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionHost)/host/SimpleHostBot.csproj'
@@ -64,6 +66,7 @@ stages:
         BotName: $(DotNetJsHostBotName)
         DeployAppId: $(DotNetJsHostAppId)
         DeployAppSecret: $(DotNetJsHostAppSecret)
+        Registry: $[variables.RegistryUrlHost]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
         ProjectName: SimpleHostBot
         Parameters.project: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionHost)/host/SimpleHostBot.csproj'
