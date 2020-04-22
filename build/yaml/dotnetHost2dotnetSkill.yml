@@ -171,6 +171,7 @@ stages:
         displayName: 'Trigger build $(NextBuild)'
         inputs:
           buildDefinition: '$(NextBuild)'
+          queueBuildForUserThatTriggeredBuild: false
           buildParameters: 'MyBuildParameter: MBPValue'
           authenticationMethod: 'OAuth Token'
           enableBuildInQueueCondition: true
