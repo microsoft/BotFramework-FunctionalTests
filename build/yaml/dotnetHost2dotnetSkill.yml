@@ -172,8 +172,10 @@ stages:
         inputs:
           buildDefinition: '$(NextBuild)'
           queueBuildForUserThatTriggeredBuild: false
-          buildParameters: 'MyBuildParameter: MBPValue'
+          storeInEnvironmentVariable: true
           authenticationMethod: 'OAuth Token'
           enableBuildInQueueCondition: true
           blockingBuildsList: '$(NextBuild)'
+          blockInProgressBuilds: true
+        continueOnError: true
         condition: and(succeededOrFailed(), and(ne(variables['Build.Reason'], 'Manual'), ne(variables['NextBuild'], '')))
