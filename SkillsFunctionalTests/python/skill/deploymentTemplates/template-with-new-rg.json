@@ -148,10 +148,6 @@
                                 "siteConfig": {
                                     "appSettings": [
                                         {
-                                            "name":"POST_BUILD_COMMAND",
-                                            "value":"postbuild.sh"
-                                        },
-                                        {
                                             "name": "MicrosoftAppId",
                                             "value": "[parameters('appId')]"
                                         },
