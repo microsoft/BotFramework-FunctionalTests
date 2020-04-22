@@ -1,5 +1,5 @@
 #
-# This YAML builds the Host and Skill bots for C# and run a functional test
+# Build a C# Host bot and a C# Skill bot. Optionally deploy them and run functional tests.
 #
 
 # "name" here defines the build number format. Build number is accessed via $(Build.BuildNumber)
@@ -22,12 +22,14 @@ variables:
   # BotBuilderPackageVersionSkill (Optional): define this in Azure  
   # NetCoreSdkVersionHost: define this in Azure
   # NetCoreSdkVersionSkill: define this in Azure
+  # NextBuild (Optional): define this in Azure
 
 pool:
   vmImage: 'windows-2019'
 
 stages:
 - stage: Prepare
+  condition: and(succeeded(), in(variables['Build.Reason'], 'Schedule', 'Manual'))
   jobs:
     - job: Delete_Preexisting_Resources
       variables:
@@ -71,7 +73,7 @@ stages:
       - template: dotnetBuildSteps.yml
 
 - stage: Deploy
-  dependsOn: Build
+  condition: and(succeeded(), in(variables['Build.Reason'], 'Schedule', 'Manual'))
   jobs:
     - job: Deploy_Host
       variables:
@@ -136,7 +138,7 @@ stages:
   dependsOn:
   - Deploy
   - Test
-  condition: always()
+  condition: and(succeeded('Build'), in(variables['Build.Reason'], 'Schedule', 'Manual'))
   jobs:
     - job: Delete_RG
       steps:
@@ -149,3 +151,15 @@ stages:
            call az group delete -n "$(DotNetDotNetHostBotName)-RG" --yes
            call az group delete -n "$(DotNetDotNetSkillBotName)-RG" --yes
         condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
+
+- stage: QueueNext
+  condition: and(succeededOrFailed(), and(ne(variables['Build.Reason'], 'Manual'), ne(variables['NextBuild'], '')))
+  jobs:
+    - job: TriggerBuild
+      steps:
+      - task: benjhuser.tfs-extensions-build-tasks.trigger-build-task.TriggerBuild@3
+        displayName: 'Trigger build $(NextBuild)'
+        inputs:
+          buildDefinition: '$(NextBuild)'
+          buildParameters: 'MyBuildParameter: MBPValue'
+          authenticationMethod: 'OAuth Token'

@@ -1,5 +1,5 @@
 #
-# This YAML builds and deploys a Host C# bot and deploys a JS Skill bot, then runs the functional test
+# Build a C# Host bot. Optionally deploy it and a Js Skill bot and run functional tests.
 #
 
 # "name" here defines the build number format. Build number is accessed via $(Build.BuildNumber)
@@ -11,6 +11,8 @@ variables:
   BuildPlatform: 'any cpu'
   BuildConfiguration: 'Debug'
   # AzureSubscription: define this in Azure
+  # BotBuilderPackageVersionHost (Optional): define this in Azure
+  # BotBuilderPackageVersionSkill (Optional): define this in Azure
   # DeleteResourceGroup (Optional): define this in Azure
   # DotNetJsHostAppId: define this in Azure
   # DotNetJsHostAppSecret: define this in Azure
@@ -18,15 +20,15 @@ variables:
   # DotNetJsSkillAppId: define this in Azure
   # DotNetJsSkillAppSecret: define this in Azure
   # DotNetJsSkillBotName: define this in Azure  
-  # BotBuilderPackageVersionHost (Optional): define this in Azure
-  # BotBuilderPackageVersionSkill (Optional): define this in Azure
   # NetCoreSdkVersionHost: define this in Azure
+  # NextBuild (Optional): define this in Azure
 
 pool:
   vmImage: 'windows-2019'
 
 stages:
 - stage: Prepare
+  condition: and(succeeded(), in(variables['Build.Reason'], 'Schedule', 'Manual'))
   jobs:
     - job: Delete_Preexisting_Resources
       variables:
@@ -54,7 +56,7 @@ stages:
       - template: dotnetBuildSteps.yml
 
 - stage: Deploy
-  dependsOn: Build
+  condition: and(succeeded(), in(variables['Build.Reason'], 'Schedule', 'Manual'))
   jobs:
     - job: Deploy_Host
       variables:
@@ -118,7 +120,7 @@ stages:
   dependsOn:
   - Deploy
   - Test
-  condition: always()
+  condition: and(succeeded('Build'), in(variables['Build.Reason'], 'Schedule', 'Manual'))
   jobs:
     - job: Delete_RG
       steps:
@@ -131,3 +133,15 @@ stages:
            call az group delete -n "$(DotNetJsHostBotName)-RG" --yes
            call az group delete -n "$(DotNetJsSkillBotName)-RG" --yes
         condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
+
+- stage: QueueNext
+  condition: and(succeededOrFailed(), and(ne(variables['Build.Reason'], 'Manual'), ne(variables['NextBuild'], '')))
+  jobs:
+    - job: TriggerBuild
+      steps:
+      - task: benjhuser.tfs-extensions-build-tasks.trigger-build-task.TriggerBuild@3
+        displayName: 'Trigger build $(NextBuild)'
+        inputs:
+          buildDefinition: '$(NextBuild)'
+          buildParameters: 'MyBuildParameter: MBPValue'
+          authenticationMethod: 'OAuth Token'
