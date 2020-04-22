@@ -138,3 +138,5 @@ stages:
           buildDefinition: '$(NextBuild)'
           buildParameters: 'MyBuildParameter: MBPValue'
           authenticationMethod: 'OAuth Token'
+          enableBuildInQueueCondition: true
+          blockingBuildsList: '$(NextBuild)'
