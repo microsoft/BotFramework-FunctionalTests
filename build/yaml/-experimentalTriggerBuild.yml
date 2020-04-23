@@ -22,5 +22,5 @@ steps:
     password: '$(PipelinesPersonalAccessToken)'
     enableBuildInQueueCondition: true
     blockingBuildsList: '$(NextBuild)'
-  condition: and(succeededOrFailed(), and(ne(variables['Build.Reason'], 'xxyxyx'), ne(variables['NextBuild'], '')))
+  condition: and(succeededOrFailed(), ne(variables['Build.Reason'], 'xxyxyx'), ne(variables['NextBuild'], ''), ne(variables['PipelinesPersonalAccessToken'], ''))
   continueOnError: true
