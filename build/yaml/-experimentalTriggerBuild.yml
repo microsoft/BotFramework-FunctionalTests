@@ -1,0 +1,24 @@
+pool:
+  vmImage: 'windows-2019'
+
+steps:
+- task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
+  displayName: 'Tag Build with Build.Reason=$(Build.Reason) NextBuild=$(NextBuild) '
+  inputs:
+    tags: |
+      Build.Reason=$(Build.Reason)
+      NextBuild=$(NextBuild)
+  continueOnError: true
+
+- task: benjhuser.tfs-extensions-build-tasks.trigger-build-task.TriggerBuild@3
+  displayName: 'Trigger DotNet21DotNet31SkillBotFunctionalTest' 
+  inputs:
+    buildDefinition: DotNet21DotNet31SkillBotFunctionalTest
+    queueBuildForUserThatTriggeredBuild: false
+    storeInEnvironmentVariable: true
+    authenticationMethod: 'OAuth Token'
+    enableBuildInQueueCondition: true
+    blockingBuildsList: 'DotNet21DotNet21SkillBotFunctionalTest,DotNet21DotNet31SkillBotFunctionalTest,DotNet31DotNet21SkillBotFunctionalTest,DotNet31DotNet31SkillBotFunctionalTest'
+    blockInProgressBuilds: true
+    failTaskIfConditionsAreNotFulfilled: true
+  continueOnError: true
