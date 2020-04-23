@@ -162,18 +162,3 @@ stages:
            call az group delete -n "$(DotNetDotNetHostBotName)-RG" --yes
            call az group delete -n "$(DotNetDotNetSkillBotName)-RG" --yes
         condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
-
-- stage: QueueNext
-  condition: always()
-  jobs:
-    - job: TriggerBuild
-      steps:
-      - task: benjhuser.tfs-extensions-build-tasks.trigger-build-task.TriggerBuild@3
-        displayName: 'Trigger build $(NextBuild)'
-        inputs:
-          buildDefinition: '$(NextBuild)'
-          queueBuildForUserThatTriggeredBuild: false
-          storeInEnvironmentVariable: true
-          authenticationMethod: 'OAuth Token'
-        continueOnError: true
-        condition: and(succeededOrFailed(), and(ne(variables['Build.Reason'], 'Manual'), ne(variables['NextBuild'], '')))
