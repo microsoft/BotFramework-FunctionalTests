@@ -10,15 +10,17 @@ steps:
       NextBuild=$(NextBuild)
   continueOnError: true
 
+#variables:
+  # NextBuild: define in Azure
+  # PipelinesPersonalAccessToken: define in Azure
+
 - task: benjhuser.tfs-extensions-build-tasks.trigger-build-task.TriggerBuild@3
-  displayName: 'Trigger DotNet21DotNet31SkillBotFunctionalTest' 
+  displayName: 'Trigger build $(NextBuild)'
   inputs:
-    buildDefinition: DotNet21DotNet31SkillBotFunctionalTest
+    buildDefinition: '$(NextBuild)'
     queueBuildForUserThatTriggeredBuild: false
-    storeInEnvironmentVariable: true
-    authenticationMethod: 'OAuth Token'
+    password: '$(PipelinesPersonalAccessToken)'
     enableBuildInQueueCondition: true
-    blockingBuildsList: 'DotNet21DotNet21SkillBotFunctionalTest,DotNet21DotNet31SkillBotFunctionalTest,DotNet31DotNet21SkillBotFunctionalTest,DotNet31DotNet31SkillBotFunctionalTest'
-    blockInProgressBuilds: true
-    failTaskIfConditionsAreNotFulfilled: true
+    blockingBuildsList: '$(NextBuild)'
+  condition: and(succeededOrFailed(), and(ne(variables['Build.Reason'], 'xxyxyx'), ne(variables['NextBuild'], '')))
   continueOnError: true
