@@ -136,7 +136,7 @@ stages:
 
     - job: Configure_OAuth
       steps:
-      - task: Configure_OAuth_Setting
+      - task: Configure_OAuth_Setting@1
         displayName: 'Configure skill OAuth connection'
         inputs:
           azureSubscription: $(AzureSubscription)
