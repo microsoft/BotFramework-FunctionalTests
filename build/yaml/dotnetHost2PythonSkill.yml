@@ -10,21 +10,21 @@ pr: none
 variables:
   BuildPlatform: 'any cpu'
   BuildConfiguration: 'Debug'
-  system_accesstoken: $(System.AccessToken)  # Allow OAuth token access.
-  # AzureDeploymentPassword: define this in Azure
-  # AzureDeploymentUser: define this in Azure
-  # AzureSubscription: define this in Azure
-  # BotBuilderPackageVersionHost (Optional): define this in Azure
-  # BotBuilderPackageVersionSkill (Optional): define this in Azure
-  # DeleteResourceGroup (Optional): define this in Azure
-  # DotNetPyHostAppId: define this in Azure
-  # DotNetPyHostAppSecret: define this in Azure
-  # DotNetPyHostBotName: define this in Azure
-  # DotNetPySkillAppId: define this in Azure
-  # DotNetPySkillAppSecret: define this in Azure
-  # DotNetPySkillBotName: define this in Azure  
-  # NetCoreSdkVersionHost: define this in Azure
-  # NextBuild (Optional): define this in Azure
+  # AzureDeploymentPassword: define in Azure
+  # AzureDeploymentUser: define in Azure
+  # AzureSubscription: define in Azure
+  # BotBuilderPackageVersionHost: (optional) define in Azure
+  # BotBuilderPackageVersionSkill: (optional) define in Azure
+  # DeleteResourceGroup: (optional) define in Azure
+  # DotNetPyHostAppId: define in Azure
+  # DotNetPyHostAppSecret: define in Azure
+  # DotNetPyHostBotName: define in Azure
+  # DotNetPySkillAppId: define in Azure
+  # DotNetPySkillAppSecret: define in Azure
+  # DotNetPySkillBotName: define in Azure  
+  # NetCoreSdkVersionHost: define in Azure
+  # NextBuild: (optional) define in Azure
+  # PipelinesPersonalAccessToken: (optional) define in Azure
 
 pool:
   vmImage: 'windows-2019'

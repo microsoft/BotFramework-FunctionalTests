@@ -10,18 +10,18 @@ pr: none
 variables:
   BuildPlatform: 'any cpu'
   BuildConfiguration: 'Debug'
-  system_accesstoken: $(System.AccessToken)  # Allow OAuth token access.
-  # AzureSubscription: define this in Azure
-  # BotBuilderPackageVersionHost (Optional): define this in Azure
-  # BotBuilderPackageVersionSkill (Optional): define this in Azure
-  # DeleteResourceGroup (Optional): define this in Azure
-  # JsJsHostAppId: define this in Azure 
-  # JsJsHostAppSecret: define this in Azure
-  # JsJsHostBotName: define this in Azure
-  # JsJsSkillAppId: define this in Azure
-  # JsJsSkillAppSecret: define this in Azure
-  # JsJsSkillBotName: define this in Azure
-  # NextBuild (Optional): define this in Azure
+  # AzureSubscription: define in Azure
+  # BotBuilderPackageVersionHost: (optional) define in Azure
+  # BotBuilderPackageVersionSkill: (optional) define in Azure
+  # DeleteResourceGroup: (optional) define in Azure
+  # JsJsHostAppId: define in Azure 
+  # JsJsHostAppSecret: define in Azure
+  # JsJsHostBotName: define in Azure
+  # JsJsSkillAppId: define in Azure
+  # JsJsSkillAppSecret: define in Azure
+  # JsJsSkillBotName: define in Azure
+  # NextBuild: (optional) define in Azure
+  # PipelinesPersonalAccessToken: (optional) define in Azure
 
 pool:
   vmImage: 'windows-2019'
