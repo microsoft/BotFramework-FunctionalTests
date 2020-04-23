@@ -145,7 +145,7 @@ namespace SkillFunctionalTests.Bot
             watermark = activitySet?.Watermark;
 
             // Extract and return the activities sent from the bot.
-            return activitySet.Activities.Where(activity => activity.From.Id == this.config.BotId);
+            return activitySet == null ? null : activitySet?.Activities?.Where(activity => activity.From.Id == this.config.BotId);
         }
 
         public async Task SignInAndVerifyOAuthAsync(Activity oAuthCard, CancellationToken cancellationToken = default(CancellationToken))
