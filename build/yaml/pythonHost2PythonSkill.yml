@@ -39,7 +39,8 @@ stages:
       steps:
       - template: cleanResourcesStep.yml
         
-- stage: Tagcondition: always()
+- stage: Tag
+  condition: always()
   jobs:
     - job: Tag
       steps:
