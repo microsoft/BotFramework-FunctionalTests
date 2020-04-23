@@ -23,7 +23,7 @@ variables:
   # PyPySkillAppId: define in Azure
   # PyPySkillAppSecret: define in Azure
   # PyPySkillBotName: define in Azure
-  # PipelinesPersonalAccessToken: (optional) define in Azure
+  # ExecutePipelinesPersonalAccessToken: (optional) define in Azure
 
 pool:
   vmImage: 'windows-2019'
@@ -130,8 +130,8 @@ stages:
         inputs:
           buildDefinition: '$(NextBuild)'
           queueBuildForUserThatTriggeredBuild: true
-          password: '$(PipelinesPersonalAccessToken)'
+          password: '$(ExecutePipelinesPersonalAccessToken)'
           enableBuildInQueueCondition: true
           blockingBuildsList: '$(NextBuild)'
         continueOnError: true
-        condition: and(succeededOrFailed(), ne(variables['Build.Reason'], 'Manual'), ne(variables['NextBuild'], ''), ne(variables['PipelinesPersonalAccessToken'], ''))
+        condition: and(succeededOrFailed(), ne(variables['Build.Reason'], 'Manual'), ne(variables['NextBuild'], ''), ne(variables['ExecutePipelinesPersonalAccessToken'], ''))
