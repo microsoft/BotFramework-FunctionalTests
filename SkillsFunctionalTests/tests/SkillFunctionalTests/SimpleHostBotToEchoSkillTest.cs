@@ -25,8 +25,8 @@ namespace FunctionalTests
             var msg = $"Testing skill bot, GUID: { Guid.NewGuid() }";
 
             await testBot.SendMessageAsync(msg);
-            await testBot.AssertReplyAsync($"Echo: { msg }");
             await testBot.SendMessageAsync("end");
+            await testBot.AssertReplyAsync($"Echo: { msg }");
         }
     }
 }

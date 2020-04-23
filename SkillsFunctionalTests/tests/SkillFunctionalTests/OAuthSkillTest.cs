@@ -32,7 +32,7 @@ namespace FunctionalTests
             await botChecker.AssertReplyAsync("Echo: skill", cancellationTokenSource.Token);
             await botChecker.SendMessageAsync("auth", cancellationTokenSource.Token);
             var messages = await botChecker.ReadBotMessagesAsync(cancellationTokenSource.Token);
-            await botChecker.SignInAndVerifyOAuthAsync(messages.FirstOrDefault(), cancellationTokenSource.Token);
+            await botChecker.SignInAndVerifyOAuthAsync(messages.FirstOrDefault(m => m.Attachments != null && m.Attachments.Any()), cancellationTokenSource.Token);
         }
     }
 }
