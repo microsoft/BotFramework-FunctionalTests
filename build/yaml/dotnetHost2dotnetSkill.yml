@@ -10,6 +10,7 @@ pr: none
 variables:
   BuildPlatform: 'any cpu'
   BuildConfiguration: 'Debug'
+  # SYSTEM_ACCESSTOKEN: $(System.AccessToken)  # Allow OAuth token access.
   system_accesstoken: $(System.AccessToken)  # Allow OAuth token access.
   # AzureSubscription: define this in Azure
   # DeleteResourceGroup (Optional): define this in Azure
@@ -161,17 +162,3 @@ stages:
            call az group delete -n "$(DotNetDotNetHostBotName)-RG" --yes
            call az group delete -n "$(DotNetDotNetSkillBotName)-RG" --yes
         condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
-
-- stage: QueueNext
-  condition: and(succeededOrFailed(), and(ne(variables['Build.Reason'], 'Manual'), ne(variables['NextBuild'], '')))
-  jobs:
-    - job: TriggerBuild
-      steps:
-      - task: benjhuser.tfs-extensions-build-tasks.trigger-build-task.TriggerBuild@3
-        displayName: 'Trigger build $(NextBuild)'
-        inputs:
-          buildDefinition: '$(NextBuild)'
-          buildParameters: 'MyBuildParameter: MBPValue'
-          authenticationMethod: 'OAuth Token'
-          enableBuildInQueueCondition: true
-          blockingBuildsList: '$(NextBuild)'

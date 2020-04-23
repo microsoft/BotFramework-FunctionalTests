@@ -117,17 +117,3 @@ stages:
            call az group delete -n "$(JsJsHostBotName)-RG" --yes
            call az group delete -n "$(JsJsSkillBotName)-RG" --yes
         condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
-
-- stage: QueueNext
-  condition: and(succeededOrFailed(), and(ne(variables['Build.Reason'], 'Manual'), ne(variables['NextBuild'], '')))
-  jobs:
-    - job: TriggerBuild
-      steps:
-      - task: benjhuser.tfs-extensions-build-tasks.trigger-build-task.TriggerBuild@3
-        displayName: 'Trigger build $(NextBuild)'
-        inputs:
-          buildDefinition: '$(NextBuild)'
-          buildParameters: 'MyBuildParameter: MBPValue'
-          authenticationMethod: 'OAuth Token'
-          enableBuildInQueueCondition: true
-          blockingBuildsList: '$(NextBuild)'
