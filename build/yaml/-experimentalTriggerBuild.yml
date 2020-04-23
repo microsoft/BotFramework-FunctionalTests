@@ -11,7 +11,7 @@ steps:
   continueOnError: true
 
 - task: benjhuser.tfs-extensions-build-tasks.trigger-build-task.TriggerBuild@3
-  displayName: 'Trigger DotNet21DotNet31SkillBotFunctionalTest'
+  displayName: 'Trigger DotNet21DotNet31SkillBotFunctionalTest' 
   inputs:
     buildDefinition: DotNet21DotNet31SkillBotFunctionalTest
     queueBuildForUserThatTriggeredBuild: false
