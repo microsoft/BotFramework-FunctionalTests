@@ -53,7 +53,7 @@ stages:
             NextBuild=$(NextBuild)
         continueOnError: true
 
-        - template: dotnetValidateNetCoreSdkVersion.yml
+      - template: dotnetValidateNetCoreSdkVersion.yml
 
     - job: Build_Skill_Bot
       dependsOn: Validate_Skill_NetCore_Version
