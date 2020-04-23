@@ -142,7 +142,7 @@ stages:
           azureSubscription: $(AzureSubscription)
           scriptLocation: inlineScript
           inlineScript: |
-           call az bot authsetting create -g "$(DotNetDotNetSkillBotName)-RG" -n "$(DotNetDotNetSkillBotName)" -c TestOAuthProvider --client-id "$(DotNetDotNetSkillAppId)" --client-secret "$(DotNetDotNetSkillAppSecret)" --service "oauth2" --provider-scope-string "" --parameters authorizationUrl=https://webjobs.botframework.com/api/testauthprovider/authorize tokenUrl=https://webjobs.botframework.com/api/testauthprovider/token refreshUrl=https://webjobs.botframework.com/api/testauthprovider/refresh clientId="$(DotNetDotNetSkillAppId)" clientSecret="$(DotNetDotNetSkillAppSecret)"
+           call az bot authsetting create -g "$(DotNetDotNetSkillBotName)-RG" -n "$(DotNetDotNetSkillBotName)" -c TestOAuthProvider --client-id "$(DotNetDotNetSkillAppId)" --client-secret $(DotNetDotNetSkillAppSecret) --service "oauth2" --provider-scope-string "" --parameters authorizationUrl=https://webjobs.botframework.com/api/testauthprovider/authorize tokenUrl=https://webjobs.botframework.com/api/testauthprovider/token refreshUrl=https://webjobs.botframework.com/api/testauthprovider/refresh clientId="$(DotNetDotNetSkillAppId)" clientSecret="$(DotNetDotNetSkillAppSecret)"
         condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
 
 - stage: Test
