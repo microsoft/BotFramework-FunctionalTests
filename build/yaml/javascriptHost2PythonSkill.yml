@@ -10,6 +10,7 @@ pr: none
 variables:
   BuildPlatform: 'any cpu'
   BuildConfiguration: 'Debug'
+  system_accesstoken: $(System.AccessToken)  # Allow OAuth token access.
   # AzureDeploymentPassword: define this in Azure
   # AzureDeploymentUser: define this in Azure
   # AzureSubscription: define this in Azure
@@ -38,6 +39,19 @@ stages:
       steps:
       - template: cleanResourcesStep.yml
         
+- stage: Tag
+  condition: always()
+  jobs:
+    - job: Tag
+      steps:
+      - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
+        displayName: 'Tag Build with Build.Reason=$(Build.Reason) NextBuild=$(NextBuild)'
+        inputs:
+          tags: |
+            Build.Reason=$(Build.Reason)
+            NextBuild=$(NextBuild)
+        continueOnError: true
+
 - stage: Deploy
   condition: and(always(), in(variables['Build.Reason'], 'Schedule', 'Manual'))
   jobs:
@@ -107,17 +121,3 @@ stages:
            call az group delete -n "$(JsPyHostBotName)-RG" --yes
            call az group delete -n "$(JsPySkillBotName)-RG" --yes
         condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
-
-- stage: QueueNext
-  condition: and(succeededOrFailed(), and(ne(variables['Build.Reason'], 'Manual'), ne(variables['NextBuild'], '')))
-  jobs:
-    - job: TriggerBuild
-      steps:
-      - task: benjhuser.tfs-extensions-build-tasks.trigger-build-task.TriggerBuild@3
-        displayName: 'Trigger build $(NextBuild)'
-        inputs:
-          buildDefinition: '$(NextBuild)'
-          buildParameters: 'MyBuildParameter: MBPValue'
-          authenticationMethod: 'OAuth Token'
-          enableBuildInQueueCondition: true
-          blockingBuildsList: '$(NextBuild)'
