@@ -23,7 +23,7 @@ variables:
   # JsDotNetSkillBotName: define this in Azure
   # NetCoreSdkVersionSkill: define this in Azure
   # NextBuild (Optional): define this in Azure
-  # RegistryUrlSkill (Optional): define this in Azure  
+  # RegistryUrlSkill (Optional): define this in Azure
 
 
 pool:
