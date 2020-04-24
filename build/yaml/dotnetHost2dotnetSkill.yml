@@ -137,7 +137,7 @@ stages:
     - job: Configure_OAuth
       dependsOn: Deploy_Skill
       steps:
-      - task: AzureCLI@1
+      - task: OAuth@1
         displayName: 'Configure skill OAuth connection'
         inputs:
           azureSubscription: $(AzureSubscription)
