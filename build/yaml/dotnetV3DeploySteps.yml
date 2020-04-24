@@ -1,6 +1,3 @@
-variables:
-  SkipDotNet: 'true'
-
 steps:
 - template: dotnetBuildSteps.yml
 
