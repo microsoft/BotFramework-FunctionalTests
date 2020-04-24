@@ -34,10 +34,17 @@ namespace SkillFunctionalTests.Bot
         {
             this.config = config ?? throw new ArgumentNullException(nameof(config));
 
+            // Instead of generating a vanilla DirectLineClient with secret, 
+            // we obtain a directline token with the secrets and then we use
+            // that token to create the directline client.
+            // What this gives us is the ability to pass TrustedOrigins when obtaining the token,
+            // which tests the enhanced authentication.
+            // This endpoint is unfortunately not supported by the directline client which is 
+            // why we add this custom code.
             using (HttpClient client = new HttpClient())
             {
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"https://directline.botframework.com/v3/directline/tokens/generate");
-                request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", config.DirectLineSecret);
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", config.DirectLineSecret);
                 request.Content = new StringContent(JsonConvert.SerializeObject(new
                 {
                     User = new { Id = user },
@@ -51,10 +58,16 @@ namespace SkillFunctionalTests.Bot
                 {
                     if (response.IsSuccessStatusCode)
                     {
+                        // Extract token from response
                         var body = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
                         token = JsonConvert.DeserializeObject<DirectLineToken>(body).Token;
                         this.conversationId = JsonConvert.DeserializeObject<DirectLineToken>(body).ConversationId;
+
+                        // Create directline client from token
                         this.directLineClient = new DirectLineClient(token);
+
+                        // From now on, we'll add an Origin header in directline calls, with 
+                        // the trusted origin we sent when acquiring the token as value.
                         directLineClient.HttpClient.DefaultRequestHeaders.Add(originHeaderKey, originHeaderValue);
                     }
                     else
@@ -182,6 +195,11 @@ namespace SkillFunctionalTests.Bot
                 CookieContainer = cookieContainer
             };
 
+            // We have a sign in url, which will produce multiple HTTP 302 for redirects
+            // This will path 
+            //      token service -> other services -> auth provider -> token service (post sign in)-> response with token
+            // When we receive the post sign in redirect, we add the cookie passed in the directline session info
+            // to test enhanced authentication. This in ther scenarios happens by itself since browsers do this for us.
             using (var client = new HttpClient(handler))
             {
                 client.DefaultRequestHeaders.Add(originHeaderKey, originHeaderValue);
@@ -213,7 +231,6 @@ namespace SkillFunctionalTests.Bot
                             url += $"&code_challenge={ directLineSession.SessionId }";
                             cookieContainer.Add(directLineSession.Cookie);
                         }
-
                     }
                 }
 
@@ -230,17 +247,25 @@ namespace SkillFunctionalTests.Bot
 
             using (var client = new HttpClient(handler))
             {
+                // Call the directline session api, not supported by DirectLine client
                 const string getSessionUrl = "https://directline.botframework.com/v3/directline/session/getsessionid";
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, getSessionUrl);
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", this.token);
+
+                // We want to add the Origins header to this client as well
                 client.DefaultRequestHeaders.Add(originHeaderKey, originHeaderValue);
+
+
                 using (var response = await client.SendAsync(request))
                 {
-
                     if (response.IsSuccessStatusCode)
                     {
+                        // The directline response that is relevant to us is the cookie and the session info.
+
+                        // Extract cookie from cookies
                         var cookie = cookies.GetCookies(new Uri(getSessionUrl)).Cast<Cookie>().FirstOrDefault(c => c.Name == "webchat_session_v2");
 
+                        // Extract session info from body
                         var body = await response.Content.ReadAsStringAsync();
                         var session = JsonConvert.DeserializeObject<DirectLineSession>(body);
 
@@ -255,7 +280,6 @@ namespace SkillFunctionalTests.Bot
                         throw new Exception("Failed to obtain session id");
                     }
                 }
-
             }
         }
     }
