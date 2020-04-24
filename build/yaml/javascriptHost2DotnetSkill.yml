@@ -10,7 +10,6 @@ pr: none
 variables:
   BuildPlatform: 'any cpu'
   BuildConfiguration: 'Debug'
-  system_accesstoken: $(System.AccessToken)  # Allow OAuth token access.
   # AzureSubscription: define this in Azure
   # BotBuilderPackageVersionHost (Optional): define this in Azure
   # BotBuilderPackageVersionSkill (Optional): define this in Azure
@@ -24,7 +23,7 @@ variables:
   # NetCoreSdkVersionSkill: define this in Azure
   # NextBuild (Optional): define this in Azure
   # RegistryUrlSkill (Optional): define this in Azure
-
+  # ExecutePipelinesPersonalAccessToken: (optional) define in Azure
 
 pool:
   vmImage: 'windows-2019'
@@ -53,6 +52,7 @@ stages:
           tags: |
             Build.Reason=$(Build.Reason)
             NextBuild=$(NextBuild)
+            $(TriggeredBy)
         continueOnError: true
 
       - template: dotnetValidateNetCoreSdkVersion.yml
@@ -137,3 +137,20 @@ stages:
            call az group delete -n "$(JsDotNetHostBotName)-RG" --yes
            call az group delete -n "$(JsDotNetSkillBotName)-RG" --yes
         condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
+
+- stage: QueueNext
+  condition: always()
+  jobs:
+    - job: TriggerBuild
+      steps:
+      - task: benjhuser.tfs-extensions-build-tasks.trigger-build-task.TriggerBuild@3
+        displayName: 'Trigger build $(NextBuild)'
+        inputs:
+          buildDefinition: '$(NextBuild)'
+          queueBuildForUserThatTriggeredBuild: true
+          buildParameters: 'TriggeredBy: Triggered_by_$(Build.DefinitionName)'
+          password: '$(ExecutePipelinesPersonalAccessToken)'
+          enableBuildInQueueCondition: true
+          blockingBuildsList: '$(NextBuild)'
+        continueOnError: true
+        condition: and(succeededOrFailed(), ne(variables['Build.Reason'], 'Manual'), ne(variables['NextBuild'], ''), ne(variables['ExecutePipelinesPersonalAccessToken'], ''))
