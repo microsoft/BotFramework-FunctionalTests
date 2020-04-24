@@ -1,16 +1,8 @@
-steps:
-- task: NuGetCommand@2
-  displayName: 'NuGet restore'
-  inputs:
-    restoreSolution: $(Parameters.solution)
+variables:
+  SkipDotNet: 'true'
 
-- task: VSBuild@1
-  displayName: 'Build solution'
-  inputs:
-    solution: '$(Parameters.solution)'
-    vsVersion: 16.0
-    platform: '$(BuildPlatform)'
-    configuration: '$(BuildConfiguration)'
+steps:
+- template: dotnetBuildSteps.yml
 
 - powershell: 'Compress-Archive "$(Parameters.sourceLocation)/*" "$(Parameters.sourceLocation)/bot.zip" -Update'
   displayName: 'Zip Bot'
