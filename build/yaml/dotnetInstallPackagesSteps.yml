@@ -32,10 +32,10 @@ steps:
    }
    elseif ("$(BBVersion)" -eq "preview") 
    {
-      switch ("$(RegistryUrl)") 
+      switch ("$(RegistryUrl)".ToUpper()) 
       {
          MYGET { $RegistryUrlSource = "https://botbuilder.myget.org/F/botbuilder-v4-dotnet-daily/api/v3/index.json"}
-        default { $RegistryUrlSource = "$(RegistryUrl)" }
+         default { $RegistryUrlSource = "$(RegistryUrl)" }
       }
       $PackageList = nuget list Microsoft.Bot.Builder.Integration.AspNet.Core -Source "$RegistryUrlSource" -PreRelease
       $PackageVersion = $PackageList.Split(" ")[-1]
