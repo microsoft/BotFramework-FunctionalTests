@@ -109,6 +109,8 @@ The following steps will guide you trough the creation of a pipeline that runs o
    | **BotBuilderPackageVersionSkill** _(Optional)_| User     | The version of the BotBuilder package the Skill bot will use. If not set, the latest preview version will be used, set it to **stable** to install latest stable version or specify the version you want to use.|
    | **NetCoreSdkVersionHost** | User     | The version of the NetCore SDK the Host bot will use. This variable is required for dotnet Host bots. The supported values are 2.1 and 3.1, any other value will cause the pipeline to fail.|
    | **NetCoreSdkVersionSkill** | User     | The version of the NetCore SDK the Skill bot will use. This variable is required for dotnet Skill bots. The supported values are 2.1 and 3.1, any other value will cause the pipeline to fail.|
+   | **RegistryUrlHost** _(Optional)_| User     | The registry where the BotBuilder packages will be downloaded. If not set, the packages will be downloaded from **MyGet**. Set to **MyGet** to install the package from the **MyGet** registry. Set to **NuGet** to install the package from the **NuGet** registry. Also, you can enter a custom URL to install the package from a custom registry. Now it is only supporting custom MyGet feeds.|
+   | **RegistryUrlSkill** _(Optional)_| User     | The registry where the BotBuilder packages will be downloaded. If not set, the packages will be downloaded from **MyGet**. Set to **MyGet** to install the package from the **MyGet** registry. Set to **NuGet** to install the package from the **NuGet** registry. Also, you can enter a custom URL to install the package from a custom registry. Now it is only supporting custom MyGet feeds.|
 
    *Set these variables as private.
 
