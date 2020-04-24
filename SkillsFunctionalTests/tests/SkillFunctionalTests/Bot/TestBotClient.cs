@@ -186,7 +186,6 @@ namespace SkillFunctionalTests.Bot
             {
                 client.DefaultRequestHeaders.Add(originHeaderKey, originHeaderValue);
 
-                //cookieContainer.Add(new Cookie("CookieName", "cookie_value"));
                 while (!string.IsNullOrEmpty(url))
                 {
                     using (var response = await client.GetAsync(url))
