@@ -12,6 +12,7 @@ steps:
     tags: |
       Build.Reason=$(Build.Reason)
       NextBuild=$(NextBuild)
+      $(TriggeredBy)
   continueOnError: true
   condition: always()
 
@@ -20,6 +21,7 @@ steps:
   inputs:
     buildDefinition: '$(NextBuild)'
     queueBuildForUserThatTriggeredBuild: true
+    buildParameters: 'TriggeredBy: Triggered_by_$(Build.DefinitionName)'
     password: '$(ExecutePipelinesPersonalAccessToken)'
     enableBuildInQueueCondition: true
     blockingBuildsList: '$(NextBuild)'

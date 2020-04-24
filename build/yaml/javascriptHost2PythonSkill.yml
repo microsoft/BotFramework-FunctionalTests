@@ -50,6 +50,7 @@ stages:
           tags: |
             Build.Reason=$(Build.Reason)
             NextBuild=$(NextBuild)
+            $(TriggeredBy)
         continueOnError: true
 
 - stage: Deploy
@@ -132,6 +133,7 @@ stages:
         inputs:
           buildDefinition: '$(NextBuild)'
           queueBuildForUserThatTriggeredBuild: true
+          buildParameters: 'TriggeredBy: Triggered_by_$(Build.DefinitionName)'
           password: '$(ExecutePipelinesPersonalAccessToken)'
           enableBuildInQueueCondition: true
           blockingBuildsList: '$(NextBuild)'
