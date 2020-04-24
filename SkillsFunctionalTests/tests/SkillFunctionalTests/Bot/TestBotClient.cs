@@ -1,4 +1,7 @@
-﻿using Microsoft.Bot.Connector.DirectLine;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
+using Microsoft.Bot.Connector.DirectLine;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using SkillFunctionalTests.Configuration;
