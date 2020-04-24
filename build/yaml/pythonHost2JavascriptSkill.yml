@@ -10,20 +10,20 @@ pr: none
 variables:
   BuildPlatform: 'any cpu'
   BuildConfiguration: 'Debug'
-  system_accesstoken: $(System.AccessToken)  # Allow OAuth token access.
-  # AzureDeploymentPassword: define this in Azure
-  # AzureDeploymentUser: define this in Azure
-  # AzureSubscription: define this in Azure
-  # BotBuilderPackageVersionHost (Optional): define this in Azure
-  # BotBuilderPackageVersionSkill (Optional): define this in Azure
-  # DeleteResourceGroup (Optional): define this in Azure
-  # NextBuild (Optional): define this in Azure
-  # PyJsHostAppId: define this in Azure
-  # PyJsHostAppSecret: define this in Azure
-  # PyJsHostBotName: define this in Azure
-  # PyJsSkillAppId: define this in Azure
-  # PyJsSkillAppSecret: define this in Azure
-  # PyJsSkillBotName: define this in Azure
+  # AzureDeploymentPassword: define in Azure
+  # AzureDeploymentUser: define in Azure
+  # AzureSubscription: define in Azure
+  # BotBuilderPackageVersionHost: (optional) define in Azure
+  # BotBuilderPackageVersionSkill: (optional) define in Azure
+  # DeleteResourceGroup: (optional) define in Azure
+  # NextBuild: (optional) define in Azure
+  # PyJsHostAppId: define in Azure
+  # PyJsHostAppSecret: define in Azure
+  # PyJsHostBotName: define in Azure
+  # PyJsSkillAppId: define in Azure
+  # PyJsSkillAppSecret: define in Azure
+  # PyJsSkillBotName: define in Azure
+  # ExecutePipelinesPersonalAccessToken: (optional) define in Azure
 
 pool:
   vmImage: 'windows-2019'
@@ -50,6 +50,7 @@ stages:
           tags: |
             Build.Reason=$(Build.Reason)
             NextBuild=$(NextBuild)
+            $(TriggeredBy)
         continueOnError: true
 
 - stage: Deploy
@@ -119,3 +120,20 @@ stages:
            call az group delete -n "$(PyJsHostBotName)-RG" --yes
            call az group delete -n "$(PyJsSkillBotName)-RG" --yes
         condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
+
+- stage: QueueNext
+  condition: always()
+  jobs:
+    - job: TriggerBuild
+      steps:
+      - task: benjhuser.tfs-extensions-build-tasks.trigger-build-task.TriggerBuild@3
+        displayName: 'Trigger build $(NextBuild)'
+        inputs:
+          buildDefinition: '$(NextBuild)'
+          queueBuildForUserThatTriggeredBuild: true
+          buildParameters: 'TriggeredBy: Triggered_by_$(Build.DefinitionName)'
+          password: '$(ExecutePipelinesPersonalAccessToken)'
+          enableBuildInQueueCondition: true
+          blockingBuildsList: '$(NextBuild)'
+        continueOnError: true
+        condition: and(succeededOrFailed(), ne(variables['Build.Reason'], 'Manual'), ne(variables['NextBuild'], ''), ne(variables['ExecutePipelinesPersonalAccessToken'], ''))
