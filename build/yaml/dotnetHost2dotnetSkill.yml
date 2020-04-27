@@ -136,6 +136,19 @@ stages:
       steps:
       - template: dotnetDeploySteps.yml
 
+    - job: Configure_OAuth
+      dependsOn: Deploy_Skill
+      steps:
+      - task: AzureCLI@1
+        displayName: 'Configure skill OAuth connection'
+        inputs:
+          azureSubscription: $(AzureSubscription)
+          scriptLocation: inlineScript
+          inlineScript: |
+           call az bot show -g "$(DotNetDotNetSkillBotName)-RG" -n "$(DotNetDotNetSkillBotName)"
+           call az bot authsetting create -g "$(DotNetDotNetSkillBotName)-RG" -n "$(DotNetDotNetSkillBotName)" -c TestOAuthProvider --client-id "$(DotNetDotNetSkillAppId)" --client-secret '$(DotNetDotNetSkillAppSecret)'' --service "oauth2" --provider-scope-string '""' --parameters authorizationUrl=https://webjobs.botframework.com/api/testauthprovider/authorize tokenUrl=https://webjobs.botframework.com/api/testauthprovider/token refreshUrl=https://webjobs.botframework.com/api/testauthprovider/refresh clientId="$(DotNetDotNetSkillAppId)" clientSecret="$(DotNetDotNetSkillAppSecret)"
+        condition: always()
+
 - stage: Test
   dependsOn: Deploy
   jobs:
