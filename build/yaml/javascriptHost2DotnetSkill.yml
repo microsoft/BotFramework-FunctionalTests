@@ -138,7 +138,7 @@ stages:
         condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
 
 - stage: QueueNext
-  condition: and(always(), ne(variables['TriggeredReason'], 'Manual'), ne(variables['NextBuild'], ''), ne(variables['ExecutePipelinesPersonalAccessToken'], ''))
+  condition: and(always(), ne(variables['TriggeredReason'], 'Manual'), ne(variables['NextBuild'], ''))
   jobs:
     - job: TriggerBuild
       steps:
