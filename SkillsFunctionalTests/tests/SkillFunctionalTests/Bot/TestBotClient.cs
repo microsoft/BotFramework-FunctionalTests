@@ -57,7 +57,7 @@ namespace SkillFunctionalTests.Bot
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", config.DirectLineSecret);
                 request.Content = new StringContent(JsonConvert.SerializeObject(new
                 {
-                    User = new { Id = user },
+                    User = new { Id = this.user },
                     TrustedOrigins = new string[]
                         {
                             originHeaderValue
@@ -70,7 +70,7 @@ namespace SkillFunctionalTests.Bot
                     {
                         // Extract token from response
                         var body = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-                        token = JsonConvert.DeserializeObject<DirectLineToken>(body).Token;
+                        this.token = JsonConvert.DeserializeObject<DirectLineToken>(body).Token;
                         this.conversationId = JsonConvert.DeserializeObject<DirectLineToken>(body).ConversationId;
 
                         // Create directline client from token
@@ -98,7 +98,7 @@ namespace SkillFunctionalTests.Bot
             // Create a message activity with the input text.
             var messageActivity = new Activity
             {
-                From = new ChannelAccount(user),
+                From = new ChannelAccount(this.user),
                 Text = message,
                 Type = ActivityTypes.Message,
             };
