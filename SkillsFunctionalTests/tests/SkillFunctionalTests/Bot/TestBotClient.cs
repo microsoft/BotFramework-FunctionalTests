@@ -34,6 +34,16 @@ namespace SkillFunctionalTests.Bot
         {
             this.config = config ?? throw new ArgumentNullException(nameof(config));
 
+            if (string.IsNullOrEmpty(config.DirectLineSecret))
+            {
+                throw new ArgumentNullException(nameof(config.DirectLineSecret));
+            }
+
+            if (string.IsNullOrEmpty(config.BotId))
+            {
+                throw new ArgumentNullException(nameof(config.BotId));
+            }
+
             // Instead of generating a vanilla DirectLineClient with secret, 
             // we obtain a directline token with the secrets and then we use
             // that token to create the directline client.
