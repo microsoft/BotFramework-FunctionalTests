@@ -49,7 +49,7 @@ stages:
         Parameters.netCoreSdkVersion: $(NetCoreSdkVersionHost)
       steps:
       - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
-        displayName: 'Tag Build with Build.Reason=$(Build.Reason) NextBuild=$(NextBuild)'
+        displayName: 'Tag Build with TriggeredReason, TriggeredBy, NextBuild'
         inputs:
           tags: |
             TriggeredReason=$(TriggeredReason)
