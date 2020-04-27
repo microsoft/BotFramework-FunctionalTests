@@ -23,9 +23,9 @@ steps:
   inputs:
     buildDefinition: '$(NextBuild)'
     queueBuildForUserThatTriggeredBuild: true
-          buildParameters: 'TriggeringBuildReason: $(TriggeredReason), TriggeredBy: Triggered_by_$(Build.DefinitionName)/$(Build.BuildNumber)'
+    buildParameters: 'TriggeringBuildReason: $(TriggeredReason), TriggeredBy: Triggered_by_$(Build.DefinitionName)/$(Build.BuildNumber)'
     password: '$(ExecutePipelinesPersonalAccessToken)'
     enableBuildInQueueCondition: true
     blockingBuildsList: '$(NextBuild)'
   continueOnError: true
-        condition: and(succeededOrFailed(), ne(variables['TriggeredReason'], 'xyxyxy'), ne(variables['NextBuild'], ''), ne(variables['ExecutePipelinesPersonalAccessToken'], ''))
+  condition: and(succeededOrFailed(), ne(variables['TriggeredReason'], 'xyxyxy'), ne(variables['NextBuild'], ''), ne(variables['ExecutePipelinesPersonalAccessToken'], ''))
