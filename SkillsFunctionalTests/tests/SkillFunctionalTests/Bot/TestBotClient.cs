@@ -113,14 +113,14 @@ namespace SkillFunctionalTests.Bot
                 throw new ArgumentNullException(nameof(messages));
             }
 
-            var messageTasks = new List<Task<ResourceResponse>>();
+            var resourceResponses = new List<ResourceResponse>();
 
             foreach (var message in messages)
             {
-                messageTasks.Add(SendMessageAsync(message, cancellationToken));
+                resourceResponses.Add(await SendMessageAsync(message, cancellationToken));
             }
 
-            return await Task.WhenAll(messageTasks);
+            return resourceResponses.ToArray();
         }
 
         public async Task StartConversation(CancellationToken cancellationToken = default(CancellationToken))
