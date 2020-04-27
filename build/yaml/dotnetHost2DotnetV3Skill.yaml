@@ -1,0 +1,171 @@
+#
+# Build a C# Host bot and a v3 C# Skill bot. Optionally deploy them and run functional tests.
+#
+
+# "name" here defines the build number format. Build number is accessed via $(Build.BuildNumber)
+name: $(Build.BuildId)
+trigger: none
+pr: none
+
+variables:
+  BuildPlatform: 'any cpu'
+  BuildConfiguration: 'Debug'
+  # AzureSubscription: define in Azure
+  # DeleteResourceGroup: (optional) define in Azure
+  # DotNetDotNetV3HostAppId: define in Azure
+  # DotNetDotNetV3HostAppSecret: define in Azure
+  # DotNetDotNetV3HostBotName: define in Azure
+  # DotNetDotNetV3SkillAppId: define in Azure
+  # DotNetDotNetV3SkillAppSecret: define in Azure
+  # DotNetDotNetV3SkillBotName: define in Azure
+  # BotBuilderPackageVersionHost: (optional) define in Azure
+  # BotBuilderPackageVersionSkill: (optional) define in Azure
+  # NetCoreSdkVersionHost: define in Azure
+  # NextBuild: (optional) define in Azure
+  # ExecutePipelinesPersonalAccessToken: (optional) define in Azure
+
+pool:
+  vmImage: 'windows-2019'
+
+stages:
+- stage: Prepare
+  condition: and(succeeded(), in(variables['Build.Reason'], 'Schedule', 'Manual'))
+  jobs:
+    - job: Delete_Preexisting_Resources
+      variables:
+        HostBotName: $(DotNetDotNetV3HostBotName)
+        SkillBotName: $(DotNetDotNetV3SkillBotName)
+      steps:
+      - template: cleanResourcesStep.yml
+
+- stage: Build
+  condition: always()
+  jobs:
+    - job: Validate_Host_NetCore_Version
+      variables:
+        Parameters.netCoreSdkVersion: $(NetCoreSdkVersionHost)
+      steps:
+      - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
+        displayName: 'Tag Build with Build.Reason=$(Build.Reason) NextBuild=$(NextBuild)'
+        inputs:
+          tags: |
+            Build.Reason=$(Build.Reason)
+            NextBuild=$(NextBuild)
+            $(TriggeredBy)
+        continueOnError: true
+
+      - template: dotnetValidateNetCoreSdkVersion.yml
+
+    - job: Build_Host_Bot
+      dependsOn: Validate_Host_NetCore_Version
+      variables:
+        BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
+        Parameters.solution: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionHost)/host/SimpleHostBot.sln'
+        Parameters.project: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionHost)/host/SimpleHostBot.csproj'
+      steps:
+      - template: dotnetInstallPackagesSteps.yml
+      - template: dotnetBuildSteps.yml
+
+    - job: Build_Skill_Bot
+      variables:
+        BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
+        Parameters.solution: 'SkillsFunctionalTests/dotnet/v3/skill/EchoSkillBot.sln'
+        Parameters.project: 'SkillsFunctionalTests/dotnet/v3/skill/EchoSkillBot.csproj'
+        Parameters.SkipNetCore: true
+      steps:
+      - template: dotnetBuildSteps.yml
+
+- stage: Deploy
+  condition: and(succeeded(), in(variables['Build.Reason'], 'Schedule', 'Manual'))
+  jobs:
+    - job: Deploy_Host
+      variables:
+        BotName: $(DotNetDotNetV3HostBotName)
+        DeployAppId: $(DotNetDotNetV3HostAppId)
+        DeployAppSecret: $(DotNetDotNetV3HostAppSecret)
+        BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
+        Parameters.project: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionHost)/host/SimpleHostBot.csproj'
+        TemplateLocation: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionHost)/host/DeploymentTemplates/template-with-new-rg.json'
+      steps:
+      - powershell: |
+         # Set values in appsettings.json file.
+         $file = "$(System.DefaultWorkingDirectory)\SkillsFunctionalTests\dotnet\$(NetCoreSdkVersionHost)\host\appsettings.json";
+         $content = Get-Content -Raw $file | ConvertFrom-Json;
+         $content.SkillHostEndpoint = "https://$(DotNetDotNetV3HostBotName)-$(Build.BuildId).azurewebsites.net/api/skills";
+
+         # Create Skill Class
+         class Skill{[String] $Id; [String] $AppId; [String] $SkillEndpoint;};
+
+         # Create list of botframework skills
+         $botFrameworkSkills = New-Object -TypeName System.Collections.Generic.List[Skill];
+
+         # Create Skill object
+         $dotnetSkill = New-Object -TypeName Skill;
+         $dotnetSkill.Id = "EchoSkillBot";
+         $dotnetSkill.AppId = "$(DotNetDotNetV3SkillAppId)";
+         $dotnetSkill.SkillEndpoint = "https://$(DotNetDotNetV3SkillBotName)-$(Build.BuildId).azurewebsites.net/api/messages";
+
+         # Add skill to botframework skill list
+         $botFrameworkSkills.Add($dotnetSkill);
+         $content.BotFrameworkSkills = $botFrameworkSkills;
+         $content | ConvertTo-Json | Set-Content $file;
+        displayName: 'Set Host appsettings.json file.'
+
+      - template: dotnetDeploySteps.yml
+
+    - job: Deploy_Skill
+      variables:
+        BotName: $(DotNetDotNetV3SkillBotName)
+        DeployAppId: $(DotNetDotNetV3SkillAppId)
+        DeployAppSecret: $(DotNetDotNetV3SkillAppSecret)
+        Parameters.solution: 'SkillsFunctionalTests/dotnet/v3/skill/EchoSkillBot.sln'
+        Parameters.sourceLocation: 'SkillsFunctionalTests/dotnet/v3/skill/'
+        TemplateLocation: 'SkillsFunctionalTests/dotnet/v3/skill/DeploymentTemplates/template-with-new-rg.json'
+      steps:
+      - template: dotnetV3DeploySteps.yml
+
+- stage: Test
+  dependsOn: Deploy
+  jobs:
+    - job: Run_Functional_Test
+      variables:
+        HostBotName: $(DotNetDotNetV3HostBotName)
+        Parameters.project: 'SkillsFunctionalTests/tests/SkillFunctionalTests/SkillFunctionalTests.csproj'
+        Parameters.solution: 'SkillsFunctionalTests/tests/SkillFunctionalTests.sln'
+      steps:
+      - template: functionalTestSteps.yml
+
+- stage: Cleanup
+  dependsOn:
+  - Deploy
+  - Test
+  condition: and(succeeded('Build'), in(variables['Build.Reason'], 'Schedule', 'Manual'))
+  jobs:
+    - job: Delete_RG
+      steps:
+      - task: AzureCLI@1
+        displayName: 'Delete Resource Group'
+        inputs:
+          azureSubscription: $(AzureSubscription)
+          scriptLocation: inlineScript
+          inlineScript: |
+           call az group delete -n "$(DotNetDotNetV3HostBotName)-RG" --yes
+           call az group delete -n "$(DotNetDotNetV3SkillBotName)-RG" --yes
+        condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
+
+- stage: QueueNext
+  condition: always()
+  jobs:
+    - job: TriggerBuild
+      steps:
+      - task: benjhuser.tfs-extensions-build-tasks.trigger-build-task.TriggerBuild@3
+        displayName: 'Trigger build $(NextBuild)'
+        inputs:
+          buildDefinition: '$(NextBuild)'
+          queueBuildForUserThatTriggeredBuild: true
+          buildParameters: 'TriggeredBy: Triggered_by_$(Build.DefinitionName)'
+          password: '$(ExecutePipelinesPersonalAccessToken)'
+          enableBuildInQueueCondition: true
+          blockingBuildsList: '$(NextBuild)'
+        continueOnError: true
+        condition: and(succeededOrFailed(), ne(variables['Build.Reason'], 'Manual'), ne(variables['NextBuild'], ''), ne(variables['ExecutePipelinesPersonalAccessToken'], ''))
