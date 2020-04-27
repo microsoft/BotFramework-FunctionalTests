@@ -28,4 +28,4 @@ steps:
     enableBuildInQueueCondition: true
     blockingBuildsList: '$(NextBuild)'
   continueOnError: true
-        condition: and(succeededOrFailed(), ne(variables['TriggeredReason'], 'xyxyxy'), ne(variables['NextBuild'], ''), ne(variables['ExecutePipelinesPersonalAccessToken'], ''))
+  condition: and(succeededOrFailed(), ne(variables['TriggeredReason'], 'xyxyxy'), ne(variables['NextBuild'], ''), ne(variables['ExecutePipelinesPersonalAccessToken'], ''))
