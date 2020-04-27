@@ -80,6 +80,12 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Bots
                 return;
             }
 
+            if (turnContext.Activity.Text.ToLower().Contains("yo"))
+            {
+                await turnContext.SendActivityAsync(MessageFactory.Text("Echo: hardcoded 'yo'"));
+                return;
+            }
+
             if (turnContext.Activity.Text.ToLower().Contains("skill"))
             {
                 await turnContext.SendActivityAsync(MessageFactory.Text("Got it, connecting you to the skill..."), cancellationToken);

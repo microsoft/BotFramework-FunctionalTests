@@ -1,9 +1,9 @@
 using System;
 using Xunit;
 
-namespace DialogsInSkillsFunctionalTests
+namespace FunctionalTests
 {
-    public class UnitTest1
+    public class HostDialogToSkillDialogTest
     {
         [Fact]
         public void Test1()
