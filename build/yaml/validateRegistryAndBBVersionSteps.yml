@@ -16,7 +16,7 @@ steps:
       MYGET { Write-Host ("##vso[task.setvariable variable=RegistryUrl]MyGet") }
       default { Write-Host ("##vso[task.setvariable variable=RegistryUrl]$(Registry)") }
    }
-  displayName: 'Read Variables'
+  displayName: 'Read BotBuilder package version variable'
 
 - powershell: |
    Write-Host "BotBuilderPackageVersion: "$(BBVersion)

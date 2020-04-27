@@ -1,4 +1,15 @@
 steps:
+- powershell: |
+   switch ("$(Registry)".ToUpper())
+   {
+      $null { Write-Host ("##vso[task.setvariable variable=RegistryUrl]MyGet") }
+      '' { Write-Host ("##vso[task.setvariable variable=RegistryUrl]MyGet") }
+      NUGET { Write-Host ("##vso[task.setvariable variable=RegistryUrl]NuGet") }
+      MYGET { Write-Host ("##vso[task.setvariable variable=RegistryUrl]MyGet") }
+      default { Write-Host ("##vso[task.setvariable variable=RegistryUrl]$(Registry)") }
+   }
+  displayName: 'Read registry URL variable'
+
 - template: validateRegistryAndBBVersionSteps.yml
 
 - task: NuGetToolInstaller@0
