@@ -20,7 +20,6 @@ namespace FunctionalTests
         [TestMethod]
         public async Task Host_WhenRequested_ShouldRedirectToSkill()
         {
-            // If the test takes more than one minute, declare failure.
             var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
 
             var testBot = new TestBotClient(new EnvironmentBotTestConfiguration());
@@ -35,7 +34,6 @@ namespace FunctionalTests
         [TestMethod]
         public async Task Host_WhenSkillEnds_HostReceivesEndOfConversation()
         {
-            // If the test takes more than one minute, declare failure.
             var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
 
             var testBot = new TestBotClient(new EnvironmentBotTestConfiguration());
