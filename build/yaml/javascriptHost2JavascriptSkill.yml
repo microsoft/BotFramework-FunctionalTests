@@ -8,27 +8,29 @@ trigger: none
 pr: none
 
 variables:
-  BuildPlatform: 'any cpu'
   BuildConfiguration: 'Debug'
+  BuildPlatform: 'any cpu'
+  TriggeredReason: $[ coalesce( variables['TriggeringBuildReason'], variables['Build.Reason'] ) ]
   # AzureSubscription: define in Azure
   # BotBuilderPackageVersionHost: (optional) define in Azure
   # BotBuilderPackageVersionSkill: (optional) define in Azure
   # DeleteResourceGroup: (optional) define in Azure
+  # ExecutePipelinesPersonalAccessToken: (optional) define in Azure
   # JsJsHostAppId: define in Azure 
   # JsJsHostAppSecret: define in Azure
   # JsJsHostBotName: define in Azure
   # JsJsSkillAppId: define in Azure
   # JsJsSkillAppSecret: define in Azure
   # JsJsSkillBotName: define in Azure
-  # NextBuild: (optional) define in Azure
-  # ExecutePipelinesPersonalAccessToken: (optional) define in Azure
+  # NextBuild: define in Azure and set to either a build name or an empty string
+  # TriggeredBy: define in Azure and set to an empty string
 
 pool:
   vmImage: 'windows-2019'
 
 stages:
 - stage: Prepare
-  condition: and(succeeded(), in(variables['Build.Reason'], 'Schedule', 'Manual'))
+  condition: and(succeeded(), in(variables['TriggeredReason'], 'Schedule', 'Manual'))
   jobs:
     - job: Delete_Preexisting_Resources
       variables:
@@ -46,13 +48,13 @@ stages:
         displayName: 'Tag Build with Build.Reason=$(Build.Reason) NextBuild=$(NextBuild)'
         inputs:
           tags: |
-            Build.Reason=$(Build.Reason)
-            NextBuild=$(NextBuild)
+            TriggeredReason=$(TriggeredReason)
             $(TriggeredBy)
+            NextBuild=$(NextBuild)
         continueOnError: true
        
 - stage: Deploy
-  condition: and(always(), in(variables['Build.Reason'], 'Schedule', 'Manual'))
+  condition: and(succeeded(), in(variables['TriggeredReason'], 'Schedule', 'Manual'))
   jobs:
     - job: Deploy_Host
       variables:
@@ -105,7 +107,7 @@ stages:
   dependsOn:
   - Deploy
   - Test
-  condition: and(always(), in(variables['Build.Reason'], 'Schedule', 'Manual'))
+  condition: and(always(), in(variables['TriggeredReason'], 'Schedule', 'Manual'))
   jobs:
     - job: Delete_RG
       steps:
@@ -129,9 +131,9 @@ stages:
         inputs:
           buildDefinition: '$(NextBuild)'
           queueBuildForUserThatTriggeredBuild: true
-          buildParameters: 'TriggeredBy: Triggered_by_$(Build.DefinitionName)'
+          buildParameters: 'TriggeringBuildReason: $(TriggeredReason), TriggeredBy: Triggered_by_$(Build.DefinitionName)/$(Build.BuildNumber)'
           password: '$(ExecutePipelinesPersonalAccessToken)'
           enableBuildInQueueCondition: true
           blockingBuildsList: '$(NextBuild)'
         continueOnError: true
-        condition: and(succeededOrFailed(), ne(variables['Build.Reason'], 'Manual'), ne(variables['NextBuild'], ''), ne(variables['ExecutePipelinesPersonalAccessToken'], ''))
+        condition: and(succeededOrFailed(), ne(variables['TriggeredReason'], 'Manual'), ne(variables['NextBuild'], ''), ne(variables['ExecutePipelinesPersonalAccessToken'], ''))
