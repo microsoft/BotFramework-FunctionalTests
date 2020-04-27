@@ -93,6 +93,19 @@ stages:
       steps:
       - template: pythonDeploySteps.yml
 
+    - job: Configure_OAuth
+      dependsOn: Deploy_Skill
+      steps:
+      - task: AzureCLI@1
+        displayName: 'Configure skill OAuth connection'
+        inputs:
+          azureSubscription: $(AzureSubscription)
+          scriptLocation: inlineScript
+          inlineScript: |
+           call az bot show -g "$(JsPySkillBotName)-RG" -n "$(JsPySkillBotName)"
+           call az bot authsetting create -g "$(JsPySkillBotName)-RG" -n "$(JsPySkillBotName)" -c TestOAuthProvider --client-id "$(JsPySkillAppId)" --client-secret '$(JsPySkillAppSecret)'' --service "oauth2" --provider-scope-string '""' --parameters authorizationUrl=https://webjobs.botframework.com/api/testauthprovider/authorize tokenUrl=https://webjobs.botframework.com/api/testauthprovider/token refreshUrl=https://webjobs.botframework.com/api/testauthprovider/refresh clientId="$(JsPySkillAppId)" clientSecret="$(JsPySkillAppSecret)"
+        condition: always()
+
 - stage: Test
   dependsOn: Deploy
   jobs:
