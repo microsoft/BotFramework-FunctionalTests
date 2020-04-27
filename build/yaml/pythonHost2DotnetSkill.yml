@@ -53,7 +53,7 @@ stages:
         displayName: 'Tag Build with TriggeredReason, TriggeredBy, NextBuild'
         inputs:
           tags: |
-            Build.Reason=$(Build.Reason)
+            TriggeredReason=$(TriggeredReason)
             NextBuild=$(NextBuild)
             $(TriggeredBy)
         continueOnError: true
