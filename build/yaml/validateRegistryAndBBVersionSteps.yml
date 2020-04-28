@@ -1,0 +1,35 @@
+steps:
+- powershell: |
+   switch ("$(BotBuilderPackageVersion)".ToUpper())
+   {
+      $null { Write-Host ("##vso[task.setvariable variable=BBVersion]preview") }
+      '' { Write-Host ("##vso[task.setvariable variable=BBVersion]preview") }
+      STABLE { Write-Host ("##vso[task.setvariable variable=BBVersion]stable") }
+      default { Write-Host ("##vso[task.setvariable variable=BBVersion]$(BotBuilderPackageVersion)") }
+   }
+  displayName: 'Read BotBuilder package version variable'
+
+- powershell: |
+   Write-Host "BotBuilderPackageVersion: "$(BBVersion)
+   Write-Host "Registry: "$(RegistryUrl)
+
+   $invalidVersionRegistry = "Preview versions of BotBuilder Packages couldn't be found in the NuGet registry."
+
+   # Override the built-in cmdlet with a custom version
+   function Write-Error($message) {
+         [Console]::ForegroundColor = 'red'
+         [Console]::Error.WriteLine($message)
+         [Console]::ResetColor()
+   }
+
+   if ("$(BBVersion)" -eq "preview" -AND "$(RegistryUrl)" -eq "NuGet")
+   {
+      Write-Error $invalidVersionRegistry
+   }
+   if ("$(BBVersion)" -eq "preview" -AND "$(RegistryUrl)" -eq "NPM")
+   {
+      Write-Error $invalidVersionRegistry
+   }
+  displayName: 'Validate Version & Registry'
+  failOnStderr: true
+  
