@@ -1,18 +1,39 @@
 steps:
+- powershell: |
+   switch ("$(Registry)".ToUpper())
+   {
+      $null { Write-Host ("##vso[task.setvariable variable=RegistryUrl]MyGet") }
+      '' { Write-Host ("##vso[task.setvariable variable=RegistryUrl]MyGet") }
+      MYGET { Write-Host ("##vso[task.setvariable variable=RegistryUrl]MyGet") }
+      NPM { Write-Host ("##vso[task.setvariable variable=RegistryUrl]NPM") }
+      default { Write-Host ("##vso[task.setvariable variable=RegistryUrl]$(Registry)") }
+   }
+  displayName: 'Read registry URL variable'
+
+- template: validateRegistryAndBBVersionSteps.yml
+
+- powershell: |
+   switch ("$(RegistryUrl)")
+   {
+      MyGet { $source = "https://botbuilder.myget.org/F/botbuilder-v4-js-daily/npm/" }
+      NPM { $source = "https://registry.npmjs.com/"}      
+      default { $source = "$(RegistryUrl)" }
+   }
+
+   Add-Content $(Parameters.sourceLocation)/deployment-scripts/.deployment "`nBOT_BUILDER_PACKAGE_VERSION = $(BBVersion)"
+   Add-Content $(Parameters.sourceLocation)/deployment-scripts/.deployment "`nREGISTRY_SOURCE = $Source"
+   Write-Host "Set BotBuilder Package Version to: $(BBVersion)"
+   Write-Host "Set registry url to: $source"
+  failOnStderr: true
+  displayName: 'Set BBVersion and Registry URL'
+  name: 'Set_Registry_Url'
+
 - task: AzureCLI@1
   displayName: 'Prepare Bot'
   inputs:
     azureSubscription: $(AzureSubscription)
     scriptLocation: inlineScript
     inlineScript: 'call az bot prepare-deploy --code-dir "$(Parameters.sourceLocation)" --lang Javascript'
-
-- powershell: |   
-   if(-Not ($env:BotBuilderPackageVersion -eq $null))
-   {
-      Add-Content $(Parameters.sourceLocation)/deployment-scripts/.deployment "`nBOT_BUILDER_PACKAGE_VERSION = $(BotBuilderPackageVersion)"
-   }   
-  displayName: 'Add custom version'
-  condition: ne(variables['BotBuilderPackageVersion'], '')
 
 - powershell: |
    move-item -path $(Parameters.sourceLocation)/deployment-scripts/* -destination $(Parameters.sourceLocation)
