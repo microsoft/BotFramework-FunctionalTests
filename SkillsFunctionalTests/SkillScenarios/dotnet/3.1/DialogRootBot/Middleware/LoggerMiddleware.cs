@@ -10,7 +10,7 @@ using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 
-namespace Microsoft.BotBuilderSamples.DialogRootBot.Middleware
+namespace FunctionalTests.SkillScenarios.DialogRootBot.Middleware
 {
     /// <summary>
     /// Uses an ILogger instance to log user and bot messages. It filters out ContinueConversation events coming from skill responses.

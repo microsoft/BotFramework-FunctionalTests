@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.AI.Luis;
 
-namespace Microsoft.BotBuilderSamples.DialogSkillBot.CognitiveModels
+namespace FunctionalTests.SkillScenarios.DialogSkillBot.CognitiveModels
 {
     public partial class FlightBooking: IRecognizerConvert
     {

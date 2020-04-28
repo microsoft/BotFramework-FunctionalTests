@@ -3,7 +3,7 @@
 
 using System.Linq;
 
-namespace Microsoft.BotBuilderSamples.DialogSkillBot.CognitiveModels
+namespace FunctionalTests.SkillScenarios.DialogSkillBot.CognitiveModels
 {
     // Extends the partial FlightBooking class with methods and properties that simplify accessing entities in the LUIS results.
     public partial class FlightBooking

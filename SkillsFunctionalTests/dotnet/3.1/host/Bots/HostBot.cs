@@ -27,7 +27,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Bots
 
         public const string ActiveSkillPropertyName = "activeSkillProperty";
         // We use a single skill in this example.
-        public const string TargetSkillId = "EchoSkillBot";
+        public const string TargetSkillId = "AshEchoSkillBot";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HostBot"/> class.
@@ -77,12 +77,6 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Bots
             {
                 // Send the activity to the skill
                 await SendToSkillAsync(turnContext, activeSkill, cancellationToken);
-                return;
-            }
-
-            if (turnContext.Activity.Text.ToLower().Contains("yo"))
-            {
-                await turnContext.SendActivityAsync(MessageFactory.Text("Echo: hardcoded 'yo'"));
                 return;
             }
 

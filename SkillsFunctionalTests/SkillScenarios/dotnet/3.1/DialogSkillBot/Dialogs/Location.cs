@@ -3,7 +3,7 @@
 
 using Newtonsoft.Json;
 
-namespace Microsoft.BotBuilderSamples.DialogSkillBot.Dialogs
+namespace FunctionalTests.SkillScenarios.DialogSkillBot.Dialogs
 {
     public class Location
     {

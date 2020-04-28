@@ -7,7 +7,7 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.AI.Luis;
 using Microsoft.Extensions.Configuration;
 
-namespace Microsoft.BotBuilderSamples.DialogSkillBot.Dialogs
+namespace FunctionalTests.SkillScenarios.DialogSkillBot.Dialogs
 {
     public class DialogSkillBotRecognizer : IRecognizer
     {

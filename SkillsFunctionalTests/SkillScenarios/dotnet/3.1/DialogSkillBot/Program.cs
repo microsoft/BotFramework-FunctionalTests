@@ -4,7 +4,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace Microsoft.BotBuilderSamples.DialogSkillBot
+namespace FunctionalTests.SkillScenarios.DialogSkillBot
 {
     public class Program
     {

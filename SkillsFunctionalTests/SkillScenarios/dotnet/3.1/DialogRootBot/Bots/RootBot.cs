@@ -10,7 +10,7 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Newtonsoft.Json;
 
-namespace Microsoft.BotBuilderSamples.DialogRootBot.Bots
+namespace FunctionalTests.SkillScenarios.DialogRootBot.Bots
 {
     public class RootBot<T> : ActivityHandler
         where T : Dialog
@@ -61,7 +61,7 @@ namespace Microsoft.BotBuilderSamples.DialogRootBot.Bots
         // Load attachment from embedded resource.
         private Attachment CreateAdaptiveCardAttachment()
         {
-            var cardResourcePath = "Microsoft.BotBuilderSamples.DialogRootBot.Cards.welcomeCard.json";
+            var cardResourcePath = "FunctionalTests.SkillScenarios.DialogRootBot.Cards.welcomeCard.json";
 
             using (var stream = GetType().Assembly.GetManifestResourceStream(cardResourcePath))
             {

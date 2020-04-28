@@ -1,12 +1,18 @@
 using System;
 using Xunit;
 
-namespace FunctionalTests
+namespace FunctionalTests.SkillScenarios
 {
     public class HostDialogToSkillDialogTest
     {
         [Fact]
-        public void Test1()
+        public async Task BothHostAndSkill_Dialogs_SuccessfullyMaintainTheirState()
+        {
+
+        }
+
+        [Fact]
+        public async Task Bot_CanBeBoth_SkillAndHost()
         {
 
         }

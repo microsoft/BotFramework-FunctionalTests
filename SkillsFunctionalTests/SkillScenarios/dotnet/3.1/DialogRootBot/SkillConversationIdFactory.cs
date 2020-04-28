@@ -10,7 +10,7 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Skills;
 using Newtonsoft.Json.Linq;
 
-namespace Microsoft.BotBuilderSamples.DialogRootBot
+namespace FunctionalTests.SkillScenarios.DialogRootBot
 {
     /// <summary>
     /// A <see cref="SkillConversationIdFactory"/> that uses <see cref="IStorage"/> to store

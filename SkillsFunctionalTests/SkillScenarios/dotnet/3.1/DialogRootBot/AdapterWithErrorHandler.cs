@@ -11,12 +11,12 @@ using Microsoft.Bot.Builder.Skills;
 using Microsoft.Bot.Builder.TraceExtensions;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Bot.Schema;
-using Microsoft.BotBuilderSamples.DialogRootBot.Dialogs;
-using Microsoft.BotBuilderSamples.DialogRootBot.Middleware;
+using FunctionalTests.SkillScenarios.DialogRootBot.Dialogs;
+using FunctionalTests.SkillScenarios.DialogRootBot.Middleware;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace Microsoft.BotBuilderSamples.DialogRootBot
+namespace FunctionalTests.SkillScenarios.DialogRootBot
 {
     public class AdapterWithErrorHandler : BotFrameworkHttpAdapter
     {

@@ -6,7 +6,7 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Builder.Skills;
 
-namespace Microsoft.BotBuilderSamples.DialogRootBot.Controllers
+namespace FunctionalTests.SkillScenarios.DialogRootBot.Controllers
 {
     /// <summary>
     /// A controller that handles skill replies to the bot.

@@ -7,7 +7,7 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 
-namespace Microsoft.BotBuilderSamples.DialogSkillBot.Dialogs
+namespace FunctionalTests.SkillScenarios.DialogSkillBot.Dialogs
 {
     public class CancelAndHelpDialog : ComponentDialog
     {

@@ -17,7 +17,7 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Microsoft.BotBuilderSamples.DialogRootBot.Dialogs
+namespace FunctionalTests.SkillScenarios.DialogRootBot.Dialogs
 {
     /// <summary>
     /// The main dialog for this bot. It uses a <see cref="SkillDialog"/> to call skills.

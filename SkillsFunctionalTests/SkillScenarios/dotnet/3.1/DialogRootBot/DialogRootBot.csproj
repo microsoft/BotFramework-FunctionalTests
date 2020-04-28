@@ -3,8 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <LangVersion>latest</LangVersion>
-    <AssemblyName>Microsoft.BotBuilderSamples.DialogRootBot</AssemblyName>
-    <RootNamespace>Microsoft.BotBuilderSamples.DialogRootBot</RootNamespace>
+    <AssemblyName>FunctionalTests.SkillScenarios.DialogRootBot</AssemblyName>
+    <RootNamespace>FunctionalTests.SkillScenarios.DialogRootBot</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
