@@ -22,10 +22,7 @@ namespace FunctionalTests
         {
             var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
 
-            //var testBot = new TestBotClient(new EnvironmentBotTestConfiguration()a);
-            var testBot = new TestBotClient(
-                //new BotTestConfiguration("b-AsOBnK948.b3pkz3xdZI9OfGj0C-bg_cy_foiOQJbc4dBWG5t9sSo", "DialogRootBot"));
-                new BotTestConfiguration("b-AsOBnK948.b3pkz3xdZI9OfGj0C-bg_cy_foiOQJbc4dBWG5t9sSo", "DialogRootBot"));
+            var testBot = new TestBotClient(new EnvironmentBotTestConfiguration());
 
             await testBot.StartConversation(cancellationTokenSource.Token);
             await testBot.SendMessageAsync("Hi", cancellationTokenSource.Token);
@@ -39,8 +36,7 @@ namespace FunctionalTests
         {
             var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
 
-            var testBot = new TestBotClient(
-                new BotTestConfiguration("b-AsOBnK948.b3pkz3xdZI9OfGj0C-bg_cy_foiOQJbc4dBWG5t9sSo", "DialogRootBot"));
+            var testBot = new TestBotClient(new EnvironmentBotTestConfiguration());
 
             await testBot.StartConversation(cancellationTokenSource.Token);
             await testBot.SendMessageAsync("Hi", cancellationTokenSource.Token);
