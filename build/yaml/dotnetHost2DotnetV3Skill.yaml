@@ -1,5 +1,5 @@
 #
-# Build a C# Host bot. Optionally deploy it and a Python Skill bot and run functional tests.
+# Build a C# Host bot and a v3 C# Skill bot. Optionally deploy them and run functional tests.
 #
 
 # "name" here defines the build number format. Build number is accessed via $(Build.BuildNumber)
@@ -8,40 +8,36 @@ trigger: none
 pr: none
 
 variables:
-  BuildConfiguration: 'Debug'
   BuildPlatform: 'any cpu'
-  TriggeredReason: $[ coalesce( variables['TriggeringBuildReason'], variables['Build.Reason'] ) ]
-  # AzureDeploymentPassword: define in Azure
-  # AzureDeploymentUser: define in Azure
+  BuildConfiguration: 'Debug'
   # AzureSubscription: define in Azure
+  # DeleteResourceGroup: (optional) define in Azure
+  # DotNetDotNetV3HostAppId: define in Azure
+  # DotNetDotNetV3HostAppSecret: define in Azure
+  # DotNetDotNetV3HostBotName: define in Azure
+  # DotNetDotNetV3SkillAppId: define in Azure
+  # DotNetDotNetV3SkillAppSecret: define in Azure
+  # DotNetDotNetV3SkillBotName: define in Azure
   # BotBuilderPackageVersionHost: (optional) define in Azure
   # BotBuilderPackageVersionSkill: (optional) define in Azure
-  # DeleteResourceGroup: (optional) define in Azure
-  # DotNetPyHostAppId: define in Azure
-  # DotNetPyHostAppSecret: define in Azure
-  # DotNetPyHostBotName: define in Azure
-  # DotNetPySkillAppId: define in Azure
-  # DotNetPySkillAppSecret: define in Azure
-  # DotNetPySkillBotName: define in Azure  
-  # ExecutePipelinesPersonalAccessToken: (optional) define in Azure
   # NetCoreSdkVersionHost: define in Azure
-  # NextBuild: define in Azure and set to either a build name or an empty string
-  # TriggeredBy: define in Azure and set to an empty string
+  # NextBuild: (optional) define in Azure
+  # ExecutePipelinesPersonalAccessToken: (optional) define in Azure
 
 pool:
   vmImage: 'windows-2019'
 
 stages:
 - stage: Prepare
-  condition: and(succeeded(), in(variables['TriggeredReason'], 'Schedule', 'Manual'))
+  condition: and(succeeded(), in(variables['Build.Reason'], 'Schedule', 'Manual'))
   jobs:
     - job: Delete_Preexisting_Resources
       variables:
-        HostBotName: $(DotNetPyHostBotName)
-        SkillBotName: $(DotNetPySkillBotName)
+        HostBotName: $(DotNetDotNetV3HostBotName)
+        SkillBotName: $(DotNetDotNetV3SkillBotName)
       steps:
       - template: cleanResourcesStep.yml
-        
+
 - stage: Build
   condition: always()
   jobs:
@@ -50,12 +46,12 @@ stages:
         Parameters.netCoreSdkVersion: $(NetCoreSdkVersionHost)
       steps:
       - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
-        displayName: 'Tag Build with TriggeredReason, TriggeredBy, NextBuild'
+        displayName: 'Tag Build with Build.Reason=$(Build.Reason) NextBuild=$(NextBuild)'
         inputs:
           tags: |
-            TriggeredReason=$(TriggeredReason)
-            $(TriggeredBy)
+            Build.Reason=$(Build.Reason)
             NextBuild=$(NextBuild)
+            $(TriggeredBy)
         continueOnError: true
 
       - template: dotnetValidateNetCoreSdkVersion.yml
@@ -70,16 +66,24 @@ stages:
       - template: dotnetInstallPackagesSteps.yml
       - template: dotnetBuildSteps.yml
 
+    - job: Build_Skill_Bot
+      variables:
+        BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
+        Parameters.solution: 'SkillsFunctionalTests/dotnet/v3/skill/EchoSkillBot.sln'
+        Parameters.project: 'SkillsFunctionalTests/dotnet/v3/skill/EchoSkillBot.csproj'
+        Parameters.SkipNetCore: true
+      steps:
+      - template: dotnetBuildSteps.yml
+
 - stage: Deploy
-  condition: and(succeeded(), in(variables['TriggeredReason'], 'Schedule', 'Manual'))
+  condition: and(succeeded(), in(variables['Build.Reason'], 'Schedule', 'Manual'))
   jobs:
     - job: Deploy_Host
       variables:
-        BotName: $(DotNetPyHostBotName)
-        DeployAppId: $(DotNetPyHostAppId)
-        DeployAppSecret: $(DotNetPyHostAppSecret)
+        BotName: $(DotNetDotNetV3HostBotName)
+        DeployAppId: $(DotNetDotNetV3HostAppId)
+        DeployAppSecret: $(DotNetDotNetV3HostAppSecret)
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
-        ProjectName: SimpleHostBot
         Parameters.project: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionHost)/host/SimpleHostBot.csproj'
         TemplateLocation: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionHost)/host/DeploymentTemplates/template-with-new-rg.json'
       steps:
@@ -87,7 +91,7 @@ stages:
          # Set values in appsettings.json file.
          $file = "$(System.DefaultWorkingDirectory)\SkillsFunctionalTests\dotnet\$(NetCoreSdkVersionHost)\host\appsettings.json";
          $content = Get-Content -Raw $file | ConvertFrom-Json;
-         $content.SkillHostEndpoint = "https://$(DotNetPyHostBotName)-$(Build.BuildId).azurewebsites.net/api/skills";
+         $content.SkillHostEndpoint = "https://$(DotNetDotNetV3HostBotName)-$(Build.BuildId).azurewebsites.net/api/skills";
 
          # Create Skill Class
          class Skill{[String] $Id; [String] $AppId; [String] $SkillEndpoint;};
@@ -98,8 +102,8 @@ stages:
          # Create Skill object
          $dotnetSkill = New-Object -TypeName Skill;
          $dotnetSkill.Id = "EchoSkillBot";
-         $dotnetSkill.AppId = "$(DotNetPySkillAppId)";
-         $dotnetSkill.SkillEndpoint = "https://$(DotNetPySkillBotName)-$(Build.BuildId).azurewebsites.net/api/messages";
+         $dotnetSkill.AppId = "$(DotNetDotNetV3SkillAppId)";
+         $dotnetSkill.SkillEndpoint = "https://$(DotNetDotNetV3SkillBotName)-$(Build.BuildId).azurewebsites.net/api/messages";
 
          # Add skill to botframework skill list
          $botFrameworkSkills.Add($dotnetSkill);
@@ -110,37 +114,22 @@ stages:
       - template: dotnetDeploySteps.yml
 
     - job: Deploy_Skill
-      pool:
-        vmImage: 'ubuntu-latest'
       variables:
-        BotName: $(DotNetPySkillBotName)
-        DeployAppId: $(DotNetPySkillAppId)
-        DeployAppSecret: $(DotNetPySkillAppSecret)
-        BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
-        Parameters.sourceLocation: 'SkillsFunctionalTests/python/skill'
-        TemplateLocation: 'SkillsFunctionalTests/python/skill/deploymentTemplates/template-with-new-rg.json'
+        BotName: $(DotNetDotNetV3SkillBotName)
+        DeployAppId: $(DotNetDotNetV3SkillAppId)
+        DeployAppSecret: $(DotNetDotNetV3SkillAppSecret)
+        Parameters.solution: 'SkillsFunctionalTests/dotnet/v3/skill/EchoSkillBot.sln'
+        Parameters.sourceLocation: 'SkillsFunctionalTests/dotnet/v3/skill/'
+        TemplateLocation: 'SkillsFunctionalTests/dotnet/v3/skill/DeploymentTemplates/template-with-new-rg.json'
       steps:
-      - template: pythonDeploySteps.yml
-
-    - job: Configure_OAuth
-      dependsOn: Deploy_Skill
-      steps:
-      - task: AzureCLI@1
-        displayName: 'Configure skill OAuth connection'
-        inputs:
-          azureSubscription: $(AzureSubscription)
-          scriptLocation: inlineScript
-          inlineScript: |
-           call az bot show -g "$(DotNetPySkillBotName)-RG" -n "$(DotNetPySkillBotName)"
-           call az bot authsetting create -g "$(DotNetPySkillBotName)-RG" -n "$(DotNetPySkillBotName)" -c TestOAuthProvider --client-id "$(DotNetPySkillAppId)" --client-secret '$(DotNetPySkillAppSecret)'' --service "oauth2" --provider-scope-string '""' --parameters authorizationUrl=https://webjobs.botframework.com/api/testauthprovider/authorize tokenUrl=https://webjobs.botframework.com/api/testauthprovider/token refreshUrl=https://webjobs.botframework.com/api/testauthprovider/refresh clientId="$(DotNetPySkillAppId)" clientSecret="$(DotNetPySkillAppSecret)"
-        condition: always()
+      - template: dotnetV3DeploySteps.yml
 
 - stage: Test
   dependsOn: Deploy
   jobs:
     - job: Run_Functional_Test
       variables:
-        HostBotName: $(DotNetPyHostBotName)
+        HostBotName: $(DotNetDotNetV3HostBotName)
         Parameters.project: 'SkillsFunctionalTests/tests/SkillFunctionalTests/SkillFunctionalTests.csproj'
         Parameters.solution: 'SkillsFunctionalTests/tests/SkillFunctionalTests.sln'
       steps:
@@ -150,7 +139,7 @@ stages:
   dependsOn:
   - Deploy
   - Test
-  condition: and(succeeded('Build'), in(variables['TriggeredReason'], 'Schedule', 'Manual'))
+  condition: and(succeeded('Build'), in(variables['Build.Reason'], 'Schedule', 'Manual'))
   jobs:
     - job: Delete_RG
       steps:
@@ -160,12 +149,12 @@ stages:
           azureSubscription: $(AzureSubscription)
           scriptLocation: inlineScript
           inlineScript: |
-           call az group delete -n "$(DotNetPyHostBotName)-RG" --yes
-           call az group delete -n "$(DotNetPySkillBotName)-RG" --yes
+           call az group delete -n "$(DotNetDotNetV3HostBotName)-RG" --yes
+           call az group delete -n "$(DotNetDotNetV3SkillBotName)-RG" --yes
         condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
 
 - stage: QueueNext
-  condition: and(always(), ne(variables['TriggeredReason'], 'Manual'), ne(variables['NextBuild'], ''))
+  condition: always()
   jobs:
     - job: TriggerBuild
       steps:
@@ -174,9 +163,9 @@ stages:
         inputs:
           buildDefinition: '$(NextBuild)'
           queueBuildForUserThatTriggeredBuild: true
-          buildParameters: 'TriggeringBuildReason: $(TriggeredReason), TriggeredBy: Triggered_by_$(Build.DefinitionName)/$(Build.BuildNumber)'
+          buildParameters: 'TriggeredBy: Triggered_by_$(Build.DefinitionName)'
           password: '$(ExecutePipelinesPersonalAccessToken)'
           enableBuildInQueueCondition: true
           blockingBuildsList: '$(NextBuild)'
         continueOnError: true
-        condition: and(succeededOrFailed(), ne(variables['TriggeredReason'], 'Manual'), ne(variables['NextBuild'], ''), ne(variables['ExecutePipelinesPersonalAccessToken'], ''))
+        condition: and(succeededOrFailed(), ne(variables['Build.Reason'], 'Manual'), ne(variables['NextBuild'], ''), ne(variables['ExecutePipelinesPersonalAccessToken'], ''))
