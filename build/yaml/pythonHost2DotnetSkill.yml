@@ -33,7 +33,7 @@ pool:
 
 stages:
 - stage: Prepare
-  condition: and(succeeded(), in(variables['TriggeredReason'], 'Schedule', 'Manual'))
+  condition: and(succeeded(), in(variables['TriggeredReason'], 'Schedule', 'Manual', 'BuildRunner'))
   jobs:
     - job: Delete_Preexisting_Resources
       variables:
@@ -71,7 +71,7 @@ stages:
       - template: dotnetBuildSteps.yml
 
 - stage: Deploy
-  condition: and(succeeded(), in(variables['TriggeredReason'], 'Schedule', 'Manual'))
+  condition: and(succeeded(), in(variables['TriggeredReason'], 'Schedule', 'Manual', 'BuildRunner'))
   jobs:
     - job: Deploy_Host
       pool:
@@ -138,7 +138,7 @@ stages:
   dependsOn:
   - Deploy
   - Test
-  condition: and(succeeded('Build'), in(variables['TriggeredReason'], 'Schedule', 'Manual'))
+  condition: and(succeeded('Build'), in(variables['TriggeredReason'], 'Schedule', 'Manual', 'BuildRunner'))
   jobs:
     - job: Delete_RG
       steps:
