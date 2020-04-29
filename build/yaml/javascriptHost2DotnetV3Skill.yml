@@ -44,10 +44,8 @@ stages:
       variables:
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
         Parameters.solution: 'SkillsFunctionalTests/dotnet/v3/skill/EchoSkillBot.sln'
-        Parameters.project: 'SkillsFunctionalTests/dotnet/v3/skill/EchoSkillBot.csproj'
-        Parameters.SkipNetCore: true
       steps:
-      - template: dotnetBuildSteps.yml
+      - template: dotnetV3BuildSteps.yml
 
 - stage: Deploy
   condition: and(succeeded(), in(variables['Build.Reason'], 'Schedule', 'Manual'))
@@ -82,6 +80,7 @@ stages:
         BotName: $(JsDotNetV3SkillBotName)
         DeployAppId: $(JsDotNetV3SkillAppId)
         DeployAppSecret: $(JsDotNetV3SkillAppSecret)
+        BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
         Parameters.solution: 'SkillsFunctionalTests/dotnet/v3/skill/EchoSkillBot.sln'
         Parameters.sourceLocation: 'SkillsFunctionalTests/dotnet/v3/skill/'
         TemplateLocation: 'SkillsFunctionalTests/dotnet/v3/skill/DeploymentTemplates/template-with-new-rg.json'
