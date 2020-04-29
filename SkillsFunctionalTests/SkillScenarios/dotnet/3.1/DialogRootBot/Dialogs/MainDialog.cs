@@ -28,6 +28,7 @@ namespace FunctionalTests.SkillScenarios.DialogRootBot.Dialogs
         private const string SkillActionBookFlight = "BookFlight";
         private const string SkillActionBookFlightWithInputParameters = "BookFlight with input parameters";
         private const string SkillActionGetWeather = "GetWeather";
+        private const string SkillActionEchoSkillBot = "EchoSkill";
         private const string SkillActionMessage = "Message";
 
         public static readonly string ActiveSkillPropertyName = $"{typeof(MainDialog).FullName}.ActiveSkillProperty";
@@ -159,6 +160,11 @@ namespace FunctionalTests.SkillScenarios.DialogRootBot.Dialogs
             Activity skillActivity;
             switch (selectedSkill.Id)
             {
+                case "EchoSkillBot":
+                    // Echo only takes messages
+                    skillActivity = CreateDialogSkillBotActivity(SkillActionMessage, stepContext.Context);
+
+                    break;
                 case "DialogSkillBot":
                     skillActivity = CreateDialogSkillBotActivity(((FoundChoice)stepContext.Result).Value, stepContext.Context);
                     break;
@@ -231,10 +237,14 @@ namespace FunctionalTests.SkillScenarios.DialogRootBot.Dialogs
             var choices = new List<Choice>();
             switch (skill.Id)
             {
+                case "EchoSkillBot":
+                    choices.Add(new Choice(SkillActionMessage));
+                    break;
                 case "DialogSkillBot":
                     choices.Add(new Choice(SkillActionBookFlight));
                     choices.Add(new Choice(SkillActionBookFlightWithInputParameters));
                     choices.Add(new Choice(SkillActionGetWeather));
+                    choices.Add(new Choice(SkillActionEchoSkillBot));
                     break;
             }
 
@@ -277,6 +287,14 @@ namespace FunctionalTests.SkillScenarios.DialogRootBot.Dialogs
                 activity = (Activity)Activity.CreateEventActivity();
                 activity.Name = SkillActionGetWeather;
                 activity.Value = JObject.Parse("{ \"latitude\": 47.614891, \"longitude\": -122.195801}");
+                return activity;
+            }
+            
+            // Send an event activity to the skill with "EchoSkillBot" in the name.
+            if (selectedOption.Equals(SkillActionEchoSkillBot, StringComparison.CurrentCultureIgnoreCase))
+            {
+                activity = (Activity)Activity.CreateEventActivity();
+                activity.Name = SkillActionEchoSkillBot;
                 return activity;
             }
 
