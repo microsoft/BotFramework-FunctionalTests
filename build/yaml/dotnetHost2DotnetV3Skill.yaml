@@ -10,7 +10,10 @@ pr: none
 variables:
   BuildPlatform: 'any cpu'
   BuildConfiguration: 'Debug'
+  TriggeredReason: $[ coalesce( variables['TriggeringBuildReason'], variables['Build.Reason'] ) ]
   # AzureSubscription: define in Azure
+  # BotBuilderPackageVersionHost: (optional) define in Azure
+  # BotBuilderPackageVersionSkill: (optional) define in Azure
   # DeleteResourceGroup: (optional) define in Azure
   # DotNetDotNetV3HostAppId: define in Azure
   # DotNetDotNetV3HostAppSecret: define in Azure
@@ -18,11 +21,10 @@ variables:
   # DotNetDotNetV3SkillAppId: define in Azure
   # DotNetDotNetV3SkillAppSecret: define in Azure
   # DotNetDotNetV3SkillBotName: define in Azure
-  # BotBuilderPackageVersionHost: (optional) define in Azure
-  # BotBuilderPackageVersionSkill: (optional) define in Azure
-  # NetCoreSdkVersionHost: define in Azure
-  # NextBuild: (optional) define in Azure
   # ExecutePipelinesPersonalAccessToken: (optional) define in Azure
+  # NetCoreSdkVersionHost: define in Azure
+  # NextBuild: define in Azure and set to either a build name or an empty string
+  # TriggeredBy: define in Azure and set to an empty string
 
 pool:
   vmImage: 'windows-2019'
