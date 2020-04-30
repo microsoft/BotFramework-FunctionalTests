@@ -13,6 +13,9 @@ namespace FunctionalTests.SkillScenarios
         private readonly CancellationTokenSource cancellationTokenSource;
         private readonly TestBotClient testBot;
 
+        private const string EchoSkillBotId = "EchoSkillBot";
+        private const string DialogSkillBotId = "DialogSkillBot";
+
         public HostDialogToSkillDialogTest()
         {
             cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromMinutes(1));
@@ -38,12 +41,11 @@ namespace FunctionalTests.SkillScenarios
         {
             await testBot.AssertReplyAsync("What skill would you like to call?", cancellationToken);
             await testBot.SendMessageAsync("EchoSkillBot", cancellationToken);
-            var selectEchoActionText = "Select an action # to send to **EchoSkillBot** or just type in a message and it will be forwarded to the skill";
-            await testBot.AssertReplyAsync(selectEchoActionText, cancellationToken);
+            await testBot.AssertReplyAsync(BuildSelectSkillActionText(EchoSkillBotId), cancellationToken);
             await testBot.SendMessageAsync("Message", cancellationToken);
             await testBot.AssertReplyAsync("Echo (dotnet) : Message", cancellationToken);
             await testBot.SendMessageAsync("end", cancellationToken);
-            await testBot.AssertReplyAsync("Done with \"EchoSkillBot\". \n\n What skill would you like to call?", cancellationToken);
+            await testBot.AssertReplyAsync(BuildDoneWithSkillText(EchoSkillBotId), cancellationToken);
         }
 
         private async Task BookFlightWithDialogSkillAsync(TestBotClient testBot, CancellationToken cancellationToken)
@@ -54,7 +56,7 @@ namespace FunctionalTests.SkillScenarios
             await testBot.SendMessageAsync("tomorrow", cancellationToken);
             await testBot.AssertReplyAsync("Please confirm, I have you traveling to: Seattle from: New York", cancellationToken);
             await testBot.SendMessageAsync("Yes", cancellationToken);
-            await testBot.AssertReplyAsync("Done with \"DialogSkillBot\". \n\n What skill would you like to call?", cancellationToken);
+            await testBot.AssertReplyAsync(BuildDoneWithSkillText(DialogSkillBotId), cancellationToken);
         }
 
         private async Task RunEchoSkillFromDialogSkill(TestBotClient testBot, CancellationToken cancellationToken)
@@ -66,14 +68,18 @@ namespace FunctionalTests.SkillScenarios
             await testBot.SendMessageAsync("2nd message to echo skill", cancellationToken);
             await testBot.AssertReplyAsync("Echo (dotnet) : 2nd message to echo skill", cancellationToken);
             await testBot.SendMessageAsync("end", cancellationToken);
-            await testBot.AssertReplyAsync("Done with \"DialogSkillBot\". \n\n What skill would you like to call?", cancellationToken);
+            await testBot.AssertReplyAsync(BuildDoneWithSkillText(DialogSkillBotId), cancellationToken);
         }
 
         private async Task SelectDialogSkillAsync(TestBotClient testBot, CancellationToken cancellationToken)
         {
             await testBot.SendMessageAsync("DialogSkillBot", cancellationToken);
-            var selectDialogActionText = "Select an action # to send to **DialogSkillBot** or just type in a message and it will be forwarded to the skill\n\n   1. BookFlight\n   2. BookFlight with input parameters\n   3. GetWeather\n   4. EchoSkill";
+            var selectDialogActionText = "Select an action # to send to **DialogSkillBot** or just type in a message and it will be forwarded to the skill";
             await testBot.AssertReplyAsync(selectDialogActionText, cancellationToken);
         }
+
+        private string BuildSelectSkillActionText(string selectedSkill) => $"Select an action # to send to **{selectedSkill}** or just type in a message and it will be forwarded to the skill";
+
+        private string BuildDoneWithSkillText(string finishingSkillName) => $"Done with \"{finishingSkillName}\". \n\n What skill would you like to call?";
     }
 }
