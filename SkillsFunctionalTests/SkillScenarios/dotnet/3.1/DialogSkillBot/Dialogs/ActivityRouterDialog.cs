@@ -1,16 +1,21 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Builder.Integration.AspNet.Core.Skills;
+using Microsoft.Bot.Builder.Skills;
 using Microsoft.Bot.Builder.TraceExtensions;
+using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Bot.Schema;
-using FunctionalTests.SkillScenarios.DialogSkillBot.CognitiveModels;
 using Newtonsoft.Json;
+using Microsoft.Extensions.Configuration;
+using FunctionalTests.SkillScenarios.DialogSkillBot.CognitiveModels;
 
 namespace FunctionalTests.SkillScenarios.DialogSkillBot.Dialogs
 {
@@ -21,16 +26,46 @@ namespace FunctionalTests.SkillScenarios.DialogSkillBot.Dialogs
     {
         private readonly DialogSkillBotRecognizer _luisRecognizer;
 
-        public ActivityRouterDialog(DialogSkillBotRecognizer luisRecognizer)
+        public ActivityRouterDialog(DialogSkillBotRecognizer luisRecognizer, ConversationState conversationState, SkillConversationIdFactoryBase conversationIdFactory, SkillHttpClient skillClient, IConfiguration configuration)
             : base(nameof(ActivityRouterDialog))
         {
             _luisRecognizer = luisRecognizer;
 
             AddDialog(new BookingDialog());
+            var echoSkillDialog = CreateEchoSkillDialog(conversationState, conversationIdFactory, skillClient, configuration);
+            AddDialog(echoSkillDialog);
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[] { ProcessActivityAsync }));
 
             // The initial child Dialog to run.
             InitialDialogId = nameof(WaterfallDialog);
+        }
+        private static SkillDialog CreateEchoSkillDialog(ConversationState conversationState, SkillConversationIdFactoryBase conversationIdFactory, SkillHttpClient skillClient, IConfiguration configuration)
+        {
+            var botId = configuration.GetSection(MicrosoftAppCredentials.MicrosoftAppIdKey)?.Value;
+            if (string.IsNullOrWhiteSpace(botId))
+            {
+                throw new ArgumentException($"{MicrosoftAppCredentials.MicrosoftAppIdKey} is not in configuration");
+            }
+
+            var skillHostEndpoint = configuration.GetSection("SkillHostEndpoint")?.Value;
+            if (string.IsNullOrWhiteSpace(botId))
+            {
+                throw new ArgumentException("SkillHostEndpoint is not in configuration");
+            }
+
+            var skillInfo = configuration.GetSection("EchoSkillInfo").Get<BotFrameworkSkill>() ?? throw new ArgumentException("EchoSkillInfo is not set in configuration");
+
+            var skillDialogOptions = new SkillDialogOptions
+            {
+                BotId = botId,
+                ConversationIdFactory = conversationIdFactory,
+                SkillClient = skillClient,
+                SkillHostEndpoint = new Uri(skillHostEndpoint),
+                ConversationState = conversationState,
+                Skill = skillInfo
+            };
+            var echoSkillDialog = new SkillDialog(skillDialogOptions);
+            return echoSkillDialog;
         }
 
         private async Task<DialogTurnResult> ProcessActivityAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
@@ -67,6 +102,11 @@ namespace FunctionalTests.SkillScenarios.DialogSkillBot.Dialogs
 
                 case "GetWeather":
                     return await BeginGetWeather(stepContext, cancellationToken);
+
+                case "EchoSkill":
+                    var echoSkill = FindDialog(nameof(SkillDialog));
+                    var messageActivity = MessageFactory.Text("Hello echo");
+                    return await stepContext.BeginDialogAsync(echoSkill.Id, new BeginSkillDialogOptions { Activity = messageActivity }, cancellationToken);
 
                 default:
                     // We didn't get an event name we can handle.
@@ -106,7 +146,7 @@ namespace FunctionalTests.SkillScenarios.DialogSkillBot.Dialogs
 
                     case FlightBooking.Intent.GetWeather:
                         return await BeginGetWeather(stepContext, cancellationToken);
-
+                    
                     default:
                         // Catch all for unhandled intents.
                         var didntUnderstandMessageText = $"Sorry, I didn't get that. Please try asking in a different way (intent was {luisResult.TopIntent().intent})";

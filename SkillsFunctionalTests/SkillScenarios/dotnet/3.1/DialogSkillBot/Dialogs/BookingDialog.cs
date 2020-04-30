@@ -30,12 +30,6 @@ namespace FunctionalTests.SkillScenarios.DialogSkillBot.Dialogs
             InitialDialogId = nameof(WaterfallDialog);
         }
 
-        private static bool IsAmbiguous(string timex)
-        {
-            var timexProperty = new TimexProperty(timex);
-            return !timexProperty.Types.Contains(Constants.TimexTypes.Definite);
-        }
-
         private async Task<DialogTurnResult> DestinationStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             var bookingDetails = (BookingDetails)stepContext.Options;
@@ -100,6 +94,12 @@ namespace FunctionalTests.SkillScenarios.DialogSkillBot.Dialogs
             }
 
             return await stepContext.EndDialogAsync(null, cancellationToken);
+        }
+
+        private static bool IsAmbiguous(string timex)
+        {
+            var timexProperty = new TimexProperty(timex);
+            return !timexProperty.Types.Contains(Constants.TimexTypes.Definite);
         }
     }
 }
