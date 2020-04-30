@@ -13,20 +13,13 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.0" />
-    <!-- <PackageReference Include="Microsoft.Bot.Builder.AI.Luis" Version="4.8.0" /> -->
-    <!-- <PackageReference Include="Microsoft.Bot.Builder.Dialogs" Version="4.8.0" /> -->
-    <!-- <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="4.8.0" /> -->
+    <PackageReference Include="Microsoft.Bot.Builder.AI.Luis" Version="4.8.0" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs" Version="4.8.0" />
+    <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="4.8.0" />
     <PackageReference Include="Microsoft.Recognizers.Text.DataTypes.TimexExpression" Version="1.1.5" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\..\..\botbuilder-dotnet\libraries\Microsoft.Bot.Builder\Microsoft.Bot.Builder.csproj" />
-    <ProjectReference Include="..\..\..\..\..\..\..\botbuilder-dotnet\libraries\Microsoft.Bot.Builder.Dialogs\Microsoft.Bot.Builder.Dialogs.csproj" />
-    <ProjectReference Include="..\..\..\..\..\..\..\botbuilder-dotnet\libraries\Microsoft.Bot.Builder.AI.Luis\Microsoft.Bot.Builder.AI.Luis.csproj" />
-    <ProjectReference Include="..\..\..\..\..\..\..\botbuilder-dotnet\libraries\integration\Microsoft.Bot.Builder.Integration.AspNet.Core\Microsoft.Bot.Builder.Integration.AspNet.Core.csproj" />
-  </ItemGroup>
-
-    <ItemGroup>
     <Content Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
