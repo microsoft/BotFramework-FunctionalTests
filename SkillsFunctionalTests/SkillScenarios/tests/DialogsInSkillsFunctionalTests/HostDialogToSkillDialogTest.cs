@@ -74,8 +74,7 @@ namespace FunctionalTests.SkillScenarios
         private async Task SelectDialogSkillAsync(TestBotClient testBot, CancellationToken cancellationToken)
         {
             await testBot.SendMessageAsync("DialogSkillBot", cancellationToken);
-            var selectDialogActionText = "Select an action # to send to **DialogSkillBot** or just type in a message and it will be forwarded to the skill";
-            await testBot.AssertReplyAsync(selectDialogActionText, cancellationToken);
+            await testBot.AssertReplyAsync(BuildSelectSkillActionText(DialogSkillBotId), cancellationToken);
         }
 
         private string BuildSelectSkillActionText(string selectedSkill) => $"Select an action # to send to **{selectedSkill}** or just type in a message and it will be forwarded to the skill";
