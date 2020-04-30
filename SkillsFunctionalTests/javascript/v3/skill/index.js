@@ -39,7 +39,7 @@ const bot = new builder.UniversalBot(connector, function (session) {
             session.endConversation();
             break;
         default:
-            session.send("Echo %s", session.message.text);
+            session.send("Echo: %s", session.message.text);
             session.send('Say "end" or "stop" and I\'ll end the conversation and back to the parent.');
     }
 }).set('storage', inMemoryStorage); // Register in memory storage
