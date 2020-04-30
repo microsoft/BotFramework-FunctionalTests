@@ -8,7 +8,7 @@ using Xunit;
 
 namespace FunctionalTests.SkillScenarios
 {
-    public class HostDialogToSkillDialogTest
+    public class HostDialogToSkillDialogTests
     {
         private readonly CancellationTokenSource cancellationTokenSource;
         private readonly TestBotClient testBot;
@@ -16,7 +16,7 @@ namespace FunctionalTests.SkillScenarios
         private const string EchoSkillBotId = "EchoSkillBot";
         private const string DialogSkillBotId = "DialogSkillBot";
 
-        public HostDialogToSkillDialogTest()
+        public HostDialogToSkillDialogTests()
         {
             cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromMinutes(1));
             testBot = new TestBotClient(new EnvironmentBotTestConfiguration());
