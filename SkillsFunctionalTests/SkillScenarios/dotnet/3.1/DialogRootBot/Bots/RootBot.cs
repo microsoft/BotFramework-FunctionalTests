@@ -49,10 +49,6 @@ namespace FunctionalTests.SkillScenarios.DialogRootBot.Bots
                 // To learn more about Adaptive Cards, see https://aka.ms/msbot-adaptivecards.
                 if (member.Id != turnContext.Activity.Recipient.Id)
                 {
-                    var welcomeCard = CreateAdaptiveCardAttachment();
-                    // var activity = MessageFactory.Attachment(welcomeCard);
-                    // activity.Speak = "Welcome to the Dialog Skill Prototype!";
-                    // await turnContext.SendActivityAsync(activity, cancellationToken);
                     await _mainDialog.RunAsync(turnContext, _conversationState.CreateProperty<DialogState>("DialogState"), cancellationToken);
                 }
             }
