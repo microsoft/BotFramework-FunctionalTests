@@ -1,0 +1,139 @@
+#
+# Optionally deploy a Python Host bot and a V3 JS Skill bot and run functional tests. (No build stage.)
+#
+
+# "name" here defines the build number format. Build number is accessed via $(Build.BuildNumber)
+name: $(Build.BuildId)
+trigger: none
+pr: none
+
+variables:
+  BuildConfiguration: 'Debug'
+  BuildPlatform: 'any cpu'
+  TriggeredReason: $[ coalesce( variables['TriggeringBuildReason'], variables['Build.Reason'] ) ]
+  # AzureDeploymentPassword: define in Azure
+  # AzureDeploymentUser: define in Azure
+  # AzureSubscription: define in Azure
+  # BotBuilderPackageVersionHost: (optional) define in Azure
+  # BotBuilderPackageVersionSkill: (optional) define in Azure
+  # DeleteResourceGroup: (optional) define in Azure
+  # ExecutePipelinesPersonalAccessToken: (optional) define in Azure
+  # PyJsV3HostAppId: define in Azure
+  # PyJsV3HostAppSecret: define in Azure
+  # PyJsV3HostBotName: define in Azure
+  # PyJsV3SkillAppId: define in Azure
+  # PyJsV3SkillAppSecret: define in Azure
+  # PyJsV3SkillBotName: define in Azure
+  # NextBuild: define in Azure and set to either a build name or an empty string
+  # TriggeredBy: define in Azure and set to an empty string
+
+pool:
+  vmImage: 'windows-2019'
+
+stages:
+- stage: Prepare
+  condition: and(succeeded(), in(variables['TriggeredReason'], 'Schedule', 'Manual', 'BuildRunner'))
+  jobs:
+    - job: Delete_Preexisting_Resources
+      variables:
+        HostBotName: $(PyJsV3HostBotName)
+        SkillBotName: $(PyJsV3SkillBotName)
+      steps:
+      - template: cleanResourcesStep.yml
+
+- stage: Tag
+  condition: always()
+  jobs:
+    - job: Tag
+      steps:
+      - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
+        displayName: 'Tag Build with TriggeredReason, TriggeredBy, NextBuild'
+        inputs:
+          tags: |
+            TriggeredReason=$(TriggeredReason)
+            $(TriggeredBy)
+            NextBuild=$(NextBuild)
+        continueOnError: true
+
+- stage: Deploy
+  condition: and(succeeded(), in(variables['TriggeredReason'], 'Schedule', 'Manual', 'BuildRunner'))
+  jobs:
+    - job: Deploy_Host
+      pool:
+        vmImage: 'ubuntu-latest'
+      variables:
+        BotName: $(PyJsV3HostBotName)
+        DeployAppId: $(PyJsV3HostAppId)
+        DeployAppSecret: $(PyJsV3HostAppSecret)
+        BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
+        Parameters.sourceLocation: 'SkillsFunctionalTests/python/host'
+        TemplateLocation: 'SkillsFunctionalTests/python/host/deploymentTemplates/template-with-new-rg.json'
+      steps:
+      - powershell: |
+         Write-host "Setting config file"
+         $file = "$(System.DefaultWorkingDirectory)/$(Parameters.sourceLocation)/.env";
+         $content = Get-Content -Raw $file | ConvertFrom-StringData;
+         $content.SKILL_BOT_APP_ID = "$(PyJsV3SkillAppId)";
+         $content.SKILL_BOT_ENDPOINT = "https://$(PyJsV3SkillBotName)-$(Build.BuildId).azurewebsites.net/api/messages";
+         $content.SKILL_HOST_ENDPOINT = "https://$(PyJsV3HostBotName)-$(Build.BuildId).azurewebsites.net/api/skills";
+         Clear-Content $file;
+         foreach ($key in $content.keys) { Add-Content $file "$key=$($content.$key)" };
+        displayName: 'Update .env file'
+      - template: pythonDeploySteps.yml
+
+    - job: Deploy_Skill
+      variables:
+        BotName: $(PyJsV3SkillBotName)
+        DeployAppId: $(PyJsV3SkillAppId)
+        DeployAppSecret: $(PyJsV3SkillAppSecret)
+        BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
+        Parameters.sourceLocation: 'SkillsFunctionalTests/javascript/v3/skill'
+        TemplateLocation: 'SkillsFunctionalTests/javascript/skill/DeploymentTemplates/template-with-new-rg.json'
+      steps:
+      - template: javascriptDeploySteps.yml
+
+- stage: Test
+  dependsOn: Deploy
+  jobs:
+    - job: Run_Functional_Test
+      variables:
+        HostBotName: $(PyJsV3HostBotName)
+        Parameters.project: 'SkillsFunctionalTests/tests/SkillFunctionalTests/SkillFunctionalTests.csproj'
+        Parameters.solution: 'SkillsFunctionalTests/tests/SkillFunctionalTests.sln'
+      steps:
+      - template: functionalTestSteps.yml
+
+- stage: Cleanup
+  dependsOn:
+  - Deploy
+  - Test
+  condition: and(always(), in(variables['TriggeredReason'], 'Schedule', 'Manual', 'BuildRunner'))
+  jobs:
+    - job: Delete_RG
+      steps:
+      - task: AzureCLI@1
+        displayName: 'Delete Resource Group'
+        inputs:
+          azureSubscription: $(AzureSubscription)
+          scriptLocation: inlineScript
+          inlineScript: |
+           call az group delete -n "$(PyJsV3HostBotName)-RG" --yes
+           call az group delete -n "$(PyJsV3SkillBotName)-RG" --yes
+        condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
+
+- stage: QueueNext
+  condition: and(always(), ne(variables['TriggeredReason'], 'Manual'), ne(variables['NextBuild'], ''))
+  jobs:
+    - job: TriggerBuild
+      steps:
+      - task: benjhuser.tfs-extensions-build-tasks.trigger-build-task.TriggerBuild@3
+        displayName: 'Trigger build $(NextBuild)'
+        inputs:
+          buildDefinition: '$(NextBuild)'
+          queueBuildForUserThatTriggeredBuild: true
+          buildParameters: 'TriggeringBuildReason: $(TriggeredReason), TriggeredBy: Triggered_by_$(Build.DefinitionName)/$(Build.BuildNumber)'
+          password: '$(ExecutePipelinesPersonalAccessToken)'
+          enableBuildInQueueCondition: true
+          blockingBuildsList: '$(NextBuild)'
+        continueOnError: true
+        condition: and(succeededOrFailed(), ne(variables['TriggeredReason'], 'Manual'), ne(variables['NextBuild'], ''), ne(variables['ExecutePipelinesPersonalAccessToken'], ''))
