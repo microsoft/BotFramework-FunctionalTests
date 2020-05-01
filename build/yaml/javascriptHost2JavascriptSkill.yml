@@ -40,7 +40,7 @@ stages:
       - template: cleanResourcesStep.yml
 
 - stage: Tag
-  condition: always()
+  condition: succeededOrFailed()
   jobs:
     - job: Tag
       steps:

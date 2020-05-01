@@ -42,7 +42,7 @@ stages:
       - template: cleanResourcesStep.yml
 
 - stage: Build
-  condition: always()
+  condition: succeededOrFailed()
   jobs:
     - job: Validate_Host_NetCore_Version
       variables:
