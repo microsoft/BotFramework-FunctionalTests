@@ -10,7 +10,10 @@ pr: none
 variables:
   BuildPlatform: 'any cpu'
   BuildConfiguration: 'Debug'
+  TriggeredReason: $[ coalesce( variables['TriggeringBuildReason'], variables['Build.Reason'] ) ]
   # AzureSubscription: define in Azure
+  # BotBuilderPackageVersionHost: (optional) define in Azure
+  # BotBuilderPackageVersionSkill: (optional) define in Azure
   # DeleteResourceGroup: (optional) define in Azure
   # DotNetDotNetV3HostAppId: define in Azure
   # DotNetDotNetV3HostAppSecret: define in Azure
@@ -18,11 +21,10 @@ variables:
   # DotNetDotNetV3SkillAppId: define in Azure
   # DotNetDotNetV3SkillAppSecret: define in Azure
   # DotNetDotNetV3SkillBotName: define in Azure
-  # BotBuilderPackageVersionHost: (optional) define in Azure
-  # BotBuilderPackageVersionSkill: (optional) define in Azure
-  # NetCoreSdkVersionHost: define in Azure
-  # NextBuild: (optional) define in Azure
   # ExecutePipelinesPersonalAccessToken: (optional) define in Azure
+  # NetCoreSdkVersionHost: define in Azure
+  # NextBuild: define in Azure and set to either a build name or an empty string
+  # TriggeredBy: define in Azure and set to an empty string
 
 pool:
   vmImage: 'windows-2019'
@@ -70,10 +72,8 @@ stages:
       variables:
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
         Parameters.solution: 'SkillsFunctionalTests/dotnet/v3/skill/EchoSkillBot.sln'
-        Parameters.project: 'SkillsFunctionalTests/dotnet/v3/skill/EchoSkillBot.csproj'
-        Parameters.SkipNetCore: true
       steps:
-      - template: dotnetBuildSteps.yml
+      - template: dotnetV3BuildSteps.yml
 
 - stage: Deploy
   condition: and(succeeded(), in(variables['Build.Reason'], 'Schedule', 'Manual'))
@@ -118,6 +118,7 @@ stages:
         BotName: $(DotNetDotNetV3SkillBotName)
         DeployAppId: $(DotNetDotNetV3SkillAppId)
         DeployAppSecret: $(DotNetDotNetV3SkillAppSecret)
+        BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
         Parameters.solution: 'SkillsFunctionalTests/dotnet/v3/skill/EchoSkillBot.sln'
         Parameters.sourceLocation: 'SkillsFunctionalTests/dotnet/v3/skill/'
         TemplateLocation: 'SkillsFunctionalTests/dotnet/v3/skill/DeploymentTemplates/template-with-new-rg.json'

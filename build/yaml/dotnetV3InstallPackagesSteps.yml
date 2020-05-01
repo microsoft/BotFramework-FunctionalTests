@@ -1,0 +1,51 @@
+steps:
+- powershell: |
+   switch ("$(BotBuilderPackageVersion)".ToUpper())
+   {
+      $null { Write-Host ("##vso[task.setvariable variable=BBVersion]preview") }
+      '' { Write-Host ("##vso[task.setvariable variable=BBVersion]preview") }
+      STABLE { Write-Host ("##vso[task.setvariable variable=BBVersion]stable") }
+      default { Write-Host ("##vso[task.setvariable variable=BBVersion]$(BotBuilderPackageVersion)") }
+   }
+  displayName: 'Read Variables'
+
+- powershell: |
+   Write-Host "BBVersion: "$(BBVersion)
+   if ("$(BBVersion)" -eq "stable")
+   {
+     $version = ""
+     $source = ""
+   }
+   elseif ("$(BBVersion)" -eq "preview") 
+   {
+     $version = ""
+     $source = ' -Source "https://botbuilder.myget.org/F/botbuilder-v3-dotnet-daily/api/v3/index.json"'
+   }
+   else
+   {
+     $version = '-Version ' + '"$(BBVersion)"'
+     $source = ' -Source "https://botbuilder.myget.org/F/botbuilder-v3-dotnet-daily/api/v3/index.json"'
+   }
+
+   $InstallPackageParameters = "$version" + "$source"
+   echo "##vso[task.setvariable variable=InstallPackageParameters]$InstallPackageParameters"
+  failOnStderr: true
+  displayName: 'Set BotBuilder Packages Version'
+
+- task: NuGetCommand@2
+  displayName: 'Install Microsoft.Bot.Builder'
+  inputs:
+    command: custom
+    arguments: 'update $(Parameters.solution) -Id Microsoft.Bot.Builder $(InstallPackageParameters)'
+
+- task: NuGetCommand@2
+  displayName: 'Install Microsoft.Bot.Builder.Azure'
+  inputs:
+    command: custom
+    arguments: 'update $(Parameters.solution) -Id Microsoft.Bot.Builder.Azure $(InstallPackageParameters)'
+
+- task: NuGetCommand@2
+  displayName: 'Install Microsoft.Bot.Builder.History'
+  inputs:
+    command: custom
+    arguments: 'update $(Parameters.solution) -Id Microsoft.Bot.Builder.History $(InstallPackageParameters)'
