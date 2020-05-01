@@ -104,7 +104,7 @@ stages:
           scriptLocation: inlineScript
           inlineScript: |
            call az bot show -g "$(PyPySkillBotName)-RG" -n "$(PyPySkillBotName)"
-           call az bot authsetting create -g "$(PyPySkillBotName)-RG" -n "$(PyPySkillBotName)" -c TestOAuthProvider --client-id "$(PyPySkillAppId)" --client-secret '$(PyDotNetSkillAppSecret)'' --service "oauth2" --provider-scope-string '""' --parameters authorizationUrl=https://webjobs.botframework.com/api/testauthprovider/authorize tokenUrl=https://webjobs.botframework.com/api/testauthprovider/token refreshUrl=https://webjobs.botframework.com/api/testauthprovider/refresh clientId="$(PyPySkillAppId)" clientSecret="$(PyPySkillAppSecret)"
+           call az bot authsetting create -g "$(PyPySkillBotName)-RG" -n "$(PyPySkillBotName)" -c TestOAuthProvider --client-id "$(PyPySkillAppId)" --client-secret '$(PyPySkillAppSecret)'' --service "oauth2" --provider-scope-string '""' --parameters authorizationUrl=https://webjobs.botframework.com/api/testauthprovider/authorize tokenUrl=https://webjobs.botframework.com/api/testauthprovider/token refreshUrl=https://webjobs.botframework.com/api/testauthprovider/refresh clientId="$(PyPySkillAppId)" clientSecret="$(PyPySkillAppSecret)"
         condition: always()
 
 - stage: Test
