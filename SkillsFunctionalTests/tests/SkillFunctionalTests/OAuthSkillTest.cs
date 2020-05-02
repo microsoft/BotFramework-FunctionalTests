@@ -20,7 +20,7 @@ namespace FunctionalTests
     [TestCategory("FunctionalTests")]
     public class OAuthSkillTest
     {
-        [TestMethod][Ignore]
+        [TestMethod]
         public async Task Skill_OAuthCard_SignInSuccessful()
         {
             // If the test takes more than one minute, declare failure.

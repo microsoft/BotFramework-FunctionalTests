@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using SkillFunctionalTests.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -14,6 +15,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Activity = Microsoft.Bot.Connector.DirectLine.Activity;
 
 namespace SkillFunctionalTests.Bot
 {
@@ -138,7 +140,13 @@ namespace SkillFunctionalTests.Bot
         public async Task AssertReplyAsync(string expected, CancellationToken cancellationToken = default(CancellationToken))
         {
             var messages = await PollBotMessagesAsync(cancellationToken);
-            Assert.IsTrue(messages.Any(m => m.Type == ActivityTypes.Message && m.Text.Contains(expected, StringComparison.OrdinalIgnoreCase)));
+            Console.WriteLine("Messages:");
+            var messagesList = messages.ToList();
+            foreach (var m in messagesList.ToList())
+            {
+                Console.WriteLine($"Type:{m.Type}; Text:{m.Text}");
+            }
+            Assert.IsTrue(messagesList.Any(m => m.Type == ActivityTypes.Message && m.Text.Contains(expected, StringComparison.OrdinalIgnoreCase)), $"Expected: {expected}");
         }
 
         public async Task AssertReplyOneOf(IEnumerable<string> expected, CancellationToken cancellationToken = default(CancellationToken))
