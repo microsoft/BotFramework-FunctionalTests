@@ -103,6 +103,7 @@ namespace SkillFunctionalTests.Bot
                 Type = ActivityTypes.Message,
             };
 
+            Console.WriteLine($"Sent to bot: {message}");
             return SendActivityAsync(messageActivity, cancellationToken);
         }
 
@@ -138,7 +139,7 @@ namespace SkillFunctionalTests.Bot
         public async Task AssertReplyAsync(string expected, CancellationToken cancellationToken = default(CancellationToken))
         {
             var messages = await PollBotMessagesAsync(cancellationToken);
-            Console.WriteLine("Messages:");
+            Console.WriteLine("Messages sent from bot:");
             var messagesList = messages.ToList();
             foreach (var m in messagesList.ToList())
             {
