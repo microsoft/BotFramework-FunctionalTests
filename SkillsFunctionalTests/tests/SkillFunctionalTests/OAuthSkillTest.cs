@@ -24,7 +24,7 @@ namespace FunctionalTests
         public async Task Skill_OAuthCard_SignInSuccessful()
         {
             // If the test takes more than one minute, declare failure.
-            var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromMinutes(1));
+            var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromMinutes(2));
 
             var testBot = new TestBotClient(new EnvironmentBotTestConfiguration());
 
