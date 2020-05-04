@@ -30,7 +30,7 @@ pool:
 
 stages:
 - stage: Prepare
-  condition: and(succeeded(), in(variables['Build.Reason'], 'Schedule', 'Manual'))
+  condition: and(succeeded(), in(variables['TriggeredReason'], 'Schedule', 'Manual', 'BuildRunner'))
   jobs:
     - job: Delete_Preexisting_Resources
       variables:
@@ -38,6 +38,20 @@ stages:
         SkillBotName: $(JsDotNetV3SkillBotName)
       steps:
       - template: cleanResourcesStep.yml
+
+- stage: Tag
+  condition: always()
+  jobs:
+    - job: Tag
+      steps:
+      - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
+        displayName: 'Tag Build with TriggeredReason, TriggeredBy, NextBuild'
+        inputs:
+          tags: |
+            TriggeredReason=$(TriggeredReason)
+            $(TriggeredBy)
+            NextBuild=$(NextBuild)
+        continueOnError: true
 
 - stage: Build
   condition: always()
@@ -50,7 +64,7 @@ stages:
       - template: dotnetV3BuildSteps.yml
 
 - stage: Deploy
-  condition: and(succeeded(), in(variables['Build.Reason'], 'Schedule', 'Manual'))
+  condition: and(succeeded(), in(variables['TriggeredReason'], 'Schedule', 'Manual', 'BuildRunner'))
   jobs:
     - job: Deploy_Host
       variables:
@@ -104,7 +118,7 @@ stages:
   dependsOn:
   - Deploy
   - Test
-  condition: and(succeeded('Build'), in(variables['Build.Reason'], 'Schedule', 'Manual'))
+  condition: and(succeeded('Build'), in(variables['TriggeredReason'], 'Schedule', 'Manual', 'BuildRunner'))
   jobs:
     - job: Delete_RG
       steps:
@@ -119,7 +133,7 @@ stages:
         condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
 
 - stage: QueueNext
-  condition: always()
+  condition: and(succeededOrFailed(), ne(variables['TriggeredReason'], 'Manual'), ne(variables['NextBuild'], ''))
   jobs:
     - job: TriggerBuild
       steps:
@@ -128,9 +142,9 @@ stages:
         inputs:
           buildDefinition: '$(NextBuild)'
           queueBuildForUserThatTriggeredBuild: true
-          buildParameters: 'TriggeredBy: Triggered_by_$(Build.DefinitionName)'
+          buildParameters: 'TriggeringBuildReason: $(TriggeredReason), TriggeredBy: Triggered_by_$(Build.DefinitionName)/$(Build.BuildNumber)'
           password: '$(ExecutePipelinesPersonalAccessToken)'
           enableBuildInQueueCondition: true
           blockingBuildsList: '$(NextBuild)'
         continueOnError: true
-        condition: and(succeededOrFailed(), ne(variables['Build.Reason'], 'Manual'), ne(variables['NextBuild'], ''), ne(variables['ExecutePipelinesPersonalAccessToken'], ''))
+        condition: and(succeededOrFailed(), ne(variables['TriggeredReason'], 'Manual'), ne(variables['NextBuild'], ''), ne(variables['ExecutePipelinesPersonalAccessToken'], ''))
