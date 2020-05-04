@@ -10,6 +10,7 @@ using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.BotFrameworkFunctionalTests.EchoSkillBot.Authentication;
 using Microsoft.BotFrameworkFunctionalTests.EchoSkillBot.Bots;
+using Microsoft.BotFrameworkFunctionalTests.EchoSkillBot.OAuth;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -27,6 +28,10 @@ namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot
 
             // Configure credentials
             services.AddSingleton<ICredentialProvider, ConfigurationCredentialProvider>();
+
+            // Configuration for OAuth
+            services.AddSingleton<LoginDialog>();
+            services.AddSingleton<ConversationState>((s) => new ConversationState(new MemoryStorage()));
 
             // Register AuthConfiguration to enable custom claim validation.
             services.AddSingleton(sp => new AuthenticationConfiguration { ClaimsValidator = new AllowedCallersClaimsValidator(sp.GetService<IConfiguration>()) });
