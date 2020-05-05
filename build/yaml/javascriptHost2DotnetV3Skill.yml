@@ -1,0 +1,150 @@
+#
+# Build a v3 C# Skill bot. Optionally deploy it and a Javascript Host bot and run functional tests.
+#
+
+# "name" here defines the build number format. Build number is accessed via $(Build.BuildNumber)
+name: $(Build.BuildId)
+trigger: none
+pr: none
+
+variables:
+  BuildPlatform: 'any cpu'
+  BuildConfiguration: 'Debug'
+  TriggeredReason: $[ coalesce( variables['TriggeringBuildReason'], variables['Build.Reason'] ) ]
+  # AzureSubscription: define in Azure
+  # BotBuilderPackageVersionHost: (optional) define in Azure
+  # BotBuilderPackageVersionSkill: (optional) define in Azure
+  # DeleteResourceGroup: (optional) define in Azure
+  # ExecutePipelinesPersonalAccessToken: (optional) define in Azure
+  # JsDotNetV3HostAppId: define in Azure
+  # JsDotNetV3HostAppSecret: define in Azure
+  # JsDotNetV3HostBotName: define in Azure
+  # JsDotNetV3SkillAppId: define in Azure
+  # JsDotNetV3SkillAppSecret: define in Azure
+  # JsDotNetV3SkillBotName: define in Azure
+  # NextBuild: define in Azure and set to either a build name or an empty string
+  # TriggeredBy: define in Azure and set to an empty string
+
+pool:
+  vmImage: 'windows-2019'
+
+stages:
+- stage: Prepare
+  condition: and(succeeded(), in(variables['TriggeredReason'], 'Schedule', 'Manual', 'BuildRunner'))
+  jobs:
+    - job: Delete_Preexisting_Resources
+      variables:
+        HostBotName: $(JsDotNetV3HostBotName)
+        SkillBotName: $(JsDotNetV3SkillBotName)
+      steps:
+      - template: cleanResourcesStep.yml
+
+- stage: Tag
+  condition: always()
+  jobs:
+    - job: Tag
+      steps:
+      - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
+        displayName: 'Tag Build with TriggeredReason, TriggeredBy, NextBuild'
+        inputs:
+          tags: |
+            TriggeredReason=$(TriggeredReason)
+            $(TriggeredBy)
+            NextBuild=$(NextBuild)
+        continueOnError: true
+
+- stage: Build
+  condition: always()
+  jobs:
+    - job: Build_Skill_Bot
+      variables:
+        BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
+        Parameters.solution: 'SkillsFunctionalTests/dotnet/v3/skill/EchoSkillBot.sln'
+      steps:
+      - template: dotnetV3BuildSteps.yml
+
+- stage: Deploy
+  condition: and(succeeded(), in(variables['TriggeredReason'], 'Schedule', 'Manual', 'BuildRunner'))
+  jobs:
+    - job: Deploy_Host
+      variables:
+        BotName: $(JsDotNetV3HostBotName)
+        DeployAppId: $(JsDotNetV3HostAppId)
+        DeployAppSecret: $(JsDotNetV3HostAppSecret)
+        BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
+        Parameters.sourceLocation: 'SkillsFunctionalTests/javascript/host'
+        TemplateLocation: 'SkillsFunctionalTests/javascript/host/DeploymentTemplates/template-with-new-rg.json'
+      steps:
+      - powershell: |
+         Write-host "Setting values in .env file"
+         $file = "$(System.DefaultWorkingDirectory)/SkillsFunctionalTests/javascript/host/.env";
+         $content = Get-Content -Raw $file | ConvertFrom-StringData;
+
+         $content.SkillHostEndpoint = "https://$(JsDotNetV3HostBotName)-$(Build.BuildId).azurewebsites.net/api/skills";
+         $content.SkillId = "EchoSkillBot";
+         $content.SkillAppId = "$(JsDotNetV3SkillAppId)";
+         $content.SkillEndpoint = "https://$(JsDotNetV3SkillBotName)-$(Build.BuildId).azurewebsites.net/api/messages";
+
+         Clear-Content $file;
+         foreach ($key in $content.keys) { Add-Content $file "$key=$($content.$key)" };
+        displayName: 'Update .env file'
+
+      - template: javascriptDeploySteps.yml
+
+    - job: Deploy_Skill
+      variables:
+        BotName: $(JsDotNetV3SkillBotName)
+        DeployAppId: $(JsDotNetV3SkillAppId)
+        DeployAppSecret: $(JsDotNetV3SkillAppSecret)
+        BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
+        Parameters.solution: 'SkillsFunctionalTests/dotnet/v3/skill/EchoSkillBot.sln'
+        Parameters.sourceLocation: 'SkillsFunctionalTests/dotnet/v3/skill/'
+        TemplateLocation: 'SkillsFunctionalTests/dotnet/v3/skill/DeploymentTemplates/template-with-new-rg.json'
+      steps:
+      - template: dotnetV3DeploySteps.yml
+
+- stage: Test
+  dependsOn: Deploy
+  jobs:
+    - job: Run_Functional_Test
+      variables:
+        HostBotName: $(JsDotNetV3HostBotName)
+        Parameters.project: 'SkillsFunctionalTests/tests/SkillFunctionalTests/SkillFunctionalTests.csproj'
+        Parameters.solution: 'SkillsFunctionalTests/tests/SkillFunctionalTests.sln'
+      steps:
+      - template: functionalTestSteps.yml
+
+- stage: Cleanup
+  dependsOn:
+  - Deploy
+  - Test
+  condition: and(succeeded('Build'), in(variables['TriggeredReason'], 'Schedule', 'Manual', 'BuildRunner'))
+  jobs:
+    - job: Delete_RG
+      steps:
+      - task: AzureCLI@1
+        displayName: 'Delete Resource Group'
+        inputs:
+          azureSubscription: $(AzureSubscription)
+          scriptLocation: inlineScript
+          inlineScript: |
+           call az group delete -n "$(JsDotNetV3HostBotName)-RG" --yes
+           call az group delete -n "$(JsDotNetV3SkillBotName)-RG" --yes
+        condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
+
+- stage: QueueNext
+  condition: and(succeededOrFailed(), ne(variables['TriggeredReason'], 'Manual'), ne(variables['NextBuild'], ''))
+  jobs:
+    - job: TriggerBuild
+      steps:
+      - task: benjhuser.tfs-extensions-build-tasks.trigger-build-task.TriggerBuild@3
+        displayName: 'Trigger build $(NextBuild)'
+        inputs:
+          buildDefinition: '$(NextBuild)'
+          queueBuildForUserThatTriggeredBuild: true
+          buildParameters: 'TriggeringBuildReason: $(TriggeredReason), TriggeredBy: Triggered_by_$(Build.DefinitionName)/$(Build.BuildNumber)'
+          password: '$(ExecutePipelinesPersonalAccessToken)'
+          enableBuildInQueueCondition: true
+          blockingBuildsList: '$(NextBuild)'
+        continueOnError: true
+        condition: and(succeededOrFailed(), ne(variables['TriggeredReason'], 'Manual'), ne(variables['NextBuild'], ''), ne(variables['ExecutePipelinesPersonalAccessToken'], ''))

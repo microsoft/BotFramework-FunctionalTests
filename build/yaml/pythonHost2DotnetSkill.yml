@@ -8,30 +8,32 @@ trigger: none
 pr: none
 
 variables:
-  BuildPlatform: 'any cpu'
   BuildConfiguration: 'Debug'
+  BuildPlatform: 'any cpu'
+  TriggeredReason: $[ coalesce( variables['TriggeringBuildReason'], variables['Build.Reason'] ) ]
   # AzureDeploymentPassword: define in Azure
   # AzureDeploymentUser: define in Azure
   # AzureSubscription: define in Azure
   # BotBuilderPackageVersionHost: (optional) define in Azure
   # BotBuilderPackageVersionSkill: (optional) define in Azure
   # DeleteResourceGroup: (optional) define in Azure
+  # ExecutePipelinesPersonalAccessToken: (optional) define in Azure
   # NetCoreSdkVersionSkill: define in Azure
-  # NextBuild: (optional) define in Azure
+  # NextBuild: define in Azure and set to either a build name or an empty string
   # PyDotNetHostAppId: define in Azure
   # PyDotNetHostAppSecret: define in Azure
   # PyDotNetHostBotName: define in Azure
   # PyDotNetSkillAppId: define in Azure
   # PyDotNetSkillAppSecret: define in Azure
   # PyDotNetSkillBotName: define in Azure
-  # ExecutePipelinesPersonalAccessToken: (optional) define in Azure
+  # TriggeredBy: define in Azure and set to an empty string
 
 pool:
   vmImage: 'windows-2019'
 
 stages:
 - stage: Prepare
-  condition: and(succeeded(), in(variables['Build.Reason'], 'Schedule', 'Manual'))
+  condition: and(succeeded(), in(variables['TriggeredReason'], 'Schedule', 'Manual', 'BuildRunner'))
   jobs:
     - job: Delete_Preexisting_Resources
       variables:
@@ -41,17 +43,17 @@ stages:
       - template: cleanResourcesStep.yml
         
 - stage: Build
-  condition: always()
+  condition: succeededOrFailed()
   jobs:
     - job: Validate_Skill_NetCore_Version
       variables:
         Parameters.netCoreSdkVersion: $(NetCoreSdkVersionSkill)
       steps:
       - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
-        displayName: 'Tag Build with Build.Reason=$(Build.Reason) NextBuild=$(NextBuild)'
+        displayName: 'Tag Build with TriggeredReason, TriggeredBy, NextBuild'
         inputs:
           tags: |
-            Build.Reason=$(Build.Reason)
+            TriggeredReason=$(TriggeredReason)
             NextBuild=$(NextBuild)
             $(TriggeredBy)
         continueOnError: true
@@ -69,7 +71,7 @@ stages:
       - template: dotnetBuildSteps.yml
 
 - stage: Deploy
-  condition: and(succeeded(), in(variables['Build.Reason'], 'Schedule', 'Manual'))
+  condition: and(succeeded(), in(variables['TriggeredReason'], 'Schedule', 'Manual', 'BuildRunner'))
   jobs:
     - job: Deploy_Host
       pool:
@@ -108,6 +110,19 @@ stages:
       steps:
       - template: dotnetDeploySteps.yml
 
+    - job: Configure_OAuth
+      dependsOn: Deploy_Skill
+      steps:
+      - task: AzureCLI@1
+        displayName: 'Configure skill OAuth connection'
+        inputs:
+          azureSubscription: $(AzureSubscription)
+          scriptLocation: inlineScript
+          inlineScript: |
+           call az bot show -g "$(PyDotNetSkillBotName)-RG" -n "$(PyDotNetSkillBotName)"
+           call az bot authsetting create -g "$(PyDotNetSkillBotName)-RG" -n "$(PyDotNetSkillBotName)" -c TestOAuthProvider --client-id "$(PyDotNetSkillAppId)" --client-secret '$(PyDotNetSkillAppSecret)'' --service "oauth2" --provider-scope-string '""' --parameters authorizationUrl=https://webjobs.botframework.com/api/testauthprovider/authorize tokenUrl=https://webjobs.botframework.com/api/testauthprovider/token refreshUrl=https://webjobs.botframework.com/api/testauthprovider/refresh clientId="$(PyDotNetSkillAppId)" clientSecret="$(PyDotNetSkillAppSecret)"
+        condition: always()
+
 - stage: Test
   dependsOn: Deploy
   jobs:
@@ -123,7 +138,7 @@ stages:
   dependsOn:
   - Deploy
   - Test
-  condition: and(succeeded('Build'), in(variables['Build.Reason'], 'Schedule', 'Manual'))
+  condition: and(succeeded('Build'), in(variables['TriggeredReason'], 'Schedule', 'Manual', 'BuildRunner'))
   jobs:
     - job: Delete_RG
       steps:
@@ -138,7 +153,7 @@ stages:
         condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
 
 - stage: QueueNext
-  condition: always()
+  condition: and(succeededOrFailed(), ne(variables['TriggeredReason'], 'Manual'), ne(variables['NextBuild'], ''))
   jobs:
     - job: TriggerBuild
       steps:
@@ -147,9 +162,9 @@ stages:
         inputs:
           buildDefinition: '$(NextBuild)'
           queueBuildForUserThatTriggeredBuild: true
-          buildParameters: 'TriggeredBy: Triggered_by_$(Build.DefinitionName)'
+          buildParameters: 'TriggeringBuildReason: $(TriggeredReason), TriggeredBy: Triggered_by_$(Build.DefinitionName)/$(Build.BuildNumber)'
           password: '$(ExecutePipelinesPersonalAccessToken)'
           enableBuildInQueueCondition: true
           blockingBuildsList: '$(NextBuild)'
         continueOnError: true
-        condition: and(succeededOrFailed(), ne(variables['Build.Reason'], 'Manual'), ne(variables['NextBuild'], ''), ne(variables['ExecutePipelinesPersonalAccessToken'], ''))
+        condition: and(succeededOrFailed(), ne(variables['TriggeredReason'], 'Manual'), ne(variables['NextBuild'], ''), ne(variables['ExecutePipelinesPersonalAccessToken'], ''))
