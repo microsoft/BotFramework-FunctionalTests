@@ -18,6 +18,7 @@ namespace FunctionalTests
 {
     [TestClass]
     [TestCategory("FunctionalTests")]
+    [TestCategory("OAuth")]
     public class OAuthSkillTest
     {
         [TestMethod]
