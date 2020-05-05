@@ -35,7 +35,23 @@ namespace FunctionalTests
             await testBot.AssertReplyAsync("Echo: skill", cancellationTokenSource.Token);
             await testBot.SendMessageAsync("auth", cancellationTokenSource.Token);
             var messages = await testBot.ReadBotMessagesAsync(cancellationTokenSource.Token);
-            await testBot.SignInAndVerifyOAuthAsync(messages.FirstOrDefault(m => m.Attachments != null && m.Attachments.Any()), cancellationTokenSource.Token);
+
+            var activities = messages.ToList();
+            Console.WriteLine("Enumerating activities:");
+            foreach (var a in activities)
+            {
+                Console.WriteLine($"Type={a.Type}; Text={a.Text}; Code={a.Code}; Attachments count={a.Attachments.Count}");
+            }
+
+            var error = activities.FirstOrDefault(
+                m => m.Type == ActivityTypes.EndOfConversation && m.Code == "SkillError");
+            
+            if (error != null)
+            {
+                Assert.Fail(error.Text);
+            }
+
+            await testBot.SignInAndVerifyOAuthAsync(activities.FirstOrDefault(m => m.Attachments != null && m.Attachments.Any()), cancellationTokenSource.Token);
         }
     }
 }
