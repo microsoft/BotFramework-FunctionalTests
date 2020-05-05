@@ -34,7 +34,7 @@ namespace FunctionalTests.SkillScenarios
         public async Task Bot_CanBeBoth_SkillAndHost()
         {
             await testBot.StartConversation(cancellationTokenSource.Token);
-            await RunEchoSkillFromDialogSkill(testBot, cancellationTokenSource.Token);
+            await RunEchoSkillFromDialogSkillAsync(testBot, cancellationTokenSource.Token);
         }
 
         private async Task RunEchoSkillAsync(TestBotClient testBot, CancellationToken cancellationToken)
@@ -59,7 +59,7 @@ namespace FunctionalTests.SkillScenarios
             await testBot.AssertReplyAsync(BuildDoneWithSkillText(DialogSkillBotId), cancellationToken);
         }
 
-        private async Task RunEchoSkillFromDialogSkill(TestBotClient testBot, CancellationToken cancellationToken)
+        private async Task RunEchoSkillFromDialogSkillAsync(TestBotClient testBot, CancellationToken cancellationToken)
         {
             await testBot.AssertReplyAsync("What skill would you like to call?", cancellationToken);
             await SelectDialogSkillAsync(testBot, cancellationToken);
