@@ -103,6 +103,7 @@ namespace SkillFunctionalTests.Bot
                 Type = ActivityTypes.Message,
             };
 
+            Console.WriteLine($"Sent to bot: {message}");
             return SendActivityAsync(messageActivity, cancellationToken);
         }
 
@@ -138,7 +139,13 @@ namespace SkillFunctionalTests.Bot
         public async Task AssertReplyAsync(string expected, CancellationToken cancellationToken = default(CancellationToken))
         {
             var messages = await PollBotMessagesAsync(cancellationToken);
-            Assert.IsTrue(messages.Any(m => m.Type == ActivityTypes.Message && m.Text.Contains(expected, StringComparison.OrdinalIgnoreCase)));
+            Console.WriteLine("Messages sent from bot:");
+            var messagesList = messages.ToList();
+            foreach (var m in messagesList.ToList())
+            {
+                Console.WriteLine($"Type:{m.Type}; Text:{m.Text}");
+            }
+            Assert.IsTrue(messagesList.Any(m => m.Type == ActivityTypes.Message && m.Text.Contains(expected, StringComparison.OrdinalIgnoreCase)), $"Expected: {expected}");
         }
 
         public async Task AssertReplyOneOf(IEnumerable<string> expected, CancellationToken cancellationToken = default(CancellationToken))
