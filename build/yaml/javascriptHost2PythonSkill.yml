@@ -26,6 +26,7 @@ variables:
   # JsPySkillBotName: define in Azure
   # NextBuild: define in Azure and set to either a build name or an empty string
   # TriggeredBy: define in Azure and set to an empty string
+  # RegistryUrlHost (Optional): define this in Azure
 
 pool:
   vmImage: 'windows-2019'
@@ -63,6 +64,7 @@ stages:
         BotName: $(JsPyHostBotName)
         DeployAppId: $(JsPyHostAppId)
         DeployAppSecret: $(JsPyHostAppSecret)
+        Registry: $[variables.RegistryUrlHost]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
         Parameters.sourceLocation: 'SkillsFunctionalTests/javascript/host'
         TemplateLocation: 'SkillsFunctionalTests/javascript/host/DeploymentTemplates/template-with-new-rg.json'
