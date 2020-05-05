@@ -37,6 +37,12 @@ namespace FunctionalTests
             var messages = await testBot.ReadBotMessagesAsync(cancellationTokenSource.Token);
 
             var activities = messages.ToList();
+            Console.WriteLine("Enumerating activities:");
+            foreach (var a in activities)
+            {
+                Console.WriteLine($"Type={a.Type}; Text={a.Text}; Code={a.Code}; Attachments count={a.Attachments.Count}");
+            }
+
             var error = activities.FirstOrDefault(
                 m => m.Type == ActivityTypes.EndOfConversation && m.Code == "SkillError");
             
