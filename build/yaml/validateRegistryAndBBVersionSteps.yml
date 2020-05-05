@@ -22,11 +22,11 @@ steps:
 
    if ("$(BBVersion)" -eq "preview" -AND "$(RegistryUrl)" -eq "NuGet")
    {
-      Write-Error $RegistryUrl
+      Write-Error $(RegistryUrl)
    }
    if ("$(BBVersion)" -eq "preview" -AND "$(RegistryUrl)" -eq "NPM")
    {
-      Write-Error $RegistryUrl
+      Write-Error $(RegistryUrl)
    }
   displayName: 'Validate Version & Registry'
   failOnStderr: true
