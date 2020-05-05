@@ -196,6 +196,16 @@ namespace SkillFunctionalTests.Bot
             // 4- Verify final redirect to token service ends up in success
 
             // 1- Verify we have a sign in link in the activity
+
+            if (oAuthCard == null)
+            {
+                throw new Exception("OAuthCard is null");
+            }
+            else if (oAuthCard.Attachments == null)
+            {
+                throw new Exception("OAuthCard.Attachments = null");
+            }
+
             var card = JsonConvert.DeserializeObject<SigninCard>(JsonConvert.SerializeObject(oAuthCard.Attachments.FirstOrDefault().Content));
 
             if (card == null)
@@ -212,7 +222,7 @@ namespace SkillFunctionalTests.Bot
 
             if (string.IsNullOrEmpty(signInUrl) || !signInUrl.StartsWith("https://"))
             {
-                throw new Exception($"Sign in url is empty or badly formated. Url received: {signInUrl}");
+                throw new Exception($"Sign in url is empty or badly formatted. Url received: {signInUrl}");
             }
 
             // 2- Get directline session id and cookie
