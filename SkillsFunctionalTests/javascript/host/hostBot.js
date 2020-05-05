@@ -55,7 +55,7 @@ class HostBot extends ActivityHandler {
             await next();
         });
 
-        this.onUnrecognizedActivityType(async (context, next) => {
+        this.onEndOfConversation(async (context, next) => {
             // Handle EndOfConversation returned by the skill.
             if (context.activity.type === ActivityTypes.EndOfConversation) {
                 // Stop forwarding activities to Skill.

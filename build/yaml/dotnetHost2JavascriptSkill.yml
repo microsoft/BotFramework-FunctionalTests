@@ -8,29 +8,31 @@ trigger: none
 pr: none
 
 variables:
-  BuildPlatform: 'any cpu'
   BuildConfiguration: 'Debug'
-  # AzureSubscription: define this in Azure
-  # BotBuilderPackageVersionHost (Optional): define this in Azure
-  # BotBuilderPackageVersionSkill (Optional): define this in Azure
-  # DeleteResourceGroup (Optional): define this in Azure
-  # DotNetJsHostAppId: define this in Azure
-  # DotNetJsHostAppSecret: define this in Azure
-  # DotNetJsHostBotName: define this in Azure
-  # DotNetJsSkillAppId: define this in Azure
-  # DotNetJsSkillAppSecret: define this in Azure
-  # DotNetJsSkillBotName: define this in Azure  
-  # NetCoreSdkVersionHost: define this in Azure
-  # NextBuild (Optional): define this in Azure
-  # RegistryUrlHost (Optional): define this in Azure  
+  BuildPlatform: 'any cpu'
+  TriggeredReason: $[ coalesce( variables['TriggeringBuildReason'], variables['Build.Reason'] ) ]
+  # AzureSubscription: define in Azure
+  # BotBuilderPackageVersionHost: (optional) define in Azure
+  # BotBuilderPackageVersionSkill: (optional) define in Azure
+  # DeleteResourceGroup: (optional) define in Azure
+  # DotNetJsHostAppId: define in Azure
+  # DotNetJsHostAppSecret: define in Azure
+  # DotNetJsHostBotName: define in Azure
+  # DotNetJsSkillAppId: define in Azure
+  # DotNetJsSkillAppSecret: define in Azure
+  # DotNetJsSkillBotName: define in Azure  
   # ExecutePipelinesPersonalAccessToken: (optional) define in Azure
+  # NetCoreSdkVersionHost: define in Azure
+  # NextBuild: define in Azure and set to either a build name or an empty string
+  # RegistryUrlHost (Optional): define this in Azure  
+  # TriggeredBy: define in Azure and set to an empty string
 
 pool:
   vmImage: 'windows-2019'
 
 stages:
 - stage: Prepare
-  condition: and(succeeded(), in(variables['Build.Reason'], 'Schedule', 'Manual'))
+  condition: and(succeeded(), in(variables['TriggeredReason'], 'Schedule', 'Manual', 'BuildRunner'))
   jobs:
     - job: Delete_Preexisting_Resources
       variables:
@@ -40,19 +42,19 @@ stages:
       - template: cleanResourcesStep.yml
 
 - stage: Build
-  condition: always()
+  condition: succeededOrFailed()
   jobs:
     - job: Validate_Host_NetCore_Version
       variables:
         Parameters.netCoreSdkVersion: $(NetCoreSdkVersionHost)
       steps:
       - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
-        displayName: 'Tag Build with Build.Reason=$(Build.Reason) NextBuild=$(NextBuild)'
+        displayName: 'Tag Build with TriggeredReason, TriggeredBy, NextBuild'
         inputs:
           tags: |
-            Build.Reason=$(Build.Reason)
-            NextBuild=$(NextBuild)
+            TriggeredReason=$(TriggeredReason)
             $(TriggeredBy)
+            NextBuild=$(NextBuild)
         continueOnError: true
 
       - template: dotnetValidateNetCoreSdkVersion.yml
@@ -69,7 +71,7 @@ stages:
       - template: dotnetBuildSteps.yml
 
 - stage: Deploy
-  condition: and(succeeded(), in(variables['Build.Reason'], 'Schedule', 'Manual'))
+  condition: and(succeeded(), in(variables['TriggeredReason'], 'Schedule', 'Manual', 'BuildRunner'))
   jobs:
     - job: Deploy_Host
       variables:
@@ -119,6 +121,19 @@ stages:
       steps:
       - template: javascriptDeploySteps.yml
 
+    - job: Configure_OAuth
+      dependsOn: Deploy_Skill
+      steps:
+      - task: AzureCLI@1
+        displayName: 'Configure skill OAuth connection'
+        inputs:
+          azureSubscription: $(AzureSubscription)
+          scriptLocation: inlineScript
+          inlineScript: |
+           call az bot show -g "$(DotNetJsSkillBotName)-RG" -n "$(DotNetJsSkillBotName)"
+           call az bot authsetting create -g "$(DotNetJsSkillBotName)-RG" -n "$(DotNetJsSkillBotName)" -c TestOAuthProvider --client-id "$(DotNetJsSkillAppId)" --client-secret '$(DotNetJsSkillAppSecret)'' --service "oauth2" --provider-scope-string '""' --parameters authorizationUrl=https://webjobs.botframework.com/api/testauthprovider/authorize tokenUrl=https://webjobs.botframework.com/api/testauthprovider/token refreshUrl=https://webjobs.botframework.com/api/testauthprovider/refresh clientId="$(DotNetJsSkillAppId)" clientSecret="$(DotNetJsSkillAppSecret)"
+        condition: always()
+
 - stage: Test
   dependsOn: Deploy
   jobs:
@@ -134,7 +149,7 @@ stages:
   dependsOn:
   - Deploy
   - Test
-  condition: and(succeeded('Build'), in(variables['Build.Reason'], 'Schedule', 'Manual'))
+  condition: and(succeeded('Build'), in(variables['TriggeredReason'], 'Schedule', 'Manual', 'BuildRunner'))
   jobs:
     - job: Delete_RG
       steps:
@@ -149,7 +164,7 @@ stages:
         condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
 
 - stage: QueueNext
-  condition: always()
+  condition: and(succeededOrFailed(), ne(variables['TriggeredReason'], 'Manual'), ne(variables['NextBuild'], ''))
   jobs:
     - job: TriggerBuild
       steps:
@@ -158,9 +173,9 @@ stages:
         inputs:
           buildDefinition: '$(NextBuild)'
           queueBuildForUserThatTriggeredBuild: true
-          buildParameters: 'TriggeredBy: Triggered_by_$(Build.DefinitionName)'
+          buildParameters: 'TriggeringBuildReason: $(TriggeredReason), TriggeredBy: Triggered_by_$(Build.DefinitionName)/$(Build.BuildNumber)'
           password: '$(ExecutePipelinesPersonalAccessToken)'
           enableBuildInQueueCondition: true
           blockingBuildsList: '$(NextBuild)'
         continueOnError: true
-        condition: and(succeededOrFailed(), ne(variables['Build.Reason'], 'Manual'), ne(variables['NextBuild'], ''), ne(variables['ExecutePipelinesPersonalAccessToken'], ''))
+        condition: and(succeededOrFailed(), ne(variables['TriggeredReason'], 'Manual'), ne(variables['NextBuild'], ''), ne(variables['ExecutePipelinesPersonalAccessToken'], ''))
