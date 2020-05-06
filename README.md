@@ -1,6 +1,6 @@
 # Bot Framework Functional Tests
 
-This repository contains functional tests for the different tools from [Bot Framework SDK](https://github.com/microsoft/botframework-sdk).
+This repository contains functional tests for the different [Bot Framework SDK](https://github.com/microsoft/botframework-sdk) tools.
 
 # Content
 

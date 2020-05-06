@@ -2,9 +2,9 @@
 
 ### Summary
 
-Skill functional testing aims to automate the testing matrix for Host and Skill bots combinations and its interactions in all available programming languages.
+Skill functional testing aims to automate the testing for the combination of Host and Skill bots and its interactions in all available programming languages.
 
-The matrix consists of all the available combinations to test in this repository, each combination has a badge that represents a pipeline that runs every night using the latest preview packages from the BotBuilder feeds.
+The matrix consists of all the available combinations to test in this repository. Each table cell has a badge that represents a pipeline that runs every night using the latest preview version of the BotBuilder packages.
 
 <table>
     <tr>
@@ -59,6 +59,29 @@ The matrix consists of all the available combinations to test in this repository
 This section contains a `SimpleHostBot` and an `EchoSkillBot` sample for each language available to be used in the functional tests. To run the test we use YAML files to set up a pipeline that deploys a pair of Host and Skill bots to Azure and then run functional tests where the HostBot consumes the SkillBot.
 
 The functional tests are located in the `tests` folder. This test is written in DotNet and can be used to test the bots independently of the language these are written in. For this, the test communicate with the bots deployed to Azure using a [direct line channel](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-channel-directline) to the `HostBot`, and ask it to be delegated to the skill to then get an echo message.
+
+### Tests
+
+The following tests are run in the pipeline using the SkillFunctionalTests class using a DirectLineChannel with the Host Bot deployed in Azure.
+
+<table>
+    <tr>
+        <th align="center">Name</th>
+        <th align="center">Description</th>
+    </tr>
+    <tr>
+        <td>Host_WhenRequested_ShouldRedirectToSkill</td>
+        <td>Sends the keyword to the Host bot to connect with the Skill bot including a GUID and validating the Skill returns an echo with the same GUID.</td>
+    </tr>
+    <tr>
+        <td>Host_WhenSkillEnds_HostReceivesEndOfConversation</td>
+        <td>Sends the keyword to the Skill bot to end the connection and validates if the control was returned to the Host bot.</td>
+    </tr>
+    <tr>
+        <td>Skill_OAuthCard_SignInSuccessful</td>
+        <td>Sends a keyword to the connected Skill to authenticate, the Skill answers with a dialog to ask for SignIn, then the Tests try to SignIn using a token to validate the authentication, throwing an error if it fails.</td>
+    </tr>
+</table>
 
 ## Usage
 
