@@ -2,11 +2,13 @@
 
 ### Summary
 
-Skill functional testing aims to automate the testing matrix for Bot/Skill interactions in all available programming languages.
+Skill functional testing aims to automate the testing matrix for Host and Skill bots combinations and its interactions in all available programming languages.
+
+The matrix consists of all the available combinations to test in this repository, each combination has a badge that represents a pipeline that runs every night using the latest preview packages from the BotBuilder feeds.
 
 <table>
     <tr>
-        <th align="center">Host/Skill</th>       
+        <th align="center">Host/Skill</th>
         <th align="center">C# Net Core 3.1</th>
         <th align="center">JavaScript</th>
         <th align="center">Python</th>
@@ -42,7 +44,7 @@ Skill functional testing aims to automate the testing matrix for Bot/Skill inter
         <td></td>
     </tr>
     <tr align="center">
-        <td>C# Net Core 2.1</td>       
+        <td>C# Net Core 2.1</td>
         <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/DotNet21DotNet31SkillBotFunctionalTest?branchName=master"></td>
         <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/DotNet21JsSkillBotFunctionalTest?branchName=master"></td>
         <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/DotNet21PySkillBotFunctionalTest?branchName=master"></td>
