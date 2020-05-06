@@ -84,6 +84,8 @@ stages:
       - template: pythonDeploySteps.yml
 
     - job: Deploy_Skill
+      pool:
+        vmImage: 'ubuntu-latest'
       variables:
         BotName: $(PyPySkillBotName)
         DeployAppId: $(PyPySkillAppId)
