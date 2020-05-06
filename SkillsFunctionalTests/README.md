@@ -68,18 +68,22 @@ The following tests are run in the pipeline using the SkillFunctionalTests class
     <tr>
         <th align="center">Name</th>
         <th align="center">Description</th>
+        <th align="center">Additional Info</th>
     </tr>
     <tr>
         <td>Host_WhenRequested_ShouldRedirectToSkill</td>
         <td>Sends the keyword to the Host bot to connect with the Skill bot including a GUID and validating the Skill returns an echo with the same GUID.</td>
+        <td><td>
     </tr>
     <tr>
         <td>Host_WhenSkillEnds_HostReceivesEndOfConversation</td>
         <td>Sends the keyword to the Skill bot to end the connection and validates if the control was returned to the Host bot.</td>
+        <td><td>
     </tr>
     <tr>
         <td>Skill_OAuthCard_SignInSuccessful</td>
         <td>Sends a keyword to the connected Skill to authenticate, the Skill answers with a dialog to ask for SignIn, then the Tests try to SignIn using a token to validate the authentication, throwing an error if it fails.</td>
+        <td>Skipped when a v3 Skill bot is used<td>
     </tr>
 </table>
 
