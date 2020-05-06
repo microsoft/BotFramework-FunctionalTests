@@ -39,7 +39,7 @@ stages:
         SkillBotName: $(JsDotNetSkillBotName)
       steps:
       - template: cleanResourcesStep.yml
-        
+
 - stage: Build
   condition: succeededOrFailed()
   jobs:
@@ -102,7 +102,6 @@ stages:
         DeployAppId: $(JsDotNetSkillAppId)
         DeployAppSecret: $(JsDotNetSkillAppSecret)
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
-        ProjectName: EchoSkillBot
         Parameters.project: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionSkill)/skill/EchoSkillBot.csproj'
         TemplateLocation: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionSkill)/skill/DeploymentTemplates/template-with-new-rg.json'
       steps:

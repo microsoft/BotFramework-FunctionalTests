@@ -79,7 +79,6 @@ stages:
         DeployAppId: $(DotNetPyHostAppId)
         DeployAppSecret: $(DotNetPyHostAppSecret)
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
-        ProjectName: SimpleHostBot
         Parameters.project: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionHost)/host/SimpleHostBot.csproj'
         TemplateLocation: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionHost)/host/DeploymentTemplates/template-with-new-rg.json'
       steps:
