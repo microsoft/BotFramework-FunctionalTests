@@ -1,12 +1,21 @@
 steps:
 - task: DotNetCoreCLI@2
-  displayName: 'Add stable BotBuilder version'
+  displayName: 'Add stable Microsoft.Bot.Builder.Integration.AspNet.Core version'
   condition: eq(variables['BotBuilderPackageVersion'],'stable')
   inputs:
     command: custom
     projects: $(Parameters.project)
     custom: add
     arguments: 'package Microsoft.Bot.Builder.Integration.AspNet.Core'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Add stable Microsoft.Bot.Builder.Dialogs version'
+  condition: eq(variables['BotBuilderPackageVersion'],'stable')
+  inputs:
+    command: custom
+    projects: $(Parameters.project)
+    custom: add
+    arguments: 'package Microsoft.Bot.Builder.Dialogs'
 
 - powershell: |
     if ($null -eq $env:BotBuilderPackageVersion -or '' -eq $env:BotBuilderPackageVersion) {
@@ -21,10 +30,19 @@ steps:
   condition: eq(variables['BotBuilderPackageVersion'], '')
 
 - task: DotNetCoreCLI@2
-  displayName: 'Add custom BotBuilder version'
+  displayName: 'Add custom Bo.tBuilder.Integration.AspNet.Core version'
   condition: and(ne(variables['BotBuilderPackageVersion'],''), ne(variables['BotBuilderPackageVersion'],'stable'))
   inputs:
     command: custom
     projects: $(Parameters.project)
     custom: add
     arguments: 'package Microsoft.Bot.Builder.Integration.AspNet.Core --version "$(BotBuilderPackageVersion)" --source "https://botbuilder.myget.org/F/botbuilder-v4-dotnet-daily/api/v3/index.json"'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Add custom Bo.tBuilder.Dialogs version'
+  condition: and(ne(variables['BotBuilderPackageVersion'],''), ne(variables['BotBuilderPackageVersion'],'stable'))
+  inputs:
+    command: custom
+    projects: $(Parameters.project)
+    custom: add
+    arguments: 'package Microsoft.Bot.Builder.Dialogs --version "$(BotBuilderPackageVersion)" --source "https://botbuilder.myget.org/F/botbuilder-v4-dotnet-daily/api/v3/index.json"'
