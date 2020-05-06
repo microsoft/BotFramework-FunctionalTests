@@ -22,7 +22,7 @@ variables:
   # DotNetPyHostBotName: define in Azure
   # DotNetPySkillAppId: define in Azure
   # DotNetPySkillAppSecret: define in Azure
-  # DotNetPySkillBotName: define in Azure  
+  # DotNetPySkillBotName: define in Azure
   # ExecutePipelinesPersonalAccessToken: (optional) define in Azure
   # NetCoreSdkVersionHost: define in Azure
   # NextBuild: define in Azure and set to either a build name or an empty string
@@ -41,7 +41,7 @@ stages:
         SkillBotName: $(DotNetPySkillBotName)
       steps:
       - template: cleanResourcesStep.yml
-        
+
 - stage: Build
   condition: succeededOrFailed()
   jobs:
@@ -85,6 +85,7 @@ stages:
       steps:
       - powershell: |
          # Set values in appsettings.json file.
+         Write-Host "Setting values in appsettings.json."
          $file = "$(System.DefaultWorkingDirectory)\SkillsFunctionalTests\dotnet\$(NetCoreSdkVersionHost)\host\appsettings.json";
          $content = Get-Content -Raw $file | ConvertFrom-Json;
          $content.SkillHostEndpoint = "https://$(DotNetPyHostBotName)-$(Build.BuildId).azurewebsites.net/api/skills";

@@ -89,6 +89,7 @@ stages:
       steps:
       - powershell: |
          # Set values in appsettings.json file.
+         Write-Host "Setting values in appsettings.json."
          $file = "$(System.DefaultWorkingDirectory)\SkillsFunctionalTests\dotnet\$(NetCoreSdkVersionHost)\host\appsettings.json";
          $content = Get-Content -Raw $file | ConvertFrom-Json;
          $content.SkillHostEndpoint = "https://$(DotNetDotNetV3HostBotName)-$(Build.BuildId).azurewebsites.net/api/skills";

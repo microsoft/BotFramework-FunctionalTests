@@ -13,7 +13,7 @@ variables:
   TriggeredReason: $[ coalesce( variables['TriggeringBuildReason'], variables['Build.Reason'] ) ]
   # AzureSubscription: define in Azure
   # BotBuilderPackageVersionHost: (optional) define in Azure
-  # BotBuilderPackageVersionSkill: (optional) define in Azure  
+  # BotBuilderPackageVersionSkill: (optional) define in Azure
   # DeleteResourceGroup: (optional) define in Azure
   # DotNetDotNetHostAppId: define in Azure
   # DotNetDotNetHostAppSecret: define in Azure
@@ -100,6 +100,7 @@ stages:
       steps:
       - powershell: |
          # Set values in appsettings.json file.
+         Write-Host "Setting values in appsettings.json."
          $file = "$(System.DefaultWorkingDirectory)\SkillsFunctionalTests\dotnet\$(NetCoreSdkVersionHost)\host\appsettings.json";
          $content = Get-Content -Raw $file | ConvertFrom-Json;
          $content.SkillHostEndpoint = "https://$(DotNetDotNetHostBotName)-$(Build.BuildId).azurewebsites.net/api/skills";

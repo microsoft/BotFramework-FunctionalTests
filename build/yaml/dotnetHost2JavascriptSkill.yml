@@ -20,7 +20,7 @@ variables:
   # DotNetJsHostBotName: define in Azure
   # DotNetJsSkillAppId: define in Azure
   # DotNetJsSkillAppSecret: define in Azure
-  # DotNetJsSkillBotName: define in Azure  
+  # DotNetJsSkillBotName: define in Azure
   # ExecutePipelinesPersonalAccessToken: (optional) define in Azure
   # NetCoreSdkVersionHost: define in Azure
   # NextBuild: define in Azure and set to either a build name or an empty string
@@ -83,6 +83,7 @@ stages:
       steps:
       - powershell: |
          # Set values in appsettings.json file.
+         Write-Host "Setting values in appsettings.json."
          $file = "$(System.DefaultWorkingDirectory)\SkillsFunctionalTests\dotnet\$(NetCoreSdkVersionHost)\host\appsettings.json"
          $content = Get-Content -Raw $file | ConvertFrom-Json;
          $content.SkillHostEndpoint = "https://$(DotNetJsHostBotName)-$(Build.BuildId).azurewebsites.net/api/skills";
