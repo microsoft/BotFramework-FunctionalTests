@@ -12,10 +12,6 @@ steps:
       Write-Host "BotBuilder version set to $(BotBuilderPackageVersion)"
       Add-Content $(Parameters.sourceLocation)/deployment-scripts/.deployment "`nBOT_BUILDER_PACKAGE_VERSION = $(BotBuilderPackageVersion)"
    }
-   else
-   {
-      Write-Host "No specific BotBuilder version set in variables. Installing default."
-   }
   displayName: 'Add custom BotBuilder version'
   condition: ne(variables['BotBuilderPackageVersion'], '')
 
