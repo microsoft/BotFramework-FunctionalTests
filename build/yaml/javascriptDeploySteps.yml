@@ -7,7 +7,7 @@ steps:
     inlineScript: 'call az bot prepare-deploy --code-dir "$(Parameters.sourceLocation)" --lang Javascript'
 
 - powershell: |   
-   if(-Not [string]::IsNullOrWhiteSpace($env:BotBuilderPackageVersion))
+   if(-Not ($env:BotBuilderPackageVersion -eq $null))
    {
       Add-Content $(Parameters.sourceLocation)/deployment-scripts/.deployment "`nBOT_BUILDER_PACKAGE_VERSION = $(BotBuilderPackageVersion)"
    }   
