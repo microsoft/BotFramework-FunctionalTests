@@ -8,17 +8,17 @@ steps:
      az deployment create --name "$(BotName)-RG" --template-file "$(System.DefaultWorkingDirectory)/$(TemplateLocation)" --location "westus" --parameters appId="$(DeployAppId)" appSecret="$(DeployAppSecret)" botId="$(BotName)" botSku=F0 newAppServicePlanName="$(BotName)" newWebAppName="$(BotName)-$(Build.BuildId)" groupName="$(BotName)-RG" groupLocation="westus" newAppServicePlanLocation="westus"
 
 - powershell: |
-    @botbuilderversion = $env:BOTBUILDERPACKAGEVERSION
-    if([string]::IsNullOrWhiteSpace(@botbuilderversion))
+    $botbuilderversion = $env:BOTBUILDERPACKAGEVERSION
+    if([string]::IsNullOrWhiteSpace($botbuilderversion))
     {
-        @botbuilderversion = 'latest'
+        $botbuilderversion = 'latest'
     }
 
     Write-Host "Botbuilder version variable found."
 
     $file = '$(System.DefaultWorkingDirectory)/$(Parameters.sourceLocation)/requirements.txt'
 
-    if (@botbuilderversion -eq 'stable')
+    if ($botbuilderversion -eq 'stable')
     {
         Write-Host "Installing latest stable version."
 
@@ -29,7 +29,7 @@ steps:
         #matchinfo marks the line number from 1 instead of 0
         $content[$matchinfo.LineNumber - 1] = "botbuilder-integration-aiohttp"
     }
-    elseif (@botbuilderversion -eq 'latest')
+    elseif ($botbuilderversion -eq 'latest')
     {
         Write-Host "Installing latest preview version."
 
@@ -47,7 +47,7 @@ steps:
     }
     else #specific version value set
     {
-        Write-Host "Installing version [@botbuilderversion]"
+        Write-Host "Installing version [$botbuilderversion]"
 
         #Add the test.pypi source at the beginning of requirements
         $content = Get-Content $file
@@ -59,7 +59,7 @@ steps:
         $matchinfo = Select-String -Path $file -Pattern "botbuilder-integration-aiohttp"
 
         #matchinfo marks the line number from 1 instead of 0
-        $content[$matchinfo.LineNumber - 1] = "botbuilder-integration-aiohttp==@botbuilderversion --pre"
+        $content[$matchinfo.LineNumber - 1] = "botbuilder-integration-aiohttp==$botbuilderversion --pre"
     }
 
     Set-Content -Path $file -Value $content
