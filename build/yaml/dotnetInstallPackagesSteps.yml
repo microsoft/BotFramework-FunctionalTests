@@ -9,7 +9,7 @@ steps:
     arguments: 'package Microsoft.Bot.Builder.Integration.AspNet.Core'
 
 - powershell: |
-    if ($null -eq $env:BotBuilderPackageVersion -or '' -eq $env:BotBuilderPackageVersion) {
+    if ([string]::IsNullOrWhiteSpace($env:BotBuilderPackageVersion)) {
         $Response = Invoke-WebRequest -URI https://botbuilder.myget.org/F/botbuilder-v4-dotnet-daily/api/v3/registration1/Microsoft.Bot.Builder/index.json | ConvertFrom-Json;
         $LastPackage = $Response.items | Select-Object -Last 1
         $latest_version = $lastpackage.upper

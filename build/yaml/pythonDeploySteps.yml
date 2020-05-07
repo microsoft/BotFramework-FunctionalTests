@@ -8,7 +8,7 @@ steps:
      az deployment create --name "$(BotName)-RG" --template-file "$(System.DefaultWorkingDirectory)/$(TemplateLocation)" --location "westus" --parameters appId="$(DeployAppId)" appSecret="$(DeployAppSecret)" botId="$(BotName)" botSku=F0 newAppServicePlanName="$(BotName)" newWebAppName="$(BotName)-$(Build.BuildId)" groupName="$(BotName)-RG" groupLocation="westus" newAppServicePlanLocation="westus"
 
 - powershell: |
-    if(-Not ($null -eq $env:BOTBUILDERPACKAGEVERSION))
+    if(-Not [string]::IsNullOrWhiteSpace($env:BOTBUILDERPACKAGEVERSION))
     {
         Write-Host "Botbuilder version variable found."
 
@@ -25,7 +25,7 @@ steps:
             #matchinfo marks the line number from 1 instead of 0
             $content[$matchinfo.LineNumber - 1] = "botbuilder-integration-aiohttp"
         }
-        elseif ($env:BOTBUILDERPACKAGEVERSION -eq "")
+        elseif ($env:BOTBUILDERPACKAGEVERSION -eq 'latest')
         {
             Write-Host "Installing latest preview version."
 
@@ -43,7 +43,7 @@ steps:
         }
         else #specific version value set
         {
-            Write-Host "Installing version $env:BOTBUILDERPACKAGEVERSION"
+            Write-Host "Installing version [$env:BOTBUILDERPACKAGEVERSION]"
 
             #Add the test.pypi source at the beginning of requirements
             $content = Get-Content $file
