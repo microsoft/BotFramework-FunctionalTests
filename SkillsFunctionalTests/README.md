@@ -62,7 +62,7 @@ The functional tests are located in the `tests` folder. This test is written in 
 
 ### Tests
 
-The following tests are run in the pipeline using the SkillFunctionalTests class using a DirectLineChannel with the Host Bot deployed in Azure.
+The following tests are run in the pipeline using the Host and Skill bots deployed in Azure through a DirectLine connection with the Host bot.
 
 <table>
     <tr>
