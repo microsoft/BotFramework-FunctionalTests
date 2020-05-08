@@ -26,6 +26,8 @@ variables:
   # PyPySkillBotName: define in Azure
   # NextBuild: define in Azure and set to either a build name or an empty string
   # TriggeredBy: define in Azure and set to an empty string
+  # RegistryUrlHost: (optional) define in Azure
+  # RegistryUrlSkill: (optional) define in Azure
 
 pool:
   vmImage: 'windows-2019'
@@ -63,6 +65,7 @@ stages:
         BotName: $(PyPyHostBotName)
         DeployAppId: $(PyPyHostAppId)
         DeployAppSecret: $(PyPyHostAppSecret)
+        Registry: $[variables.RegistryUrlHost]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
         Parameters.sourceLocation: 'SkillsFunctionalTests/python/host'
         TemplateLocation: 'SkillsFunctionalTests/python/host/deploymentTemplates/template-with-new-rg.json'
@@ -86,6 +89,7 @@ stages:
         BotName: $(PyPySkillBotName)
         DeployAppId: $(PyPySkillAppId)
         DeployAppSecret: $(PyPySkillAppSecret)
+        Registry: $[variables.RegistryUrlSkill]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
         Parameters.sourceLocation: 'SkillsFunctionalTests/python/skill'
         TemplateLocation: 'SkillsFunctionalTests/python/skill/deploymentTemplates/template-with-new-rg.json'
