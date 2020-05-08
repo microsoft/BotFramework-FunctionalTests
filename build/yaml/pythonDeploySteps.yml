@@ -1,4 +1,75 @@
 steps:
+- powershell: |
+    switch ("$(Registry)".ToUpper())
+    {
+        $null { Write-Host ("##vso[task.setvariable variable=RegistryUrl]Test.PyPi") }
+        '' { Write-Host ("##vso[task.setvariable variable=RegistryUrl]Test.PyPi") }
+        TEST.PYPI { Write-Host ("##vso[task.setvariable variable=RegistryUrl]Test.PyPi") }
+        PYPI { Write-Host ("##vso[task.setvariable variable=RegistryUrl]PyPi") }
+        default { Write-Host ("##vso[task.setvariable variable=RegistryUrl]$(Registry)") }
+    }
+  displayName: 'Read registry URL variable'
+- template: validateRegistryAndBBVersionSteps.yml
+
+- powershell: |
+    $file = '$(System.DefaultWorkingDirectory)/$(Parameters.sourceLocation)/requirements.txt'
+
+    $source = "$(RegistryUrl)"
+    $extra_source = "https://pypi.org/simple/"
+    $version = "$(BBVersion)"
+    $condition = ""
+    $pre =  ""
+
+    switch($source){
+      PyPi {
+        $source = "https://pypi.org/simple/"
+        $extra_source = "https://test.pypi.org/simple/"
+      }
+      Test.PyPi {
+        $source = "https://test.pypi.org/simple/"
+        $extra_source = "https://pypi.org/simple/"
+      }
+    }
+
+    switch($version){
+      stable {
+        $version = ""
+      }
+      preview {
+        $version = ""
+        $pre =  "--pre"
+      }
+      default {
+        $condition = "=="
+      }
+    }
+
+    $script = "botbuilder-integration-aiohttp $condition $version"
+
+    Write-Host "Setting Up Requirements..."
+    Write-Host "Source: $source"
+    Write-Host "Version: $(BBVersion) `n"
+
+    #Add the $source source at the beginning of requirements
+    $content = @(Get-Content $file)
+    Set-Content -Path $file -Value ("$pre --index-url $source --extra-index-url $extra_source".Trim())
+    Add-Content -Path $file -Value $content
+
+    #Set botbuilder-integration-aiohttp version to empty value
+    $content = @(Get-Content $file)
+    $matchinfo = Select-String -Path $file -Pattern "botbuilder-integration-aiohttp"
+
+    #matchinfo marks the line number from 1 instead of 0
+    $content[$matchinfo.LineNumber - 1] = $script
+  
+    Set-Content -Path $file -Value $content
+
+    $content = @(Get-Content $file)
+    Write-Host "Requirements:"
+    $content
+
+  displayName: 'Set BotBuilder Package Version & Registry Url'
+
 - task: AzureCLI@1
   displayName: 'Create resource group and deploy bot'
   inputs:
@@ -6,67 +77,6 @@ steps:
     scriptLocation: inlineScript
     inlineScript: |
      az deployment create --name "$(BotName)-RG" --template-file "$(System.DefaultWorkingDirectory)/$(TemplateLocation)" --location "westus" --parameters appId="$(DeployAppId)" appSecret="$(DeployAppSecret)" botId="$(BotName)" botSku=F0 newAppServicePlanName="$(BotName)" newWebAppName="$(BotName)-$(Build.BuildId)" groupName="$(BotName)-RG" groupLocation="westus" newAppServicePlanLocation="westus"
-
-- powershell: |
-    $botbuilderversion = $env:BOTBUILDERPACKAGEVERSION
-    if([string]::IsNullOrWhiteSpace($botbuilderversion))
-    {
-        $botbuilderversion = 'latest'
-    }
-
-    Write-Host "Botbuilder version variable found."
-
-    $file = '$(System.DefaultWorkingDirectory)/$(Parameters.sourceLocation)/requirements.txt'
-
-    if ($botbuilderversion -eq 'stable')
-    {
-        Write-Host "Installing latest stable version."
-
-        #Set botbuilder-integration-aiohttp version to empty value
-        $content = @(Get-Content $file)
-        $matchinfo = Select-String -Path $file -Pattern "botbuilder-integration-aiohttp"
-
-        #matchinfo marks the line number from 1 instead of 0
-        $content[$matchinfo.LineNumber - 1] = "botbuilder-integration-aiohttp"
-    }
-    elseif ($botbuilderversion -eq 'latest')
-    {
-        Write-Host "Installing latest preview version."
-
-        #Add the test.pypi source at the beginning of requirements
-        $content = Get-Content $file
-        Set-Content -Path $file -Value "--pre --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/"
-        Add-Content -Path $file -Value $content
-
-        #Set botbuilder-integration-aiohttp version to latest pre-release
-        $content = @(Get-Content $file)
-        $matchinfo = Select-String -Path $file -Pattern "botbuilder-integration-aiohttp"
-
-        #matchinfo marks the line number from 1 instead of 0
-        $content[$matchinfo.LineNumber - 1] = "botbuilder-integration-aiohttp"
-    }
-    else #specific version value set
-    {
-        Write-Host "Installing version [$botbuilderversion]"
-
-        #Add the test.pypi source at the beginning of requirements
-        $content = Get-Content $file
-        Set-Content -Path $file -Value "--extra-index-url https://test.pypi.org/simple/"
-        Add-Content -Path $file -Value $content
-
-        #Set botbuilder-integration-aiohttp version to value specified
-        $content = @(Get-Content $file)
-        $matchinfo = Select-String -Path $file -Pattern "botbuilder-integration-aiohttp"
-
-        #matchinfo marks the line number from 1 instead of 0
-        $content[$matchinfo.LineNumber - 1] = "botbuilder-integration-aiohttp==$botbuilderversion --pre"
-    }
-
-    Set-Content -Path $file -Value $content
-    $content = Get-Content $file
-    Write-Host "requirements:"
-    Write-Host $content
-  displayName: 'Set BotBuilder version value'
 
 - script: |
    git config --global user.name "GitPythonDeploymentUser"
