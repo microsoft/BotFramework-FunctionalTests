@@ -9,9 +9,9 @@ steps:
 
 - powershell: |
     Write-Host "Setting BotBuilder packges version."
+
     if(-Not ($env:BOTBUILDERPACKAGEVERSION -eq 'stable'))
     {
-
         $file = '$(System.DefaultWorkingDirectory)/$(Parameters.sourceLocation)/requirements.txt'
 
         if ([string]::IsNullOrWhiteSpace($env:BOTBUILDERPACKAGEVERSION))
