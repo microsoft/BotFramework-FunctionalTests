@@ -20,8 +20,8 @@ Skill functional testing aims to automate the testing matrix for Bot/Skill inter
         <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/DotNet31JsSkillBotFunctionalTest?branchName=master"></td>
         <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/DotNet31PySkillBotFunctionalTest?branchName=master"></td>
         <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/DotNet31DotNet21SkillBotFunctionalTest?branchName=master"></td>
-        <td></td>
-        <td></td>
+        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/V3SkillBots/DotNet31JsV3SkillBotFunctionalTest?branchName=master"></td>
+        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/V3SkillBots/DotNet31DotNetV3SkillBotFunctionalTest?branchName=master"></td>
     </tr>
     <tr align="center">
         <td>JavaScript</td>
@@ -29,8 +29,8 @@ Skill functional testing aims to automate the testing matrix for Bot/Skill inter
         <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/JsJsSkillBotFunctionalTest?branchName=master"></td>
         <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/JsPySkillBotFunctionalTest?branchName=master"></td>
         <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/JsDotNet21SkillBotFunctionalTest?branchName=master"></td>
-        <td></td>
-        <td></td>
+        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/V3SkillBots/JsJsV3SkillBotFunctionalTest?branchName=master"></td>
+        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/V3SkillBots/JsDotNetV3SkillBotFunctionalTest?branchName=master"></td>
     </tr>
     <tr align="center">
         <td>Python</td>       
@@ -38,8 +38,8 @@ Skill functional testing aims to automate the testing matrix for Bot/Skill inter
         <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/PyJsSkillBotFunctionalTest?branchName=master"></td>
         <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/PyPySkillBotFunctionalTest?branchName=master"></td>
         <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/PyDotNet21SkillBotFunctionalTest?branchName=master"></td>
-        <td></td>
-        <td></td>
+        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/V3SkillBots/PyJsV3SkillBotFunctionalTest?branchName=master"></td>
+        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/V3SkillBots/PyDotNetV3SkillBotFunctionalTest?branchName=master"></td>
     </tr>
     <tr align="center">
         <td>C# Net Core 2.1</td>       
@@ -47,8 +47,8 @@ Skill functional testing aims to automate the testing matrix for Bot/Skill inter
         <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/DotNet21JsSkillBotFunctionalTest?branchName=master"></td>
         <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/DotNet21PySkillBotFunctionalTest?branchName=master"></td>
         <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/DotNet21DotNet21SkillBotFunctionalTest?branchName=master"></td>
-        <td></td>
-        <td></td>
+        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/V3SkillBots/DotNet21JsV3SkillBotFunctionalTest?branchName=master"></td>
+        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/V3SkillBots/DotNet21DotNetV3SkillBotFunctionalTest?branchName=master"></td>
     </tr>
 </table>
 
