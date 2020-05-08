@@ -26,6 +26,7 @@ variables:
   # PyDotNetV3SkillAppSecret: define in Azure
   # PyDotNetV3SkillBotName: define in Azure
   # TriggeredBy: define in Azure and set to an empty string
+  # RegistryUrlHost: (optional) define in Azure
 
 pool:
   vmImage: 'windows-2019'
@@ -75,6 +76,7 @@ stages:
         BotName: $(PyDotNetV3HostBotName)
         DeployAppId: $(PyDotNetV3HostAppId)
         DeployAppSecret: $(PyDotNetV3HostAppSecret)
+        Registry: $[variables.RegistryUrlHost]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
         Parameters.sourceLocation: 'SkillsFunctionalTests/python/host'
         TemplateLocation: 'SkillsFunctionalTests/python/host/deploymentTemplates/template-with-new-rg.json'
