@@ -13,7 +13,7 @@ steps:
 
     if($botbuilderversion -eq 'stable')
     {
-        #The requirements.txt don't require changes to install stable versions.
+        #The requirements.txt doesn't require changes to install stable versions.
         Write-Host "BotBuilder latest stable version will be installed."
     }
     else
