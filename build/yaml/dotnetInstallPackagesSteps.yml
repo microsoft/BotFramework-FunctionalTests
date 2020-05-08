@@ -30,7 +30,7 @@ steps:
   condition: eq(variables['BotBuilderPackageVersion'], '')
 
 - task: DotNetCoreCLI@2
-  displayName: 'Add custom Bot.tBuilder.Integration.AspNet.Core version'
+  displayName: 'Add custom Bot.Builder.Integration.AspNet.Core version'
   condition: and(ne(variables['BotBuilderPackageVersion'],''), ne(variables['BotBuilderPackageVersion'],'stable'))
   inputs:
     command: custom
@@ -39,7 +39,7 @@ steps:
     arguments: 'package Microsoft.Bot.Builder.Integration.AspNet.Core --version "$(BotBuilderPackageVersion)" --source "https://botbuilder.myget.org/F/botbuilder-v4-dotnet-daily/api/v3/index.json"'
 
 - task: DotNetCoreCLI@2
-  displayName: 'Add custom Bot.tBuilder.Dialogs version'
+  displayName: 'Add custom Bot.Builder.Dialogs version'
   condition: and(ne(variables['BotBuilderPackageVersion'],''), ne(variables['BotBuilderPackageVersion'],'stable'))
   inputs:
     command: custom

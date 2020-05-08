@@ -9,12 +9,18 @@ steps:
 
 - powershell: |
     Write-Host "Setting BotBuilder packges version."
+    $botbuilderversion = $env:BOTBUILDERPACKAGEVERSION
 
-    if(-Not ($env:BOTBUILDERPACKAGEVERSION -eq 'stable'))
+    if($botbuilderversion -eq 'stable')
+    {
+        #The requirements.txt don't require changes to install stable versions.
+        Write-Host "BotBuilder latest stable version will be installed."
+    }
+    else
     {
         $file = '$(System.DefaultWorkingDirectory)/$(Parameters.sourceLocation)/requirements.txt'
 
-        if ([string]::IsNullOrWhiteSpace($env:BOTBUILDERPACKAGEVERSION))
+        if ([string]::IsNullOrWhiteSpace($botbuilderversion))
         {
             Write-Host "BotBuilder latest preview version will be installed."
 
@@ -25,7 +31,7 @@ steps:
         }
         else #specific version value set
         {
-            Write-Host "BotBuilder version [$env:BOTBUILDERPACKAGEVERSION] will be installed."
+            Write-Host "BotBuilder version [$botbuilderversion] will be installed."
 
             #Add the test.pypi source at the beginning of requirements
             $content = Get-Content $file
@@ -37,7 +43,7 @@ steps:
             $matchinfo = Select-String -Path $file -Pattern "botbuilder-integration-aiohttp"
 
             #matchinfo marks the line number from 1 instead of 0
-            $content[$matchinfo.LineNumber - 1] = "botbuilder-integration-aiohttp==$env:BOTBUILDERPACKAGEVERSION --pre"
+            $content[$matchinfo.LineNumber - 1] = "botbuilder-integration-aiohttp==$botbuilderversion --pre"
             Set-Content -Path $file -Value $content
 
             #Set botbuilder-dialogs version to value specified
@@ -45,17 +51,13 @@ steps:
             $matchinfo = Select-String -Path $file -Pattern "botbuilder-dialogs"
 
             #matchinfo marks the line number from 1 instead of 0
-            $content[$matchinfo.LineNumber - 1] = "botbuilder-dialogs==$env:BOTBUILDERPACKAGEVERSION --pre"
+            $content[$matchinfo.LineNumber - 1] = "botbuilder-dialogs==$botbuilderversion --pre"
             Set-Content -Path $file -Value $content
         }
 
         $content = Get-Content $file
         Write-Host "requirements:"
         Write-Host $content
-    }
-    else
-    {
-      Write-Host "BotBuilder latest stable version will be installed."
     }
   displayName: 'Set BotBuilder version value'
 
