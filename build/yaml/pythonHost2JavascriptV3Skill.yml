@@ -26,6 +26,7 @@ variables:
   # PyJsV3SkillBotName: define in Azure
   # NextBuild: define in Azure and set to either a build name or an empty string
   # TriggeredBy: define in Azure and set to an empty string
+  # RegistryUrlHost: (optional) define in Azure
 
 pool:
   vmImage: 'windows-2019'
@@ -65,6 +66,7 @@ stages:
         BotName: $(PyJsV3HostBotName)
         DeployAppId: $(PyJsV3HostAppId)
         DeployAppSecret: $(PyJsV3HostAppSecret)
+        Registry: $[variables.RegistryUrlHost]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
         Parameters.sourceLocation: 'SkillsFunctionalTests/python/host'
         TemplateLocation: 'SkillsFunctionalTests/python/host/deploymentTemplates/template-with-new-rg.json'
