@@ -8,15 +8,15 @@ steps:
      az deployment create --name "$(BotName)-RG" --template-file "$(System.DefaultWorkingDirectory)/$(TemplateLocation)" --location "westus" --parameters appId="$(DeployAppId)" appSecret="$(DeployAppSecret)" botId="$(BotName)" botSku=F0 newAppServicePlanName="$(BotName)" newWebAppName="$(BotName)-$(Build.BuildId)" groupName="$(BotName)-RG" groupLocation="westus" newAppServicePlanLocation="westus"
 
 - powershell: |
+    Write-Host "Setting BotBuilder packges version."
     if(-Not ($env:BOTBUILDERPACKAGEVERSION -eq 'stable'))
     {
-        Write-Host "Setting BotBuilder version variable."
 
         $file = '$(System.DefaultWorkingDirectory)/$(Parameters.sourceLocation)/requirements.txt'
 
         if ([string]::IsNullOrWhiteSpace($env:BOTBUILDERPACKAGEVERSION))
         {
-            Write-Host "Installing latest preview version."
+            Write-Host "BotBuilder latest preview version will be installed."
 
             #Add the test.pypi source at the beginning of requirements
             $content = Get-Content $file
@@ -25,7 +25,7 @@ steps:
         }
         else #specific version value set
         {
-            Write-Host "Installing version [$env:BOTBUILDERPACKAGEVERSION]"
+            Write-Host "BotBuilder version [$env:BOTBUILDERPACKAGEVERSION] will be installed."
 
             #Add the test.pypi source at the beginning of requirements
             $content = Get-Content $file
@@ -52,6 +52,10 @@ steps:
         $content = Get-Content $file
         Write-Host "requirements:"
         Write-Host $content
+    }
+    else
+    {
+      Write-Host "BotBuilder latest stable version will be installed."
     }
   displayName: 'Set BotBuilder version value'
 
