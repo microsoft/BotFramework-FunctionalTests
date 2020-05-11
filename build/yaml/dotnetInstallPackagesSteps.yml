@@ -1,6 +1,6 @@
 steps:
 - task: DotNetCoreCLI@2
-  displayName: 'Add stable BotBuilder version'
+  displayName: 'Add stable Microsoft.Bot.Builder.Integration.AspNet.Core version'
   condition: eq(variables['BotBuilderPackageVersion'],'stable')
   inputs:
     command: custom
@@ -8,8 +8,17 @@ steps:
     custom: add
     arguments: 'package Microsoft.Bot.Builder.Integration.AspNet.Core'
 
+- task: DotNetCoreCLI@2
+  displayName: 'Add stable Microsoft.Bot.Builder.Dialogs version'
+  condition: eq(variables['BotBuilderPackageVersion'],'stable')
+  inputs:
+    command: custom
+    projects: $(Parameters.project)
+    custom: add
+    arguments: 'package Microsoft.Bot.Builder.Dialogs'
+
 - powershell: |
-    if ($null -eq $env:BotBuilderPackageVersion -or '' -eq $env:BotBuilderPackageVersion) {
+    if ([string]::IsNullOrWhiteSpace($env:BotBuilderPackageVersion)) {
         $Response = Invoke-WebRequest -URI https://botbuilder.myget.org/F/botbuilder-v4-dotnet-daily/api/v3/registration1/Microsoft.Bot.Builder/index.json | ConvertFrom-Json;
         $LastPackage = $Response.items | Select-Object -Last 1
         $latest_version = $lastpackage.upper
@@ -21,10 +30,19 @@ steps:
   condition: eq(variables['BotBuilderPackageVersion'], '')
 
 - task: DotNetCoreCLI@2
-  displayName: 'Add custom BotBuilder version'
+  displayName: 'Add custom Bot.Builder.Integration.AspNet.Core version'
   condition: and(ne(variables['BotBuilderPackageVersion'],''), ne(variables['BotBuilderPackageVersion'],'stable'))
   inputs:
     command: custom
     projects: $(Parameters.project)
     custom: add
     arguments: 'package Microsoft.Bot.Builder.Integration.AspNet.Core --version "$(BotBuilderPackageVersion)" --source "https://botbuilder.myget.org/F/botbuilder-v4-dotnet-daily/api/v3/index.json"'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Add custom Bot.Builder.Dialogs version'
+  condition: and(ne(variables['BotBuilderPackageVersion'],''), ne(variables['BotBuilderPackageVersion'],'stable'))
+  inputs:
+    command: custom
+    projects: $(Parameters.project)
+    custom: add
+    arguments: 'package Microsoft.Bot.Builder.Dialogs --version "$(BotBuilderPackageVersion)" --source "https://botbuilder.myget.org/F/botbuilder-v4-dotnet-daily/api/v3/index.json"'

@@ -57,8 +57,6 @@ stages:
 
 - stage: Deploy
   condition: and(succeeded(), in(variables['TriggeredReason'], 'Schedule', 'Manual', 'BuildRunner'))
-  pool:
-    vmImage: 'ubuntu-latest'
   jobs:
     - job: Deploy_Host
       variables:

@@ -3,14 +3,11 @@
 # Licensed under the MIT License.
 
 import os
-from dotenv import load_dotenv
 
 """ Bot Configuration """
 
 class DefaultConfig:
     """ Bot Configuration """
-
-    load_dotenv()
 
     PORT = 39783
     APP_ID = os.environ.get("MicrosoftAppId", "TODO: Add here the App ID for the skill bot")

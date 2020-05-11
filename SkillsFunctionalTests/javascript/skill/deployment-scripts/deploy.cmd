@@ -109,7 +109,7 @@ IF EXIST "%DEPLOYMENT_TARGET%\package.json" (
     echo Installing stable version
     call :ExecuteCmd !NPM_CMD! install --save botbuilder@latest
     call :ExecuteCmd !NPM_CMD! install --save botframework-connector@latest
-      call :ExecuteCmd !NPM_CMD! install --save botbuilder-dialogs@latest
+    call :ExecuteCmd !NPM_CMD! install --save botbuilder-dialogs@latest
   ) ELSE (    
     IF %BOT_BUILDER_PACKAGE_VERSION% EQU preview (
       echo Installing preview version
