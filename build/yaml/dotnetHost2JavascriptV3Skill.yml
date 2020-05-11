@@ -127,7 +127,7 @@ stages:
         Parameters.project: 'SkillsFunctionalTests/tests/SkillFunctionalTests/SkillFunctionalTests.csproj'
         Parameters.solution: 'SkillsFunctionalTests/tests/SkillFunctionalTests.sln'
       steps:
-      - template: functionalTestSteps.yml
+      - template: functionalTestV3Steps.yml
 
 - stage: Cleanup
   dependsOn:
