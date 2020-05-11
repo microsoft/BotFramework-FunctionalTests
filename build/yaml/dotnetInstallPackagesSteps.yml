@@ -85,4 +85,4 @@ steps:
     command: custom
     projects: $(Parameters.project)
     custom: add
-    arguments: 'package Microsoft.Bot.Builder.Integration.AspNet.Core $(BotBuilderPackageVersion) $(RegistrySource)'
+    arguments: 'package Microsoft.Bot.Builder.Dialogs $(BotBuilderPackageVersion) $(RegistrySource)'
