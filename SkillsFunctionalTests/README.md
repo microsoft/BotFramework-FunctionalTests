@@ -2,7 +2,9 @@
 
 ### Summary
 
-Skill functional testing aims to automate the testing matrix for Bot/Skill interactions in all available programming languages.
+Skill functional testing aims to automate the testing for the combination of Host and Skill bots and its interactions in all available programming languages.
+
+The matrix consists of all the available combinations to test in this repository. Each table cell has a badge that represents a pipeline that runs every night using the latest preview version of the BotBuilder packages.
 
 <table>
     <tr>
@@ -58,6 +60,33 @@ Skill functional testing aims to automate the testing matrix for Bot/Skill inter
 This section contains a `SimpleHostBot` and an `EchoSkillBot` sample for each language available to be used in the functional tests. To run the test we use YAML files to set up a pipeline that deploys a pair of Host and Skill bots to Azure and then run functional tests where the HostBot consumes the SkillBot.
 
 The functional tests are located in the `tests` folder. This test is written in DotNet and can be used to test the bots independently of the language these are written in. For this, the test communicate with the bots deployed to Azure using a [direct line channel](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-channel-directline) to the `HostBot`, and ask it to be delegated to the skill to then get an echo message.
+
+### Tests
+
+The following tests are run in the pipeline using the Host and Skill bots deployed in Azure through a DirectLine connection with the Host bot.
+
+<table>
+    <tr>
+        <th align="center">Name</th>
+        <th align="center">Description</th>
+        <th align="center">Additional Info</th>
+    </tr>
+    <tr>
+        <td>Host_WhenRequested_ShouldRedirectToSkill</td>
+        <td>Tests that the host bot communicates with the skill bot when asked.</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>Host_WhenSkillEnds_HostReceivesEndOfConversation</td>
+        <td>Tests that the skill bot returns the control of the conversation to the host bot when asked.</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>Skill_OAuthCard_SignInSuccessful</td>
+        <td>Tests that the skill bot Sign In successfully using the OAuth service.</td>
+        <td>Skipped when a v3 Skill bot is used</td>
+    </tr>
+</table>
 
 ## Usage
 

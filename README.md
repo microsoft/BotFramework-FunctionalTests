@@ -1,3 +1,12 @@
+# Bot Framework Functional Tests
+
+This repository contains functional tests for the different [Bot Framework SDK](https://github.com/microsoft/botframework-sdk) tools.
+
+# Content
+
+## Skills Functional Tests
+
+[Skill functional tests](/SkillsFunctionalTests) aims to automate the testing between Host and Skills bots interactions in all available programming languages.
 
 # Contributing
 
