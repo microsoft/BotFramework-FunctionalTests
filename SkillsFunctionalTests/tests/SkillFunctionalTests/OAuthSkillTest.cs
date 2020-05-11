@@ -19,6 +19,7 @@ namespace FunctionalTests
     [TestClass]
     [TestCategory("FunctionalTests")]
     [TestCategory("OAuth")]
+    [TestCategory("SkipForV3Bots")]
     public class OAuthSkillTest
     {
         [TestMethod]
