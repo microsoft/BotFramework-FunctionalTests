@@ -20,7 +20,7 @@ namespace FunctionalTests
         [TestMethod]
         public async Task Host_WhenRequested_ShouldRedirectToSkill()
         {
-            var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromMinutes(1));
+            var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromMinutes(2));
 
             var testBot = new TestBotClient(new EnvironmentBotTestConfiguration());
 
@@ -34,7 +34,7 @@ namespace FunctionalTests
         [TestMethod]
         public async Task Host_WhenSkillEnds_HostReceivesEndOfConversation()
         {
-            var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromMinutes(1));
+            var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromMinutes(2));
 
             var testBot = new TestBotClient(new EnvironmentBotTestConfiguration());
 
