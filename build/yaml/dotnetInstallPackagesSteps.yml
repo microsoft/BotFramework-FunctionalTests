@@ -77,7 +77,7 @@ steps:
     command: custom
     projects: $(Parameters.project)
     custom: add
-    arguments: 'package Microsoft.Bot.Builder.Integration.AspNet.Core $(BotBuilderPackageVersion) $(RegistrySource)'`
+    arguments: 'package Microsoft.Bot.Builder.Integration.AspNet.Core $(BotBuilderPackageVersion) $(RegistrySource)'
 
 - task: DotNetCoreCLI@2
   displayName: 'Add custom Bot.Builder.Dialogs version'  
