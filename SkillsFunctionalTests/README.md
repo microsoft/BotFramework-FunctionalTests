@@ -6,50 +6,51 @@ Skill functional testing aims to automate the testing matrix for Bot/Skill inter
 
 <table>
     <tr>
-        <th align="center">Host/Skill</th>       
+        <th align="center">Host/Skill</th>
+        <th align="center">C# Net Core 2.1</th>     
         <th align="center">C# Net Core 3.1</th>
         <th align="center">JavaScript</th>
         <th align="center">Python</th>
-        <th align="center">C# Net Core 2.1</th>
         <th align="center">v3 Javascript</th>
         <th align="center">v3 C#</th>
     </tr>
     <tr align="center">
-        <td>C# Net Core 3.1</td>
-        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/DotNet31DotNet31SkillBotFunctionalTest?branchName=master"></td>
-        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/DotNet31JsSkillBotFunctionalTest?branchName=master"></td>
-        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/DotNet31PySkillBotFunctionalTest?branchName=master"></td>
-        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/DotNet31DotNet21SkillBotFunctionalTest?branchName=master"></td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr align="center">
-        <td>JavaScript</td>
-        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/JsDotNet31SkillBotFunctionalTest?branchName=master"></td>
-        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/JsJsSkillBotFunctionalTest?branchName=master"></td>
-        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/JsPySkillBotFunctionalTest?branchName=master"></td>
-        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/JsDotNet21SkillBotFunctionalTest?branchName=master"></td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr align="center">
-        <td>Python</td>       
-        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/PyDotNet31SkillBotFunctionalTest?branchName=master"></td>
-        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/PyJsSkillBotFunctionalTest?branchName=master"></td>
-        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/PyPySkillBotFunctionalTest?branchName=master"></td>
-        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/PyDotNet21SkillBotFunctionalTest?branchName=master"></td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr align="center">
-        <td>C# Net Core 2.1</td>       
+        <tr align="center">
+        <td>C# Net Core 2.1</td>
+        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/DotNet21DotNet21SkillBotFunctionalTest?branchName=master"></td>   
         <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/DotNet21DotNet31SkillBotFunctionalTest?branchName=master"></td>
         <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/DotNet21JsSkillBotFunctionalTest?branchName=master"></td>
         <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/DotNet21PySkillBotFunctionalTest?branchName=master"></td>
-        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/DotNet21DotNet21SkillBotFunctionalTest?branchName=master"></td>
-        <td></td>
-        <td></td>
+        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/V3SkillBots/DotNet21JsV3SkillBotFunctionalTest?branchName=master"></td>
+        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/V3SkillBots/DotNet21DotNetV3SkillBotFunctionalTest?branchName=master"></td>
     </tr>
+        <td>C# Net Core 3.1</td>
+        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/DotNet31DotNet21SkillBotFunctionalTest?branchName=master"></td>
+        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/DotNet31DotNet31SkillBotFunctionalTest?branchName=master"></td>
+        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/DotNet31JsSkillBotFunctionalTest?branchName=master"></td>
+        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/DotNet31PySkillBotFunctionalTest?branchName=master"></td>
+        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/V3SkillBots/DotNet31JsV3SkillBotFunctionalTest?branchName=master"></td>
+        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/V3SkillBots/DotNet31DotNetV3SkillBotFunctionalTest?branchName=master"></td>
+    </tr>
+    <tr align="center">
+        <td>JavaScript</td>
+        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/JsDotNet21SkillBotFunctionalTest?branchName=master"></td>       
+        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/JsDotNet31SkillBotFunctionalTest?branchName=master"></td>
+        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/JsJsSkillBotFunctionalTest?branchName=master"></td>
+        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/JsPySkillBotFunctionalTest?branchName=master"></td>
+        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/V3SkillBots/JsJsV3SkillBotFunctionalTest?branchName=master"></td>
+        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/V3SkillBots/JsDotNetV3SkillBotFunctionalTest?branchName=master"></td>
+    </tr>
+    <tr align="center">
+        <td>Python</td>
+        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/PyDotNet21SkillBotFunctionalTest?branchName=master"></td>
+        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/PyDotNet31SkillBotFunctionalTest?branchName=master"></td>
+        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/PyJsSkillBotFunctionalTest?branchName=master"></td>
+        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/PyPySkillBotFunctionalTest?branchName=master"></td>
+        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/V3SkillBots/PyJsV3SkillBotFunctionalTest?branchName=master"></td>
+        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/V3SkillBots/PyDotNetV3SkillBotFunctionalTest?branchName=master"></td>
+    </tr>
+
 </table>
 
 ### Content
