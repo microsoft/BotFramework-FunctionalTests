@@ -7,15 +7,6 @@ steps:
       STABLE { Write-Host ("##vso[task.setvariable variable=BBVersion]stable") }
       default { Write-Host ("##vso[task.setvariable variable=BBVersion]$(BotBuilderPackageVersion)") }
    }
-
-   switch ("$(Registry)".ToUpper())
-   {
-      $null { Write-Host ("##vso[task.setvariable variable=RegistryUrl]MyGet") }
-      '' { Write-Host ("##vso[task.setvariable variable=RegistryUrl]MyGet") }
-      NUGET { Write-Host ("##vso[task.setvariable variable=RegistryUrl]NuGet") }
-      MYGET { Write-Host ("##vso[task.setvariable variable=RegistryUrl]MyGet") }
-      default { Write-Host ("##vso[task.setvariable variable=RegistryUrl]$(Registry)") }
-   }
   displayName: 'Read BotBuilder package version variable'
 
 - powershell: |
