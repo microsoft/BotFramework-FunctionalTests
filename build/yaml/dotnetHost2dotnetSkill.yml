@@ -21,6 +21,7 @@ variables:
   # DotNetDotNetSkillAppId: define in Azure
   # DotNetDotNetSkillAppSecret: define in Azure
   # DotNetDotNetSkillBotName: define in Azure
+  # DotNetTestFilter: (optional) define in Azure. Example: '&TestCategory!=SkipForV3Bots'
   # ExecutePipelinesPersonalAccessToken: (optional) define in Azure
   # NetCoreSdkVersionHost: define in Azure
   # NetCoreSdkVersionSkill: define in Azure
@@ -158,8 +159,6 @@ stages:
         HostBotName: $(DotNetDotNetHostBotName)
         Parameters.project: 'SkillsFunctionalTests/tests/SkillFunctionalTests/SkillFunctionalTests.csproj'
         Parameters.solution: 'SkillsFunctionalTests/tests/SkillFunctionalTests.sln'
-        DefaultTestFilter: 'TestCategory!=IgnoreInAutomatedBuild'
-        DotNetTestFilter: $[ coalesce( variables['TestFilter'], variables['DefaultTestFilter'] ) ]
       steps:
       - template: functionalTestSteps.yml
 

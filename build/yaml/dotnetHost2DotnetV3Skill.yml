@@ -21,6 +21,7 @@ variables:
   # DotNetDotNetV3SkillAppId: define in Azure
   # DotNetDotNetV3SkillAppSecret: define in Azure
   # DotNetDotNetV3SkillBotName: define in Azure
+  # DotNetTestFilter: (optional) define in Azure. Example: '&TestCategory!=SkipForV3Bots'
   # ExecutePipelinesPersonalAccessToken: (optional) define in Azure
   # NetCoreSdkVersionHost: define in Azure
   # NextBuild: define in Azure and set to either a build name or an empty string

@@ -20,4 +20,4 @@ steps:
   inputs:
     command: test
     projects: $(Parameters.project)
-    arguments: '-v n  --configuration $(BuildConfiguration) --no-build --no-restore --filter $(DotNetTestFilter)'
+    arguments: '-v n  --configuration $(BuildConfiguration) --no-build --no-restore --filter TestCategory!=IgnoreInAutomatedBuild$(DotNetTestFilter)'
