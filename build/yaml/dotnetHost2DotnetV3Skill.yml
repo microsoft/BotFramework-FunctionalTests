@@ -87,6 +87,7 @@ stages:
         BotName: $(DotNetDotNetV3HostBotName)
         DeployAppId: $(DotNetDotNetV3HostAppId)
         DeployAppSecret: $(DotNetDotNetV3HostAppSecret)
+        Registry: $[variables.RegistryUrlHost]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
         Parameters.project: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionHost)/host/SimpleHostBot.csproj'
         TemplateLocation: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionHost)/host/DeploymentTemplates/template-with-new-rg.json'
@@ -122,6 +123,7 @@ stages:
         BotName: $(DotNetDotNetV3SkillBotName)
         DeployAppId: $(DotNetDotNetV3SkillAppId)
         DeployAppSecret: $(DotNetDotNetV3SkillAppSecret)
+        Registry: $[variables.RegistryUrlSkill]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
         Parameters.solution: 'SkillsFunctionalTests/dotnet/v3/skill/EchoSkillBot.sln'
         Parameters.sourceLocation: 'SkillsFunctionalTests/dotnet/v3/skill/'
