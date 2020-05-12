@@ -23,6 +23,7 @@ variables:
   # JsDotNetV3SkillAppSecret: define in Azure
   # JsDotNetV3SkillBotName: define in Azure
   # NextBuild: define in Azure and set to either a build name or an empty string
+  # RegistryUrlSkill (Optional): define this in Azure
   # TriggeredBy: define in Azure and set to an empty string
 
 pool:
@@ -58,6 +59,7 @@ stages:
   jobs:
     - job: Build_Skill_Bot
       variables:
+        Registry: $[variables.RegistryUrlSkill]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
         Parameters.solution: 'SkillsFunctionalTests/dotnet/v3/skill/EchoSkillBot.sln'
       steps:
@@ -96,6 +98,7 @@ stages:
         BotName: $(JsDotNetV3SkillBotName)
         DeployAppId: $(JsDotNetV3SkillAppId)
         DeployAppSecret: $(JsDotNetV3SkillAppSecret)
+        Registry: $[variables.RegistryUrlSkill]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
         Parameters.solution: 'SkillsFunctionalTests/dotnet/v3/skill/EchoSkillBot.sln'
         Parameters.sourceLocation: 'SkillsFunctionalTests/dotnet/v3/skill/'
