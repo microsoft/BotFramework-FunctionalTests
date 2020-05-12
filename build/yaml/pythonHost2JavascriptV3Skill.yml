@@ -25,6 +25,7 @@ variables:
   # PyJsV3SkillAppSecret: define in Azure
   # PyJsV3SkillBotName: define in Azure
   # NextBuild: define in Azure and set to either a build name or an empty string
+  # TestFilter: (optional) define in Azure. Example: '&TestCategory!=SkipForV3Bots'
   # TriggeredBy: define in Azure and set to an empty string
 
 pool:
@@ -100,8 +101,10 @@ stages:
         HostBotName: $(PyJsV3HostBotName)
         Parameters.project: 'SkillsFunctionalTests/tests/SkillFunctionalTests/SkillFunctionalTests.csproj'
         Parameters.solution: 'SkillsFunctionalTests/tests/SkillFunctionalTests.sln'
+        DefaultTestFilter: ''
+        DotNetTestFilter: $[ coalesce( variables['TestFilter'], variables['DefaultTestFilter'] ) ]
       steps:
-      - template: functionalTestV3Steps.yml
+      - template: functionalTestSteps.yml
 
 - stage: Cleanup
   dependsOn:
