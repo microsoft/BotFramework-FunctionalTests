@@ -25,6 +25,7 @@ variables:
   # NetCoreSdkVersionHost: define in Azure
   # NextBuild: define in Azure and set to either a build name or an empty string
   # TriggeredBy: define in Azure and set to an empty string
+  # RegistryUrlSkill (Optional): define this in Azure
 
 pool:
   vmImage: 'windows-2019'
@@ -111,7 +112,8 @@ stages:
       variables:
         BotName: $(DotNetJsV3SkillBotName)
         DeployAppId: $(DotNetJsV3SkillAppId)
-        DeployAppSecret: $(DotNetJsV3SkillAppSecret)
+        DeployAppSecret: $(DotNetJsV3SkillAppSecret)        
+        Registry: $[variables.RegistryUrlSkill]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
         Parameters.sourceLocation: 'SkillsFunctionalTests/javascript/v3/skill'
         TemplateLocation: 'SkillsFunctionalTests/javascript/skill/DeploymentTemplates/template-with-new-rg.json'
