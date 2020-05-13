@@ -25,6 +25,7 @@ variables:
   # NetCoreSdkVersionHost: define in Azure
   # NetCoreSdkVersionSkill: define in Azure
   # NextBuild: define in Azure and set to either a build name or an empty string
+  # TestFilter: (optional) define in Azure. Example: '&TestCategory!=SkipForV3Bots'
   # TriggeredBy: define in Azure and set to an empty string
 
 pool:
@@ -157,6 +158,8 @@ stages:
         HostBotName: $(DotNetDotNetHostBotName)
         Parameters.project: 'SkillsFunctionalTests/tests/SkillFunctionalTests/SkillFunctionalTests.csproj'
         Parameters.solution: 'SkillsFunctionalTests/tests/SkillFunctionalTests.sln'
+        DefaultTestFilter: ''
+        DotNetTestFilter: $[ coalesce( variables['TestFilter'], variables['DefaultTestFilter'] ) ]
       steps:
       - template: functionalTestSteps.yml
 
