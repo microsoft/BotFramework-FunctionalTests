@@ -75,7 +75,7 @@ steps:
 - task: AzureCLI@2
   displayName: 'Validate git deployment'
   inputs:
-    azureSubscription: devtest
+    azureSubscription: $(AzureSubscription)
     scriptType: ps
     scriptLocation: inlineScript
     inlineScript: |
