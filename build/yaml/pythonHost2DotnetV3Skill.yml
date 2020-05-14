@@ -25,9 +25,9 @@ variables:
   # PyDotNetV3SkillAppId: define in Azure
   # PyDotNetV3SkillAppSecret: define in Azure
   # PyDotNetV3SkillBotName: define in Azure
+  # RegistryUrlHost: (optional) define in Azure
   # TestFilter: (optional) define in Azure. Example: '&TestCategory!=SkipForV3Bots'
   # TriggeredBy: define in Azure and set to an empty string
-  # RegistryUrlHost: (optional) define in Azure
 
 pool:
   vmImage: 'windows-2019'

@@ -18,16 +18,16 @@ variables:
   # BotBuilderPackageVersionSkill: (optional) define in Azure
   # DeleteResourceGroup: (optional) define in Azure
   # ExecutePipelinesPersonalAccessToken: (optional) define in Azure
+  # NextBuild: define in Azure and set to either a build name or an empty string
   # PyJsHostAppId: define in Azure
   # PyJsHostAppSecret: define in Azure
   # PyJsHostBotName: define in Azure
   # PyJsSkillAppId: define in Azure
   # PyJsSkillAppSecret: define in Azure
   # PyJsSkillBotName: define in Azure
-  # NextBuild: define in Azure and set to either a build name or an empty string
+  # RegistryUrlHost: (optional) define in Azure
   # TestFilter: (optional) define in Azure. Example: '&TestCategory!=SkipForV3Bots'
   # TriggeredBy: define in Azure and set to an empty string
-  # RegistryUrlHost: (optional) define in Azure
 
 pool:
   vmImage: 'windows-2019'
