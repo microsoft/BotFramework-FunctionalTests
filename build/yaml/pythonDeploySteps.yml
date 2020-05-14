@@ -71,3 +71,28 @@ steps:
    git push azure master
   workingDirectory: '$(System.DefaultWorkingDirectory)/$(Parameters.sourceLocation)'
   displayName: 'Git bot deployment'
+
+- task: AzureCLI@2
+  displayName: 'Validate git deployment'
+  inputs:
+    azureSubscription: devtest
+    scriptType: ps
+    scriptLocation: inlineScript
+    inlineScript: |
+     #Getting logs from Azure
+     az webapp log download --name $(BotName)-$(Build.BuildId) --resource-group $(BotName)-rg --log-file "$(System.DefaultWorkingDirectory)\logs.zip";
+     Expand-Archive "$(System.DefaultWorkingDirectory)\logs.zip" -DestinationPath "$(System.DefaultWorkingDirectory)\logs";
+     $file = "$(System.DefaultWorkingDirectory)/logs/deployments/*/log.log"
+     $content = Get-Content $file
+
+     #Validates if the log contains the Deployment succesful line
+     Write-Host "Validating deployment log."
+     $containsWord = $content | %{$_ -match "Deployment successful"}
+     if ($containsWord -contains $true) {
+         Write-Host "Deployment successful, check the git deploy step for more information."
+     } else {
+         Write-Host "An error occurred during the deploy."
+         Write-Output $content
+         Write-Error "An error occurred during the deploy."
+     }
+  condition: succeededOrFailed()
