@@ -109,16 +109,19 @@ IF EXIST "%DEPLOYMENT_TARGET%\package.json" (
     echo Installing stable version
     call :ExecuteCmd !NPM_CMD! install --save botbuilder@latest
     call :ExecuteCmd !NPM_CMD! install --save botframework-connector@latest
+    call :ExecuteCmd !NPM_CMD! install --save botbuilder-dialogs@latest
   ) ELSE (
     call :ExecuteCmd !NPM_CMD! config set registry https://botbuilder.myget.org/F/botbuilder-v4-js-daily/npm/
     IF %BOT_BUILDER_PACKAGE_VERSION% EQU preview (
       echo Installing preview version
       call :ExecuteCmd !NPM_CMD! install --save botbuilder@latest
       call :ExecuteCmd !NPM_CMD! install --save botframework-connector@latest
+      call :ExecuteCmd !NPM_CMD! install --save botbuilder-dialogs@latest
     ) ELSE (
       echo Installing %BOT_BUILDER_PACKAGE_VERSION% version
       call :ExecuteCmd !NPM_CMD! install --save botbuilder@%BOT_BUILDER_PACKAGE_VERSION%
       call :ExecuteCmd !NPM_CMD! install --save botframework-connector@%BOT_BUILDER_PACKAGE_VERSION%
+      call :ExecuteCmd !NPM_CMD! install --save botbuilder-dialogs@%BOT_BUILDER_PACKAGE_VERSION%
     )
   )
   IF !ERRORLEVEL! NEQ 0 goto error

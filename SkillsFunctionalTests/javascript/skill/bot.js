@@ -38,6 +38,7 @@ class EchoBot extends ActivityHandler {
                 // Run the Dialog with the new message Activity.
                 await this.dialog.run(context, this.dialogState);
                 await next();
+                break;
             case 'end':
             case 'stop':
                 await context.sendActivity({
