@@ -12,8 +12,6 @@ steps:
 - template: validateRegistryAndBBVersionSteps.yml
 
 - powershell: |
-    $isHost = "$(Parameters.sourceLocation)".Trim().EndsWith("python/host")
-
     $file = '$(System.DefaultWorkingDirectory)/$(Parameters.sourceLocation)/requirements.txt'
 
     $source = "$(RegistryUrl)"
@@ -56,25 +54,24 @@ steps:
     Set-Content -Path $file -Value ("$pre --index-url $source --extra-index-url $extra_source".Trim())
     Add-Content -Path $file -Value $content
 
-    function UpdatePackageVersion($package,$includeIfNotFound = $true) {
+    function UpdatePackageVersion($package) {
       #Set Package version to empty value
       $content = @(Get-Content $file)
       $matchinfo = Select-String -Path $file -Pattern $package
 
       $script = "$package $condition $version"
 
-
       if($matchinfo.LineNumber -gt 0) {
         $content[$matchinfo.LineNumber - 1] = $script
         Set-Content -Path $file -Value $content
       
-      } elseif($includeIfNotFound){
+      } else {
         Add-Content -Path $file -Value $script
       }
     }
 
     UpdatePackageVersion "botbuilder-integration-aiohttp"
-    UpdatePackageVersion "botbuilder-dialogs" (-not($isHost))
+    UpdatePackageVersion "botbuilder-dialogs" 
 
     $content = @(Get-Content $file)
     Write-Host "Requirements:"
