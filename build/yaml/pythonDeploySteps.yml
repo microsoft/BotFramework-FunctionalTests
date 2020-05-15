@@ -74,7 +74,7 @@ steps:
     }
 
     UpdatePackageVersion "botbuilder-integration-aiohttp"
-    UpdatePackageVersion "botbuilder-dialogs" -not($isHost)
+    UpdatePackageVersion "botbuilder-dialogs" (-not($isHost))
 
     $content = @(Get-Content $file)
     Write-Host "Requirements:"
