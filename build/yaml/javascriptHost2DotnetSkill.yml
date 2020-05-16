@@ -74,6 +74,9 @@ stages:
   jobs:
     - job: Deploy_Host
       variables:
+        HostBotName: $(JsDotNetHostBotName)
+        SkillBotName: $(JsDotNetSkillBotName)
+        SkillAppId: $(JsDotNetSkillAppId)
         BotName: $(JsDotNetHostBotName)
         DeployAppId: $(JsDotNetHostAppId)
         DeployAppSecret: $(JsDotNetHostAppSecret)
@@ -81,20 +84,7 @@ stages:
         Parameters.sourceLocation: 'SkillsFunctionalTests/javascript/host'
         TemplateLocation: 'SkillsFunctionalTests/javascript/host/DeploymentTemplates/template-with-new-rg.json'
       steps:
-      - powershell: |
-         Write-host "Setting values in .env file"
-         $file = "$(System.DefaultWorkingDirectory)/SkillsFunctionalTests/javascript/host/.env";
-         $content = Get-Content -Raw $file | ConvertFrom-StringData;
-
-         $content.SkillHostEndpoint = "https://$(JsDotNetHostBotName)-$(Build.BuildId).azurewebsites.net/api/skills";
-         $content.SkillId = "EchoSkillBot";
-         $content.SkillAppId = "$(JsDotNetSkillAppId)";
-         $content.SkillEndpoint = "https://$(JsDotNetSkillBotName)-$(Build.BuildId).azurewebsites.net/api/messages";
-
-         Clear-Content $file;
-         foreach ($key in $content.keys) { Add-Content $file "$key=$($content.$key)" };
-        displayName: 'Update .env file'
-
+      - template: javascriptSetConfigFileSteps.yml
       - template: javascriptDeploySteps.yml
 
     - job: Deploy_Skill
