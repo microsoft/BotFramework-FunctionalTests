@@ -24,6 +24,7 @@ variables:
   # ExecutePipelinesPersonalAccessToken: (optional) define in Azure
   # NetCoreSdkVersionHost: define in Azure
   # NextBuild: define in Azure and set to either a build name or an empty string
+  # RegistryUrlHost (Optional): define this in Azure  
   # TestFilter: (optional) define in Azure. Example: '&TestCategory!=SkipForV3Bots'
   # TriggeredBy: define in Azure and set to an empty string
 
@@ -62,6 +63,7 @@ stages:
     - job: Build_Host_Bot
       dependsOn: Validate_Host_NetCore_Version
       variables:
+        Registry: $[variables.RegistryUrlHost]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
         Parameters.solution: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionHost)/host/SimpleHostBot.sln'
         Parameters.project: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionHost)/host/SimpleHostBot.csproj'
@@ -80,6 +82,7 @@ stages:
         BotName: $(DotNetJsHostBotName)
         DeployAppId: $(DotNetJsHostAppId)
         DeployAppSecret: $(DotNetJsHostAppSecret)
+        Registry: $[variables.RegistryUrlHost]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
         ProjectName: SimpleHostBot
         Parameters.project: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionHost)/host/SimpleHostBot.csproj'
