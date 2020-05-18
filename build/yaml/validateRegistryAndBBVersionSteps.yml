@@ -13,19 +13,22 @@ steps:
    Write-Host "BotBuilderPackageVersion: "$(BBVersion)
    Write-Host "Registry: "$(RegistryUrl)
 
-   $invalidVersionRegistry = "Preview versions of BotBuilder Packages couldn't be found in the NuGet registry."
-
    # Override the built-in cmdlet with a custom version
-   function Write-Error($message) {
+   function Write-Error($registry) {
          [Console]::ForegroundColor = 'red'
-         [Console]::Error.WriteLine($message)
+         [Console]::Error.WriteLine("Preview versions of BotBuilder Packages couldn't be found in the $registry registry.")
          [Console]::ResetColor()
    }
 
-   if ("$(BBVersion)" -eq "preview" -AND "$(RegistryUrl)" -eq "NuGet")
+   if ("$(BBVersion)" -eq "preview" -AND "$(RegistryUrl)".ToUpper() -eq "NuGet")
    {
-      Write-Error $invalidVersionRegistry
+      Write-Error $(RegistryUrl)
    }
+   if ("$(BBVersion)" -eq "preview" -AND "$(RegistryUrl)".ToUpper() -eq "NPM")
+   {
+      Write-Error $(RegistryUrl)
+   }
+   
   displayName: 'Validate Version & Registry'
   failOnStderr: true
   

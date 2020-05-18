@@ -24,6 +24,7 @@ variables:
   # JsDotNetSkillBotName: define in Azure
   # NetCoreSdkVersionSkill: define in Azure
   # NextBuild: define in Azure and set to either a build name or an empty string
+  # RegistryUrlHost (Optional): define this in Azure
   # RegistryUrlSkill (Optional): define this in Azure
   # TestFilter: (optional) define in Azure. Example: '&TestCategory!=SkipForV3Bots'
   # TriggeredBy: define in Azure and set to an empty string
@@ -82,6 +83,7 @@ stages:
         BotName: $(JsDotNetHostBotName)
         DeployAppId: $(JsDotNetHostAppId)
         DeployAppSecret: $(JsDotNetHostAppSecret)
+        Registry: $[variables.RegistryUrlHost]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
         Parameters.sourceLocation: 'SkillsFunctionalTests/javascript/host'
         TemplateLocation: 'SkillsFunctionalTests/javascript/host/DeploymentTemplates/template-with-new-rg.json'

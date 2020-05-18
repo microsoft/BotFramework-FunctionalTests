@@ -23,6 +23,8 @@ variables:
   # JsJsV3SkillAppSecret: define in Azure
   # JsJsV3SkillBotName: define in Azure
   # NextBuild: define in Azure and set to either a build name or an empty string
+  # RegistryUrlHost (Optional): define this in Azure
+  # RegistryUrlSkill (Optional): define this in Azure
   # TestFilter: (optional) define in Azure. Example: '&TestCategory!=SkipForV3Bots'
   # TriggeredBy: define in Azure and set to an empty string
 
@@ -65,6 +67,7 @@ stages:
         BotName: $(JsJsV3HostBotName)
         DeployAppId: $(JsJsV3HostAppId)
         DeployAppSecret: $(JsJsV3HostAppSecret)
+        Registry: $[variables.RegistryUrlHost]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
         Parameters.sourceLocation: 'SkillsFunctionalTests/javascript/host'
         TemplateLocation: 'SkillsFunctionalTests/javascript/host/DeploymentTemplates/template-with-new-rg.json'
@@ -77,6 +80,7 @@ stages:
         BotName: $(JsJsV3SkillBotName)
         DeployAppId: $(JsJsV3SkillAppId)
         DeployAppSecret: $(JsJsV3SkillAppSecret)
+        Registry: $[variables.RegistryUrlSkill]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
         Parameters.sourceLocation: 'SkillsFunctionalTests/javascript/v3/skill'
         TemplateLocation: 'SkillsFunctionalTests/javascript/v3/skill/DeploymentTemplates/template-with-new-rg.json'
