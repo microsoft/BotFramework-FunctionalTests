@@ -85,7 +85,7 @@ steps:
      $file = "$(System.DefaultWorkingDirectory)/logs/deployments/*/log.log"
      $content = Get-Content $file
 
-     #Validates if the log contains the Deployment succesful line
+     #Validates if the log contains the Deployment successful line
      Write-Host "Validating deployment log."
      $containsWord = $content | %{$_ -match "Deployment successful"}
      if ($containsWord -contains $true) {
