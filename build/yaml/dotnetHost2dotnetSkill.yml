@@ -13,7 +13,7 @@ variables:
   TriggeredReason: $[ coalesce( variables['TriggeringBuildReason'], variables['Build.Reason'] ) ]
   # AzureSubscription: define in Azure
   # BotBuilderPackageVersionHost: (optional) define in Azure
-  # BotBuilderPackageVersionSkill: (optional) define in Azure  
+  # BotBuilderPackageVersionSkill: (optional) define in Azure
   # DeleteResourceGroup: (optional) define in Azure
   # DotNetDotNetHostAppId: define in Azure
   # DotNetDotNetHostAppSecret: define in Azure
@@ -25,6 +25,8 @@ variables:
   # NetCoreSdkVersionHost: define in Azure
   # NetCoreSdkVersionSkill: define in Azure
   # NextBuild: define in Azure and set to either a build name or an empty string
+  # RegistryUrlHost (Optional): define this in Azure
+  # RegistryUrlSkill (Optional): define this in Azure
   # TestFilter: (optional) define in Azure. Example: '&TestCategory!=SkipForV3Bots'
   # TriggeredBy: define in Azure and set to an empty string
 
@@ -63,6 +65,7 @@ stages:
     - job: Build_Host_Bot
       dependsOn: Validate_Host_NetCore_Version
       variables:
+        Registry: $[variables.RegistryUrlHost]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
         Parameters.solution: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionHost)/host/SimpleHostBot.sln'
         Parameters.project: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionHost)/host/SimpleHostBot.csproj'
@@ -79,6 +82,7 @@ stages:
     - job: Build_Skill_Bot
       dependsOn: Validate_Skill_NetCore_Version
       variables:
+        Registry: $[variables.RegistryUrlSkill]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
         Parameters.solution: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionSkill)/skill/EchoSkillBot.sln'
         Parameters.project: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionSkill)/skill/EchoSkillBot.csproj'
@@ -91,38 +95,19 @@ stages:
   jobs:
     - job: Deploy_Host
       variables:
+        HostBotName: $(DotNetDotNetHostBotName)
+        SkillBotName: $(DotNetDotNetSkillBotName)
+        SkillAppId: $(DotNetDotNetSkillAppId)
         BotName: $(DotNetDotNetHostBotName)
         DeployAppId: $(DotNetDotNetHostAppId)
         DeployAppSecret: $(DotNetDotNetHostAppSecret)
-        BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
+        Registry: $[variables.RegistryUrlHost]
+        BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]        
         ProjectName: SimpleHostBot
         Parameters.project: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionHost)/host/SimpleHostBot.csproj'
         TemplateLocation: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionHost)/host/DeploymentTemplates/template-with-new-rg.json'
       steps:
-      - powershell: |
-         # Set values in appsettings.json file.
-         $file = "$(System.DefaultWorkingDirectory)\SkillsFunctionalTests\dotnet\$(NetCoreSdkVersionHost)\host\appsettings.json";
-         $content = Get-Content -Raw $file | ConvertFrom-Json;
-         $content.SkillHostEndpoint = "https://$(DotNetDotNetHostBotName)-$(Build.BuildId).azurewebsites.net/api/skills";
-
-         # Create Skill Class
-         class Skill{[String] $Id; [String] $AppId; [String] $SkillEndpoint;};
-
-         # Create list of botframework skills
-         $botFrameworkSkills = New-Object -TypeName System.Collections.Generic.List[Skill];
-
-         # Create Skill object
-         $dotnetSkill = New-Object -TypeName Skill;
-         $dotnetSkill.Id = "EchoSkillBot";
-         $dotnetSkill.AppId = "$(DotNetDotNetSkillAppId)";
-         $dotnetSkill.SkillEndpoint = "https://$(DotNetDotNetSkillBotName)-$(Build.BuildId).azurewebsites.net/api/messages";
-
-         # Add skill to botframework skill list
-         $botFrameworkSkills.Add($dotnetSkill);
-         $content.BotFrameworkSkills = $botFrameworkSkills;
-         $content | ConvertTo-Json | Set-Content $file;
-        displayName: 'Set Host appsettings.json file.'
-
+      - template: dotnetSetConfigFileSteps.yml
       - template: dotnetDeploySteps.yml
 
     - job: Deploy_Skill
@@ -130,6 +115,7 @@ stages:
         BotName: $(DotNetDotNetSkillBotName)
         DeployAppId: $(DotNetDotNetSkillAppId)
         DeployAppSecret: $(DotNetDotNetSkillAppSecret)
+        Registry: $[variables.RegistryUrlSkill]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
         ProjectName: EchoSkillBot
         Parameters.project: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionSkill)/skill/EchoSkillBot.csproj'

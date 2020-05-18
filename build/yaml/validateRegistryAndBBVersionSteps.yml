@@ -33,7 +33,7 @@ steps:
    {
       Write-Error $(RegistryUrl)
    }
-
+   
   displayName: 'Validate Version & Registry'
   failOnStderr: true
   

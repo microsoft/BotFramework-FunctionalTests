@@ -42,7 +42,7 @@ stages:
         SkillBotName: $(PyJsSkillBotName)
       steps:
       - template: cleanResourcesStep.yml
-        
+
 - stage: Tag
   condition: succeededOrFailed()
   jobs:
@@ -64,6 +64,9 @@ stages:
       pool:
         vmImage: 'ubuntu-latest'
       variables:
+        HostBotName: $(PyJsHostBotName)
+        SkillBotName: $(PyJsSkillBotName)
+        SkillAppId: $(PyJsSkillAppId)
         BotName: $(PyJsHostBotName)
         DeployAppId: $(PyJsHostAppId)
         DeployAppSecret: $(PyJsHostAppSecret)
@@ -72,18 +75,7 @@ stages:
         Parameters.sourceLocation: 'SkillsFunctionalTests/python/host'
         TemplateLocation: 'SkillsFunctionalTests/python/host/deploymentTemplates/template-with-new-rg.json'
       steps:
-      - powershell: |
-         Write-host "Setting config file"
-         $file = "$(System.DefaultWorkingDirectory)/$(Parameters.sourceLocation)/.env";
-         $content = Get-Content -Raw $file | ConvertFrom-StringData;
-         $content.SKILL_BOT_APP_ID = "$(PyJsSkillAppId)";
-         $content.SKILL_BOT_ENDPOINT = "https://$(PyJsSkillBotName)-$(Build.BuildId).azurewebsites.net/api/messages";
-         $content.SKILL_HOST_ENDPOINT = "https://$(PyJsHostBotName)-$(Build.BuildId).azurewebsites.net/api/skills";
-
-         Clear-Content $file;
-         foreach ($key in $content.keys) { Add-Content $file "$key=$($content.$key)" };
-        displayName: 'Update .env file'
-
+      - template: pythonSetConfigFileSteps.yml
       - template: pythonDeploySteps.yml
 
     - job: Deploy_Skill
