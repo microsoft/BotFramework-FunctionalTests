@@ -57,7 +57,7 @@ steps:
 
         $content = Get-Content $file
         Write-Host "requirements:"
-        Write-Host $content
+        Write-Output $content
     }
   displayName: 'Set BotBuilder version value'
 

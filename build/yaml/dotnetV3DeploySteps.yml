@@ -1,7 +1,9 @@
 steps:
 - template: dotnetV3BuildSteps.yml
 
-- powershell: 'Compress-Archive "$(Parameters.sourceLocation)/*" "$(Parameters.sourceLocation)/bot.zip" -Update'
+- powershell: |
+   Write-Host "Compressing project into bot.zip"
+   Compress-Archive "$(Parameters.sourceLocation)/*" "$(Parameters.sourceLocation)/bot.zip" -Update
   displayName: 'Zip Bot'
 
 - task: AzureCLI@1
