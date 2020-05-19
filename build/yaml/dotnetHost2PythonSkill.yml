@@ -94,8 +94,6 @@ stages:
       - template: dotnetDeploySteps.yml
 
     - job: Deploy_Skill
-      pool:
-        vmImage: 'ubuntu-latest'
       variables:
         BotName: $(DotNetPySkillBotName)
         DeployAppId: $(DotNetPySkillAppId)
