@@ -162,14 +162,14 @@ namespace SkillFunctionalTests.Bot
 
             while (!cancellationToken.IsCancellationRequested && !maxCancellation.IsCancellationRequested)
             {
+                await Task.Delay(TimeSpan.FromSeconds(3));
+                
                 var activities = await ReadBotMessagesAsync(cancellationToken);
 
                 if (activities != null && activities.Any())
                 {
                     return activities;
                 }
-
-                await Task.Delay(TimeSpan.FromMilliseconds(100));
             }
 
             throw new Exception("No activities received");

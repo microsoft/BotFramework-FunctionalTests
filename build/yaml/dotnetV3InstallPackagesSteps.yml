@@ -1,30 +1,44 @@
 steps:
 - powershell: |
-   switch ("$(BotBuilderPackageVersion)".ToUpper())
+   switch ("$(Registry)".ToUpper())
    {
-      $null { Write-Host ("##vso[task.setvariable variable=BBVersion]preview") }
-      '' { Write-Host ("##vso[task.setvariable variable=BBVersion]preview") }
-      STABLE { Write-Host ("##vso[task.setvariable variable=BBVersion]stable") }
-      default { Write-Host ("##vso[task.setvariable variable=BBVersion]$(BotBuilderPackageVersion)") }
+      $null { Write-Host ("##vso[task.setvariable variable=RegistryUrl]MyGet") }
+      '' { Write-Host ("##vso[task.setvariable variable=RegistryUrl]MyGet") }
+      NUGET { Write-Host ("##vso[task.setvariable variable=RegistryUrl]NuGet") }
+      MYGET { Write-Host ("##vso[task.setvariable variable=RegistryUrl]MyGet") }
+      default { Write-Host ("##vso[task.setvariable variable=RegistryUrl]$(Registry)") }
    }
-  displayName: 'Read Variables'
+  displayName: 'Read registry URL variable'
+
+- template: validateRegistryAndBBVersionSteps.yml
 
 - powershell: |
    Write-Host "BBVersion: "$(BBVersion)
    if ("$(BBVersion)" -eq "stable")
    {
-     $version = ""
-     $source = ""
+     $version = ""     
    }
    elseif ("$(BBVersion)" -eq "preview") 
    {
-     $version = ""
-     $source = ' -Source "https://botbuilder.myget.org/F/botbuilder-v3-dotnet-daily/api/v3/index.json"'
+     $version = ""     
    }
    else
    {
-     $version = '-Version ' + '"$(BBVersion)"'
-     $source = ' -Source "https://botbuilder.myget.org/F/botbuilder-v3-dotnet-daily/api/v3/index.json"'
+     $version = '-Version ' + '"$(BBVersion)"'     
+   }
+
+   Write-Host "RegistryUrl: "$(RegistryUrl)
+   if ("$(RegistryUrl)" -eq "MyGet")
+   {
+      $source = ' -Source "https://botbuilder.myget.org/F/botbuilder-v3-dotnet-daily/api/v3/index.json"'
+   }
+   elseif("$(RegistryUrl)" -eq "NuGet")
+   {
+      $source = ""
+   }
+   else
+   {
+      $source = " -Source `"$(RegistryUrl)`""
    }
 
    $InstallPackageParameters = "$version" + "$source"

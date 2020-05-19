@@ -25,6 +25,8 @@ variables:
   # PyDotNetV3SkillAppId: define in Azure
   # PyDotNetV3SkillAppSecret: define in Azure
   # PyDotNetV3SkillBotName: define in Azure
+  # RegistryUrlSkill (Optional): define this in Azure
+  # TestFilter: (optional) define in Azure. Example: '&TestCategory!=SkipForV3Bots'
   # TriggeredBy: define in Azure and set to an empty string
 
 pool:
@@ -60,6 +62,7 @@ stages:
   jobs:
     - job: Build_Skill_Bot
       variables:
+        Registry: $[variables.RegistryUrlSkill]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
         Parameters.solution: 'SkillsFunctionalTests/dotnet/v3/skill/EchoSkillBot.sln'
       steps:
@@ -72,6 +75,9 @@ stages:
       pool:
         vmImage: 'ubuntu-latest'
       variables:
+        HostBotName: $(PyDotNetV3HostBotName)
+        SkillBotName: $(PyDotNetV3SkillBotName)
+        SkillAppId: $(PyDotNetV3SkillAppId)
         BotName: $(PyDotNetV3HostBotName)
         DeployAppId: $(PyDotNetV3HostAppId)
         DeployAppSecret: $(PyDotNetV3HostAppSecret)
@@ -79,18 +85,7 @@ stages:
         Parameters.sourceLocation: 'SkillsFunctionalTests/python/host'
         TemplateLocation: 'SkillsFunctionalTests/python/host/deploymentTemplates/template-with-new-rg.json'
       steps:
-      - powershell: |
-         Write-host "Setting config file"
-         $file = "$(System.DefaultWorkingDirectory)/$(Parameters.sourceLocation)/.env";
-         $content = Get-Content -Raw $file | ConvertFrom-StringData;
-         $content.SKILL_BOT_APP_ID = "$(PyDotNetV3SkillAppId)";
-         $content.SKILL_BOT_ENDPOINT = "https://$(PyDotNetV3SkillBotName)-$(Build.BuildId).azurewebsites.net/api/messages";
-         $content.SKILL_HOST_ENDPOINT = "https://$(PyDotNetV3HostBotName)-$(Build.BuildId).azurewebsites.net/api/skills";
-
-         Clear-Content $file;
-         foreach ($key in $content.keys) { Add-Content $file "$key=$($content.$key)" };
-        displayName: 'Update .env file'
-
+      - template: pythonSetConfigFileSteps.yml
       - template: pythonDeploySteps.yml
 
     - job: Deploy_Skill
@@ -98,6 +93,7 @@ stages:
         BotName: $(PyDotNetV3SkillBotName)
         DeployAppId: $(PyDotNetV3SkillAppId)
         DeployAppSecret: $(PyDotNetV3SkillAppSecret)
+        Registry: $[variables.RegistryUrlSkill]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
         Parameters.solution: 'SkillsFunctionalTests/dotnet/v3/skill/EchoSkillBot.sln'
         Parameters.sourceLocation: 'SkillsFunctionalTests/dotnet/v3/skill/'
@@ -113,6 +109,8 @@ stages:
         HostBotName: $(PyDotNetV3HostBotName)
         Parameters.project: 'SkillsFunctionalTests/tests/SkillFunctionalTests/SkillFunctionalTests.csproj'
         Parameters.solution: 'SkillsFunctionalTests/tests/SkillFunctionalTests.sln'
+        DefaultTestFilter: ''
+        DotNetTestFilter: $[ coalesce( variables['TestFilter'], variables['DefaultTestFilter'] ) ]
       steps:
       - template: functionalTestSteps.yml
 

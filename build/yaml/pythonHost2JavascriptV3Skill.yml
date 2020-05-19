@@ -25,6 +25,8 @@ variables:
   # PyJsV3SkillAppSecret: define in Azure
   # PyJsV3SkillBotName: define in Azure
   # NextBuild: define in Azure and set to either a build name or an empty string
+  # RegistryUrlSkill (Optional): define this in Azure
+  # TestFilter: (optional) define in Azure. Example: '&TestCategory!=SkipForV3Bots'
   # TriggeredBy: define in Azure and set to an empty string
 
 pool:
@@ -62,6 +64,9 @@ stages:
       pool:
         vmImage: 'ubuntu-latest'
       variables:
+        HostBotName: $(PyJsV3HostBotName)
+        SkillBotName: $(PyJsV3SkillBotName)
+        SkillAppId: $(PyJsV3SkillAppId)
         BotName: $(PyJsV3HostBotName)
         DeployAppId: $(PyJsV3HostAppId)
         DeployAppSecret: $(PyJsV3HostAppSecret)
@@ -69,16 +74,7 @@ stages:
         Parameters.sourceLocation: 'SkillsFunctionalTests/python/host'
         TemplateLocation: 'SkillsFunctionalTests/python/host/deploymentTemplates/template-with-new-rg.json'
       steps:
-      - powershell: |
-         Write-host "Setting config file"
-         $file = "$(System.DefaultWorkingDirectory)/$(Parameters.sourceLocation)/.env";
-         $content = Get-Content -Raw $file | ConvertFrom-StringData;
-         $content.SKILL_BOT_APP_ID = "$(PyJsV3SkillAppId)";
-         $content.SKILL_BOT_ENDPOINT = "https://$(PyJsV3SkillBotName)-$(Build.BuildId).azurewebsites.net/api/messages";
-         $content.SKILL_HOST_ENDPOINT = "https://$(PyJsV3HostBotName)-$(Build.BuildId).azurewebsites.net/api/skills";
-         Clear-Content $file;
-         foreach ($key in $content.keys) { Add-Content $file "$key=$($content.$key)" };
-        displayName: 'Update .env file'
+      - template: pythonSetConfigFileSteps.yml
       - template: pythonDeploySteps.yml
 
     - job: Deploy_Skill
@@ -86,6 +82,7 @@ stages:
         BotName: $(PyJsV3SkillBotName)
         DeployAppId: $(PyJsV3SkillAppId)
         DeployAppSecret: $(PyJsV3SkillAppSecret)
+        Registry: $[variables.RegistryUrlSkill]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
         Parameters.sourceLocation: 'SkillsFunctionalTests/javascript/v3/skill'
         TemplateLocation: 'SkillsFunctionalTests/javascript/skill/DeploymentTemplates/template-with-new-rg.json'
@@ -100,6 +97,8 @@ stages:
         HostBotName: $(PyJsV3HostBotName)
         Parameters.project: 'SkillsFunctionalTests/tests/SkillFunctionalTests/SkillFunctionalTests.csproj'
         Parameters.solution: 'SkillsFunctionalTests/tests/SkillFunctionalTests.sln'
+        DefaultTestFilter: ''
+        DotNetTestFilter: $[ coalesce( variables['TestFilter'], variables['DefaultTestFilter'] ) ]
       steps:
       - template: functionalTestSteps.yml
 

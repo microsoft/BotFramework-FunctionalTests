@@ -1,30 +1,88 @@
 steps:
-- task: DotNetCoreCLI@2
-  displayName: 'Add stable BotBuilder version'
-  condition: eq(variables['BotBuilderPackageVersion'],'stable')
+- powershell: |
+   switch ("$(Registry)".ToUpper())
+   {
+      $null { Write-Host ("##vso[task.setvariable variable=RegistryUrl]MyGet") }
+      '' { Write-Host ("##vso[task.setvariable variable=RegistryUrl]MyGet") }
+      NUGET { Write-Host ("##vso[task.setvariable variable=RegistryUrl]NuGet") }
+      MYGET { Write-Host ("##vso[task.setvariable variable=RegistryUrl]MyGet") }
+      default { Write-Host ("##vso[task.setvariable variable=RegistryUrl]$(Registry)") }
+   }
+  displayName: 'Read registry URL variable'
+
+- template: validateRegistryAndBBVersionSteps.yml
+
+- task: NuGetToolInstaller@0
+  displayName: 'Use NuGet 4.9.1'
   inputs:
-    command: custom
-    projects: $(Parameters.project)
-    custom: add
-    arguments: 'package Microsoft.Bot.Builder.Integration.AspNet.Core'
+    versionSpec: 4.9.1
 
 - powershell: |
-    if ([string]::IsNullOrWhiteSpace($env:BotBuilderPackageVersion)) {
-        $Response = Invoke-WebRequest -URI https://botbuilder.myget.org/F/botbuilder-v4-dotnet-daily/api/v3/registration1/Microsoft.Bot.Builder/index.json | ConvertFrom-Json;
-        $LastPackage = $Response.items | Select-Object -Last 1
-        $latest_version = $lastpackage.upper
-  
-        echo "##vso[task.setvariable variable=BotBuilderPackageVersion;]$latest_version"
-        Write-Host "Set package version to install $latest_version"
-    }
-  displayName: 'Get package BotBuilder preview version'
-  condition: eq(variables['BotBuilderPackageVersion'], '')
+   Write-Host "BBVersion: "$(BBVersion)
+
+   if ("$(BBVersion)" -eq "stable")
+   {
+      $version = ""
+   }
+   elseif ("$(BBVersion)" -eq "preview") 
+   {
+      if ("$(RegistryUrl)" -eq "MyGet") 
+      {
+         $RegistryUrlSource = "https://botbuilder.myget.org/F/botbuilder-v4-dotnet-daily/api/v3/index.json"         
+      }
+      else
+      {
+         $RegistryUrlSource = "$(RegistryUrl)"
+      }
+      $PackageList = nuget list Microsoft.Bot.Builder.Integration.AspNet.Core -Source "$RegistryUrlSource" -PreRelease
+      $PackageVersion = $PackageList.Split(" ")[-1]
+      $version = "--version " + "$PackageVersion"
+   }
+   else
+   {
+      $version = "--version " + "$(BBVersion)"
+   }
+
+   echo "##vso[task.setvariable variable=BotBuilderPackageVersion]$version"
+   Write-Host "Set package version to install $version"
+  failOnStderr: true
+  displayName: 'Set BotBuilder Package Version'
+  name: 'Set_BotBuilder_Package_Version'
+
+- powershell: |
+   Write-Host "RegistryUrl: "$(RegistryUrl)
+
+   if ("$(RegistryUrl)" -eq "MyGet")
+   {
+      $source = "--source `"https://botbuilder.myget.org/F/botbuilder-v4-dotnet-daily/api/v3/index.json`""
+   }
+   elseif("$(RegistryUrl)" -eq "NuGet")
+   {
+      $source = ""
+   }
+   else
+   {
+      $source = "--source `"$(RegistryUrl)`""
+   }
+
+   echo "##vso[task.setvariable variable=RegistrySource]$source"
+   Write-Host "Set registry url to: $source"
+  failOnStderr: true
+  displayName: 'Set Registry Url'
+  name: 'Set_Registry_Url'
 
 - task: DotNetCoreCLI@2
-  displayName: 'Add custom BotBuilder version'
-  condition: and(ne(variables['BotBuilderPackageVersion'],''), ne(variables['BotBuilderPackageVersion'],'stable'))
+  displayName: 'Add custom Bot.Builder.Integration.AspNet.Core version'  
   inputs:
     command: custom
     projects: $(Parameters.project)
     custom: add
-    arguments: 'package Microsoft.Bot.Builder.Integration.AspNet.Core --version "$(BotBuilderPackageVersion)" --source "https://botbuilder.myget.org/F/botbuilder-v4-dotnet-daily/api/v3/index.json"'
+    arguments: 'package Microsoft.Bot.Builder.Integration.AspNet.Core $(BotBuilderPackageVersion) $(RegistrySource)'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Add custom Bot.Builder.Dialogs version'  
+  inputs:
+    command: custom
+    projects: $(Parameters.project)
+    custom: add
+    arguments: 'package Microsoft.Bot.Builder.Dialogs $(BotBuilderPackageVersion) $(RegistrySource)'
