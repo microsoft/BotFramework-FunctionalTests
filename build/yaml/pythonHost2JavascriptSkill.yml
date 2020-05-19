@@ -63,8 +63,6 @@ stages:
   condition: and(succeeded(), in(variables['TriggeredReason'], 'Schedule', 'Manual', 'BuildRunner'))
   jobs:
     - job: Deploy_Host
-      pool:
-        vmImage: 'ubuntu-latest'
       variables:
         HostBotName: $(PyJsHostBotName)
         SkillBotName: $(PyJsSkillBotName)

@@ -44,7 +44,6 @@ steps:
       }
     }
 
-
     Write-Host "Setting Up Requirements..."
     Write-Host "Source: $source"
     Write-Host "Version: $(BBVersion) `n"

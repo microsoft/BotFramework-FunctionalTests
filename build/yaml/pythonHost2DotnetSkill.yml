@@ -78,8 +78,6 @@ stages:
   condition: and(succeeded(), in(variables['TriggeredReason'], 'Schedule', 'Manual', 'BuildRunner'))
   jobs:
     - job: Deploy_Host
-      pool:
-        vmImage: 'ubuntu-latest'
       variables:
         HostBotName: $(PyDotNetHostBotName)
         SkillBotName: $(PyDotNetSkillBotName)
@@ -102,7 +100,6 @@ stages:
         DeployAppSecret: $(PyDotNetSkillAppSecret)
         Registry: $[variables.RegistryUrlSkill]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
-        ProjectName: EchoSkillBot
         Parameters.project: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionSkill)/skill/EchoSkillBot.csproj'
         TemplateLocation: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionSkill)/skill/DeploymentTemplates/template-with-new-rg.json'
       steps:

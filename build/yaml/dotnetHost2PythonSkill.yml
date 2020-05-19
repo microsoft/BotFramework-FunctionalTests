@@ -87,7 +87,6 @@ stages:
         DeployAppSecret: $(DotNetPyHostAppSecret)
         Registry: $[variables.RegistryUrlHost]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
-        ProjectName: SimpleHostBot
         Parameters.project: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionHost)/host/SimpleHostBot.csproj'
         TemplateLocation: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionHost)/host/DeploymentTemplates/template-with-new-rg.json'
       steps:
@@ -95,8 +94,6 @@ stages:
       - template: dotnetDeploySteps.yml
 
     - job: Deploy_Skill
-      pool:
-        vmImage: 'ubuntu-latest'
       variables:
         BotName: $(DotNetPySkillBotName)
         DeployAppId: $(DotNetPySkillAppId)

@@ -78,8 +78,6 @@ stages:
       - template: javascriptDeploySteps.yml
 
     - job: Deploy_Skill
-      pool:
-        vmImage: 'ubuntu-latest'
       variables:
         BotName: $(JsPySkillBotName)
         DeployAppId: $(JsPySkillAppId)

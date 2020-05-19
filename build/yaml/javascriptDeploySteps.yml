@@ -43,6 +43,16 @@ steps:
     inlineScript: 'call az bot prepare-deploy --code-dir "$(Parameters.sourceLocation)" --lang Javascript'
 
 - powershell: |
+   if(-Not [string]::IsNullOrWhiteSpace($env:BotBuilderPackageVersion))
+   {
+      Write-Host "BotBuilder version set to $(BotBuilderPackageVersion)"
+      Add-Content $(Parameters.sourceLocation)/deployment-scripts/.deployment "`nBOT_BUILDER_PACKAGE_VERSION = $(BotBuilderPackageVersion)"
+   }
+  displayName: 'Add custom BotBuilder version'
+  condition: ne(variables['BotBuilderPackageVersion'], '')
+
+- powershell: |
+   Write-Host "Compressing project into bot.zip"
    move-item -path $(Parameters.sourceLocation)/deployment-scripts/* -destination $(Parameters.sourceLocation)
    Compress-Archive "$(Parameters.sourceLocation)/*" "$(Parameters.sourceLocation)/bot.zip" -Update
   displayName: 'Zip Bot'
@@ -53,7 +63,7 @@ steps:
     azureSubscription: $(AzureSubscription)
     scriptLocation: inlineScript
     inlineScript: |
-      call az deployment create --name "$(BotName)-RG" --template-file "$(TemplateLocation)" --location "westus" --parameters appId="$(DeployAppId)" appSecret="$(DeployAppSecret)" botId="$(BotName)" botSku=F0 newAppServicePlanName="$(BotName)" newWebAppName="$(BotName)-$(Build.BuildId)" groupName="$(BotName)-RG" groupLocation="westus" newAppServicePlanLocation="westus"    
+      call az deployment create --name "$(BotName)-RG" --template-file "$(TemplateLocation)" --location "westus" --parameters appId="$(DeployAppId)" appSecret="$(DeployAppSecret)" botId="$(BotName)" botSku=F0 newAppServicePlanName="$(BotName)" newWebAppName="$(BotName)-$(Build.BuildId)" groupName="$(BotName)-RG" groupLocation="westus" newAppServicePlanLocation="westus"
 
 - task: AzureCLI@1
   displayName: 'Deploy bot'
@@ -62,3 +72,17 @@ steps:
     scriptLocation: inlineScript
     inlineScript: |
       call az webapp deployment source config-zip --resource-group "$(BotName)-RG" --name "$(BotName)-$(Build.BuildId)" --src "$(Parameters.sourceLocation)/bot.zip"
+
+- task: AzureCLI@2
+  displayName: 'Show logs'
+  condition: succeededOrFailed()
+  inputs:
+    azureSubscription: $(AzureSubscription)
+    scriptType: ps
+    scriptLocation: inlineScript
+    inlineScript: |
+     az webapp log download --name $(BotName)-$(Build.BuildId) --resource-group $(BotName)-rg --log-file "$(System.DefaultWorkingDirectory)\logs.zip";
+     Expand-Archive "$(System.DefaultWorkingDirectory)\logs.zip" -DestinationPath "$(System.DefaultWorkingDirectory)\logs";
+     $file = "$(System.DefaultWorkingDirectory)/logs/deployments/*/log.log"
+     $content = Get-Content $file
+     Write-Output $content

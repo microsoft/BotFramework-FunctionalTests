@@ -6,13 +6,14 @@ steps:
     scriptLocation: inlineScript
     inlineScript: |
       call az bot directline create -n "$(HostBotName)" -g "$(HostBotName)-RG" > "$(System.DefaultWorkingDirectory)\DirectLineCreate.json"
+      
 - powershell: |
     $json = Get-Content '$(System.DefaultWorkingDirectory)\DirectLineCreate.json' | Out-String | ConvertFrom-Json;
     $key = $json.properties.properties.sites.key;
     echo "##vso[task.setvariable variable=DIRECTLINE;]$key";
     echo "##vso[task.setvariable variable=BOTID;]$(HostBotName)";
   displayName: 'Get Bot Keys'
-    
+
 - template: dotnetBuildSteps.yml
 
 - task: DotNetCoreCLI@2
