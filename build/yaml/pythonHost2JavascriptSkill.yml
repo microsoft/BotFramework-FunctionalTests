@@ -18,12 +18,14 @@ variables:
   # BotBuilderPackageVersionSkill: (optional) define in Azure
   # DeleteResourceGroup: (optional) define in Azure
   # ExecutePipelinesPersonalAccessToken: (optional) define in Azure
+  # NextBuild: define in Azure and set to either a build name or an empty string
   # PyJsHostAppId: define in Azure
   # PyJsHostAppSecret: define in Azure
   # PyJsHostBotName: define in Azure
   # PyJsSkillAppId: define in Azure
   # PyJsSkillAppSecret: define in Azure
   # PyJsSkillBotName: define in Azure
+  # RegistryUrlHost: (optional) define in Azure
   # NextBuild: define in Azure and set to either a build name or an empty string
   # RegistryUrlSkill (Optional): define this in Azure
   # TestFilter: (optional) define in Azure. Example: '&TestCategory!=SkipForV3Bots'
@@ -68,6 +70,7 @@ stages:
         BotName: $(PyJsHostBotName)
         DeployAppId: $(PyJsHostAppId)
         DeployAppSecret: $(PyJsHostAppSecret)
+        Registry: $[variables.RegistryUrlHost]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
         Parameters.sourceLocation: 'SkillsFunctionalTests/python/host'
         TemplateLocation: 'SkillsFunctionalTests/python/host/deploymentTemplates/template-with-new-rg.json'

@@ -26,6 +26,7 @@ variables:
   # ExecutePipelinesPersonalAccessToken: (optional) define in Azure
   # NetCoreSdkVersionHost: define in Azure
   # NextBuild: define in Azure and set to either a build name or an empty string
+  # RegistryUrlSkill: (optional) define in Azure
   # RegistryUrlHost (Optional): define this in Azure
   # TestFilter: (optional) define in Azure. Example: '&TestCategory!=SkipForV3Bots'
   # TriggeredBy: define in Azure and set to an empty string
@@ -97,6 +98,7 @@ stages:
         BotName: $(DotNetPySkillBotName)
         DeployAppId: $(DotNetPySkillAppId)
         DeployAppSecret: $(DotNetPySkillAppSecret)
+        Registry: $[variables.RegistryUrlSkill]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
         Parameters.sourceLocation: 'SkillsFunctionalTests/python/skill'
         TemplateLocation: 'SkillsFunctionalTests/python/skill/deploymentTemplates/template-with-new-rg.json'

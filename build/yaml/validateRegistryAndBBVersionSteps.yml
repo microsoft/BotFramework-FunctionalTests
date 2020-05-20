@@ -4,6 +4,7 @@ steps:
    {
       $null { Write-Host ("##vso[task.setvariable variable=BBVersion]preview") }
       '' { Write-Host ("##vso[task.setvariable variable=BBVersion]preview") }
+      LATEST { Write-Host ("##vso[task.setvariable variable=BBVersion]preview") }
       STABLE { Write-Host ("##vso[task.setvariable variable=BBVersion]stable") }
       default { Write-Host ("##vso[task.setvariable variable=BBVersion]$(BotBuilderPackageVersion)") }
    }
@@ -20,11 +21,15 @@ steps:
          [Console]::ResetColor()
    }
 
-   if ("$(BBVersion)" -eq "preview" -AND "$(RegistryUrl)".ToUpper() -eq "NuGet")
+   if ("$(BBVersion)" -eq "preview" -AND "$(RegistryUrl)".ToUpper() -eq "NUGET")
    {
       Write-Error $(RegistryUrl)
    }
-   if ("$(BBVersion)" -eq "preview" -AND "$(RegistryUrl)".ToUpper() -eq "NPM")
+   if ("$(BBVersion)" -eq "preview" -AND ("$(RegistryUrl)".ToUpper()) -eq "NPM")
+   {
+      Write-Error $(RegistryUrl)
+   }
+   if ("$(BBVersion)" -eq "preview" -AND ("$(RegistryUrl)".ToUpper()) -eq "PYPI")
    {
       Write-Error $(RegistryUrl)
    }

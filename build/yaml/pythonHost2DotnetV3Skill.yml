@@ -25,6 +25,7 @@ variables:
   # PyDotNetV3SkillAppId: define in Azure
   # PyDotNetV3SkillAppSecret: define in Azure
   # PyDotNetV3SkillBotName: define in Azure
+  # RegistryUrlHost: (optional) define in Azure
   # RegistryUrlSkill (Optional): define this in Azure
   # TestFilter: (optional) define in Azure. Example: '&TestCategory!=SkipForV3Bots'
   # TriggeredBy: define in Azure and set to an empty string
@@ -79,6 +80,7 @@ stages:
         BotName: $(PyDotNetV3HostBotName)
         DeployAppId: $(PyDotNetV3HostAppId)
         DeployAppSecret: $(PyDotNetV3HostAppSecret)
+        Registry: $[variables.RegistryUrlHost]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
         Parameters.sourceLocation: 'SkillsFunctionalTests/python/host'
         TemplateLocation: 'SkillsFunctionalTests/python/host/deploymentTemplates/template-with-new-rg.json'
