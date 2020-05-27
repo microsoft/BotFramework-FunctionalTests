@@ -30,7 +30,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot.Bots
         /// <returns>A <see cref="Task{TResult}"/> representing the result of the asynchronous operation.</returns>
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
-            if (turnContext.Activity.Text.Contains("auth") || turnContext.Activity.Text.Contains("logout") || turnContext.Activity.Text.Contains("Yes") || turnContext.Activity.Text.Contains("No"))
+            if (HasActiveSkillActionWord(turnContext.Activity))
             {
                 await loginDialog.RunAsync(turnContext, conversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
                 
@@ -71,5 +71,25 @@ namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot.Bots
             // Run the Dialog with the new Token Response Event Activity.
             await loginDialog.RunAsync(turnContext, conversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
         }
+
+        private bool HasActiveSkillActionWord(IMessageActivity activity)
+        {
+            if (activity.Text != null)
+            {
+                // TODO: investigate why "Yes" and "No" are included in original code
+                var text = text.ToString().ToLower();
+                if (text.Contains("auth")
+                    || text.Contains("logout")
+                    || text.Contains("yes")
+                    || text.Contains("no")
+                    || text.Contains("dialog")
+                ) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
     }
 }

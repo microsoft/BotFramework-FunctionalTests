@@ -19,7 +19,7 @@
     "EchoSkillBot": {
       "commandName": "Project",
       "launchBrowser": true,
-      "applicationUrl": "http://localhost:1205/",
+      "applicationUrl": "http://localhost:39783/",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
