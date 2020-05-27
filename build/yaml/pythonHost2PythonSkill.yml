@@ -18,13 +18,16 @@ variables:
   # BotBuilderPackageVersionSkill: (optional) define in Azure
   # DeleteResourceGroup: (optional) define in Azure
   # ExecutePipelinesPersonalAccessToken: (optional) define in Azure
+  # NextBuild: define in Azure and set to either a build name or an empty string
   # PyPyHostAppId: define in Azure
   # PyPyHostAppSecret: define in Azure
   # PyPyHostBotName: define in Azure
   # PyPySkillAppId: define in Azure
   # PyPySkillAppSecret: define in Azure
   # PyPySkillBotName: define in Azure
-  # NextBuild: define in Azure and set to either a build name or an empty string
+  # RegistryUrlHost: (optional) define in Azure
+  # RegistryUrlSkill: (optional) define in Azure
+  # TestFilter: (optional) define in Azure. Example: '&TestCategory!=SkipForV3Bots'
   # TriggeredBy: define in Azure and set to an empty string
 
 pool:
@@ -40,7 +43,7 @@ stages:
         SkillBotName: $(PyPySkillBotName)
       steps:
       - template: cleanResourcesStep.yml
-        
+
 - stage: Tag
   condition: succeededOrFailed()
   jobs:
@@ -60,25 +63,18 @@ stages:
   jobs:
     - job: Deploy_Host
       variables:
+        HostBotName: $(PyPyHostBotName)
+        SkillBotName: $(PyPySkillBotName)
+        SkillAppId: $(PyPySkillAppId)
         BotName: $(PyPyHostBotName)
         DeployAppId: $(PyPyHostAppId)
         DeployAppSecret: $(PyPyHostAppSecret)
+        Registry: $[variables.RegistryUrlHost]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
         Parameters.sourceLocation: 'SkillsFunctionalTests/python/host'
         TemplateLocation: 'SkillsFunctionalTests/python/host/deploymentTemplates/template-with-new-rg.json'
       steps:
-      - powershell: |
-         Write-host "Setting config file"
-         $file = "$(System.DefaultWorkingDirectory)/$(Parameters.sourceLocation)/.env";
-         $content = Get-Content -Raw $file | ConvertFrom-StringData;
-         $content.SKILL_BOT_APP_ID = "$(PyPySkillAppId)";
-         $content.SKILL_BOT_ENDPOINT = "https://$(PyPySkillBotName)-$(Build.BuildId).azurewebsites.net/api/messages";
-         $content.SKILL_HOST_ENDPOINT = "https://$(PyPyHostBotName)-$(Build.BuildId).azurewebsites.net/api/skills";
-
-         Clear-Content $file;
-         foreach ($key in $content.keys) { Add-Content $file "$key=$($content.$key)" };
-        displayName: 'Update .env file'
-
+      - template: pythonSetConfigFileSteps.yml
       - template: pythonDeploySteps.yml
 
     - job: Deploy_Skill
@@ -86,6 +82,7 @@ stages:
         BotName: $(PyPySkillBotName)
         DeployAppId: $(PyPySkillAppId)
         DeployAppSecret: $(PyPySkillAppSecret)
+        Registry: $[variables.RegistryUrlSkill]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
         Parameters.sourceLocation: 'SkillsFunctionalTests/python/skill'
         TemplateLocation: 'SkillsFunctionalTests/python/skill/deploymentTemplates/template-with-new-rg.json'
@@ -113,6 +110,8 @@ stages:
         HostBotName: $(PyPyHostBotName)
         Parameters.project: 'SkillsFunctionalTests/tests/SkillFunctionalTests/SkillFunctionalTests.csproj'
         Parameters.solution: 'SkillsFunctionalTests/tests/SkillFunctionalTests.sln'
+        DefaultTestFilter: ''
+        DotNetTestFilter: $[ coalesce( variables['TestFilter'], variables['DefaultTestFilter'] ) ]
       steps:
       - template: functionalTestSteps.yml
 

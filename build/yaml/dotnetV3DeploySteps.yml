@@ -1,14 +1,23 @@
 steps:
 - template: dotnetV3BuildSteps.yml
 
-- powershell: 'Compress-Archive "$(Parameters.sourceLocation)/*" "$(Parameters.sourceLocation)/bot.zip" -Update'
+- powershell: |
+   Write-Host "Compressing project into bot.zip"
+   Compress-Archive "$(Parameters.sourceLocation)/*" "$(Parameters.sourceLocation)/bot.zip" -Update
   displayName: 'Zip Bot'
 
 - task: AzureCLI@1
-  displayName: 'Create resources and deploy'
+  displayName: 'Create resources'
   inputs:
     azureSubscription: $(AzureSubscription)
     scriptLocation: inlineScript
     inlineScript: |
      call az deployment create --template-file "$(TemplateLocation)" --location "westus" --parameters appId="$(DeployAppId)" appSecret="$(DeployAppSecret)" botId="$(BotName)" newAppServicePlanName="$(BotName)" newWebAppName="$(BotName)-$(Build.BuildId)" groupName="$(BotName)-RG" botSku=F0 groupLocation="westus" newAppServicePlanLocation="westus"
+
+- task: AzureCLI@1
+  displayName: 'Deploy Bot'
+  inputs:
+    azureSubscription: $(AzureSubscription)
+    scriptLocation: inlineScript
+    inlineScript: |
      call az webapp deployment source config-zip --resource-group "$(BotName)-RG" --name "$(BotName)-$(Build.BuildId)" --src "$(Parameters.sourceLocation)/bot.zip"

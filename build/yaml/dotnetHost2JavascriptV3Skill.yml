@@ -24,6 +24,9 @@ variables:
   # ExecutePipelinesPersonalAccessToken: (optional) define in Azure
   # NetCoreSdkVersionHost: define in Azure
   # NextBuild: define in Azure and set to either a build name or an empty string
+  # RegistryUrlSkill (Optional): define this in Azure
+  # RegistryUrlHost (Optional): define this in Azure  
+  # TestFilter: (optional) define in Azure. Example: '&TestCategory!=SkipForV3Bots'
   # TriggeredBy: define in Azure and set to an empty string
 
 pool:
@@ -61,6 +64,7 @@ stages:
     - job: Build_Host_Bot
       dependsOn: Validate_Host_NetCore_Version
       variables:
+        Registry: $[variables.RegistryUrlHost]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
         Parameters.solution: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionHost)/host/SimpleHostBot.sln'
         Parameters.project: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionHost)/host/SimpleHostBot.csproj'
@@ -73,45 +77,26 @@ stages:
   jobs:
     - job: Deploy_Host
       variables:
+        HostBotName: $(DotNetJsV3HostBotName)
+        SkillBotName: $(DotNetJsV3SkillBotName)
+        SkillAppId: $(DotNetJsV3SkillAppId)
         BotName: $(DotNetJsV3HostBotName)
         DeployAppId: $(DotNetJsV3HostAppId)
         DeployAppSecret: $(DotNetJsV3HostAppSecret)
+        Registry: $[variables.RegistryUrlHost]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
-        ProjectName: SimpleHostBot
         Parameters.project: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionHost)/host/SimpleHostBot.csproj'
         TemplateLocation: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionHost)/host/DeploymentTemplates/template-with-new-rg.json'
       steps:
-      - powershell: |
-         # Set values in appsettings.json file.
-         $file = "$(System.DefaultWorkingDirectory)\SkillsFunctionalTests\dotnet\$(NetCoreSdkVersionHost)\host\appsettings.json"
-         $content = Get-Content -Raw $file | ConvertFrom-Json;
-         $content.SkillHostEndpoint = "https://$(DotNetJsV3HostBotName)-$(Build.BuildId).azurewebsites.net/api/skills";
-
-         # Create Skill Class
-         class Skill{[String] $Id; [String] $AppId; [String] $SkillEndpoint;};
-
-         # Create list of botframework skills
-         $botFrameworkSkills = New-Object -TypeName System.Collections.Generic.List[Skill];
-
-         # Create Skill object
-         $dotnetSkill = New-Object -TypeName Skill;
-         $dotnetSkill.Id = "EchoSkillBot";
-         $dotnetSkill.AppId = "$(DotNetJsV3SkillAppId)";
-         $dotnetSkill.SkillEndpoint = "https://$(DotNetJsV3SkillBotName)-$(Build.BuildId).azurewebsites.net/api/messages";
-
-         # Add skill to botframework skill list
-         $botFrameworkSkills.Add($dotnetSkill);
-         $content.BotFrameworkSkills = $botFrameworkSkills;
-         $content | ConvertTo-Json | Set-Content $file;
-        displayName: 'Set Host appsettings.json file.'
-
+      - template: dotnetSetConfigFileSteps.yml
       - template: dotnetDeploySteps.yml
 
     - job: Deploy_Skill
       variables:
         BotName: $(DotNetJsV3SkillBotName)
         DeployAppId: $(DotNetJsV3SkillAppId)
-        DeployAppSecret: $(DotNetJsV3SkillAppSecret)
+        DeployAppSecret: $(DotNetJsV3SkillAppSecret)        
+        Registry: $[variables.RegistryUrlSkill]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
         Parameters.sourceLocation: 'SkillsFunctionalTests/javascript/v3/skill'
         TemplateLocation: 'SkillsFunctionalTests/javascript/skill/DeploymentTemplates/template-with-new-rg.json'
@@ -126,8 +111,10 @@ stages:
         HostBotName: $(DotNetJsV3HostBotName)
         Parameters.project: 'SkillsFunctionalTests/tests/SkillFunctionalTests/SkillFunctionalTests.csproj'
         Parameters.solution: 'SkillsFunctionalTests/tests/SkillFunctionalTests.sln'
+        DefaultTestFilter: ''
+        DotNetTestFilter: $[ coalesce( variables['TestFilter'], variables['DefaultTestFilter'] ) ]
       steps:
-      - template: functionalTestV3Steps.yml
+      - template: functionalTestSteps.yml
 
 - stage: Cleanup
   dependsOn:

@@ -1,4 +1,40 @@
 steps:
+- powershell: |
+   switch ("$(Registry)".ToUpper())
+   {
+      $null { Write-Host ("##vso[task.setvariable variable=RegistryUrl]MyGet") }
+      '' { Write-Host ("##vso[task.setvariable variable=RegistryUrl]MyGet") }
+      MYGET { Write-Host ("##vso[task.setvariable variable=RegistryUrl]MyGet") }
+      NPM { Write-Host ("##vso[task.setvariable variable=RegistryUrl]NPM") }
+      default { Write-Host ("##vso[task.setvariable variable=RegistryUrl]$(Registry)") }
+   }
+  displayName: 'Read registry URL variable'
+
+- template: validateRegistryAndBBVersionSteps.yml
+
+- powershell: |
+   $MyGet = "https://botbuilder.myget.org/F/botbuilder-v4-js-daily/npm/" 
+   $isV3Bot = "$(Parameters.sourceLocation)".Trim().EndsWith("v3/skill")
+
+   if($isV3Bot){
+      $MyGet = "https://botbuilder.myget.org/F/botbuilder-v3-js-daily/npm/" 
+   }
+
+   switch ("$(RegistryUrl)")
+   {
+      MyGet { $source = $MyGet }
+      NPM { $source = "https://registry.npmjs.com/"}      
+      default { $source = "$(RegistryUrl)" }
+   }
+
+   Add-Content $(Parameters.sourceLocation)/deployment-scripts/.deployment "`nBOT_BUILDER_PACKAGE_VERSION = $(BBVersion)"
+   Add-Content $(Parameters.sourceLocation)/deployment-scripts/.deployment "`nREGISTRY_SOURCE = $Source"
+   Write-Host "Set BotBuilder Package Version to: $(BBVersion)"
+   Write-Host "Set registry url to: $source"
+  failOnStderr: true
+  displayName: 'Set BBVersion and Registry URL'
+  name: 'Set_Registry_Url'
+
 - task: AzureCLI@1
   displayName: 'Prepare Bot'
   inputs:
@@ -6,24 +42,47 @@ steps:
     scriptLocation: inlineScript
     inlineScript: 'call az bot prepare-deploy --code-dir "$(Parameters.sourceLocation)" --lang Javascript'
 
-- powershell: |   
+- powershell: |
    if(-Not [string]::IsNullOrWhiteSpace($env:BotBuilderPackageVersion))
    {
+      Write-Host "BotBuilder version set to $(BotBuilderPackageVersion)"
       Add-Content $(Parameters.sourceLocation)/deployment-scripts/.deployment "`nBOT_BUILDER_PACKAGE_VERSION = $(BotBuilderPackageVersion)"
-   }   
-  displayName: 'Add custom version'
+   }
+  displayName: 'Add custom BotBuilder version'
   condition: ne(variables['BotBuilderPackageVersion'], '')
 
 - powershell: |
+   Write-Host "Compressing project into bot.zip"
    move-item -path $(Parameters.sourceLocation)/deployment-scripts/* -destination $(Parameters.sourceLocation)
    Compress-Archive "$(Parameters.sourceLocation)/*" "$(Parameters.sourceLocation)/bot.zip" -Update
   displayName: 'Zip Bot'
 
 - task: AzureCLI@1
-  displayName: 'Create resource group and deploy bot'
+  displayName: 'Create resource group'
   inputs:
     azureSubscription: $(AzureSubscription)
     scriptLocation: inlineScript
     inlineScript: |
-      call az deployment create --name "$(BotName)-RG" --template-file "$(TemplateLocation)" --location "westus" --parameters appId="$(DeployAppId)" appSecret="$(DeployAppSecret)" botId="$(BotName)" botSku=F0 newAppServicePlanName="$(BotName)" newWebAppName="$(BotName)-$(Build.BuildId)" groupName="$(BotName)-RG" groupLocation="westus" newAppServicePlanLocation="westus"    
+      call az deployment create --name "$(BotName)-RG" --template-file "$(TemplateLocation)" --location "westus" --parameters appId="$(DeployAppId)" appSecret="$(DeployAppSecret)" botId="$(BotName)" botSku=F0 newAppServicePlanName="$(BotName)" newWebAppName="$(BotName)-$(Build.BuildId)" groupName="$(BotName)-RG" groupLocation="westus" newAppServicePlanLocation="westus"
+
+- task: AzureCLI@1
+  displayName: 'Deploy bot'
+  inputs:
+    azureSubscription: $(AzureSubscription)
+    scriptLocation: inlineScript
+    inlineScript: |
       call az webapp deployment source config-zip --resource-group "$(BotName)-RG" --name "$(BotName)-$(Build.BuildId)" --src "$(Parameters.sourceLocation)/bot.zip"
+
+- task: AzureCLI@2
+  displayName: 'Show logs'
+  condition: succeededOrFailed()
+  inputs:
+    azureSubscription: $(AzureSubscription)
+    scriptType: ps
+    scriptLocation: inlineScript
+    inlineScript: |
+     az webapp log download --name $(BotName)-$(Build.BuildId) --resource-group $(BotName)-rg --log-file "$(System.DefaultWorkingDirectory)\logs.zip";
+     Expand-Archive "$(System.DefaultWorkingDirectory)\logs.zip" -DestinationPath "$(System.DefaultWorkingDirectory)\logs";
+     $file = "$(System.DefaultWorkingDirectory)/logs/deployments/*/log.log"
+     $content = Get-Content $file
+     Write-Output $content

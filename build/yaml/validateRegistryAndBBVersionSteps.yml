@@ -1,0 +1,39 @@
+steps:
+- powershell: |
+   switch ("$(BotBuilderPackageVersion)".ToUpper())
+   {
+      $null { Write-Host ("##vso[task.setvariable variable=BBVersion]preview") }
+      '' { Write-Host ("##vso[task.setvariable variable=BBVersion]preview") }
+      LATEST { Write-Host ("##vso[task.setvariable variable=BBVersion]preview") }
+      STABLE { Write-Host ("##vso[task.setvariable variable=BBVersion]stable") }
+      default { Write-Host ("##vso[task.setvariable variable=BBVersion]$(BotBuilderPackageVersion)") }
+   }
+  displayName: 'Read BotBuilder package version variable'
+
+- powershell: |
+   Write-Host "BotBuilderPackageVersion: "$(BBVersion)
+   Write-Host "Registry: "$(RegistryUrl)
+
+   # Override the built-in cmdlet with a custom version
+   function Write-Error($registry) {
+         [Console]::ForegroundColor = 'red'
+         [Console]::Error.WriteLine("Preview versions of BotBuilder Packages couldn't be found in the $registry registry.")
+         [Console]::ResetColor()
+   }
+
+   if ("$(BBVersion)" -eq "preview" -AND "$(RegistryUrl)".ToUpper() -eq "NUGET")
+   {
+      Write-Error $(RegistryUrl)
+   }
+   if ("$(BBVersion)" -eq "preview" -AND ("$(RegistryUrl)".ToUpper()) -eq "NPM")
+   {
+      Write-Error $(RegistryUrl)
+   }
+   if ("$(BBVersion)" -eq "preview" -AND ("$(RegistryUrl)".ToUpper()) -eq "PYPI")
+   {
+      Write-Error $(RegistryUrl)
+   }
+   
+  displayName: 'Validate Version & Registry'
+  failOnStderr: true
+  

@@ -104,21 +104,20 @@ call :SelectNodeVersion
 :: 3. Set MyGet registry and install packages
 IF EXIST "%DEPLOYMENT_TARGET%\package.json" (
   pushd "%DEPLOYMENT_TARGET%"
-  
+  call :ExecuteCmd !NPM_CMD! config set registry %REGISTRY_SOURCE%
   IF %BOT_BUILDER_PACKAGE_VERSION% EQU stable (
-    echo Installing stable version
-    call :ExecuteCmd !NPM_CMD! install --save botbuilder@latest
-    call :ExecuteCmd !NPM_CMD! install --save botframework-connector@latest
-    call :ExecuteCmd !NPM_CMD! install --save botbuilder-dialogs@latest
-  ) ELSE (
-    call :ExecuteCmd !NPM_CMD! config set registry https://botbuilder.myget.org/F/botbuilder-v4-js-daily/npm/
+    echo :INSTALLING BOTBUILDER STABLE VERSION:
+    call :ExecuteCmd !NPM_CMD! install --save botbuilder@*
+    call :ExecuteCmd !NPM_CMD! install --save botframework-connector@*
+    call :ExecuteCmd !NPM_CMD! install --save botbuilder-dialogs@*
+  ) ELSE (    
     IF %BOT_BUILDER_PACKAGE_VERSION% EQU preview (
-      echo Installing preview version
+      echo :INSTALLING BOTBUILDER PREVIEW VERSION:
       call :ExecuteCmd !NPM_CMD! install --save botbuilder@latest
       call :ExecuteCmd !NPM_CMD! install --save botframework-connector@latest
       call :ExecuteCmd !NPM_CMD! install --save botbuilder-dialogs@latest
     ) ELSE (
-      echo Installing %BOT_BUILDER_PACKAGE_VERSION% version
+      echo :INSTALLING BOTBUILDER VERSION %BOT_BUILDER_PACKAGE_VERSION%:
       call :ExecuteCmd !NPM_CMD! install --save botbuilder@%BOT_BUILDER_PACKAGE_VERSION%
       call :ExecuteCmd !NPM_CMD! install --save botframework-connector@%BOT_BUILDER_PACKAGE_VERSION%
       call :ExecuteCmd !NPM_CMD! install --save botbuilder-dialogs@%BOT_BUILDER_PACKAGE_VERSION%

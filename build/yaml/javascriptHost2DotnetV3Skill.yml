@@ -23,6 +23,9 @@ variables:
   # JsDotNetV3SkillAppSecret: define in Azure
   # JsDotNetV3SkillBotName: define in Azure
   # NextBuild: define in Azure and set to either a build name or an empty string
+  # RegistryUrlHost (Optional): define this in Azure
+  # RegistryUrlSkill (Optional): define this in Azure
+  # TestFilter: (optional) define in Azure. Example: '&TestCategory!=SkipForV3Bots'
   # TriggeredBy: define in Azure and set to an empty string
 
 pool:
@@ -58,6 +61,7 @@ stages:
   jobs:
     - job: Build_Skill_Bot
       variables:
+        Registry: $[variables.RegistryUrlSkill]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
         Parameters.solution: 'SkillsFunctionalTests/dotnet/v3/skill/EchoSkillBot.sln'
       steps:
@@ -68,27 +72,18 @@ stages:
   jobs:
     - job: Deploy_Host
       variables:
+        HostBotName: $(JsDotNetV3HostBotName)
+        SkillBotName: $(JsDotNetV3SkillBotName)
+        SkillAppId: $(JsDotNetV3SkillAppId)
         BotName: $(JsDotNetV3HostBotName)
         DeployAppId: $(JsDotNetV3HostAppId)
         DeployAppSecret: $(JsDotNetV3HostAppSecret)
+        Registry: $[variables.RegistryUrlHost]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
         Parameters.sourceLocation: 'SkillsFunctionalTests/javascript/host'
         TemplateLocation: 'SkillsFunctionalTests/javascript/host/DeploymentTemplates/template-with-new-rg.json'
       steps:
-      - powershell: |
-         Write-host "Setting values in .env file"
-         $file = "$(System.DefaultWorkingDirectory)/SkillsFunctionalTests/javascript/host/.env";
-         $content = Get-Content -Raw $file | ConvertFrom-StringData;
-
-         $content.SkillHostEndpoint = "https://$(JsDotNetV3HostBotName)-$(Build.BuildId).azurewebsites.net/api/skills";
-         $content.SkillId = "EchoSkillBot";
-         $content.SkillAppId = "$(JsDotNetV3SkillAppId)";
-         $content.SkillEndpoint = "https://$(JsDotNetV3SkillBotName)-$(Build.BuildId).azurewebsites.net/api/messages";
-
-         Clear-Content $file;
-         foreach ($key in $content.keys) { Add-Content $file "$key=$($content.$key)" };
-        displayName: 'Update .env file'
-
+      - template: javascriptSetConfigFileSteps.yml
       - template: javascriptDeploySteps.yml
 
     - job: Deploy_Skill
@@ -96,6 +91,7 @@ stages:
         BotName: $(JsDotNetV3SkillBotName)
         DeployAppId: $(JsDotNetV3SkillAppId)
         DeployAppSecret: $(JsDotNetV3SkillAppSecret)
+        Registry: $[variables.RegistryUrlSkill]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
         Parameters.solution: 'SkillsFunctionalTests/dotnet/v3/skill/EchoSkillBot.sln'
         Parameters.sourceLocation: 'SkillsFunctionalTests/dotnet/v3/skill/'
@@ -111,8 +107,10 @@ stages:
         HostBotName: $(JsDotNetV3HostBotName)
         Parameters.project: 'SkillsFunctionalTests/tests/SkillFunctionalTests/SkillFunctionalTests.csproj'
         Parameters.solution: 'SkillsFunctionalTests/tests/SkillFunctionalTests.sln'
+        DefaultTestFilter: ''
+        DotNetTestFilter: $[ coalesce( variables['TestFilter'], variables['DefaultTestFilter'] ) ]
       steps:
-      - template: functionalTestV3Steps.yml
+      - template: functionalTestSteps.yml
 
 - stage: Cleanup
   dependsOn:

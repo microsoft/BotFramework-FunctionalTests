@@ -25,6 +25,9 @@ variables:
   # JsPySkillAppSecret: define in Azure
   # JsPySkillBotName: define in Azure
   # NextBuild: define in Azure and set to either a build name or an empty string
+  # RegistryUrlSkill: (optional) define in Azure
+  # RegistryUrlHost (Optional): define this in Azure
+  # TestFilter: (optional) define in Azure. Example: '&TestCategory!=SkipForV3Bots'
   # TriggeredBy: define in Azure and set to an empty string
 
 pool:
@@ -60,36 +63,26 @@ stages:
   jobs:
     - job: Deploy_Host
       variables:
+        HostBotName: $(JsPyHostBotName)
+        SkillBotName: $(JsPySkillBotName)
+        SkillAppId: $(JsPySkillAppId)
         BotName: $(JsPyHostBotName)
         DeployAppId: $(JsPyHostAppId)
         DeployAppSecret: $(JsPyHostAppSecret)
+        Registry: $[variables.RegistryUrlHost]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
         Parameters.sourceLocation: 'SkillsFunctionalTests/javascript/host'
         TemplateLocation: 'SkillsFunctionalTests/javascript/host/DeploymentTemplates/template-with-new-rg.json'
       steps:
-      - powershell: |
-         Write-host "Setting values in .env file"
-         $file = "$(System.DefaultWorkingDirectory)/SkillsFunctionalTests/javascript/host/.env";
-         $content = Get-Content -Raw $file | ConvertFrom-StringData;
-
-         $content.SkillHostEndpoint = "https://$(JsPyHostBotName)-$(Build.BuildId).azurewebsites.net/api/skills";
-         $content.SkillId = "EchoSkillBot";
-         $content.SkillAppId = "$(JsPySkillAppId)";
-         $content.SkillEndpoint = "https://$(JsPySkillBotName)-$(Build.BuildId).azurewebsites.net/api/messages";
-
-         Clear-Content $file;
-         foreach ($key in $content.keys) { Add-Content $file "$key=$($content.$key)" };
-        displayName: 'Update .env file'
-
+      - template: javascriptSetConfigFileSteps.yml
       - template: javascriptDeploySteps.yml
 
     - job: Deploy_Skill
-      pool:
-        vmImage: 'ubuntu-latest'
       variables:
         BotName: $(JsPySkillBotName)
         DeployAppId: $(JsPySkillAppId)
         DeployAppSecret: $(JsPySkillAppSecret)
+        Registry: $[variables.RegistryUrlSkill]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
         Parameters.sourceLocation: 'SkillsFunctionalTests/python/skill'
         TemplateLocation: 'SkillsFunctionalTests/python/skill/deploymentTemplates/template-with-new-rg.json'
@@ -117,6 +110,8 @@ stages:
         HostBotName: $(JsPyHostBotName)
         Parameters.project: 'SkillsFunctionalTests/tests/SkillFunctionalTests/SkillFunctionalTests.csproj'
         Parameters.solution: 'SkillsFunctionalTests/tests/SkillFunctionalTests.sln'
+        DefaultTestFilter: ''
+        DotNetTestFilter: $[ coalesce( variables['TestFilter'], variables['DefaultTestFilter'] ) ]
       steps:
       - template: functionalTestSteps.yml
 
