@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
+using Microsoft.BotFrameworkFunctionalTests.MultiTurnDialogSkill.Bots;
 
 namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot.Controllers
 {
@@ -18,16 +19,18 @@ namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot.Controllers
     {
         private readonly IBotFrameworkHttpAdapter _adapter;
         private readonly IBot _bot;
+        private readonly DialogBot<UserProfileDialog> _dialogBot;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BotController"/> class.
         /// </summary>
         /// <param name="adapter">Adapter for the BotController.</param>
         /// <param name="bot">Bot for the BotController.</param>
-        public BotController(IBotFrameworkHttpAdapter adapter, IBot bot)
+        public BotController(IBotFrameworkHttpAdapter adapter, IBot bot, DialogBot<UserProfileDialog> dialogBot)
         {
             _adapter = adapter;
             _bot = bot;
+            _dialogBot = dialogBot;
         }
 
         /// <summary>
@@ -37,7 +40,8 @@ namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot.Controllers
         [HttpPost]
         public async Task PostAsync()
         {
-            await _adapter.ProcessAsync(Request, Response, _bot);
+            await _adapter.ProcessAsync(Request, Response, _dialogBot);
+            // await _adapter.ProcessAsync(Request, Response, _bot);
         }
     }
 }

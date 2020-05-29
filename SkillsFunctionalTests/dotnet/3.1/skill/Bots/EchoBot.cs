@@ -19,7 +19,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot.Bots
         public EchoBot(ConversationState conversationState, LoginDialog loginDialog)
         {
             this.conversationState = conversationState ?? throw new ArgumentNullException(nameof(conversationState));
-            this.loginDialog = loginDialog ?? throw new ArgumentNullException(nameof(loginDialog));  
+            this.loginDialog = loginDialog ?? throw new ArgumentNullException(nameof(loginDialog));
         }
 
         /// <summary>
@@ -30,14 +30,22 @@ namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot.Bots
         /// <returns>A <see cref="Task{TResult}"/> representing the result of the asynchronous operation.</returns>
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
-            if (HasActiveSkillActionWord(turnContext.Activity))
+            var text = turnContext.Activity.Text;
+            if (text.Contains("auth") || text.Contains("logout") || text.Contains("Yes") || text.Contains("No"))
             {
                 await loginDialog.RunAsync(turnContext, conversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
                 
                 // Save any state changes that might have occurred during the turn.
                 await conversationState.SaveChangesAsync(turnContext, false, cancellationToken);
             }
-            else if (turnContext.Activity.Text.Contains("end") || turnContext.Activity.Text.Contains("stop"))
+            //else if (text.Contains("dialog"))
+            //{
+            //    await userProfileDialog.RunAsync(turnContext, conversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
+
+            //    // Save any state changes that might have occurred during the turn.
+            //    await conversationState.SaveChangesAsync(turnContext, false, cancellationToken);
+            //}
+            else if (text.Contains("end") || text.Contains("stop"))
             {
                 // Send End of conversation at the end.
                 await turnContext.SendActivityAsync(MessageFactory.Text($"ending conversation from the skill..."), cancellationToken);
@@ -47,7 +55,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot.Bots
             }
             else
             {
-                await turnContext.SendActivityAsync(MessageFactory.Text($"Echo: {turnContext.Activity.Text}"), cancellationToken);
+                await turnContext.SendActivityAsync(MessageFactory.Text($"Echo: {text}"), cancellationToken);
                 await turnContext.SendActivityAsync(MessageFactory.Text("Say \"end\" or \"stop\" and I'll end the conversation and back to the parent."), cancellationToken);
             }
         }
@@ -72,24 +80,24 @@ namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot.Bots
             await loginDialog.RunAsync(turnContext, conversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
         }
 
-        private bool HasActiveSkillActionWord(IMessageActivity activity)
-        {
-            if (activity.Text != null)
-            {
-                // TODO: investigate why "Yes" and "No" are included in original code
-                var text = text.ToString().ToLower();
-                if (text.Contains("auth")
-                    || text.Contains("logout")
-                    || text.Contains("yes")
-                    || text.Contains("no")
-                    || text.Contains("dialog")
-                ) {
-                    return true;
-                }
-            }
+        // private bool HasActiveSkillActionWord(IMessageActivity activity)
+        // {
+        //     if (activity.Text != null)
+        //     {
+        //         // TODO: investigate why "Yes" and "No" are included in original code
+        //         var text = text.ToString().ToLower();
+        //         if (text.Contains("auth")
+        //             || text.Contains("logout")
+        //             || text.Contains("yes")
+        //             || text.Contains("no")
+        //             || text.Contains("dialog")
+        //         ) {
+        //             return true;
+        //         }
+        //     }
 
-            return false;
-        }
+        //     return false;
+        // }
 
     }
 }

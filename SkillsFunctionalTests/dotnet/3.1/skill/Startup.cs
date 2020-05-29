@@ -10,6 +10,7 @@ using Microsoft.Bot.Connector.Authentication;
 using Microsoft.BotFrameworkFunctionalTests.EchoSkillBot.Authentication;
 using Microsoft.BotFrameworkFunctionalTests.EchoSkillBot.Bots;
 using Microsoft.BotFrameworkFunctionalTests.EchoSkillBot.OAuth;
+using Microsoft.BotFrameworkFunctionalTests.MultiTurnDialogSkill.Bots;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -30,7 +31,13 @@ namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot
             services.AddSingleton<ICredentialProvider, ConfigurationCredentialProvider>();
 
             services.AddSingleton<LoginDialog>();
-            services.AddSingleton<ConversationState>((s) => new ConversationState(new MemoryStorage()));
+
+            // Create the storage we'll be using for User and Conversation state. (Memory is great for testing purposes.)
+            services.AddSingleton<IStorage, MemoryStorage>();
+            services.AddSingleton<ConversationState>();
+            services.AddSingleton<UserState>();
+
+            services.AddSingleton<UserProfileDialog>();
 
             // Register AuthConfiguration to enable custom claim validation.
             services.AddSingleton(sp => new AuthenticationConfiguration { ClaimsValidator = new AllowedCallersClaimsValidator(sp.GetService<IConfiguration>()) });
@@ -40,6 +47,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot
 
             // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
             services.AddTransient<IBot, EchoBot>();
+            services.AddTransient<DialogBot<UserProfileDialog>, DialogBot<UserProfileDialog>>();
         }
 
         /// <summary>
