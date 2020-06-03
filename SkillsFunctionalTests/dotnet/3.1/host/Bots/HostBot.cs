@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,15 +20,22 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Bots
     public class HostBot : ActivityHandler
     {
         private readonly IStatePropertyAccessor<BotFrameworkSkill> _activeSkillProperty;
+        private readonly IStatePropertyAccessor<string> _activeSkillDialogProperty;
         private readonly string _botId;
         private readonly ConversationState _conversationState;
         private readonly SkillHttpClient _skillClient;
         private readonly SkillsConfiguration _skillsConfig;
         private readonly BotFrameworkSkill _targetSkill;
+        private readonly BotFrameworkSkill _dialogSkill;
 
         public const string ActiveSkillPropertyName = "activeSkillProperty";
+        public const string ActiveSkillDialogPropertyName = "activeSkillDialogProperty";
         // We use a single skill in this example.
         public const string TargetSkillId = "EchoSkillBot";
+        public const string DialogSkillId = "DialogSkillBot";
+        private const string _activeSkillDialogKey = "activeSkillDialog";
+        private const string _authDialog = "authDialog";
+        private const string _multiTurnDialog = "multiTurnDialog";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HostBot"/> class.
@@ -58,8 +66,14 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Bots
                 throw new ArgumentException($"Skill with ID \"{TargetSkillId}\" not found in configuration");
             }
 
+            if(!_skillsConfig.Skills.TryGetValue(DialogSkillId, out _dialogSkill))
+            {
+                throw new ArgumentException($"Skill with ID \"{DialogSkillId}\" not found in configuration");
+            }
+
             // Create state property to track the active skill
             _activeSkillProperty = conversationState.CreateProperty<BotFrameworkSkill>(ActiveSkillPropertyName);
+            _activeSkillDialogProperty = conversationState.CreateProperty<string>(ActiveSkillDialogPropertyName);
         }
 
         /// <summary>
@@ -72,15 +86,43 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Bots
         {
             // Try to get the active skill
             var activeSkill = await _activeSkillProperty.GetAsync(turnContext, () => null, cancellationToken);
+            var activeSkillDialog = await _activeSkillDialogProperty.GetAsync(turnContext, () => null, cancellationToken);
+            var activity = turnContext.Activity;
+            var text = activity.Text.ToLower();
+            
+            if (activeSkillDialog != null)
+            {
+                activity.ChannelData.Add(_activeSkillDialogKey, activeSkillDialog);
+            }
 
             if (activeSkill != null)
             {
+                if (text.Contains("auth"))
+                {
+                    // Save the skill's active dialog in state
+                    await _activeSkillDialogProperty.SetAsync(turnContext, _authDialog, cancellationToken);
+                    activity.ChannelData.Add(_activeSkillDialogKey, _authDialog);
+                }
+
                 // Send the activity to the skill
                 await SendToSkillAsync(turnContext, activeSkill, cancellationToken);
                 return;
             }
 
-            if (turnContext.Activity.Text.ToLower().Contains("skill"))
+            if(text.Contains("dialog"))
+            {
+                await turnContext.SendActivityAsync(MessageFactory.Text("Got it, connecting you to the skill with MULTI-TURN DIALOG..."));
+
+                // Get the skill info based on the selected skill.
+                await _activeSkillProperty.SetAsync(turnContext, _dialogSkill, cancellationToken);
+                await _activeSkillDialogProperty.SetAsync(turnContext, _multiTurnDialog, cancellationToken);
+                activity.ChannelData.Add(_activeSkillDialogKey, _multiTurnDialog);
+
+                await SendToSkillAsync(turnContext, _dialogSkill, cancellationToken);
+                return;
+            }
+
+            if (text.Contains("skill"))
             {
                 await turnContext.SendActivityAsync(MessageFactory.Text("Got it, connecting you to the skill..."), cancellationToken);
 
@@ -109,6 +151,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Bots
         {
             // forget skill invocation
             await _activeSkillProperty.DeleteAsync(turnContext, cancellationToken);
+            await _activeSkillDialogProperty.DeleteAsync(turnContext, cancellationToken);
 
             // Show status message, text and value returned by the skill
             var eocActivityMessage = $"Received {ActivityTypes.EndOfConversation}.\n\nCode: {turnContext.Activity.Code}";

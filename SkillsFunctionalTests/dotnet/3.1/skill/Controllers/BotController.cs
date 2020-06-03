@@ -1,11 +1,18 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System.IO;
+using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
+using Microsoft.Bot.Builder.Integration.AspNet.Core.Handlers;
+using Microsoft.Bot.Schema;
 using Microsoft.BotFrameworkFunctionalTests.MultiTurnDialogSkill.Bots;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot.Controllers
 {
@@ -40,8 +47,33 @@ namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot.Controllers
         [HttpPost]
         public async Task PostAsync()
         {
-            await _adapter.ProcessAsync(Request, Response, _dialogBot);
-            // await _adapter.ProcessAsync(Request, Response, _bot);
+            var bot = _bot;
+            Request.EnableBuffering();
+            using (var buffer = new MemoryStream())
+            {
+                await Request.Body.CopyToAsync(buffer);
+                buffer.Position = 0L;
+                using (var bodyReader = new JsonTextReader(new StreamReader(buffer, Encoding.UTF8)))
+                {
+                    string activeDialog = null;
+                    var activity = BotMessageHandlerBase.BotMessageSerializer.Deserialize<Activity>(bodyReader);
+                    if (activity.ChannelData != null)
+                    {
+                        var channelData = JObject.Parse(activity?.ChannelData.ToString());
+                        activeDialog = channelData.ContainsKey("activeSkillDialog") ? channelData["activeSkillDialog"].Value<string>() : null;
+                    }
+
+                    if (activeDialog == "multiTurnDialog")
+                    {
+                        bot = _dialogBot;
+                    }
+                    
+                    buffer.Position = 0L;
+                }
+            }
+            Request.Body.Position = 0;
+
+            await _adapter.ProcessAsync(Request, Response, bot);
         }
     }
 }
