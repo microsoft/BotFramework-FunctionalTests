@@ -91,17 +91,20 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Bots
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
             // Try to get the active skill
+            // TODO: consolidate if activeSkill !=, then save
             var activeSkill = await _activeSkillProperty.GetAsync(turnContext, () => null, cancellationToken);
-            var activeSkillDialog = await _activeSkillDialogProperty.GetAsync(turnContext, () => null, cancellationToken);
             var activity = turnContext.Activity;
             var text = activity.Text.ToLower();
             
-            //if (activeSkillDialog != null)
             if (activeSkill != null && activeSkill.Id == "DialogSkill")
             {
-                activity.ChannelData.Add(_activeSkillDialogKey, activeSkillDialog);
+                activity.ChannelData.Add(ActiveSkillPropertyName, activeSkill.Id);
+                await _activeSkillProperty.SetAsync(turnContext, _dialogSkill, cancellationToken);
                 await _mainDialog.RunAsync(turnContext, _conversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
-                //await _conversationState.SaveChangesAsync(turnContext, force: true, cancellationToken: cancellationToken);
+
+                // TODO: do I need to save here?
+                await _conversationState.SaveChangesAsync(turnContext, force: true, cancellationToken: cancellationToken);
+                return;
             }
 
             if (activeSkill != null)
@@ -163,7 +166,6 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Bots
         {
             // forget skill invocation
             await _activeSkillProperty.DeleteAsync(turnContext, cancellationToken);
-            await _activeSkillDialogProperty.DeleteAsync(turnContext, cancellationToken);
 
             // Show status message, text and value returned by the skill
             var eocActivityMessage = $"Received {ActivityTypes.EndOfConversation}.\n\nCode: {turnContext.Activity.Code}";

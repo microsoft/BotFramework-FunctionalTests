@@ -59,11 +59,18 @@ namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot.Controllers
                     var activity = BotMessageHandlerBase.BotMessageSerializer.Deserialize<Activity>(bodyReader);
                     if (activity.ChannelData != null)
                     {
-                        var channelData = JObject.Parse(activity?.ChannelData.ToString());
-                        activeDialog = channelData.ContainsKey("activeSkillDialog") ? channelData["activeSkillDialog"].Value<string>() : null;
+                       var channelData = JObject.Parse(activity?.ChannelData.ToString());
+                    //    activeDialog = channelData.ContainsKey("activeSkillDialog") ? channelData["activeSkillDialog"].Value<string>() : null;
+                        // HOT FIX -- figure out how to do either only name or only channel data
+                        activity.Name = channelData.Value<string>("activeSkillProperty") == "DialogSkill" ? "dialog" : null; 
                     }
 
-                    if (activeDialog == "multiTurnDialog")
+                    //if (activeDialog == "multiTurnDialog")
+                    //{
+                    //    bot = _dialogBot;
+                    //}
+
+                    if (activity.Name == "dialog")
                     {
                         bot = _dialogBot;
                     }

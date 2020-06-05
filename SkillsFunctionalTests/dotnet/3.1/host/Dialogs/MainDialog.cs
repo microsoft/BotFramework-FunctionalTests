@@ -210,11 +210,13 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Dialogs
             // Send an event activity to the skill with "MakeUserProfile" in the name.
             if (selectedOption.Equals(DialogSkill, StringComparison.CurrentCultureIgnoreCase))
             {
-                // activity = (Activity)Activity.CreateEventActivity();
+                activity = (Activity)Activity.CreateEventActivity();
                 // activity.Name = DialogSkill;
-                activity = (Activity)Activity.CreateMessageActivity();
+                // activity = (Activity)Activity.CreateMessageActivity();
                 activity.Name = "dialog";
                 // activity.ChannelData = new Dictionary<string, object> { ["activeSkillDialog"] = "multiTurnDialog" };
+
+                return activity;
             }
 
             // Send an event activity to the skill with "EchoSkillBot" in the name.
