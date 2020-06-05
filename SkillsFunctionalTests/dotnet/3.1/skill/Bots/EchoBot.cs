@@ -73,24 +73,5 @@ namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot.Bots
             await loginDialog.RunAsync(turnContext, conversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
         }
 
-        // private bool HasActiveSkillActionWord(IMessageActivity activity)
-        // {
-        //     if (activity.Text != null)
-        //     {
-        //         // TODO: investigate why "Yes" and "No" are included in original code
-        //         var text = text.ToString().ToLower();
-        //         if (text.Contains("auth")
-        //             || text.Contains("logout")
-        //             || text.Contains("yes")
-        //             || text.Contains("no")
-        //             || text.Contains("dialog")
-        //         ) {
-        //             return true;
-        //         }
-        //     }
-
-        //     return false;
-        // }
-
     }
 }
