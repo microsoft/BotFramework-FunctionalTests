@@ -126,7 +126,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Dialogs
                     skillActivity = CreateActivityToSendSkill(SkillAction_Message, stepContext.Context);
 
                     break;
-                case "DialogSkillBot":
+                case DialogSkill:
                     skillActivity = CreateActivityToSendSkill(((FoundChoice)stepContext.Result).Value, stepContext.Context);
                     break;
                 default:
@@ -212,8 +212,8 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Dialogs
             {
                 // activity = (Activity)Activity.CreateEventActivity();
                 // activity.Name = DialogSkill;
-                activity.Name = "dialog";
                 activity = (Activity)Activity.CreateMessageActivity();
+                activity.Name = "dialog";
                 // activity.ChannelData = new Dictionary<string, object> { ["activeSkillDialog"] = "multiTurnDialog" };
             }
 

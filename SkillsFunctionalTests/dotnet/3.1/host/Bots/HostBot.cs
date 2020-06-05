@@ -36,7 +36,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Bots
         public const string ActiveSkillDialogPropertyName = "activeSkillDialogProperty";
         // We use a single skill in this example.
         public const string TargetSkillId = "EchoSkillBot";
-        public const string DialogSkillId = "DialogSkillBot";
+        public const string DialogSkillId = "DialogSkill";
         private const string _activeSkillDialogKey = "activeSkillDialog";
         private const string _authDialog = "authDialog";
         private const string _multiTurnDialog = "multiTurnDialog";
@@ -96,9 +96,12 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Bots
             var activity = turnContext.Activity;
             var text = activity.Text.ToLower();
             
-            if (activeSkillDialog != null)
+            //if (activeSkillDialog != null)
+            if (activeSkill != null && activeSkill.Id == "DialogSkill")
             {
                 activity.ChannelData.Add(_activeSkillDialogKey, activeSkillDialog);
+                await _mainDialog.RunAsync(turnContext, _conversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
+                //await _conversationState.SaveChangesAsync(turnContext, force: true, cancellationToken: cancellationToken);
             }
 
             if (activeSkill != null)
@@ -115,9 +118,9 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Bots
                 return;
             }
 
-            if(text.Contains("dialog"))
+            if(text.Contains("multiturn"))
             {
-                await turnContext.SendActivityAsync(MessageFactory.Text("Got it, connecting you to the skill with MULTI-TURN DIALOG..."));
+                await turnContext.SendActivityAsync(MessageFactory.Text("Got it, HostBot is now entering MainDialog..."));
 
                 // Get the skill info based on the selected skill.
                 await _activeSkillProperty.SetAsync(turnContext, _dialogSkill, cancellationToken);
@@ -126,6 +129,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Bots
 
                 // await SendToSkillAsync(turnContext, _dialogSkill, cancellationToken);
                 await _mainDialog.RunAsync(turnContext, _conversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
+                await _conversationState.SaveChangesAsync(turnContext, force: true, cancellationToken: cancellationToken);
 
                 return;
             }
