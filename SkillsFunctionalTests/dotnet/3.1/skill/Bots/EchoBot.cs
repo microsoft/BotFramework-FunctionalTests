@@ -38,13 +38,6 @@ namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot.Bots
                 // Save any state changes that might have occurred during the turn.
                 await conversationState.SaveChangesAsync(turnContext, false, cancellationToken);
             }
-            //else if (text.Contains("dialog"))
-            //{
-            //    await userProfileDialog.RunAsync(turnContext, conversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
-
-            //    // Save any state changes that might have occurred during the turn.
-            //    await conversationState.SaveChangesAsync(turnContext, false, cancellationToken);
-            //}
             else if (text.Contains("end") || text.Contains("stop"))
             {
                 // Send End of conversation at the end.

@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,10 +26,9 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Dialogs
     public class MainDialog : ComponentDialog
     {
         public static readonly string ActiveSkillPropertyName = $"{typeof(MainDialog).FullName}.ActiveSkillProperty";
-
-        // Constants used for selecting actions on the skill.
+        private const string EchoSkill = "EchoSkill";
         private const string SkillAction_Message = "Message";
-        private const string SkillAction_MakeUserProfile = "MakeUserProfile";
+        private const string DialogSkill = "DialogSkill";
         private readonly IStatePropertyAccessor<BotFrameworkSkill> _activeSkillProperty;
         private readonly string _selectedSkillKey = $"{typeof(MainDialog).FullName}.SelectedSkillKey";
         private readonly SkillsConfiguration _skillsConfig;
@@ -81,6 +81,8 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Dialogs
         protected override async Task<DialogTurnResult> OnContinueDialogAsync(DialogContext innerDc, CancellationToken cancellationToken)
         {
             // Sample to test a tangent when in the middle of a skill conversation.
+            var activeSkill = await _activeSkillProperty.GetAsync(innerDc.Context, () => null, cancellationToken);
+            var activity = innerDc.Context.Activity;
             if (activeSkill != null && activity.Type == ActivityTypes.Message && activity.Text.Equals("tangent", StringComparison.CurrentCultureIgnoreCase))
             {
                 // Start tangent.
@@ -121,12 +123,11 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Dialogs
             switch (selectedSkill.Id)
             {
                 case "EchoSkillBot":
-                    // Echo only takes messages
-                    skillActivity = CreateDialogSkillBotActivity(SkillActionMessage, stepContext.Context);
+                    skillActivity = CreateActivityToSendSkill(SkillAction_Message, stepContext.Context);
 
                     break;
                 case "DialogSkillBot":
-                    skillActivity = CreateDialogSkillBotActivity(((FoundChoice)stepContext.Result).Value, stepContext.Context);
+                    skillActivity = CreateActivityToSendSkill(((FoundChoice)stepContext.Result).Value, stepContext.Context);
                     break;
                 default:
                     throw new Exception($"Unknown target skill id: {selectedSkill.Id}.");
@@ -165,7 +166,8 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Dialogs
             await _activeSkillProperty.DeleteAsync(stepContext.Context, cancellationToken);
 
             // Restart the main dialog with a different message the second time around.
-            return await stepContext.ReplaceDialogAsync(InitialDialogId, $"Done with \"{activeSkill.Id}\". \n\n What skill would you like to call?", cancellationToken);
+            // return await stepContext.ReplaceDialogAsync(InitialDialogId, $"Done with \"{activeSkill.Id}\". \n\n What skill would you like to call?", cancellationToken);
+            return await stepContext.EndDialogAsync(cancellationToken: cancellationToken);
         }
 
         // Helper method that creates and adds SkillDialog instances for the configured skills.
@@ -189,54 +191,38 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Dialogs
             }
         }
 
-        // Helper method to create Choice elements for the actions supported by the skill.
-        private IList<Choice> GetSkillActions(BotFrameworkSkill skill)
-        {
-            // Note: the bot would probably render this by reading the skill manifest.
-            // We are just using hardcoded skill actions here for simplicity.
-
-            var choices = new List<Choice>();
-            switch (skill.Id)
-            {
-                case "EchoSkillBot":
-                    choices.Add(new Choice(SkillAction_Message));
-                    break;
-
-                case "DialogSkillBot":
-                    choices.Add(new Choice(SkillAction_MakeUserProfile));
-                    break;
-            }
-
-            return choices;
-        }
-
+        // TODO: determine what the below comment should be
         // Helper method to create the activity to be sent to the DialogSkillBot using selected type and values.
-        private Activity CreateDialogSkillBotActivity(string selectedOption, ITurnContext turnContext)
+        private Activity CreateActivityToSendSkill(string selectedOption, ITurnContext turnContext)
         {
             // Note: in a real bot, the dialogArgs will be created dynamically based on the conversation
             // and what each action requires; here we hardcode the values to make things simpler.
 
             // Just forward the message activity to the skill with whatever the user said. 
-            if (selectedOption.Equals(SkillActionMessage, StringComparison.CurrentCultureIgnoreCase))
+            if (selectedOption.Equals(SkillAction_Message, StringComparison.CurrentCultureIgnoreCase))
             {
                 // Note message activities also support input parameters but we are not using them in this example.
                 return turnContext.Activity;
             }
 
             Activity activity = null;
-
+            // TODO: change comment
             // Send an event activity to the skill with "MakeUserProfile" in the name.
-            if (selectedOption.Equals(SkillAction_MakeUserProfile, StringComparison.CurrentCultureIgnoreCase))
+            if (selectedOption.Equals(DialogSkill, StringComparison.CurrentCultureIgnoreCase))
             {
-                activity = (Activity)Activity.CreateEventActivity();
-                activity.Name = SkillAction_MakeUserProfile;
+                // activity = (Activity)Activity.CreateEventActivity();
+                // activity.Name = DialogSkill;
+                activity.Name = "dialog";
+                activity = (Activity)Activity.CreateMessageActivity();
+                // activity.ChannelData = new Dictionary<string, object> { ["activeSkillDialog"] = "multiTurnDialog" };
             }
 
             // Send an event activity to the skill with "EchoSkillBot" in the name.
-            if (selectedOption.Equals(SkillActionEchoSkillBot, StringComparison.CurrentCultureIgnoreCase))
+            if (selectedOption.Equals(EchoSkill, StringComparison.CurrentCultureIgnoreCase))
             {
-                activity = (Activity)Activity.CreateEventActivity();
-                activity.Name = SkillActionEchoSkillBot;
+                // activity = (Activity)Activity.CreateEventActivity();
+                activity = (Activity)Activity.CreateMessageActivity();
+                activity.Name = EchoSkill;
                 return activity;
             }
 

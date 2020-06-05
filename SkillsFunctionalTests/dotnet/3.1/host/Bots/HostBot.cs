@@ -8,12 +8,15 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
+using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Integration.AspNet.Core.Skills;
 using Microsoft.Bot.Builder.Skills;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Bot.Schema;
+using Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Dialogs;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Bots
 {
@@ -27,6 +30,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Bots
         private readonly SkillsConfiguration _skillsConfig;
         private readonly BotFrameworkSkill _targetSkill;
         private readonly BotFrameworkSkill _dialogSkill;
+        private Dialog _mainDialog;
 
         public const string ActiveSkillPropertyName = "activeSkillProperty";
         public const string ActiveSkillDialogPropertyName = "activeSkillDialogProperty";
@@ -44,11 +48,13 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Bots
         /// <param name="skillsConfig">The skills configuration.</param>
         /// <param name="skillClient">The HTTP client for the skills.</param>
         /// <param name="configuration">The configuration properties.</param>
-        public HostBot(ConversationState conversationState, SkillsConfiguration skillsConfig, SkillHttpClient skillClient, IConfiguration configuration)
+        public HostBot(ConversationState conversationState, SkillsConfiguration skillsConfig, SkillHttpClient skillClient, IConfiguration configuration, MainDialog mainDialog)
         {
             _conversationState = conversationState ?? throw new ArgumentNullException(nameof(conversationState));
             _skillsConfig = skillsConfig ?? throw new ArgumentNullException(nameof(skillsConfig));
             _skillClient = skillClient ?? throw new ArgumentNullException(nameof(skillClient));
+            _mainDialog = mainDialog ?? throw new ArgumentNullException(nameof(mainDialog));
+
             if (configuration == null)
             {
                 throw new ArgumentNullException(nameof(configuration));
@@ -115,10 +121,12 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Bots
 
                 // Get the skill info based on the selected skill.
                 await _activeSkillProperty.SetAsync(turnContext, _dialogSkill, cancellationToken);
-                await _activeSkillDialogProperty.SetAsync(turnContext, _multiTurnDialog, cancellationToken);
-                activity.ChannelData.Add(_activeSkillDialogKey, _multiTurnDialog);
+                // await _activeSkillDialogProperty.SetAsync(turnContext, _multiTurnDialog, cancellationToken);
+                // activity.ChannelData.Add(_activeSkillDialogKey, _multiTurnDialog);
 
-                await SendToSkillAsync(turnContext, _dialogSkill, cancellationToken);
+                // await SendToSkillAsync(turnContext, _dialogSkill, cancellationToken);
+                await _mainDialog.RunAsync(turnContext, _conversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
+
                 return;
             }
 
