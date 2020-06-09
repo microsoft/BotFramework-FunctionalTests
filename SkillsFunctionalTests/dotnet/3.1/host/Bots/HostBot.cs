@@ -82,6 +82,27 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Bots
             _activeSkillDialogProperty = conversationState.CreateProperty<string>(ActiveSkillDialogPropertyName);
         }
 
+        // public override async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default)
+        // {
+        //     var activeSkill = await _activeSkillProperty.GetAsync(turnContext, () => null, cancellationToken);
+        //     var activity = turnContext.Activity;
+        //     var text = activity.Text.ToLower();
+            
+        //     if (activeSkill != null && activeSkill.Id == "DialogSkill")
+        //     {
+        //         activity.ChannelData.Add(ActiveSkillPropertyName, activeSkill.Id);
+        //         await _activeSkillProperty.SetAsync(turnContext, _dialogSkill, cancellationToken);
+        //         await _mainDialog.RunAsync(turnContext, _conversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
+
+        //         // TODO: do I need to save here?
+        //         await _conversationState.SaveChangesAsync(turnContext, force: true, cancellationToken: cancellationToken);
+        //     }
+
+        //     await base.OnTurnAsync(turnContext, cancellationToken);
+
+        //     return;
+        // }
+
         /// <summary>
         /// Processes a message activity.
         /// </summary>
@@ -164,8 +185,20 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Bots
         /// <returns>A <see cref="Task{TResult}"/> representing the result of the asynchronous operation.</returns>
         protected override async Task OnEndOfConversationActivityAsync(ITurnContext<IEndOfConversationActivity> turnContext, CancellationToken cancellationToken)
         {
+            var activeSkill = await _activeSkillProperty.GetAsync(turnContext, () => null, cancellationToken);
+            var activity = turnContext.Activity;
+            
+            if (activeSkill != null && activeSkill.Id == "DialogSkill")
+            {
+                // TODO: abbreviate
+                activity.ChannelData = new Dictionary<string, object>();
+                activity.ChannelData.Add(ActiveSkillPropertyName, activeSkill.Id);
+                await _mainDialog.RunAsync(turnContext, _conversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
+            }
+
             // forget skill invocation
             await _activeSkillProperty.DeleteAsync(turnContext, cancellationToken);
+            await _conversationState.SaveChangesAsync(turnContext, cancellationToken: cancellationToken);
 
             // Show status message, text and value returned by the skill
             var eocActivityMessage = $"Received {ActivityTypes.EndOfConversation}.\n\nCode: {turnContext.Activity.Code}";

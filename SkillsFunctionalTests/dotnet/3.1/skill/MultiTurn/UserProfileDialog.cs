@@ -174,8 +174,9 @@ namespace Microsoft.BotFrameworkFunctionalTests.MultiTurnDialogSkill.Bots
                 await stepContext.Context.SendActivityAsync(MessageFactory.Text("Thanks. Your profile will not be kept."), cancellationToken);
             }
 
+            var result = stepContext.Result;
             // WaterfallStep always finishes with the end of the Waterfall or with another dialog; here it is the end.
-            return await stepContext.EndDialogAsync(cancellationToken: cancellationToken);
+            return await stepContext.EndDialogAsync(result, cancellationToken: cancellationToken);
         }
 
         private static Task<bool> AgePromptValidatorAsync(PromptValidatorContext<int> promptContext, CancellationToken cancellationToken)
