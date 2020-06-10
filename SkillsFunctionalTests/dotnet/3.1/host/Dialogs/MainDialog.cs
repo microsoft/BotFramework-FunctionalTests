@@ -72,7 +72,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Dialogs
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), waterfallSteps));
 
             // Create state property to track the active skill.
-            _activeSkillProperty = conversationState.CreateProperty<BotFrameworkSkill>(ActiveSkillPropertyName);
+            _activeSkillProperty = conversationState.CreateProperty<BotFrameworkSkill>("activeSkillProperty");
 
             // The initial child Dialog to run.
             InitialDialogId = nameof(WaterfallDialog);
@@ -138,7 +138,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Dialogs
             var skillDialogArgs = new BeginSkillDialogOptions { Activity = skillActivity };
 
             // Comment or uncomment this line if you need to enable or disabled buffered replies.
-            //skillDialogArgs.Activity.DeliveryMode = DeliveryModes.ExpectReplies;
+            skillDialogArgs.Activity.DeliveryMode = DeliveryModes.ExpectReplies;
 
             // Save active skill in state.
             await _activeSkillProperty.SetAsync(stepContext.Context, selectedSkill, cancellationToken);
