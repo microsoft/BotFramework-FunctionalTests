@@ -79,7 +79,8 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Dialogs
         }
 
         protected override async Task<DialogTurnResult> OnContinueDialogAsync(DialogContext innerDc, CancellationToken cancellationToken)
-        {
+        {   
+            // Maybe I need to instead save HostBot as a member and check ITS _activeSkillProperty, so we only manage the value in 1 place
             // Sample to test a tangent when in the middle of a skill conversation.
             var activeSkill = await _activeSkillProperty.GetAsync(innerDc.Context, () => null, cancellationToken);
             var activity = innerDc.Context.Activity;
@@ -210,10 +211,16 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Dialogs
             // Send an event activity to the skill with "MakeUserProfile" in the name.
             if (selectedOption.Equals(DialogSkill, StringComparison.CurrentCultureIgnoreCase))
             {
+                // TODO: abbreviate!! for some reason having doing .Add() after assigning new activity the ChannelData from activity that's in TC...
                 activity = (Activity)Activity.CreateEventActivity();
-                // activity.Name = DialogSkill;
+                activity.ChannelData = turnContext.Activity.ChannelData;
+
+                // var channelData = activity.GetChannelData<Dictionary<string, object>>();
+                // channelData.Add("activeSkillProperty", "DialogSkill");
+                // activity.ChannelData = channelData;
+
                 // activity = (Activity)Activity.CreateMessageActivity();
-                activity.Name = "dialog";
+                //activity.Name = "dialog";
                 // activity.ChannelData = new Dictionary<string, object> { ["activeSkillDialog"] = "multiTurnDialog" };
 
                 return activity;
