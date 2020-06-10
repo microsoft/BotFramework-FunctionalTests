@@ -79,7 +79,6 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Bots
 
             // Create state property to track the active skill
             _activeSkillProperty = conversationState.CreateProperty<BotFrameworkSkill>(ActiveSkillPropertyName);
-            _activeSkillDialogProperty = conversationState.CreateProperty<string>(ActiveSkillDialogPropertyName);
         }
 
         // public override async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default)
