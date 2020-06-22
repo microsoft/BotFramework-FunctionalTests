@@ -107,7 +107,7 @@
                             "comments": "Create a new App Service Plan",
                             "type": "Microsoft.Web/serverfarms",
                             "name": "[variables('appServicePlanName')]",
-                            "apiVersion": "2018-02-01",
+                            "apiVersion": "2019-08-01",
                             "location": "[variables('resourcesLocation')]",
                             "sku": "[parameters('newAppServicePlanSku')]",
                             "properties": {
@@ -117,7 +117,7 @@
                         {
                             "comments": "Create a Web App using the new App Service Plan",
                             "type": "Microsoft.Web/sites",
-                            "apiVersion": "2015-08-01",
+                            "apiVersion": "2019-08-01",
                             "location": "[variables('resourcesLocation')]",
                             "kind": "app",
                             "dependsOn": [
