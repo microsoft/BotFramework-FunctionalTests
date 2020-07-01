@@ -81,7 +81,7 @@ stages:
         Registry: $[variables.RegistryUrlHost]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
         Parameters.sourceLocation: 'SkillsFunctionalTests/javascript/host'
-        TemplateLocation: 'SkillsFunctionalTests/javascript/host/DeploymentTemplates/template-with-new-rg.json'
+        TemplateLocation: 'SkillsFunctionalTests/javascript/host/DeploymentTemplates/template-with-preexisting-rg.json'
       steps:
       - template: javascriptSetConfigFileSteps.yml
       - template: javascriptDeploySteps.yml
@@ -95,7 +95,7 @@ stages:
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
         Parameters.solution: 'SkillsFunctionalTests/dotnet/v3/skill/EchoSkillBot.sln'
         Parameters.sourceLocation: 'SkillsFunctionalTests/dotnet/v3/skill/'
-        TemplateLocation: 'SkillsFunctionalTests/dotnet/v3/skill/DeploymentTemplates/template-with-new-rg.json'
+        TemplateLocation: 'SkillsFunctionalTests/dotnet/v3/skill/DeploymentTemplates/template-with-preexisting-rg.json'
       steps:
       - template: dotnetV3DeploySteps.yml
 
