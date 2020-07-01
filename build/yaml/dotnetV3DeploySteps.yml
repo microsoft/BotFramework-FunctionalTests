@@ -12,7 +12,8 @@ steps:
     azureSubscription: $(AzureSubscription)
     scriptLocation: inlineScript
     inlineScript: |
-     call az deployment create --template-file "$(TemplateLocation)" --location "westus" --parameters appId="$(DeployAppId)" appSecret="$(DeployAppSecret)" botId="$(BotName)" newAppServicePlanName="$(BotName)" newWebAppName="$(BotName)-$(Build.BuildId)" groupName="$(BotName)-RG" botSku=F0 groupLocation="westus" newAppServicePlanLocation="westus"
+     call az group create --location westus --name "$(BotName)-RG"
+     call az deployment group create --resource-group "$(BotName)-RG" --name $(BotName) --template-file "$(TemplateLocation)" --parameters appId="$(DeployAppId)" appSecret="$(DeployAppSecret)" botId="$(BotName)" botSku=F0 newAppServicePlanName="$(BotName)" appServicePlanLocation="westus" existingAppServicePlan="" existingAppServicePlanResourceGroup="$(BotName)-RG" newWebAppName="$(BotName)-$(Build.BuildId)"
 
 - task: AzureCLI@1
   displayName: 'Deploy Bot'
