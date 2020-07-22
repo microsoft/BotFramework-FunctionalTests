@@ -171,7 +171,7 @@
                                 "storageResourceId": null
                             },
                             "dependsOn": [
-                                "[resourceId('Microsoft.Web/sites/', variables('webAppName'))]"
+                                "[variables('webAppName')]"
                             ]
                         }
                     ],
