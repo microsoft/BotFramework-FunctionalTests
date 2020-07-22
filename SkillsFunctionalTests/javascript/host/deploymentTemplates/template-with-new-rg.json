@@ -121,7 +121,7 @@
                             "location": "[variables('resourcesLocation')]",
                             "kind": "app",
                             "dependsOn": [
-                                "[resourceId('Microsoft.Web/serverfarms/', variables('appServicePlanName'))]"
+                                "[variables('appServicePlanName')]"
                             ],
                             "name": "[variables('webAppName')]",
                             "properties": {
