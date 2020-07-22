@@ -121,7 +121,7 @@
                             "location": "[variables('resourcesLocation')]",
                             "kind": "app",
                             "dependsOn": [
-                                "[variables('appServicePlanName')]"
+                                "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]"
                             ],
                             "name": "[variables('webAppName')]",
                             "properties": {
@@ -171,7 +171,7 @@
                                 "storageResourceId": null
                             },
                             "dependsOn": [
-                                "[variables('webAppName')]"
+                                "[resourceId('Microsoft.Web/sites', variables('webAppName'))]"
                             ]
                         }
                     ],
