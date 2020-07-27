@@ -2,8 +2,9 @@ steps:
 - powershell: |
     switch ("$(Registry)".ToUpper())
     {
-        $null { Write-Host ("##vso[task.setvariable variable=RegistryUrl]Test.PyPi") }
-        '' { Write-Host ("##vso[task.setvariable variable=RegistryUrl]Test.PyPi") }
+        $null { Write-Host ("##vso[task.setvariable variable=RegistryUrl]Artifacts") }
+        '' { Write-Host ("##vso[task.setvariable variable=RegistryUrl]Artifacts") }
+        ARTIFACTS { Write-Host ("##vso[task.setvariable variable=RegistryUrl]Artifacts") }
         TEST.PYPI { Write-Host ("##vso[task.setvariable variable=RegistryUrl]Test.PyPi") }
         PYPI { Write-Host ("##vso[task.setvariable variable=RegistryUrl]PyPi") }
         default { Write-Host ("##vso[task.setvariable variable=RegistryUrl]$(Registry)") }
@@ -23,10 +24,14 @@ steps:
     switch($source){
       PyPi {
         $source = "https://pypi.org/simple/"
-        $extra_source = "https://test.pypi.org/simple/"
+        $extra_source = "https://pkgs.dev.azure.com/ConversationalAI/BotFramework/_packaging/SDK/pypi/simple/"
       }
       Test.PyPi {
         $source = "https://test.pypi.org/simple/"
+        $extra_source = "https://pypi.org/simple/"
+      }
+      Artifacts {
+        $source = "https://pkgs.dev.azure.com/ConversationalAI/BotFramework/_packaging/SDK/pypi/simple/"
         $extra_source = "https://pypi.org/simple/"
       }
     }
