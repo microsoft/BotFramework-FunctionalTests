@@ -2,8 +2,9 @@ steps:
 - powershell: |
    switch ("$(Registry)".ToUpper())
    {
-      $null { Write-Host ("##vso[task.setvariable variable=RegistryUrl]MyGet") }
-      '' { Write-Host ("##vso[task.setvariable variable=RegistryUrl]MyGet") }
+      $null { Write-Host ("##vso[task.setvariable variable=RegistryUrl]Artifacts") }
+      '' { Write-Host ("##vso[task.setvariable variable=RegistryUrl]Artifacts") }
+      ARTIFACTS { Write-Host ("##vso[task.setvariable variable=RegistryUrl]Artifacts") }
       NUGET { Write-Host ("##vso[task.setvariable variable=RegistryUrl]NuGet") }
       MYGET { Write-Host ("##vso[task.setvariable variable=RegistryUrl]MyGet") }
       default { Write-Host ("##vso[task.setvariable variable=RegistryUrl]$(Registry)") }
@@ -28,7 +29,11 @@ steps:
    {
       if ("$(RegistryUrl)" -eq "MyGet") 
       {
-         $RegistryUrlSource = "https://botbuilder.myget.org/F/botbuilder-v4-dotnet-daily/api/v3/index.json"         
+         $RegistryUrlSource = "https://botbuilder.myget.org/F/botbuilder-v4-dotnet-daily/api/v3/index.json"
+      }
+      elseif ("$(RegistryUrl)" -eq "Artifacts")
+      {
+         $RegistryUrlSource = "https://pkgs.dev.azure.com/ConversationalAI/BotFramework/_packaging/SDK/nuget/v3/index.json"
       }
       else
       {
@@ -59,6 +64,10 @@ steps:
    elseif("$(RegistryUrl)" -eq "NuGet")
    {
       $source = ""
+   }
+   elseif("$(RegistryUrl)" -eq "Artifacts")
+   {
+      $source = "--source `"https://pkgs.dev.azure.com/ConversationalAI/BotFramework/_packaging/SDK/nuget/v3/index.json`""
    }
    else
    {
