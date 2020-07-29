@@ -97,6 +97,10 @@
             ],
             "properties": {
                 "mode": "Incremental",
+				"properties": {
+					"expressionEvaluationOptions": {
+					"scope": "inner"
+				},
                 "template": {
                     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
                     "contentVersion": "1.0.0.0",
@@ -121,7 +125,7 @@
                             "location": "[variables('resourcesLocation')]",
                             "kind": "app",
                             "dependsOn": [
-                                "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]"
+                                "[resourceId('Microsoft.Web/serverfarms/', variables('appServicePlanName'))]"
                             ],
                             "name": "[variables('webAppName')]",
                             "properties": {
@@ -171,7 +175,7 @@
                                 "storageResourceId": null
                             },
                             "dependsOn": [
-                                "[resourceId('Microsoft.Web/sites', variables('webAppName'))]"
+                                "[resourceId('Microsoft.Web/sites/', variables('webAppName'))]"
                             ]
                         }
                     ],
