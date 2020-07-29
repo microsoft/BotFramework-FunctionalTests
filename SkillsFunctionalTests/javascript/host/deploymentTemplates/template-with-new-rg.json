@@ -144,7 +144,7 @@
 						},
 						"botEndPointForTemplate": {
 							"type": "string"
-						}
+						},
 						"botIdForTemplate": {
 							"type": "string"
 						},
