@@ -95,35 +95,35 @@
             "dependsOn": [
                 "[resourceId('Microsoft.Resources/resourceGroups/', parameters('groupName'))]"
             ],
-		"parameters": {
-			"appIdForTemplate": {
-				"value": "[parameters('appId')]"
+			"parameters": {
+				"appIdForTemplate": {
+					"value": "[parameters('appId')]"
+				},
+				"appServicePlanNameForTemplate": {
+					"value": "[variables('appServicePlanName')]"
+				},
+				"appSecretForTemplate": {
+					"value": "[parameters('appSecret')]"
+				},
+				"botEndPointForTemplate": {
+					"value": "[variables('botEndpoint')]"
+				},
+				"botIdForTemplate": {
+					"value": "[parameters('botId')]"
+				},
+				"botSkuForTemplate": {
+					"value": "[parameters('botSku')]"
+				},
+				"resourcesLocationForTemplate": {
+					"value": "[variables('resourcesLocation')]"
+				},
+				"newAppServicePlanSkuForTemplate":{
+					"value": "[parameters('newAppServicePlanSku')]"
+				},
+				"webAppNameForTemplate": {
+					"value": "[variables('webAppName')]"
+				}
 			},
-			"appServicePlanNameForTemplate": {
-				"value": "[variables('appServicePlanName')]"
-			},
-			"appSecretForTemplate": {
-				"value": "[parameters('appSecret')]"
-			},
-			"botEndPointForTemplate": {
-				"value": "[variables('botEndpoint')]"
-			},
-			"botIdForTemplate": {
-				"value": "[parameters('botId')]"
-			},
-			"botSkuForTemplate": {
-				"value": "[parameters('botSku')]"
-			},
-			"resourcesLocationForTemplate": {
-				"value": "[variables('resourcesLocation')]"
-			},
-			"newAppServicePlanSkuForTemplate":{
-				"value": "[parameters('newAppServicePlanSku')]"
-			},
-			"webAppNameForTemplate": {
-				"value": "[variables('webAppName')]"
-			}
-		}
             "properties": {
                 "mode": "Incremental",
 				"expressionEvaluationOptions": {
