@@ -70,7 +70,7 @@ stages:
         Registry: $[variables.RegistryUrlHost]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
         Parameters.sourceLocation: 'SkillsFunctionalTests/javascript/host'
-        TemplateLocation: 'SkillsFunctionalTests/javascript/host/DeploymentTemplates/template-with-preexisting-rg.json'
+        TemplateLocation: 'SkillsFunctionalTests/javascript/host/DeploymentTemplates/template-with-new-rg.json'
       steps:
       - template: javascriptSetConfigFileSteps.yml
       - template: javascriptDeploySteps.yml
@@ -83,7 +83,7 @@ stages:
         Registry: $[variables.RegistryUrlSkill]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
         Parameters.sourceLocation: 'SkillsFunctionalTests/javascript/v3/skill'
-        TemplateLocation: 'SkillsFunctionalTests/javascript/v3/skill/DeploymentTemplates/template-with-preexisting-rg.json'
+        TemplateLocation: 'SkillsFunctionalTests/javascript/v3/skill/DeploymentTemplates/template-with-new-rg.json'
       steps:
       - template: javascriptDeploySteps.yml
 
