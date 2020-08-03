@@ -127,6 +127,9 @@
                     },
                     "webAppNameForTemplate": {
                         "value": "[variables('webAppName')]"
+                    },
+                    "publishingUsernameForTemplate": {
+                        "value": "[variables('publishingUsername')]"
                     }
                 },
                 "template": {
@@ -158,6 +161,9 @@
                             "type": "object"
                         },
                         "webAppNameForTemplate": {
+                            "type": "string"
+                        },
+                        "publishingUsernameForTemplate": {
                             "type": "string"
                         }
                     },
@@ -194,12 +200,12 @@
                                 "serverFarmId": "[parameters('appServicePlanNameForTemplate')]",
                                 "hostNameSslStates": [
                                     {
-                                        "name": "[concat(parameters('newWebAppName'), '.azurewebsites.net')]",
+                                        "name": "[concat(parameters('webAppNameForTemplate'), '.azurewebsites.net')]",
                                         "sslState": "Disabled",
                                         "hostType": "Standard"
                                     },
                                     {
-                                        "name": "[concat(parameters('newWebAppName'), '.scm.azurewebsites.net')]",
+                                        "name": "[concat(parameters('webAppNameForTemplate'), '.scm.azurewebsites.net')]",
                                         "sslState": "Disabled",
                                         "hostType": "Repository"
                                     }
@@ -227,10 +233,10 @@
                         {
                             "type": "Microsoft.Web/sites/config",
                             "apiVersion": "2016-08-01",
-                            "name": "[concat(variables('webAppName'), '/web')]",
-                            "location": "[variables('resourcesLocation')]",
+                            "name": "[concat(parameters('webAppNameForTemplate'), '/web')]",
+                            "location": "[parameters('resourcesLocationForTemplate')]",
                             "dependsOn": [
-                                "[resourceId('Microsoft.Web/sites', variables('webAppName'))]"
+                                "[resourceId('Microsoft.Web/sites', parameters('webAppNameForTemplate'))]"
                             ],
                             "properties": {
                                 "numberOfWorkers": 1,
@@ -256,7 +262,7 @@
                                 "httpLoggingEnabled": true,
                                 "logsDirectorySizeLimit": 35,
                                 "detailedErrorLoggingEnabled": false,
-                                "publishingUsername": "[variables('publishingUsername')]",
+                                "publishingUsername": "[parameters('publishingUsernameForTemplate')]",
                                 "scmType": "None",
                                 "use32BitWorkerProcess": true,
                                 "webSocketsEnabled": false,
