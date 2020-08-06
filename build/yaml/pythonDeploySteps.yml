@@ -89,8 +89,7 @@ steps:
     azureSubscription: $(AzureSubscription)
     scriptLocation: inlineScript
     inlineScript: |
-     call az group create --location westus --name "$(BotName)-RG"
-     call az deployment group create --resource-group "$(BotName)-RG" --name $(BotName) --template-file "$(TemplateLocation)" --parameters appId="$(DeployAppId)" appSecret="$(DeployAppSecret)" botId="$(BotName)" botSku=F0 newAppServicePlanName="$(BotName)" appServicePlanLocation="westus" existingAppServicePlan="" newWebAppName="$(BotName)-$(Build.BuildId)"
+     az deployment create --name "$(BotName)-RG" --template-file "$(System.DefaultWorkingDirectory)/$(TemplateLocation)" --location "westus" --parameters appId="$(DeployAppId)" appSecret="$(DeployAppSecret)" botId="$(BotName)" botSku=F0 newAppServicePlanName="$(BotName)" newWebAppName="$(BotName)-$(Build.BuildId)" groupName="$(BotName)-RG" groupLocation="westus" newAppServicePlanLocation="westus"
 
 - script: |
    git config --global user.name "GitPythonDeploymentUser"

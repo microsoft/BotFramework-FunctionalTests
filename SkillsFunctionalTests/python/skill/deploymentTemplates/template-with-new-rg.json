@@ -85,8 +85,7 @@
             "type": "Microsoft.Resources/resourceGroups",
             "apiVersion": "2018-05-01",
             "location": "[parameters('groupLocation')]",
-            "properties": {
-            }
+            "properties": {}
         },
         {
             "type": "Microsoft.Resources/deployments",
@@ -98,22 +97,88 @@
             ],
             "properties": {
                 "mode": "Incremental",
+                "expressionEvaluationOptions": {
+                    "scope": "inner"
+                },
+                "parameters": {
+                    "appIdForTemplate": {
+                        "value": "[parameters('appId')]"
+                    },
+                    "appServicePlanNameForTemplate": {
+                        "value": "[variables('appServicePlanName')]"
+                    },
+                    "appSecretForTemplate": {
+                        "value": "[parameters('appSecret')]"
+                    },
+                    "botEndPointForTemplate": {
+                        "value": "[variables('botEndpoint')]"
+                    },
+                    "botIdForTemplate": {
+                        "value": "[parameters('botId')]"
+                    },
+                    "botSkuForTemplate": {
+                        "value": "[parameters('botSku')]"
+                    },
+                    "resourcesLocationForTemplate": {
+                        "value": "[variables('resourcesLocation')]"
+                    },
+                    "newAppServicePlanSkuForTemplate": {
+                        "value": "[parameters('newAppServicePlanSku')]"
+                    },
+                    "webAppNameForTemplate": {
+                        "value": "[variables('webAppName')]"
+                    },
+                    "publishingUsernameForTemplate": {
+                        "value": "[variables('publishingUsername')]"
+                    }
+                },
                 "template": {
                     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
                     "contentVersion": "1.0.0.0",
-                    "parameters": {},
+                    "parameters": {
+                        "appIdForTemplate": {
+                            "type": "string"
+                        },
+                        "appServicePlanNameForTemplate": {
+                            "type": "string"
+                        },
+                        "appSecretForTemplate": {
+                            "type": "string"
+                        },
+                        "botEndPointForTemplate": {
+                            "type": "string"
+                        },
+                        "botIdForTemplate": {
+                            "type": "string"
+                        },
+                        "botSkuForTemplate": {
+                            "type": "string"
+                        },
+                        "resourcesLocationForTemplate": {
+                            "type": "string"
+                        },
+                        "newAppServicePlanSkuForTemplate": {
+                            "type": "object"
+                        },
+                        "webAppNameForTemplate": {
+                            "type": "string"
+                        },
+                        "publishingUsernameForTemplate": {
+                            "type": "string"
+                        }
+                    },
                     "variables": {},
                     "resources": [
                         {
                             "comments": "Create a new Linux App Service Plan if no existing App Service Plan name was passed in.",
                             "type": "Microsoft.Web/serverfarms",
-                            "name": "[variables('appServicePlanName')]",
+                            "name": "[parameters('appServicePlanNameForTemplate')]",
                             "apiVersion": "2018-02-01",
-                            "location": "[variables('resourcesLocation')]",
-                            "sku": "[parameters('newAppServicePlanSku')]",
+                            "location": "[parameters('resourcesLocationForTemplate')]",
+                            "sku": "[parameters('newAppServicePlanSkuForTemplate')]",
                             "kind": "linux",
                             "properties": {
-                                "name": "[variables('appServicePlanName')]",
+                                "name": "[parameters('appServicePlanNameForTemplate')]",
                                 "perSiteScaling": false,
                                 "reserved": true,
                                 "targetWorkerCount": 0,
@@ -124,36 +189,36 @@
                             "comments": "Create a Web App using a Linux App Service Plan",
                             "type": "Microsoft.Web/sites",
                             "apiVersion": "2015-08-01",
-                            "location": "[variables('resourcesLocation')]",
+                            "location": "[parameters('resourcesLocationForTemplate')]",
                             "kind": "app,linux",
                             "dependsOn": [
-                                "[resourceId('Microsoft.Web/serverfarms/', variables('appServicePlanName'))]"
+                                "[resourceId('Microsoft.Web/serverfarms/', parameters('appServicePlanNameForTemplate'))]"
                             ],
-                            "name": "[variables('webAppName')]",
+                            "name": "[parameters('webAppNameForTemplate')]",
                             "properties": {
-                                "name": "[variables('webAppName')]",
+                                "name": "[parameters('webAppNameForTemplate')]",
+                                "serverFarmId": "[parameters('appServicePlanNameForTemplate')]",
                                 "hostNameSslStates": [
                                     {
-                                        "name": "[concat(parameters('newWebAppName'), '.azurewebsites.net')]",
+                                        "name": "[concat(parameters('webAppNameForTemplate'), '.azurewebsites.net')]",
                                         "sslState": "Disabled",
                                         "hostType": "Standard"
                                     },
                                     {
-                                        "name": "[concat(parameters('newWebAppName'), '.scm.azurewebsites.net')]",
+                                        "name": "[concat(parameters('webAppNameForTemplate'), '.scm.azurewebsites.net')]",
                                         "sslState": "Disabled",
                                         "hostType": "Repository"
                                     }
                                 ],
-                                "serverFarmId": "[variables('appServicePlanName')]",
                                 "siteConfig": {
                                     "appSettings": [
                                         {
                                             "name": "MicrosoftAppId",
-                                            "value": "[parameters('appId')]"
+                                            "value": "[parameters('appIdForTemplate')]"
                                         },
                                         {
                                             "name": "MicrosoftAppPassword",
-                                            "value": "[parameters('appSecret')]"
+                                            "value": "[parameters('appSecretForTemplate')]"
                                         }
                                     ],
                                     "cors": {
@@ -166,89 +231,89 @@
                             }
                         },
                         {
-                          "type": "Microsoft.Web/sites/config",
-                          "apiVersion": "2016-08-01",
-                          "name": "[concat(variables('webAppName'), '/web')]",
-                          "location": "[variables('resourcesLocation')]",
-                          "dependsOn": [
-                              "[resourceId('Microsoft.Web/sites', variables('webAppName'))]"
-                          ],
-                          "properties": {
-                              "numberOfWorkers": 1,
-                              "defaultDocuments": [
-                                  "Default.htm",
-                                  "Default.html",
-                                  "Default.asp",
-                                  "index.htm",
-                                  "index.html",
-                                  "iisstart.htm",
-                                  "default.aspx",
-                                  "index.php",
-                                  "hostingstart.html"
-                              ],
-                              "netFrameworkVersion": "v4.0",
-                              "phpVersion": "",
-                              "pythonVersion": "",
-                              "nodeVersion": "",
-                              "linuxFxVersion": "PYTHON|3.7",
-                              "requestTracingEnabled": false,
-                              "remoteDebuggingEnabled": false,
-                              "remoteDebuggingVersion": "VS2017",
-                              "httpLoggingEnabled": true,
-                              "logsDirectorySizeLimit": 35,
-                              "detailedErrorLoggingEnabled": false,
-                              "publishingUsername": "[variables('publishingUsername')]",
-                              "scmType": "None",
-                              "use32BitWorkerProcess": true,
-                              "webSocketsEnabled": false,
-                              "alwaysOn": false,
-                              "appCommandLine": "gunicorn --bind 0.0.0.0 --worker-class aiohttp.worker.GunicornWebWorker --timeout 600 app:APP",
-                              "managedPipelineMode": "Integrated",
-                              "virtualApplications": [
-                                  {
-                                      "virtualPath": "/",
-                                      "physicalPath": "site\\wwwroot",
-                                      "preloadEnabled": false,
-                                      "virtualDirectories": null
-                                  }
-                              ],
-                              "winAuthAdminState": 0,
-                              "winAuthTenantState": 0,
-                              "customAppPoolIdentityAdminState": false,
-                              "customAppPoolIdentityTenantState": false,
-                              "loadBalancing": "LeastRequests",
-                              "routingRules": [],
-                              "experiments": {
-                                  "rampUpRules": []
-                              },
-                              "autoHealEnabled": false,
-                              "vnetName": "",
-                              "minTlsVersion": "1.2",
-                              "ftpsState": "AllAllowed",
-                              "reservedInstanceCount": 0
-                          }
+                            "type": "Microsoft.Web/sites/config",
+                            "apiVersion": "2016-08-01",
+                            "name": "[concat(parameters('webAppNameForTemplate'), '/web')]",
+                            "location": "[parameters('resourcesLocationForTemplate')]",
+                            "dependsOn": [
+                                "[resourceId('Microsoft.Web/sites', parameters('webAppNameForTemplate'))]"
+                            ],
+                            "properties": {
+                                "numberOfWorkers": 1,
+                                "defaultDocuments": [
+                                    "Default.htm",
+                                    "Default.html",
+                                    "Default.asp",
+                                    "index.htm",
+                                    "index.html",
+                                    "iisstart.htm",
+                                    "default.aspx",
+                                    "index.php",
+                                    "hostingstart.html"
+                                ],
+                                "netFrameworkVersion": "v4.0",
+                                "phpVersion": "",
+                                "pythonVersion": "",
+                                "nodeVersion": "",
+                                "linuxFxVersion": "PYTHON|3.7",
+                                "requestTracingEnabled": false,
+                                "remoteDebuggingEnabled": false,
+                                "remoteDebuggingVersion": "VS2017",
+                                "httpLoggingEnabled": true,
+                                "logsDirectorySizeLimit": 35,
+                                "detailedErrorLoggingEnabled": false,
+                                "publishingUsername": "[parameters('publishingUsernameForTemplate')]",
+                                "scmType": "None",
+                                "use32BitWorkerProcess": true,
+                                "webSocketsEnabled": false,
+                                "alwaysOn": false,
+                                "appCommandLine": "gunicorn --bind 0.0.0.0 --worker-class aiohttp.worker.GunicornWebWorker --timeout 600 app:APP",
+                                "managedPipelineMode": "Integrated",
+                                "virtualApplications": [
+                                    {
+                                        "virtualPath": "/",
+                                        "physicalPath": "site\\wwwroot",
+                                        "preloadEnabled": false,
+                                        "virtualDirectories": null
+                                    }
+                                ],
+                                "winAuthAdminState": 0,
+                                "winAuthTenantState": 0,
+                                "customAppPoolIdentityAdminState": false,
+                                "customAppPoolIdentityTenantState": false,
+                                "loadBalancing": "LeastRequests",
+                                "routingRules": [],
+                                "experiments": {
+                                    "rampUpRules": []
+                                },
+                                "autoHealEnabled": false,
+                                "vnetName": "",
+                                "minTlsVersion": "1.2",
+                                "ftpsState": "AllAllowed",
+                                "reservedInstanceCount": 0
+                            }
                         },
                         {
                             "apiVersion": "2017-12-01",
                             "type": "Microsoft.BotService/botServices",
-                            "name": "[parameters('botId')]",
+                            "name": "[parameters('botIdForTemplate')]",
                             "location": "global",
                             "kind": "bot",
                             "sku": {
-                                "name": "[parameters('botSku')]"
+                                "name": "[parameters('botSkuForTemplate')]"
                             },
                             "properties": {
-                                "name": "[parameters('botId')]",
-                                "displayName": "[parameters('botId')]",
-                                "endpoint": "[variables('botEndpoint')]",
-                                "msaAppId": "[parameters('appId')]",
+                                "name": "[parameters('botIdForTemplate')]",
+                                "displayName": "[parameters('botIdForTemplate')]",
+                                "endpoint": "[parameters('botEndpointForTemplate')]",
+                                "msaAppId": "[parameters('appIdForTemplate')]",
                                 "developerAppInsightsApplicationId": null,
                                 "developerAppInsightKey": null,
                                 "publishingCredentials": null,
                                 "storageResourceId": null
                             },
                             "dependsOn": [
-                                "[resourceId('Microsoft.Web/sites/', variables('webAppName'))]"
+                                "[resourceId('Microsoft.Web/sites/', parameters('webAppNameForTemplate'))]"
                             ]
                         }
                     ],

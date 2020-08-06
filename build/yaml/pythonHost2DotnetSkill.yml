@@ -88,7 +88,7 @@ stages:
         Registry: $[variables.RegistryUrlHost]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
         Parameters.sourceLocation: 'SkillsFunctionalTests/python/host'
-        TemplateLocation: 'SkillsFunctionalTests/python/host/deploymentTemplates/template-with-preexisting-rg.json'
+        TemplateLocation: 'SkillsFunctionalTests/python/host/deploymentTemplates/template-with-new-rg.json'
       steps:
       - template: pythonSetConfigFileSteps.yml
       - template: pythonDeploySteps.yml
@@ -101,7 +101,7 @@ stages:
         Registry: $[variables.RegistryUrlSkill]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
         Parameters.project: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionSkill)/skill/EchoSkillBot.csproj'
-        TemplateLocation: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionSkill)/skill/DeploymentTemplates/template-with-preexisting-rg.json'
+        TemplateLocation: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionSkill)/skill/DeploymentTemplates/template-with-new-rg.json'
       steps:
       - template: dotnetDeploySteps.yml
 
