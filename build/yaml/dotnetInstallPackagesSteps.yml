@@ -88,11 +88,11 @@ steps:
     custom: add
     arguments: 'package Microsoft.Bot.Builder.Integration.AspNet.Core $(BotBuilderPackageVersion) $(RegistrySource)'
  
- - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
-   displayName: 'Tag Build with package version'
-   inputs:
-    tags: 'BBVersion=$(BotBuilderPackageVersion)'
-   continueOnError: true
+- task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
+  displayName: 'Tag build with package version'
+  inputs:
+    tags: 'Version=$(BotBuilderPackageVersion)'
+  continueOnError: true
 
 - task: DotNetCoreCLI@2
   displayName: 'Add custom Bot.Builder.Dialogs version'  
