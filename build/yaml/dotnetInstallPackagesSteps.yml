@@ -89,8 +89,8 @@ steps:
     arguments: 'package Microsoft.Bot.Builder.Integration.AspNet.Core $(BotBuilderPackageVersion) $(RegistrySource)'
  
  - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
-  displayName: 'Tag Build with package version'
-  inputs:
+   displayName: 'Tag Build with package version'
+   inputs:
     tags: |
       $(BotBuilderPackageVersion)
 
