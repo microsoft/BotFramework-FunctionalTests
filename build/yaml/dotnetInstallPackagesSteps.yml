@@ -42,10 +42,12 @@ steps:
       $PackageList = nuget list Microsoft.Bot.Builder.Integration.AspNet.Core -Source "$RegistryUrlSource" -PreRelease
       $PackageVersion = $PackageList.Split(" ")[-1]
       $version = "--version " + "$PackageVersion"
+      echo "##vso[task.setvariable variable=PackagesVersion]$PackageVersion"
    }
    else
    {
       $version = "--version " + "$(BBVersion)"
+      echo "##vso[task.setvariable variable=PackagesVersion]$BBVersion"
    }
 
    echo "##vso[task.setvariable variable=BotBuilderPackageVersion]$version"
@@ -91,7 +93,7 @@ steps:
 - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
   displayName: 'Tag build with package version'
   inputs:
-    tags: 'Version=$(BotBuilderPackageVersion)'
+    tags: '$(PackagesVersion)'
   continueOnError: true
 
 - task: DotNetCoreCLI@2
