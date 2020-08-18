@@ -93,7 +93,7 @@ steps:
 - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
   displayName: 'Tag build with package version'
   inputs:
-    tags: '$(PackagesVersion)'
+    tags: 'BotBuilderVersion=$(PackagesVersion)'
   continueOnError: true
 
 - task: DotNetCoreCLI@2
