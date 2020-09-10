@@ -9,7 +9,6 @@ using Microsoft.Bot.Connector.DirectLine;
 using SkillFunctionalTests.Bot;
 using SkillFunctionalTests.Configuration;
 using Xunit;
-using Xunit.Abstractions;
 using Xunit.Sdk;
 
 namespace FunctionalTests
@@ -19,13 +18,6 @@ namespace FunctionalTests
     [Trait("TestCategory", "SkipForV3Bots")]
     public class OAuthSkillTest
     {
-        private readonly ITestOutputHelper _testOutputHelper;
-
-        public OAuthSkillTest(ITestOutputHelper testOutputHelper)
-        {
-            _testOutputHelper = testOutputHelper;
-        }
-
         [Fact]
         public async Task Skill_OAuthCard_SignInSuccessful()
         {
@@ -44,11 +36,11 @@ namespace FunctionalTests
 
             var activities = messages.ToList();
 
-            _testOutputHelper.WriteLine("Enumerating activities:");
+            Console.WriteLine("Enumerating activities:");
             
             foreach (var a in activities)
             {
-                _testOutputHelper.WriteLine($"Type={a.Type}; Text={a.Text}; Code={a.Code}; Attachments count={a.Attachments.Count}");
+                Console.WriteLine($"Type={a.Type}; Text={a.Text}; Code={a.Code}; Attachments count={a.Attachments.Count}");
             }
 
             var error = activities.FirstOrDefault(
