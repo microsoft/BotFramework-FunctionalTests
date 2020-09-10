@@ -2,30 +2,34 @@
 // Licensed under the MIT License.
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Connector.DirectLine;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json;
 using SkillFunctionalTests.Bot;
 using SkillFunctionalTests.Configuration;
+using Xunit;
+using Xunit.Abstractions;
+using Xunit.Sdk;
 
 namespace FunctionalTests
 {
-    [TestClass]
-    [TestCategory("FunctionalTests")]
-    [TestCategory("OAuth")]
-    [TestCategory("SkipForV3Bots")]
+    [Trait("TestCategory", "FunctionalTests")]
+    [Trait("TestCategory", "OAuth")]
+    [Trait("TestCategory", "SkipForV3Bots")]
     public class OAuthSkillTest
     {
-        [TestMethod]
+        private readonly ITestOutputHelper _testOutputHelper;
+
+        public OAuthSkillTest(ITestOutputHelper testOutputHelper)
+        {
+            _testOutputHelper = testOutputHelper;
+        }
+
+        [Fact]
         public async Task Skill_OAuthCard_SignInSuccessful()
         {
-            // If the test takes more than one minute, declare failure.
+            // If the test takes more than two minutes, declare failure.
             var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromMinutes(2));
 
             var testBot = new TestBotClient(new EnvironmentBotTestConfiguration());
@@ -39,10 +43,12 @@ namespace FunctionalTests
             var messages = await testBot.ReadBotMessagesAsync(cancellationTokenSource.Token);
 
             var activities = messages.ToList();
-            Console.WriteLine("Enumerating activities:");
+
+            _testOutputHelper.WriteLine("Enumerating activities:");
+            
             foreach (var a in activities)
             {
-                Console.WriteLine($"Type={a.Type}; Text={a.Text}; Code={a.Code}; Attachments count={a.Attachments.Count}");
+                _testOutputHelper.WriteLine($"Type={a.Type}; Text={a.Text}; Code={a.Code}; Attachments count={a.Attachments.Count}");
             }
 
             var error = activities.FirstOrDefault(
@@ -50,7 +56,7 @@ namespace FunctionalTests
             
             if (error != null)
             {
-                Assert.Fail(error.Text);
+                throw new XunitException(error.Text);
             }
 
             await testBot.SignInAndVerifyOAuthAsync(activities.FirstOrDefault(m => m.Attachments != null && m.Attachments.Any()), cancellationTokenSource.Token);

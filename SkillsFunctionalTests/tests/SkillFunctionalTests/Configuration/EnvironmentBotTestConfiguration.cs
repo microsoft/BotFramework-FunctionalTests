@@ -1,16 +1,14 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
-using System.Text;
+using Xunit.Sdk;
 
 namespace SkillFunctionalTests.Configuration
 {
     public class EnvironmentBotTestConfiguration : IBotTestConfiguration
     {
-        private const string DirectlineSecretKey = "DIRECTLINE";
+        private const string DirectLineSecretKey = "DIRECTLINE";
         private const string BotIdKey = "BOTID";
 
         public EnvironmentBotTestConfiguration(string directLineSecretKey, string botIdKey)
@@ -21,23 +19,23 @@ namespace SkillFunctionalTests.Configuration
             DirectLineSecret = Environment.GetEnvironmentVariable(directLineSecretKey);
             if (string.IsNullOrWhiteSpace(DirectLineSecret))
             {
-                Assert.Inconclusive($"Environment variable '{directLineSecretKey}' not found.");
+                throw new XunitException($"Environment variable '{directLineSecretKey}' not found.");
             }
 
             BotId = Environment.GetEnvironmentVariable(botIdKey);
             if (string.IsNullOrWhiteSpace(BotId))
             {
-                Assert.Inconclusive($"Environment variable '{botIdKey}' not found.");
+                throw new XunitException($"Environment variable '{botIdKey}' not found.");
             }
         }
 
         public EnvironmentBotTestConfiguration() 
-            : this(DirectlineSecretKey, BotIdKey)
+            : this(DirectLineSecretKey, BotIdKey)
         {
         }
 
-        public string BotId { get; private set; }
+        public string BotId { get; }
 
-        public string DirectLineSecret { get; private set; }
+        public string DirectLineSecret { get; }
     }
 }

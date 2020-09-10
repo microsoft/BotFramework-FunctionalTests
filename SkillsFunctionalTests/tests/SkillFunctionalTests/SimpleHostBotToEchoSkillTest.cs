@@ -2,22 +2,18 @@
 // Licensed under the MIT License.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Bot.Connector.DirectLine;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SkillFunctionalTests.Bot;
 using SkillFunctionalTests.Configuration;
+using Xunit;
 
 namespace FunctionalTests
 {
-    [TestClass]
-    [TestCategory("FunctionalTests")]
+    [Trait("TestCategory", "FunctionalTests")]
     public class SimpleHostBotToEchoSkillTest
     {
-        [TestMethod]
+        [Fact]
         public async Task Host_WhenRequested_ShouldRedirectToSkill()
         {
             var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromMinutes(2));
@@ -31,7 +27,7 @@ namespace FunctionalTests
             await testBot.AssertReplyAsync("Echo: skill", cancellationTokenSource.Token);
         }
 
-        [TestMethod]
+        [Fact]
         public async Task Host_WhenSkillEnds_HostReceivesEndOfConversation()
         {
             var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromMinutes(2));
