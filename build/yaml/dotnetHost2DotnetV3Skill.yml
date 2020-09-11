@@ -71,6 +71,7 @@ stages:
       steps:
       - template: dotnetInstallPackagesSteps.yml
       - template: dotnetBuildSteps.yml
+      - template: dotnetTagBotBuilderVersion.yml
 
     - job: Build_Skill_Bot
       variables:
@@ -79,6 +80,7 @@ stages:
         Parameters.solution: 'SkillsFunctionalTests/dotnet/v3/skill/EchoSkillBot.sln'
       steps:
       - template: dotnetV3BuildSteps.yml
+      - template: dotnetV3TagBotBuilderVersion.yml
 
 - stage: Deploy
   condition: and(succeeded(), in(variables['TriggeredReason'], 'Schedule', 'Manual', 'BuildRunner'))
