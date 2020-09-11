@@ -16,41 +16,37 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot
     /// </summary>
     public class SkillConversationIdFactory : SkillConversationIdFactoryBase
     {
-        private readonly ConcurrentDictionary<string, string> _conversationRefs = new ConcurrentDictionary<string, string>();
+        private readonly ConcurrentDictionary<string, string> _conversationRefs =
+            new ConcurrentDictionary<string, string>();
 
-        /// <summary>
-        /// Creates a skill conversation id.
-        /// </summary>
-        /// <param name="conversationReference">The reference to a particular point of the conversation.</param>
-        /// <param name="cancellationToken">CancellationToken propagates notifications that operations should be cancelled.</param>
-        /// <returns>The generated conversation id.</returns>
-        public override Task<string> CreateSkillConversationIdAsync(ConversationReference conversationReference, CancellationToken cancellationToken)
+        /// <inheritdoc />
+        public override Task<string> CreateSkillConversationIdAsync(SkillConversationIdFactoryOptions options,
+            CancellationToken cancellationToken)
         {
-            var crJson = JsonConvert.SerializeObject(conversationReference);
-            var key = $"{conversationReference.ChannelId}:{conversationReference.Conversation.Id}";
-            _conversationRefs.GetOrAdd(key, crJson);
+            var skillConversationReference = new SkillConversationReference
+            {
+                ConversationReference = options.Activity.GetConversationReference(),
+                OAuthScope = options.FromBotOAuthScope
+            };
+            var key =
+                $"{options.FromBotId}-{options.BotFrameworkSkill.AppId}-{skillConversationReference.ConversationReference.Conversation.Id}-{skillConversationReference.ConversationReference.ChannelId}-skillconvo";
+            _conversationRefs.GetOrAdd(key, JsonConvert.SerializeObject(skillConversationReference));
             return Task.FromResult(key);
         }
 
-        /// <summary>
-        /// Gets the corresponding conversation reference of a conversation.
-        /// </summary>
-        /// <param name="skillConversationId">The id that identifies the skill conversation.</param>
-        /// <param name="cancellationToken">CancellationToken propagates notifications that operations should be cancelled.</param>
-        /// <returns>The generated conversation reference.</returns>
-        public override Task<ConversationReference> GetConversationReferenceAsync(string skillConversationId, CancellationToken cancellationToken)
+
+        /// <inheritdoc />
+        public override Task<SkillConversationReference> GetSkillConversationReferenceAsync(
+            string skillConversationId, CancellationToken cancellationToken)
         {
-            var conversationReference = JsonConvert.DeserializeObject<ConversationReference>(_conversationRefs[skillConversationId]);
+            var conversationReference =
+                JsonConvert.DeserializeObject<SkillConversationReference>(_conversationRefs[skillConversationId]);
             return Task.FromResult(conversationReference);
         }
 
-        /// <summary>
-        /// Deletes the conversation reference of a conversation.
-        /// </summary>
-        /// <param name="skillConversationId">The id that identifies the skill conversation.</param>
-        /// <param name="cancellationToken">CancellationToken propagates notifications that operations should be cancelled.</param>
-        /// <returns>A task that represents the work queued to execute.</returns>
-        public override Task DeleteConversationReferenceAsync(string skillConversationId, CancellationToken cancellationToken)
+        /// <inheritdoc />
+        public override Task DeleteConversationReferenceAsync(string skillConversationId,
+            CancellationToken cancellationToken)
         {
             _conversationRefs.TryRemove(skillConversationId, out _);
             return Task.CompletedTask;
