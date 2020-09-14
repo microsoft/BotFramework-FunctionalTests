@@ -56,7 +56,7 @@ ADAPTER = AdapterWithErrorHandler(
 BOT = HostBot(CONVERSATION_STATE, SKILL_CONFIG, CLIENT, CONFIG)
 
 SKILL_HANDLER = SkillHandler(
-    ADAPTER, BOT, ID_FACTORY, CREDENTIAL_PROVIDER, AuthenticationConfiguration()
+    ADAPTER, BOT, ID_FACTORY, CREDENTIAL_PROVIDER, AUTH_CONFIG
 )
 
 # Listen for incoming requests on /api/messages
