@@ -82,6 +82,8 @@ steps:
     $content
 
   displayName: 'Set BotBuilder Package Version & Registry Url'
+  
+- template: pythonTagBotBuilderVersion.yml
 
 - task: AzureCLI@1
   displayName: 'Create resource group and deploy bot'
