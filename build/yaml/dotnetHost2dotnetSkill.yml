@@ -72,6 +72,7 @@ stages:
       steps:
       - template: dotnetInstallPackagesSteps.yml
       - template: dotnetBuildSteps.yml
+      - template: dotnetTagBotBuilderVersion.yml
 
     - job: Validate_Skill_NetCore_Version
       variables:
@@ -89,6 +90,7 @@ stages:
       steps:
       - template: dotnetInstallPackagesSteps.yml
       - template: dotnetBuildSteps.yml
+      - template: dotnetTagBotBuilderVersion.yml
 
 - stage: Deploy
   condition: and(succeeded(), in(variables['TriggeredReason'], 'Schedule', 'Manual', 'BuildRunner'))
