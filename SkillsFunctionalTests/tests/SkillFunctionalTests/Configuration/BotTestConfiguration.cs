@@ -1,10 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SkillFunctionalTests.Configuration
 {
@@ -30,8 +27,8 @@ namespace SkillFunctionalTests.Configuration
         {
         }
 
-        public string BotId { get; private set; }
+        public string BotId { get; }
 
-        public string DirectLineSecret { get; private set; }
+        public string DirectLineSecret { get; }
     }
 }
