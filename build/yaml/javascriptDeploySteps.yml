@@ -11,26 +11,14 @@ steps:
   displayName: 'Read registry URL variable'
 
 - template: validateRegistryAndBBVersionSteps.yml
+- template: javascriptTagBotBuilderVersion.yml
 
 - powershell: |
-   $MyGet = "https://botbuilder.myget.org/F/botbuilder-v4-js-daily/npm/" 
-   $isV3Bot = "$(Parameters.sourceLocation)".Trim().EndsWith("v3/skill")
-
-   if($isV3Bot){
-      $MyGet = "https://botbuilder.myget.org/F/botbuilder-v3-js-daily/npm/" 
-   }
-
-   switch ("$(RegistryUrl)")
-   {
-      MyGet { $source = $MyGet }
-      NPM { $source = "https://registry.npmjs.com/"}      
-      default { $source = "$(RegistryUrl)" }
-   }
-
    Add-Content $(Parameters.sourceLocation)/deployment-scripts/.deployment "`nBOT_BUILDER_PACKAGE_VERSION = $(BBVersion)"
-   Add-Content $(Parameters.sourceLocation)/deployment-scripts/.deployment "`nREGISTRY_SOURCE = $Source"
+   Add-Content $(Parameters.sourceLocation)/deployment-scripts/.deployment "`nREGISTRY_SOURCE = $(Source)"
+
    Write-Host "Set BotBuilder Package Version to: $(BBVersion)"
-   Write-Host "Set registry url to: $source"
+   Write-Host "Set registry url to: $(Source)"
   failOnStderr: true
   displayName: 'Set BBVersion and Registry URL'
   name: 'Set_Registry_Url'

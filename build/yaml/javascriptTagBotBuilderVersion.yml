@@ -1,0 +1,61 @@
+steps:
+- powershell: |
+   $version = ""
+   $versionTag = ""
+   $MyGet = "https://botbuilder.myget.org/F/botbuilder-v4-js-daily/npm/" 
+   $isV3Bot = "$(Parameters.sourceLocation)".Trim().EndsWith("v3/skill")
+
+   if($isV3Bot)
+   {
+      $MyGet = "https://botbuilder.myget.org/F/botbuilder-v3-js-daily/npm/" 
+   }
+
+   switch ("$(RegistryUrl)")
+   {
+      MyGet { $source = $MyGet }
+      NPM { $source = "https://registry.npmjs.com/"}
+      default { $source = "$(RegistryUrl)" }
+   }
+
+    npm config set registry $source
+
+    switch ("$(BBVersion)")
+    {
+      preview { $version = npm show botbuilder@latest version | Out-String; $versionTag = " ($(BBVersion))" }
+      stable
+      {
+        if($isV3Bot)
+        {
+          $PackageList = npm show botbuilder@3.* version | Out-String;
+        }
+        else
+        {
+          $PackageList = npm show botbuilder@* version | Out-String;
+        }
+        $version = ($PackageList.Split(" ")[-1]).Trim().TrimStart("'").TrimEnd("'");
+        $versionTag = " ($(BBVersion))"
+      }
+      default { $version = "$(BBVersion)" }
+    }
+
+    if ("$(Parameters.sourceLocation)".Trim().Contains("/host"))
+    {
+        echo "##vso[task.setvariable variable=HostOrSkill]Host"
+    }
+    else
+    {
+        echo "##vso[task.setvariable variable=HostOrSkill]Skill"
+    }
+
+    write-host "Version: " $version $versionTag
+    echo "##vso[task.setvariable variable=PackagesVersionTag]$versionTag"
+    echo "##vso[task.setvariable variable=PackagesVersion]$version"
+    echo "##vso[task.setvariable variable=Source]$source"
+  failOnStderr: true
+  displayName: 'Get BotBuilder Version'
+
+- task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
+  displayName: 'Tag build with package version'
+  inputs:
+    tags: 'BotBuilderVersion$(HostOrSkill)=$(PackagesVersion)$(PackagesVersionTag)'
+  continueOnError: true
