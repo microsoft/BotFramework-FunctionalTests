@@ -48,3 +48,4 @@ Here is a high level class diagram to get started
 - Can we use Adaptive expressions to create asserts?
 - Do we create a tool to convert a transcript into a test script that removes some of the noise in the transcript and makes test easier to read and write?
 - Do we implement _XYZ_Options classes to configure the runner, the test script and the test client?
+- Possible feature - chaining test scripts, consider we have a welcome part that we do over and over again and want to combine with the book a flight or get weather. The welcome portion and assertions can be written once and then we can append the other scenarios. 
