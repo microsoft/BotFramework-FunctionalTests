@@ -2,7 +2,7 @@
 
 ## Summary <!-- omit in toc -->
 
-Transcript based functional tests aim to allow us to test complex conversation flows against a deployed bot and related skills end to end without having to worry about how the bot is implemented.
+Transcript based functional tests aim to allow us to test complex conversation flows against a bot and related skills end to end without having to worry about how the bot is implemented.
 
 ## Contents <!-- omit in toc -->
 
@@ -21,7 +21,8 @@ Transcript based functional tests aim to allow us to test complex conversation f
 6. I get clear messages describing where my test failed so I can debug it
 7. I can debug a test step by step from the IDE
 8. I should be able to use expressions in my expected bot responses to be able to deal with variable data
-9. We should write unit tests to make sure the runner classes and be easy to maintain
+9. I should be able to run my tests against a bot running in localhost
+10. We should write unit tests to make sure the runner classes and be easy to maintain
 
 ## Design notes
 
@@ -37,7 +38,7 @@ Here is a high level class diagram to get started
 ## Implementation notes
 
 1. The first version of the runner will be in C# targeting DotNet Core 3.1
-2. We will rely on XUnit to write the tests
+2. We will rely on XUnit to write the tests but let's try to keep it out of the base classes (if possible)
 3. The test runner should be able to load its settings from configuration using IConfiguration
 4. The code should follow the SyleCop and FxCop ruleset used by the dotnet SDK
 5. (Not a P0), we may be able to refactor some of the code in the test runner and make it part of the SDK testing package in the future
