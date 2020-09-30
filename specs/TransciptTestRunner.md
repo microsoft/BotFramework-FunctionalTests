@@ -6,7 +6,7 @@ We should use a 3-phase approach to test skills. First, we should implement a Pa
 
 ## Phase 1 - Page Object
 
-![Phase 1 Diagram](media/TestRunnerClassDiagram.png)
+![Phase 1 Diagram](media/Phase1.png)
 
 In the modified Page Object Model the XUnit tests will interact with the "Page Object" (read Test Runner) that is a single parent bot. The parent bot knows about a skill bot and knows what commands that bot support. The parent bot will be responsible for calling into the skill bot, sending a command in the form of an activity and receiving a response from the skill, and forwarding that back to Xunit for validation. 
 
