@@ -13,8 +13,8 @@ In the modified Page Object Model the XUnit tests will interact with the "Page O
 Xunit tests should look something like this:
 
 ```
-var activity = SendActivity(bot=EchoSkillBot, command=EchoSkillBot.echoHello)
-Assert(activity.text, EchoSkillBot.echoHello)
+var activity = SendActivity(bot=Constants.EchoSkillBot, command=Constants.EchoSkillBot.echoHello)
+Assert(activity.text, Constants.EchoSkillBot.echoHello)
 ```
 
 This is, more or less, what we have today excluding the small amount of Page Objectification. This allows us to cover highly structured and uninteresting scenarios to ensure all of the piping works. 
