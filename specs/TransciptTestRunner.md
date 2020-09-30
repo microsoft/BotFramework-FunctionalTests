@@ -62,15 +62,11 @@ In this phase we will build the ability to write the test that's at the end of t
 4. The code should follow the SyleCop and FxCop ruleset used by the dotnet SDK
 5. (Not a P0), we may be able to refactor some of the code in the test runner and make it part of the SDK testing package in the future
 
-## Notes
+## Other considerations and TODOs
 There are some things that can be problematic so I wanted to call them out. 
 1. Without the multi-turn reply functionality it will be difficult to write tests that require user input/interaction. 
 2. There will need to be a separate set of tests to validate messages coming from the various channels actually work as intended. This subset of tests should function much like a smoke test. 
 3. If we wanted to get really fancy about things we Dan Driscol said he's not against having bots test other bots so we TECHNICALLY could solve the user interactivity problem solved with another bot. 
+4. We could skip the 3-phase approach and jump straight to graphs, but this way we could 
+5. Do we create a tool to convert a transcript into a test script that removes some of the noise in the transcript and makes test easier to read and write?
 
-## Other considerations and TODOs
-
-- Can we use Adaptive expressions to create asserts?
-- Do we create a tool to convert a transcript into a test script that removes some of the noise in the transcript and makes test easier to read and write?
-- Do we implement _XYZ_Options classes to configure the runner, the test script and the test client?
-- Possible feature - chaining test scripts, consider we have a welcome part that we do over and over again and want to combine with the book a flight or get weather. The welcome portion and assertions can be written once and then we can append the other scenarios. 
