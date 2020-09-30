@@ -8,13 +8,14 @@ We should use a 3-phase approach to test skills. First, we should implement a Pa
 
 ![Phase 1 Diagram](media/TestFlowChart.png)
 
-In the modified Page Object Model the XUnit tests will interact with the "Page Object" (read Test Runner) that is a single parent bot. The parent bot knows about a skill bot and knows what commands that bot support. The parent bot will be responsible for calling into the skill bot, sending a command in the form of an activity and receiving a response from the skill, and forwarding that back to Xunit for validation. 
+In the modified Page Object Model the XUnit tests will interact with the "Page Object" (read Test Runner) that is a single parent bot. The parent bot knows about a skill bot, how to contact it, and what commands that bot support. This is the Page Object model advantage. The parent bot will be responsible for calling into the skill bot, sending a command in the form of an activity and receiving a response from the skill, and forwarding that back to Xunit for validation. 
 
 Xunit tests should look something like this:
 
 ```
-var activity = SendActivity(bot=Constants.EchoSkillBot, command=Constants.EchoSkillBot.echoHello)
-Assert(activity.text, Constants.EchoSkillBot.echoHello)
+var text = "hello"
+var activity = await SendActivity(bot=Constants.EchoSkillBot, command=Constants.EchoSkillBot.echoHello, text=text)
+Assert(activity.text, $"Echo: {text}")
 ```
 
 This is, more or less, what we have today excluding the small amount of Page Objectification. This allows us to cover highly structured and uninteresting scenarios to ensure all of the piping works. 
@@ -40,8 +41,34 @@ In this phase we will build the ability to write the test that's at the end of t
 - [Implementation notes](#implementation-notes)
 - [Other considerations and TODOs](#other-considerations-and-todos)
 
-## Requirements
+## Tesitng channel specific behavior
+This is the list of channels that are supported in the SDK:
 
+```
+public const string Console = "console";
+public const string Cortana = "cortana";
+public const string Directline = "directline";
+public const string DirectlineSpeech = "directlinespeech";
+public const string Email = "email";
+public const string Emulator = "emulator";
+public const string Facebook = "facebook";
+public const string Groupme = "groupme";
+public const string Kik = "kik";
+public const string Line = "line";
+public const string Msteams = "msteams";
+public const string Skype = "skype";
+public const string Skypeforbusiness = "skypeforbusiness";
+public const string Slack = "slack";
+public const string Sms = "sms";
+public const string Telegram = "telegram";
+public const string Webchat = "webchat";
+public const string Test = "test";
+public const string Twilio = "twilio-sms";
+```
+
+I'm not sure what channel specific behavior exists for these channels, and of that list what is currently supported within skills. We'd need to make a matrix to track the coverage of those scenarios. If you put the channel specific behavior aside, what channel a message comes in on doesn't actually matter in the vast majority of scenarios so I'm okay putting this piece aside temporarily while we build the matrix. 
+
+## Requirements
 1. I can run functional tests from visual studio
 2. I can run functional tests from the command line
 3. I can run functional tests from a CI/CD pipeline in Azure DevOps
@@ -55,7 +82,6 @@ In this phase we will build the ability to write the test that's at the end of t
 
 
 ## Implementation notes
-
 1. The first version of the runner will be in C# targeting DotNet Core 3.1
 2. We will rely on XUnit to write the tests but let's try to keep it out of the base classes (if possible)
 3. The test runner should be able to load its settings from configuration using IConfiguration
@@ -69,4 +95,3 @@ There are some things that can be problematic so I wanted to call them out.
 3. If we wanted to get really fancy about things we Dan Driscol said he's not against having bots test other bots so we TECHNICALLY could solve the user interactivity problem solved with another bot. 
 4. We could skip the 3-phase approach and jump straight to graphs, but this way we could 
 5. Do we create a tool to convert a transcript into a test script that removes some of the noise in the transcript and makes test easier to read and write?
-
