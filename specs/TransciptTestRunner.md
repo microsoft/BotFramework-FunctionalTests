@@ -24,13 +24,13 @@ We can also add the piping in this phase (or in its own phase) the ability to us
 ## Phase 2 Page Object with a little graph
 ![Phase 2 Diagram](media/Phase2.png)
 
-In this phase we will enable known scenarios where a skill needs to call another skill. This will result in more complext testing scenarios, and a semi-connected graph. We will also light up the ability to do negative and error testing here. 
+In this phase we will enable known scenarios where a skill needs to call another skill. We should also add the ability to programatically test multi-turn conversations. We can probably use some of the work I did with Teams integration testing here. This will result in more complext testing scenarios, and a semi-connected graph. We will also light up the ability to do negative and error testing here. 
 
 ## Phase 3 Graphs
 
 ![Phase 3 Diagram](media/Phase3.png)
 
-In this phase we will build the ability to write the test that's at the end of the summary. That's not to say there won't be specific tests that we will still test explicitly, but this will add our ability to do random regression testing without any meaingful additional cost.
+In this phase we will build the ability to write the test that's at the end of the summary. That's not to say there won't be specific tests that we will still test explicitly, but this will add our ability to do random regression testing without any meaingful additional cost. 
 
 ## Contents <!-- omit in toc -->
 - [Phase 1](#phase-1-page-object)
@@ -61,6 +61,12 @@ In this phase we will build the ability to write the test that's at the end of t
 3. The test runner should be able to load its settings from configuration using IConfiguration
 4. The code should follow the SyleCop and FxCop ruleset used by the dotnet SDK
 5. (Not a P0), we may be able to refactor some of the code in the test runner and make it part of the SDK testing package in the future
+
+## Notes
+There are some things that can be problematic so I wanted to call them out. 
+1. Without the multi-turn reply functionality it will be difficult to write tests that require user input/interaction. 
+2. There will need to be a separate set of tests to validate messages coming from the various channels actually work as intended. This subset of tests should function much like a smoke test. 
+3. If we wanted to get really fancy about things we Dan Driscol said he's not against having bots test other bots so we TECHNICALLY could solve the user interactivity problem solved with another bot. 
 
 ## Other considerations and TODOs
 
