@@ -4,7 +4,7 @@
 
 We should use a 3-phase approach to test skills. First, we should implement a Page Object-like model. Next we should modify that model to allow "Pages" (read skills) to call/interact with other skills. Finally we should enable a graph-based approach to testing. I think this is the right way to do this because at the end of the day the truly valueable thing about skills is the arbritary extensibility of one skill to another skill. That extensibility is very hard to test in a meaingful way. It's much easier to write a test that says "Here is a connected bi-directional graph. Randomly pick a neighbor. Randomly select an action that neighbor can do, then pick one of its neighbors. Repeat this process N times and assert state and confirm no errors. Repeat this entire process N times, assert state and no errors. 
 
-## Phase 1 - Page Object
+## Phase 1 Page Object
 
 ![Phase 1 Diagram](media/TestFlowChart.png)
 
@@ -21,21 +21,22 @@ This is, more or less, what we have today excluding the small amount of Page Obj
 
 We can also add the piping in this phase (or in its own phase) the ability to use transcript files as tests that we replay. 
 
-## Phase 2 - Page Object with a little graph
+## Phase 2 Page Object with a little graph
 ![Phase 2 Diagram](media/Phase2.png)
 
 In this phase we will enable known scenarios where a skill needs to call another skill. This will result in more complext testing scenarios, and a semi-connected graph. We will also light up the ability to do negative and error testing here. 
 
-## Phase 3 - Graphs
+## Phase 3 Graphs
 
 ![Phase 3 Diagram](media/Phase3.png)
 
 In this phase we will build the ability to write the test that's at the end of the summary. That's not to say there won't be specific tests that we will still test explicitly, but this will add our ability to do random regression testing without any meaingful additional cost.
 
 ## Contents <!-- omit in toc -->
-
+- [Phase 1](#phase-1-page-object)
+- [Phase 2](#phase-2-page-object-with-a-little-graph)
+- [Phase 3](#phase-3-graphs)
 - [Requirements](#requirements)
-- [Design notes](#design-notes)
 - [Implementation notes](#implementation-notes)
 - [Other considerations and TODOs](#other-considerations-and-todos)
 
