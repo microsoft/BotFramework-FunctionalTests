@@ -95,3 +95,4 @@ There are some things that can be problematic so I wanted to call them out.
 3. If we wanted to get really fancy about things we Dan Driscol said he's not against having bots test other bots so we TECHNICALLY could solve the user interactivity problem solved with another bot. 
 4. We could skip the 3-phase approach and jump straight to graphs, but this way we could 
 5. Do we create a tool to convert a transcript into a test script that removes some of the noise in the transcript and makes test easier to read and write?
+6. It's not clear to me how to best handle the various forms of auth. Maybe auth scenarios are in reality trivial and I'm overly concerned about them. Maybe we could write our own little auth service to enable auth flows. Maybe we can use an existing auth service. I'd need input here from people who know more than I do about how auth works.  
