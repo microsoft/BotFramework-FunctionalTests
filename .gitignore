@@ -354,3 +354,6 @@ MigrationBackup/
 # Python virtual env
 venv/
 virtualenv/
+
+# Local appsettings
+appsettings.Development.json

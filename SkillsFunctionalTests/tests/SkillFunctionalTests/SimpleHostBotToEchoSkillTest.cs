@@ -18,7 +18,7 @@ namespace FunctionalTests
         {
             var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromMinutes(2));
 
-            var testBot = new TestBotClient(new EnvironmentBotTestConfiguration());
+            var testBot = new TestBotClient(new BotTestConfiguration());
 
             await testBot.StartConversation(cancellationTokenSource.Token);
             await testBot.SendMessageAsync("Hi", cancellationTokenSource.Token);
@@ -32,7 +32,7 @@ namespace FunctionalTests
         {
             var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromMinutes(2));
 
-            var testBot = new TestBotClient(new EnvironmentBotTestConfiguration());
+            var testBot = new TestBotClient(new BotTestConfiguration());
 
             await testBot.StartConversation(cancellationTokenSource.Token);
             await testBot.SendMessageAsync("Hi", cancellationTokenSource.Token);
