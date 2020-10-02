@@ -24,7 +24,7 @@ namespace FunctionalTests
             // If the test takes more than two minutes, declare failure.
             var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromMinutes(2));
 
-            var testBot = new TestBotClient(new EnvironmentBotTestConfiguration());
+            var testBot = new TestBotClient(new BotTestConfiguration());
 
             await testBot.StartConversation(cancellationTokenSource.Token);
             await testBot.SendMessageAsync("Hello", cancellationTokenSource.Token);

@@ -1,9 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using Microsoft.Bot.Connector.DirectLine;
-using Newtonsoft.Json;
-using SkillFunctionalTests.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +10,9 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Bot.Connector.DirectLine;
+using Newtonsoft.Json;
+using SkillFunctionalTests.Configuration;
 using Xunit;
 
 namespace SkillFunctionalTests.Bot
@@ -21,16 +21,16 @@ namespace SkillFunctionalTests.Bot
     {
         private const string OriginHeaderKey = "Origin";
         private const string OriginHeaderValue = "https://carlos.test.com";
+        private readonly BotTestConfiguration _config;
 
         private readonly DirectLineClient _directLineClient;
-        private readonly IBotTestConfiguration _config;
-        private readonly string _user = $"dl_SkillTestUser-{ Guid.NewGuid() }";
+        private readonly string _token;
+        private readonly string _user = $"dl_SkillTestUser-{Guid.NewGuid()}";
 
         private string _conversationId;
-        private readonly string _token;
         private string _watermark;
 
-        public TestBotClient(IBotTestConfiguration config)
+        public TestBotClient(BotTestConfiguration config)
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));
 
@@ -53,15 +53,12 @@ namespace SkillFunctionalTests.Bot
             // why we add this custom code.
             using (var client = new HttpClient())
             {
-                var request = new HttpRequestMessage(HttpMethod.Post, $"https://directline.botframework.com/v3/directline/tokens/generate");
+                var request = new HttpRequestMessage(HttpMethod.Post, "https://directline.botframework.com/v3/directline/tokens/generate");
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", config.DirectLineSecret);
                 request.Content = new StringContent(JsonConvert.SerializeObject(new
                 {
                     User = new { Id = _user },
-                    TrustedOrigins = new string[]
-                        {
-                            OriginHeaderValue
-                        }
+                    TrustedOrigins = new[] { OriginHeaderValue }
                 }), Encoding.UTF8, "application/json");
 
                 using (var response = client.SendAsync(request).GetAwaiter().GetResult())
@@ -88,7 +85,7 @@ namespace SkillFunctionalTests.Bot
             }
         }
 
-        public Task<ResourceResponse> SendMessageAsync(string message, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<ResourceResponse> SendMessageAsync(string message, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(nameof(message)))
             {
@@ -107,7 +104,7 @@ namespace SkillFunctionalTests.Bot
             return SendActivityAsync(messageActivity, cancellationToken);
         }
 
-        public async Task<ResourceResponse[]> SendMessagesAsync(IEnumerable<string> messages, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ResourceResponse[]> SendMessagesAsync(IEnumerable<string> messages, CancellationToken cancellationToken = default)
         {
             if (messages == null)
             {
@@ -124,19 +121,19 @@ namespace SkillFunctionalTests.Bot
             return resourceResponses.ToArray();
         }
 
-        public async Task StartConversation(CancellationToken cancellationToken = default(CancellationToken))
+        public async Task StartConversation(CancellationToken cancellationToken = default)
         {
             var conversation = await _directLineClient.Conversations.StartConversationAsync(cancellationToken);
             _conversationId = conversation?.ConversationId ?? throw new InvalidOperationException("Conversation cannot be null");
         }
 
-        public Task<ResourceResponse> SendActivityAsync(Activity activity, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<ResourceResponse> SendActivityAsync(Activity activity, CancellationToken cancellationToken = default)
         {
             // Send the message activity to the bot.
             return _directLineClient.Conversations.PostActivityAsync(_conversationId, activity, cancellationToken);
         }
 
-        public async Task AssertReplyAsync(string expected, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task AssertReplyAsync(string expected, CancellationToken cancellationToken = default)
         {
             var messages = await PollBotMessagesAsync(cancellationToken);
             Console.WriteLine("Messages sent from bot:");
@@ -145,10 +142,11 @@ namespace SkillFunctionalTests.Bot
             {
                 Console.WriteLine($"Type:{m.Type}; Text:{m.Text}");
             }
+
             Assert.True(messagesList.Any(m => m.Type == ActivityTypes.Message && m.Text.Contains(expected, StringComparison.OrdinalIgnoreCase)), $"Expected: {expected}");
         }
 
-        public async Task AssertReplyOneOf(IEnumerable<string> expected, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task AssertReplyOneOf(IEnumerable<string> expected, CancellationToken cancellationToken = default)
         {
             var messages = await PollBotMessagesAsync(cancellationToken);
             Assert.Contains(messages, m => m.Type == ActivityTypes.Message && expected.Any(e => m.Text.Contains(e, StringComparison.OrdinalIgnoreCase)));
@@ -163,7 +161,7 @@ namespace SkillFunctionalTests.Bot
             while (!cancellationToken.IsCancellationRequested && !maxCancellation.IsCancellationRequested)
             {
                 await Task.Delay(TimeSpan.FromSeconds(3));
-                
+
                 var activities = await ReadBotMessagesAsync(cancellationToken);
 
                 if (activities != null && activities.Any())
@@ -201,7 +199,8 @@ namespace SkillFunctionalTests.Bot
             {
                 throw new Exception("OAuthCard is null");
             }
-            else if (oAuthCard.Attachments == null)
+
+            if (oAuthCard.Attachments == null)
             {
                 throw new Exception("OAuthCard.Attachments = null");
             }
@@ -236,7 +235,7 @@ namespace SkillFunctionalTests.Bot
         private async Task SignInAsync(DirectLineSessionInfo directLineSession, string url)
         {
             var cookieContainer = new CookieContainer();
-            var handler = new HttpClientHandler()
+            var handler = new HttpClientHandler
             {
                 AllowAutoRedirect = false,
                 CookieContainer = cookieContainer
@@ -275,7 +274,7 @@ namespace SkillFunctionalTests.Bot
                         // Here we are simulating what Webchat does along with the browser cookies.
                         if (url.StartsWith("https://token.botframework.com/api/oauth/PostSignInCallback"))
                         {
-                            url += $"&code_challenge={ directLineSession.SessionId }";
+                            url += $"&code_challenge={directLineSession.SessionId}";
                             cookieContainer.Add(directLineSession.Cookie);
                         }
                     }
@@ -289,10 +288,7 @@ namespace SkillFunctionalTests.Bot
         {
             // Set up cookie container to obtain response cookie
             var cookies = new CookieContainer();
-            var handler = new HttpClientHandler
-            {
-                CookieContainer = cookies
-            };
+            var handler = new HttpClientHandler { CookieContainer = cookies };
 
             using (var client = new HttpClient(handler))
             {
@@ -303,7 +299,6 @@ namespace SkillFunctionalTests.Bot
 
                 // We want to add the Origins header to this client as well
                 client.DefaultRequestHeaders.Add(OriginHeaderKey, OriginHeaderValue);
-
 
                 using (var response = await client.SendAsync(request))
                 {
@@ -318,7 +313,7 @@ namespace SkillFunctionalTests.Bot
                         var body = await response.Content.ReadAsStringAsync();
                         var session = JsonConvert.DeserializeObject<DirectLineSession>(body);
 
-                        return new DirectLineSessionInfo()
+                        return new DirectLineSessionInfo
                         {
                             SessionId = session.SessionId,
                             Cookie = cookie
