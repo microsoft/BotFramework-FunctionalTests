@@ -39,7 +39,7 @@ namespace SkillFunctionalTests.Configuration
             DirectLineSecret = _configuration[DirectLineSecretKey];
             if (string.IsNullOrWhiteSpace(DirectLineSecret))
             {
-                throw new XunitException($"Configuration setting '{DirectLineSecret}' not found.");
+                throw new ArgumentException($"Configuration setting '{DirectLineSecret}' not found.");
             }
 
             BotId = _configuration[BotIdKey];
