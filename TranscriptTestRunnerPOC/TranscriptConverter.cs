@@ -22,9 +22,9 @@ namespace TranscriptTestRunnerPOC
         public string EmulatorTranscript { get; set; }
 
         /// <summary>
-        /// Gets or sets the resulting test script.
+        /// Gets or sets the path to the resulting test script file.
         /// </summary>
-        /// <value>The resulting test script.</value>
+        /// <value>The path to the resulting test script file.</value>
         public string TestScript { get; set; }
 
         /// <summary>
@@ -32,26 +32,23 @@ namespace TranscriptTestRunnerPOC
         /// </summary>
         public void Convert()
         {
-            if (string.IsNullOrWhiteSpace(EmulatorTranscript))
-            {
-                throw new Exception($"{nameof(EmulatorTranscript)} property not set");
-            }
-
-            if (!File.Exists(EmulatorTranscript))
-            {
-                throw new Exception($"{nameof(EmulatorTranscript)}: {EmulatorTranscript} path does not exist");
-            }
+            ValidatePaths();
 
             var transcript = ReadEmulatorTranscript();
             var activities = JsonConvert.DeserializeObject<Activity[]>(transcript);
+            var testScript = CreateTestScript(activities);
 
-            TestScript = CreateTestScript(activities);
+            WriteTestScript(testScript);
         }
 
+        /// <summary>
+        /// Creates the test script based on the transcript content.
+        /// </summary>
+        /// <param name="transcript">The .transcript content parsed as Activities.</param>
+        /// <returns>A string representing the test script json content.</returns>
         private static string CreateTestScript(IEnumerable<Activity> transcript)
         {
             var scriptArray = new JArray();
-
 
             foreach (var activity in transcript)
             {
@@ -71,6 +68,32 @@ namespace TranscriptTestRunnerPOC
         }
 
         /// <summary>
+        /// Validates the paths for the transcript and the test script files.
+        /// </summary>
+        private void ValidatePaths()
+        {
+            if (string.IsNullOrWhiteSpace(EmulatorTranscript))
+            {
+                throw new Exception($"{nameof(EmulatorTranscript)} property not set");
+            }
+
+            if (!File.Exists(EmulatorTranscript))
+            {
+                throw new Exception($"{nameof(EmulatorTranscript)}: {EmulatorTranscript} path does not exist");
+            }
+
+            if (string.IsNullOrWhiteSpace(TestScript))
+            {
+                throw new Exception($"{nameof(TestScript)} property not set");
+            }
+
+            if (!File.Exists(TestScript))
+            {
+                using var fs = File.Create(TestScript);
+            }
+        }
+
+        /// <summary>
         /// Reads the emulator transcript file.
         /// </summary>
         /// <returns>A string with the transcript content.</returns>
@@ -78,6 +101,16 @@ namespace TranscriptTestRunnerPOC
         {
             using var reader = new StreamReader(EmulatorTranscript);
             return reader.ReadToEnd();
+        }
+
+        /// <summary>
+        /// Writes the test script content to the path set in the TestScript property.
+        /// </summary>
+        /// <param name="json">The test script content to be written.</param>
+        private void WriteTestScript(string json)
+        {
+            using var streamWriter = new StreamWriter(TestScript);
+            streamWriter.Write(json);
         }
     }
 }
