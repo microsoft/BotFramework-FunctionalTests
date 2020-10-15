@@ -85,6 +85,13 @@ namespace TranscriptTestRunner
                 throw new Exception($"{nameof(TestScript)} property not set");
             }
 
+            var testScriptFolder = Path.GetDirectoryName(TestScript);
+
+            if (!Directory.Exists(testScriptFolder))
+            {
+                Directory.CreateDirectory(testScriptFolder);
+            }
+
             if (!File.Exists(TestScript))
             {
                 using var fs = File.Create(TestScript);

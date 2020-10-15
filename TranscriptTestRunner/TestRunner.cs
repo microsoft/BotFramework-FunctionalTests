@@ -11,7 +11,6 @@ namespace TranscriptTestRunner
 {
     public class TestRunner
     {
-        // public TestClientFactory TestClientFactory { get; set; }
         private TestClientBase TestClientBase { get; set; }
 
         private TranscriptConverter TranscriptConverter { get; set; }
