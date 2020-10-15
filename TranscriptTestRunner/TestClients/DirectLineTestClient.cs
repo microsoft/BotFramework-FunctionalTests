@@ -38,15 +38,14 @@ namespace TranscriptTestRunner.TestClients
                 await CreateConversationAsync();
             }
 
-            // Create a message activity with the input text.
-            var activity1 = new Activity
+            var activityPost = new Activity
             {
                 From = new ChannelAccount(_user),
                 Text = activity.Text,
                 Type = activity.Type
             };
 
-            await Client.Conversations.PostActivityAsync(_conversationId, activity1, default);
+            await Client.Conversations.PostActivityAsync(_conversationId, activityPost, default);
         }
 
         public override async Task<bool> ValidateActivityAsync(BotActivity expected)
@@ -95,9 +94,7 @@ namespace TranscriptTestRunner.TestClients
 
         private async Task<IEnumerable<Activity>> ReadBotMessagesAsync(CancellationToken cancellationToken = default)
         {
-            string watermark = null; // to get all the activities in the conversation.
-
-            var activitySet = await Client.Conversations.GetActivitiesAsync(_conversationId, watermark, cancellationToken);
+            var activitySet = await Client.Conversations.GetActivitiesAsync(_conversationId, null, cancellationToken);
 
             // Extract and return the activities sent from the bot.
             return activitySet?.Activities?.Where(activity => activity.From.Id == _botId);
