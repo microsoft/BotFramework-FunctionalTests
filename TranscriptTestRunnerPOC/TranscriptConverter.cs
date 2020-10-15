@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Microsoft.Bot.Schema;
 
-namespace TranscriptTestRunnerPOC
+namespace TranscriptTestRunner
 {
     /// <summary>
     /// Class for converting a transcript into a Test Script file.

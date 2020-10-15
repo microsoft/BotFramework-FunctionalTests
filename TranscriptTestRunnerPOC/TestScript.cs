@@ -3,12 +3,10 @@
 
 namespace TranscriptTestRunner
 {
-    public enum ClientType
+    public class TestScript
     {
-        DirectLine,
-        Emulator,
-        Teams,
-        Facebook,
-        Slack
+        public string Role;
+
+        public string Text;
     }
 }

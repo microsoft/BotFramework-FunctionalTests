@@ -5,17 +5,16 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Bot.Schema;
-using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
-namespace TranscriptTestRunnerPOC
+namespace TranscriptTestRunner
 {
     public class TestRunner
     {
         // public TestClientFactory TestClientFactory { get; set; }
-        public TestClientBase TestClientBase { get; set; }
+        private TestClientBase TestClientBase { get; set; }
 
-        public TranscriptConverter TranscriptConverter { get; set; }
+        private TranscriptConverter TranscriptConverter { get; set; }
 
         public TestRunner(TestClientBase client)
         {
@@ -74,12 +73,5 @@ namespace TranscriptTestRunnerPOC
                 }
             }
         }
-    }
-
-    public class TestScript
-    {
-        public string Role;
-
-        public string Text;
     }
 }

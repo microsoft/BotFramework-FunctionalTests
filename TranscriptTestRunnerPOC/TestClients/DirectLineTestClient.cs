@@ -8,9 +8,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Connector.DirectLine;
 using Microsoft.Extensions.Configuration;
-using BFActivity = Microsoft.Bot.Schema.Activity;
+using BotActivity = Microsoft.Bot.Schema.Activity;
 
-namespace TranscriptTestRunnerPOC.TestClients
+namespace TranscriptTestRunner.TestClients
 {
     public class DirectLineTestClient : TestClientBase
     {
@@ -34,7 +34,7 @@ namespace TranscriptTestRunnerPOC.TestClients
             CreateConversation();
         }
 
-        public override async Task SendActivityAsync(BFActivity activity)
+        public override async Task SendActivityAsync(BotActivity activity)
         {
             // Create a message activity with the input text.
             var messageActivity = new Activity
@@ -47,7 +47,7 @@ namespace TranscriptTestRunnerPOC.TestClients
             await Client.Conversations.PostActivityAsync(Conversation.ConversationId, messageActivity, default);
         }
 
-        public override async Task<bool> ValidateActivityAsync(BFActivity expected)
+        public override async Task<bool> ValidateActivityAsync(BotActivity expected)
         {
             var activities = await PollBotMessagesAsync(default);
             var botMessages = activities.Where(a => a.Type == ActivityTypes.Message);

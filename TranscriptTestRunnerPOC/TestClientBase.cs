@@ -4,7 +4,7 @@
 using System.Threading.Tasks;
 using Microsoft.Bot.Schema;
 
-namespace TranscriptTestRunnerPOC
+namespace TranscriptTestRunner
 {
     public abstract class TestClientBase
     {

@@ -2,9 +2,9 @@
 // Licensed under the MIT License.
 
 using Microsoft.Extensions.Configuration;
-using TranscriptTestRunnerPOC.TestClients;
+using TranscriptTestRunner.TestClients;
 
-namespace TranscriptTestRunnerPOC
+namespace TranscriptTestRunner
 {
     public class TestClientFactory
     {
