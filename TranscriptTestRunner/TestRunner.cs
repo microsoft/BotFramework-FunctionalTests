@@ -46,31 +46,31 @@ namespace TranscriptTestRunner
             //TODO: look how to deserialize this without an extra class.
             var testScript = JsonConvert.DeserializeObject<TestScript[]>(reader.ReadToEnd());
 
-           foreach (var element in testScript)
+           foreach (var script in testScript)
            {
-                if (element.Role == "user")
-                {
-                    var activity = new Activity
-                    {
-                        Type = ActivityTypes.Message,
-                        Text = element.Text
-                    };
+               if (script.Role == "bot")
+               {
+                   var activity = new Activity
+                   {
+                       Type = script.Type,
+                       Text = script.Text
+                   };
 
-                    await TestClientBase.SendActivityAsync(activity);
-                }
-                else
-                {
-                    var activity = new Activity
-                    {
-                        Type = ActivityTypes.Message,
-                        Text = element.Text
-                    };
+                   if (!await TestClientBase.ValidateActivityAsync(activity))
+                   {
+                       throw new Exception($"The bot didn't reply as expected. It should have said: { activity.Text }");
+                   }
+               }
+               else
+               {
+                   var activity = new Activity
+                   {
+                       Type = script.Type,
+                       Text = script.Text
+                   };
 
-                    if (!await TestClientBase.ValidateActivityAsync(activity))
-                    {
-                        throw new Exception($"The bot didn't reply as expected. It should have said: { activity.Text }");
-                    }
-                }
+                   await TestClientBase.SendActivityAsync(activity);
+               }
             }
         }
     }

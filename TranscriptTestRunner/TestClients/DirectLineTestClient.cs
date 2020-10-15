@@ -14,14 +14,13 @@ namespace TranscriptTestRunner.TestClients
 {
     public class DirectLineTestClient : TestClientBase
     {
-        public Conversation Conversation { get; set; }
-
-        public DirectLineClient Client { get; set; }
+        private DirectLineClient Client { get; }
 
         private const string DirectLineSecretKey = "DIRECTLINE";
         private const string BotIdKey = "BOTID";
         
         private readonly string _user = $"TestUser-{Guid.NewGuid()}";
+        private string _conversationId;
         private static string _directLineSecret;
         private static string _botId;
         
@@ -30,21 +29,24 @@ namespace TranscriptTestRunner.TestClients
             GetConfiguration(config);
 
             Client = new DirectLineClient(_directLineSecret);
-
-            CreateConversation();
         }
 
         public override async Task SendActivityAsync(BotActivity activity)
         {
+            if (string.IsNullOrWhiteSpace(_conversationId))
+            {
+                await CreateConversationAsync();
+            }
+
             // Create a message activity with the input text.
-            var messageActivity = new Activity
+            var activity1 = new Activity
             {
                 From = new ChannelAccount(_user),
                 Text = activity.Text,
-                Type = ActivityTypes.Message
+                Type = activity.Type
             };
 
-            await Client.Conversations.PostActivityAsync(Conversation.ConversationId, messageActivity, default);
+            await Client.Conversations.PostActivityAsync(_conversationId, activity1, default);
         }
 
         public override async Task<bool> ValidateActivityAsync(BotActivity expected)
@@ -91,16 +93,11 @@ namespace TranscriptTestRunner.TestClients
             throw new Exception("No activities received");
         }
 
-        private async Task CreateConversation()
-        {
-            await CreateConversationAsync().ConfigureAwait(false);
-        }
-
         private async Task<IEnumerable<Activity>> ReadBotMessagesAsync(CancellationToken cancellationToken = default)
         {
             string watermark = null; // to get all the activities in the conversation.
 
-            var activitySet = await Client.Conversations.GetActivitiesAsync(Conversation.ConversationId, watermark, cancellationToken);
+            var activitySet = await Client.Conversations.GetActivitiesAsync(_conversationId, watermark, cancellationToken);
 
             // Extract and return the activities sent from the bot.
             return activitySet?.Activities?.Where(activity => activity.From.Id == _botId);
@@ -108,24 +105,9 @@ namespace TranscriptTestRunner.TestClients
 
         private async Task CreateConversationAsync()
         {
-            try
-            {
-                Conversation = await Client.Conversations.StartConversationAsync();
+            var conversation = await Client.Conversations.StartConversationAsync();
 
-                var convUpdateActivity = new Activity
-                {
-                    From = new ChannelAccount(_user),
-                    Type = ActivityTypes.ConversationUpdate
-                };
-
-                var result = await Client.Conversations.PostActivityAsync(Conversation.ConversationId, convUpdateActivity, default);
-
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
+            _conversationId = conversation.ConversationId;
         }
     }
 }

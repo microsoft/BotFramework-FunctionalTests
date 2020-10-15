@@ -52,18 +52,16 @@ namespace TranscriptTestRunner
 
             foreach (var activity in transcript)
             {
-                if (activity.Type == ActivityTypes.Message)
+                var script = new JObject
                 {
-                    var script = new JObject
-                    {
-                        { "role", activity.From.Role },
-                        { "text", activity.Text }
-                    };
-                
-                    scriptArray.Add(script);
-                }
+                    { "type", activity.Type },
+                    { "role", activity.From.Role },
+                    { "text", activity.Text }
+                };
+
+                scriptArray.Add(script);
             }
-            
+
             return JsonConvert.SerializeObject(scriptArray);
         }
 

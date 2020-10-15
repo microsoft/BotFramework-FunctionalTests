@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SkillFunctionalTests", "SkillFunctionalTests\SkillFunctionalTests.csproj", "{DE0231D9-A9BE-4D4C-A830-7ADCF28EA5D6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TranscriptTestRunner", "..\..\TranscriptTestRunnerPOC\TranscriptTestRunner.csproj", "{65C3A2E0-FDC5-4132-9980-3BAE230E9F2E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TranscriptTestRunner", "..\..\TranscriptTestRunner\TranscriptTestRunner.csproj", "{65C3A2E0-FDC5-4132-9980-3BAE230E9F2E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

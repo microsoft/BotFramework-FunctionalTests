@@ -5,6 +5,8 @@ namespace TranscriptTestRunner
 {
     public class TestScript
     {
+        public string Type;
+
         public string Role;
 
         public string Text;
