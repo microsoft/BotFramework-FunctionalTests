@@ -2,10 +2,12 @@
 // Licensed under the MIT License.
 
 using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using SkillFunctionalTests.Bot;
 using SkillFunctionalTests.Configuration;
+using TranscriptTestRunner;
 using Xunit;
 
 namespace FunctionalTests
@@ -13,34 +15,31 @@ namespace FunctionalTests
     [Trait("TestCategory", "FunctionalTests")]
     public class SimpleHostBotToEchoSkillTest
     {
+        private readonly string _transcriptsFolder = Directory.GetCurrentDirectory() + @"/SourceTranscripts";
+
         [Fact]
         public async Task Host_WhenRequested_ShouldRedirectToSkill()
         {
-            var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromMinutes(2));
+            var runner = new TestRunner(new TestClientFactory(ClientType.DirectLine).GetTestClient());
 
-            var testBot = new TestBotClient(new BotTestConfiguration());
-
-            await testBot.StartConversation(cancellationTokenSource.Token);
-            await testBot.SendMessageAsync("Hi", cancellationTokenSource.Token);
-            await testBot.AssertReplyAsync("Me no nothin", cancellationTokenSource.Token);
-            await testBot.SendMessageAsync("skill", cancellationTokenSource.Token);
-            await testBot.AssertReplyAsync("Echo: skill", cancellationTokenSource.Token);
+            await runner.RunTestAsync($"{ _transcriptsFolder }/ShouldRedirectToSkill.transcript");
         }
 
         [Fact]
         public async Task Host_WhenSkillEnds_HostReceivesEndOfConversation()
         {
-            var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromMinutes(2));
+            var runner = new TestRunner(new TestClientFactory(ClientType.DirectLine).GetTestClient());
 
-            var testBot = new TestBotClient(new BotTestConfiguration());
+            await runner.RunTestAsync($"{ _transcriptsFolder }/HostReceivesEndOfConversation.transcript");
+        }
 
-            await testBot.StartConversation(cancellationTokenSource.Token);
-            await testBot.SendMessageAsync("Hi", cancellationTokenSource.Token);
-            await testBot.AssertReplyAsync("Me no nothin", cancellationTokenSource.Token);
-            await testBot.SendMessageAsync("skill", cancellationTokenSource.Token);
-            await testBot.AssertReplyAsync("Echo: skill", cancellationTokenSource.Token);
-            await testBot.SendMessageAsync("end", cancellationTokenSource.Token);
-            await testBot.AssertReplyAsync("Received endOfConversation", cancellationTokenSource.Token);
+        [Fact]
+        public async Task Host_WhenRequested_ShouldRunTestTranscript()
+        {
+            await TestRunner.RunTestAsync(
+                ClientType.DirectLine,
+                $"{ _transcriptsFolder }/ShouldRedirectToSkill.transcript",
+                $"{ _transcriptsFolder }/HostReceivesEndOfConversation.transcript");
         }
     }
 }
