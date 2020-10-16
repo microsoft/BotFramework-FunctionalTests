@@ -32,5 +32,14 @@ namespace FunctionalTests
 
             await runner.RunTestAsync($"{ _transcriptsFolder }/HostReceivesEndOfConversation.transcript");
         }
+
+        [Fact]
+        public async Task Host_WhenRequested_ShouldRunTestTranscript()
+        {
+            await TestRunner.RunTestAsync(
+                ClientType.DirectLine,
+                $"{ _transcriptsFolder }/ShouldRedirectToSkill.transcript",
+                $"{ _transcriptsFolder }/HostReceivesEndOfConversation.transcript");
+        }
     }
 }

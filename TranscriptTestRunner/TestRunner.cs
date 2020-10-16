@@ -27,6 +27,16 @@ namespace TranscriptTestRunner
             await ExecuteTestScriptAsync();
         }
 
+        public static async Task RunTestAsync(ClientType client, params string[] transcriptPaths)
+        {
+            foreach (var transcriptPath in transcriptPaths)
+            {
+                var runner = new TestRunner(new TestClientFactory(client).GetTestClient());
+
+                await runner.RunTestAsync(transcriptPath);
+            }
+        }
+
         private void ConvertTranscript(string transcriptPath)
         {
             TranscriptConverter = new TranscriptConverter
