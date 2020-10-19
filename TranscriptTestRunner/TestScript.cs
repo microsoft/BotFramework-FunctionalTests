@@ -5,10 +5,10 @@ namespace TranscriptTestRunner
 {
     public class TestScript
     {
-        public string Type;
+        public string Type { get; set; }
 
-        public string Role;
+        public string Role { get; set; }
 
-        public string Text;
+        public string Text { get; set; }
     }
 }

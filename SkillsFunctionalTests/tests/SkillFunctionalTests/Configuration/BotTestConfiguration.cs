@@ -22,6 +22,7 @@ namespace SkillFunctionalTests.Configuration
         private static readonly IConfiguration _configuration;
 
         /// <summary>
+        /// Initializes static members of the <see cref="BotTestConfiguration"/> class.
         /// Static constructor to initialize IConfiguration only once.
         /// </summary>
         static BotTestConfiguration()

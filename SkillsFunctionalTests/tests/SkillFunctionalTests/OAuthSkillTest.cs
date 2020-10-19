@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
 using System;
@@ -11,7 +11,7 @@ using SkillFunctionalTests.Configuration;
 using Xunit;
 using Xunit.Sdk;
 
-namespace FunctionalTests
+namespace SkillFunctionalTests
 {
     [Trait("TestCategory", "FunctionalTests")]
     [Trait("TestCategory", "OAuth")]
@@ -19,20 +19,20 @@ namespace FunctionalTests
     public class OAuthSkillTest
     {
         [Fact]
-        public async Task Skill_OAuthCard_SignInSuccessful()
+        public async Task SkillOAuthCardSignInSuccessful()
         {
             // If the test takes more than two minutes, declare failure.
-            var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromMinutes(2));
+            using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromMinutes(2));
 
             var testBot = new TestBotClient(new BotTestConfiguration());
 
-            await testBot.StartConversation(cancellationTokenSource.Token);
-            await testBot.SendMessageAsync("Hello", cancellationTokenSource.Token);
-            await testBot.AssertReplyAsync("Me no nothin", cancellationTokenSource.Token);
-            await testBot.SendMessageAsync("skill", cancellationTokenSource.Token);
-            await testBot.AssertReplyAsync("Echo: skill", cancellationTokenSource.Token);
-            await testBot.SendMessageAsync("auth", cancellationTokenSource.Token);
-            var messages = await testBot.ReadBotMessagesAsync(cancellationTokenSource.Token);
+            await testBot.StartConversation(cancellationTokenSource.Token).ConfigureAwait(false);
+            await testBot.SendMessageAsync("Hello", cancellationTokenSource.Token).ConfigureAwait(false);
+            await testBot.AssertReplyAsync("Me no nothin", cancellationTokenSource.Token).ConfigureAwait(false);
+            await testBot.SendMessageAsync("skill", cancellationTokenSource.Token).ConfigureAwait(false);
+            await testBot.AssertReplyAsync("Echo: skill", cancellationTokenSource.Token).ConfigureAwait(false);
+            await testBot.SendMessageAsync("auth", cancellationTokenSource.Token).ConfigureAwait(false);
+            var messages = await testBot.ReadBotMessagesAsync(cancellationTokenSource.Token).ConfigureAwait(false);
 
             var activities = messages.ToList();
 
@@ -51,7 +51,7 @@ namespace FunctionalTests
                 throw new XunitException(error.Text);
             }
 
-            await testBot.SignInAndVerifyOAuthAsync(activities.FirstOrDefault(m => m.Attachments != null && m.Attachments.Any()), cancellationTokenSource.Token);
+            await testBot.SignInAndVerifyOAuthAsync(activities.FirstOrDefault(m => m.Attachments != null && m.Attachments.Any()), cancellationTokenSource.Token).ConfigureAwait(false);
         }
     }
 }

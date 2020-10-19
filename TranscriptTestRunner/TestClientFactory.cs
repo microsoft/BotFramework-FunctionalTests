@@ -21,7 +21,7 @@ namespace TranscriptTestRunner
             switch (client)
             {
                 case ClientType.DirectLine:
-                    _testClientBase =  new DirectLineTestClient(configuration);
+                    _testClientBase = new DirectLineTestClient(configuration);
                     break;
                 case ClientType.Emulator:
                     break;

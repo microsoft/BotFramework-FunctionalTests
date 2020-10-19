@@ -1,16 +1,12 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using System;
 using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
-using SkillFunctionalTests.Bot;
-using SkillFunctionalTests.Configuration;
 using TranscriptTestRunner;
 using Xunit;
 
-namespace FunctionalTests
+namespace SkillFunctionalTests
 {
     [Trait("TestCategory", "FunctionalTests")]
     public class SimpleHostBotToEchoSkillTest
@@ -18,28 +14,28 @@ namespace FunctionalTests
         private readonly string _transcriptsFolder = Directory.GetCurrentDirectory() + @"/SourceTranscripts";
 
         [Fact]
-        public async Task Host_WhenRequested_ShouldRedirectToSkill()
+        public async Task HostWhenRequestedShouldRedirectToSkill()
         {
             var runner = new TestRunner(new TestClientFactory(ClientType.DirectLine).GetTestClient());
 
-            await runner.RunTestAsync($"{ _transcriptsFolder }/ShouldRedirectToSkill.transcript");
+            await runner.RunTestAsync($"{_transcriptsFolder}/ShouldRedirectToSkill.transcript").ConfigureAwait(false);
         }
 
         [Fact]
-        public async Task Host_WhenSkillEnds_HostReceivesEndOfConversation()
+        public async Task HostWhenSkillEndsHostReceivesEndOfConversation()
         {
             var runner = new TestRunner(new TestClientFactory(ClientType.DirectLine).GetTestClient());
 
-            await runner.RunTestAsync($"{ _transcriptsFolder }/HostReceivesEndOfConversation.transcript");
+            await runner.RunTestAsync($"{_transcriptsFolder}/HostReceivesEndOfConversation.transcript").ConfigureAwait(false);
         }
 
         [Fact]
-        public async Task Host_WhenRequested_ShouldRunTestTranscript()
+        public async Task HostWhenRequestedShouldRunTestTranscript()
         {
             await TestRunner.RunTestAsync(
                 ClientType.DirectLine,
-                $"{ _transcriptsFolder }/ShouldRedirectToSkill.transcript",
-                $"{ _transcriptsFolder }/HostReceivesEndOfConversation.transcript");
+                $"{_transcriptsFolder}/ShouldRedirectToSkill.transcript",
+                $"{_transcriptsFolder}/HostReceivesEndOfConversation.transcript").ConfigureAwait(false);
         }
     }
 }

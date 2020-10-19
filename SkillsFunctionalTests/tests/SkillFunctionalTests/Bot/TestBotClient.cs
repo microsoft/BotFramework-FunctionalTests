@@ -36,12 +36,12 @@ namespace SkillFunctionalTests.Bot
 
             if (string.IsNullOrEmpty(config.DirectLineSecret))
             {
-                throw new ArgumentNullException(nameof(config.DirectLineSecret));
+                throw new ArgumentNullException(config.DirectLineSecret);
             }
 
             if (string.IsNullOrEmpty(config.BotId))
             {
-                throw new ArgumentNullException(nameof(config.BotId));
+                throw new ArgumentNullException(config.BotId);
             }
 
             // Instead of generating a vanilla DirectLineClient with secret, 
@@ -53,13 +53,15 @@ namespace SkillFunctionalTests.Bot
             // why we add this custom code.
             using (var client = new HttpClient())
             {
-                var request = new HttpRequestMessage(HttpMethod.Post, "https://directline.botframework.com/v3/directline/tokens/generate");
+                using var request = new HttpRequestMessage(HttpMethod.Post, "https://directline.botframework.com/v3/directline/tokens/generate");
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", config.DirectLineSecret);
-                request.Content = new StringContent(JsonConvert.SerializeObject(new
+                request.Content = new StringContent(
+                    JsonConvert.SerializeObject(new
                 {
                     User = new { Id = _user },
                     TrustedOrigins = new[] { OriginHeaderValue }
-                }), Encoding.UTF8, "application/json");
+                }), Encoding.UTF8,
+                    "application/json");
 
                 using (var response = client.SendAsync(request).GetAwaiter().GetResult())
                 {
@@ -115,7 +117,7 @@ namespace SkillFunctionalTests.Bot
 
             foreach (var message in messages)
             {
-                resourceResponses.Add(await SendMessageAsync(message, cancellationToken));
+                resourceResponses.Add(await SendMessageAsync(message, cancellationToken).ConfigureAwait(false));
             }
 
             return resourceResponses.ToArray();
@@ -123,7 +125,7 @@ namespace SkillFunctionalTests.Bot
 
         public async Task StartConversation(CancellationToken cancellationToken = default)
         {
-            var conversation = await _directLineClient.Conversations.StartConversationAsync(cancellationToken);
+            var conversation = await _directLineClient.Conversations.StartConversationAsync(cancellationToken).ConfigureAwait(false);
             _conversationId = conversation?.ConversationId ?? throw new InvalidOperationException("Conversation cannot be null");
         }
 
@@ -135,7 +137,7 @@ namespace SkillFunctionalTests.Bot
 
         public async Task AssertReplyAsync(string expected, CancellationToken cancellationToken = default)
         {
-            var messages = await PollBotMessagesAsync(cancellationToken);
+            var messages = await PollBotMessagesAsync(cancellationToken).ConfigureAwait(false);
             Console.WriteLine("Messages sent from bot:");
             var messagesList = messages.ToList();
             foreach (var m in messagesList.ToList())
@@ -148,7 +150,7 @@ namespace SkillFunctionalTests.Bot
 
         public async Task AssertReplyOneOf(IEnumerable<string> expected, CancellationToken cancellationToken = default)
         {
-            var messages = await PollBotMessagesAsync(cancellationToken);
+            var messages = await PollBotMessagesAsync(cancellationToken).ConfigureAwait(false);
             Assert.Contains(messages, m => m.Type == ActivityTypes.Message && expected.Any(e => m.Text.Contains(e, StringComparison.OrdinalIgnoreCase)));
         }
 
@@ -156,13 +158,13 @@ namespace SkillFunctionalTests.Bot
         {
             // Even if we receive a cancellation token with a super long timeout,
             // we set a cap on the max time this while loop can run
-            var maxCancellation = new CancellationTokenSource(TimeSpan.FromMinutes(2));
+            using var maxCancellation = new CancellationTokenSource(TimeSpan.FromMinutes(2));
 
             while (!cancellationToken.IsCancellationRequested && !maxCancellation.IsCancellationRequested)
             {
-                await Task.Delay(TimeSpan.FromSeconds(3));
+                await Task.Delay(TimeSpan.FromSeconds(3), cancellationToken).ConfigureAwait(false);
 
-                var activities = await ReadBotMessagesAsync(cancellationToken);
+                var activities = await ReadBotMessagesAsync(cancellationToken).ConfigureAwait(false);
 
                 if (activities != null && activities.Any())
                 {
@@ -176,7 +178,7 @@ namespace SkillFunctionalTests.Bot
         public async Task<IEnumerable<Activity>> ReadBotMessagesAsync(CancellationToken cancellationToken = default)
         {
             // Retrieve activities from directLine
-            var activitySet = await _directLineClient.Conversations.GetActivitiesAsync(_conversationId, _watermark, cancellationToken);
+            var activitySet = await _directLineClient.Conversations.GetActivitiesAsync(_conversationId, _watermark, cancellationToken).ConfigureAwait(false);
             _watermark = activitySet?.Watermark;
 
             // Extract and return the activities sent from the bot.
@@ -219,23 +221,23 @@ namespace SkillFunctionalTests.Bot
 
             var signInUrl = card.Buttons[0].Value?.ToString();
 
-            if (string.IsNullOrEmpty(signInUrl) || !signInUrl.StartsWith("https://"))
+            if (string.IsNullOrEmpty(signInUrl) || !signInUrl.StartsWith("https://", StringComparison.Ordinal))
             {
                 throw new Exception($"Sign in url is empty or badly formatted. Url received: {signInUrl}");
             }
 
             // 2- Get directLine session id and cookie
-            var sessionInfo = await GetSessionInfoAsync();
+            var sessionInfo = await GetSessionInfoAsync().ConfigureAwait(false);
 
             // 3- Follow sign in link but manually do each redirect
             // 4- Verify final redirect to token service ends up in success
-            await SignInAsync(sessionInfo, signInUrl);
+            await SignInAsync(sessionInfo, signInUrl).ConfigureAwait(false);
         }
 
         private async Task SignInAsync(DirectLineSessionInfo directLineSession, string url)
         {
             var cookieContainer = new CookieContainer();
-            var handler = new HttpClientHandler
+            using var handler = new HttpClientHandler
             {
                 AllowAutoRedirect = false,
                 CookieContainer = cookieContainer
@@ -245,16 +247,16 @@ namespace SkillFunctionalTests.Bot
             // This will path 
             //      token service -> other services -> auth provider -> token service (post sign in)-> response with token
             // When we receive the post sign in redirect, we add the cookie passed in the directLine session info
-            // to test enhanced authentication. This in ther scenarios happens by itself since browsers do this for us.
+            // to test enhanced authentication. This in the scenarios happens by itself since browsers do this for us.
             using (var client = new HttpClient(handler))
             {
                 client.DefaultRequestHeaders.Add(OriginHeaderKey, OriginHeaderValue);
 
                 while (!string.IsNullOrEmpty(url))
                 {
-                    using (var response = await client.GetAsync(url))
+                    using (var response = await client.GetAsync(new Uri(url)).ConfigureAwait(false))
                     {
-                        var text = await response.Content.ReadAsStringAsync();
+                        var text = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
                         url = response.StatusCode == HttpStatusCode.Redirect
                             ? response.Headers.Location.OriginalString
@@ -265,14 +267,14 @@ namespace SkillFunctionalTests.Bot
                         if (url == null)
                         {
                             Assert.True(response.IsSuccessStatusCode);
-                            Assert.Contains("You are now signed in and can close this window.", text);
+                            Assert.Contains("You are now signed in and can close this window.", text, StringComparison.Ordinal);
                             return;
                         }
 
                         // If this is the post sign in callback, add the cookie and code challenge
                         // so that the token service gets the verification.
-                        // Here we are simulating what Webchat does along with the browser cookies.
-                        if (url.StartsWith("https://token.botframework.com/api/oauth/PostSignInCallback"))
+                        // Here we are simulating what WebChat does along with the browser cookies.
+                        if (url.StartsWith("https://token.botframework.com/api/oauth/PostSignInCallback", StringComparison.Ordinal))
                         {
                             url += $"&code_challenge={directLineSession.SessionId}";
                             cookieContainer.Add(directLineSession.Cookie);
@@ -288,19 +290,19 @@ namespace SkillFunctionalTests.Bot
         {
             // Set up cookie container to obtain response cookie
             var cookies = new CookieContainer();
-            var handler = new HttpClientHandler { CookieContainer = cookies };
+            using var handler = new HttpClientHandler { CookieContainer = cookies };
 
             using (var client = new HttpClient(handler))
             {
                 // Call the directLine session api, not supported by DirectLine client
                 const string getSessionUrl = "https://directline.botframework.com/v3/directline/session/getsessionid";
-                var request = new HttpRequestMessage(HttpMethod.Get, getSessionUrl);
+                using var request = new HttpRequestMessage(HttpMethod.Get, getSessionUrl);
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _token);
 
                 // We want to add the Origins header to this client as well
                 client.DefaultRequestHeaders.Add(OriginHeaderKey, OriginHeaderValue);
 
-                using (var response = await client.SendAsync(request))
+                using (var response = await client.SendAsync(request).ConfigureAwait(false))
                 {
                     if (response.IsSuccessStatusCode)
                     {
@@ -310,7 +312,7 @@ namespace SkillFunctionalTests.Bot
                         var cookie = cookies.GetCookies(new Uri(getSessionUrl)).Cast<Cookie>().FirstOrDefault(c => c.Name == "webchat_session_v2");
 
                         // Extract session info from body
-                        var body = await response.Content.ReadAsStringAsync();
+                        var body = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                         var session = JsonConvert.DeserializeObject<DirectLineSession>(body);
 
                         return new DirectLineSessionInfo
@@ -324,26 +326,5 @@ namespace SkillFunctionalTests.Bot
                 }
             }
         }
-    }
-
-    public class DirectLineToken
-    {
-        [JsonProperty("token")]
-        public string Token { get; set; }
-
-        [JsonProperty("conversationId")]
-        public string ConversationId { get; set; }
-    }
-
-    public class DirectLineSession
-    {
-        [JsonProperty("sessionId")]
-        public string SessionId { get; set; }
-    }
-
-    public class DirectLineSessionInfo
-    {
-        public string SessionId { get; set; }
-        public Cookie Cookie { get; set; }
     }
 }

@@ -4,9 +4,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Microsoft.Bot.Schema;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Microsoft.Bot.Schema;
 
 namespace TranscriptTestRunner
 {
