@@ -36,12 +36,12 @@ namespace SkillFunctionalTests.Bot
 
             if (string.IsNullOrEmpty(config.DirectLineSecret))
             {
-                throw new ArgumentNullException(config.DirectLineSecret);
+                throw new ArgumentException(nameof(config.DirectLineSecret));
             }
 
             if (string.IsNullOrEmpty(config.BotId))
             {
-                throw new ArgumentNullException(config.BotId);
+                throw new ArgumentException(nameof(config.BotId));
             }
 
             // Instead of generating a vanilla DirectLineClient with secret, 
