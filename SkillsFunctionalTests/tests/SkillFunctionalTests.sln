@@ -7,6 +7,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SkillFunctionalTests", "Ski
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TranscriptTestRunner", "..\..\TranscriptTestRunner\TranscriptTestRunner.csproj", "{65C3A2E0-FDC5-4132-9980-3BAE230E9F2E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BCBFF5A2-F2CD-4F82-BCD1-ED8E7950D82F}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\BotFramework-FunctionalTests.ruleset = ..\..\BotFramework-FunctionalTests.ruleset
+		..\..\Directory.Build.props = ..\..\Directory.Build.props
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

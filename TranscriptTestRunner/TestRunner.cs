@@ -11,21 +11,14 @@ namespace TranscriptTestRunner
 {
     public class TestRunner
     {
-        private TestClientBase TestClientBase { get; set; }
-
-        private TranscriptConverter TranscriptConverter { get; set; }
-
         public TestRunner(TestClientBase client)
         {
             TestClientBase = client;
         }
 
-        public async Task RunTestAsync(string transcriptPath)
-        {
-            ConvertTranscript(transcriptPath);
+        private TestClientBase TestClientBase { get; set; }
 
-            await ExecuteTestScriptAsync();
-        }
+        private TranscriptConverter TranscriptConverter { get; set; }
 
         public static async Task RunTestAsync(ClientType client, params string[] transcriptPaths)
         {
@@ -33,8 +26,15 @@ namespace TranscriptTestRunner
             {
                 var runner = new TestRunner(new TestClientFactory(client).GetTestClient());
 
-                await runner.RunTestAsync(transcriptPath);
+                await runner.RunTestAsync(transcriptPath).ConfigureAwait(false);
             }
+        }
+
+        public async Task RunTestAsync(string transcriptPath)
+        {
+            ConvertTranscript(transcriptPath);
+
+            await ExecuteTestScriptAsync().ConfigureAwait(false);
         }
 
         private void ConvertTranscript(string transcriptPath)
@@ -52,11 +52,10 @@ namespace TranscriptTestRunner
         {
             using var reader = new StreamReader(TranscriptConverter.TestScript);
 
-            //TODO: look how to deserialize this without an extra class.
             var testScript = JsonConvert.DeserializeObject<TestScript[]>(reader.ReadToEnd());
 
-           foreach (var script in testScript)
-           {
+            foreach (var script in testScript)
+            {
                if (script.Role == "bot")
                {
                    var activity = new Activity
@@ -65,9 +64,9 @@ namespace TranscriptTestRunner
                        Text = script.Text
                    };
 
-                   if (!await TestClientBase.ValidateActivityAsync(activity))
+                   if (!await TestClientBase.ValidateActivityAsync(activity).ConfigureAwait(false))
                    {
-                       throw new Exception($"The bot didn't reply as expected. It should have said: { activity.Text }");
+                       throw new Exception($"The bot didn't reply as expected. It should have said: {activity.Text}");
                    }
                }
                else
@@ -78,7 +77,7 @@ namespace TranscriptTestRunner
                        Text = script.Text
                    };
 
-                   await TestClientBase.SendActivityAsync(activity);
+                   await TestClientBase.SendActivityAsync(activity).ConfigureAwait(false);
                }
             }
         }
