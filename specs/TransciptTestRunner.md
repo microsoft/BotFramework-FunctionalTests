@@ -8,8 +8,11 @@ Transcript based functional tests aim to allow us to test complex conversation f
 
 - [Requirements](#requirements)
 - [Design notes](#design-notes)
+- [TestRunner Class](#testrunner-class)
+  - [Methods](#methods)
 - [Implementation notes](#implementation-notes)
 - [Other considerations and TODOs](#other-considerations-and-todos)
+- [Test Script file](#test-script-file)
 
 ## Requirements
 
@@ -28,7 +31,7 @@ Transcript based functional tests aim to allow us to test complex conversation f
 
 Here is a high level class diagram to get started
 
-![Class Diagram](media/TestRunnerClassDiagram2.png)
+![Class Diagram](media/TestRunnerClassDiagram3.png)
 
 - `TestRunner`: responsible for executing the `TestScript` using the desired `TestClientBase`
 - `TranscriptConverter`: responsible for reading a transcript, converting it into a sequence of steps and returning the steps to be executed. Input: an emulator transcript file. Output: a "Test Script" file.
@@ -36,6 +39,47 @@ Here is a high level class diagram to get started
 - `TestClientBase`(abstract): base class for implementing channel specific test clients
 - `_XYZ_Client`: specialized client that knows how to interact with a specific channel (it should be capable of generating channel OAuthTokens, handle responses coming from that specific channel, etc.)
 - `ClientType` (enum): types are: DirectLine, Emulator, Teams
+
+## TestRunner Class
+### Methods
+- `RunTestAsync(string)`  Executes a single scenario based on the transcript passed to the method.   
+    * _Parameters_   
+        * transcript `string`    The transcript that contains the scenario to execute.  
+    * _Returns_  
+A `Task`.    
+
+    * Sample Usage   
+<img src="media/runtestasync1.png" width="700" border=1px>
+- `RunTestAsync(IEnumerable<string>) ` 
+Executes a test based on a collection of transcripts, in sequence, in the order in which they exist in the collection. This method can be used to compose a complex scenario formed by a set of smaller scenarios defined in each transcript.  
+    * _Parameters_   
+        * transcripts `IEnumerable<string>` The collection of transcripts to execute.  
+    * _Returns_  
+A `Task`.   
+
+    * Sample Usage    
+<img src="media/runtestasync2.png" width="700" border=1px>
+- `RunTestAsync(string, params string[])`  Executes a scenario utilizing a parameterized transcript.    
+    * _Parameters_      
+        * transcript `string`    The parameterized transcript that contains the scenario to execute.  
+        * values `params string[]`    The parameters to be passed to the transcript.    
+    * _Returns_  
+A `Task`.  
+    * Sample Usage  
+<img src="media/runtestasync3.png" width="700" border=1px>
+- `SendActivityAsync(Activity)`  Sends a single Activity to the test bot.    
+    * _Parameters_    
+        * activity `Microsoft.Bot.Schema.Activity`  The Activity that is sent to the bot.    
+    * _Returns_
+A `Task<bool>`
+
+- `GetActivitiesAsync()`  Gets a collection of activities returned by the bot.    
+    * _Parameters_    
+        * None.
+    * _Returns_
+A `Task<IEnumerable<Microsoft.Bot.Schema.Activity>>`   
+* Complex Test Scenario Example   
+<img src="media/runtestasync4.png" width="700" border=1px>
 
 ## Implementation notes
 
