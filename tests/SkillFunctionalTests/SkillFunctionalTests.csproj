@@ -45,7 +45,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\TranscriptTestRunner\TranscriptTestRunner.csproj" />
+    <ProjectReference Include="..\..\libraries\TranscriptTestRunner\TranscriptTestRunner.csproj" />
   </ItemGroup>
 
 </Project>
