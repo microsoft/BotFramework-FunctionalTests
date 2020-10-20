@@ -42,12 +42,12 @@ namespace TranscriptTestRunner
             await ExecuteTestScriptAsync(cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task SendActivityAsync(Activity sendActivity, CancellationToken cancellationToken)
+        public async Task SendActivityAsync(Activity sendActivity, CancellationToken cancellationToken = default)
         {
             await _testClient.SendActivityAsync(sendActivity, cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<Activity> GetNextReplyAsync(CancellationToken cancellationToken)
+        public async Task<Activity> GetNextReplyAsync(CancellationToken cancellationToken = default)
         {
             var timeoutCheck = new Stopwatch();
             timeoutCheck.Start();
@@ -74,6 +74,12 @@ namespace TranscriptTestRunner
                     throw new TimeoutException("operation timed out while waiting for a response from the bot");
                 }
             }
+        }
+
+        public async Task AssertReplyAsync(Action<Activity> validateAction, CancellationToken cancellationToken = default)
+        {
+            var nextReply = await GetNextReplyAsync(cancellationToken).ConfigureAwait(false);
+            validateAction(nextReply);
         }
 
         private void ConvertTranscript(string transcriptPath)
@@ -112,10 +118,20 @@ namespace TranscriptTestRunner
                         // Assert the activity returned
                         if (!IgnoreScriptActivity(scriptActivity))
                         {
-                            var activity = await GetNextReplyAsync(cancellationToken).ConfigureAwait(false);
+                            await AssertReplyAsync(
+                                nextReply =>
+                                {
+                                    if (scriptActivity.Type != nextReply.Type)
+                                    {
+                                        throw new Exception($"Invalid activity type. Expected: {scriptActivity.Type} Actual: {nextReply.Type}");
+                                    }
 
-                            // Assert here
-                            AssertReply(scriptActivity, activity);
+                                    if (scriptActivity.Text != nextReply.Text)
+                                    {
+                                        throw new Exception($"Invalid activity text. Expected: {scriptActivity.Text} Actual: {nextReply.Text}");
+                                    }
+                                },
+                                cancellationToken).ConfigureAwait(false);
                         }
 
                         break;
@@ -123,20 +139,6 @@ namespace TranscriptTestRunner
                     default:
                         throw new InvalidOperationException($"Invalid script activity type {scriptActivity.Role}.");
                 }
-            }
-        }
-
-        // (temp approach)
-        private void AssertReply(TestScript expected, Activity actual)
-        {
-            if (expected.Type != actual.Type)
-            {
-                throw new Exception($"Invalid activity type. Expected: {expected.Type} Actual: {actual.Type}");
-            }
-
-            if (expected.Text != actual.Text)
-            {
-                throw new Exception($"Invalid activity text. Expected: {expected.Text} Actual: {actual.Text}");
             }
         }
 

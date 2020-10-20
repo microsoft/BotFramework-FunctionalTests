@@ -9,6 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TranscriptTestRunner", "..\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BCBFF5A2-F2CD-4F82-BCD1-ED8E7950D82F}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		..\..\BotFramework-FunctionalTests.ruleset = ..\..\BotFramework-FunctionalTests.ruleset
 		..\..\Directory.Build.props = ..\..\Directory.Build.props
 	EndProjectSection
