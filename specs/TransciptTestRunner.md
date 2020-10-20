@@ -72,6 +72,18 @@ A `Task`.
         * activity `Microsoft.Bot.Schema.Activity`  The Activity that is sent to the bot.    
     * _Returns_
 A `Task<bool>`
+- `ContinueWithAsync(string)` Executes a transcript as a continuation to the last scenario.
+    * _Parameters_    
+        * transcript   `string`    The transcript that gets executed.
+
+- `ContinueWithAsync(IEnumerable<string>)` Executes a collection of transcripts in sequence as a continuation to the last scenario.
+    * _Parameters_    
+        * transcripts   `IEnumerable<string>`    The transcripts that get executed.
+
+- `ContinueWithAsync(string, params string[])` Executes a parameterized transcript as a continuation to the last scenario.
+    * _Parameters_    
+        * transcript   `string`    The transcript that gets executed.
+        * params `params string[]`   The parameters to be passed to the transcript.
 
 - `GetActivitiesAsync()`  Gets a collection of activities returned by the bot.    
     * _Parameters_    
