@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
 using System;
@@ -18,17 +18,18 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Bots
 {
     public class HostBot : ActivityHandler
     {
+        public const string ActiveSkillPropertyName = "activeSkillProperty";
+        
+        // We use a single skill in this example.
+        public const string TargetSkillId = "EchoSkillBot";
+        
         private readonly IStatePropertyAccessor<BotFrameworkSkill> _activeSkillProperty;
         private readonly string _botId;
         private readonly ConversationState _conversationState;
         private readonly SkillHttpClient _skillClient;
         private readonly SkillsConfiguration _skillsConfig;
         private readonly BotFrameworkSkill _targetSkill;
-
-        public const string ActiveSkillPropertyName = "activeSkillProperty";
-        // We use a single skill in this example.
-        public const string TargetSkillId = "EchoSkillBot";
-
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="HostBot"/> class.
         /// </summary>
@@ -52,7 +53,6 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Bots
                 throw new ArgumentException($"{MicrosoftAppCredentials.MicrosoftAppIdKey} is not set in configuration");
             }
 
-            
             if (!_skillsConfig.Skills.TryGetValue(TargetSkillId, out _targetSkill))
             {
                 throw new ArgumentException($"Skill with ID \"{TargetSkillId}\" not found in configuration");
