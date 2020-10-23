@@ -4,6 +4,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Schema;
@@ -16,6 +17,7 @@ namespace TranscriptTestRunner
     {
         private readonly int _replyTimeout;
         private readonly TestClientBase _testClient;
+        private Stopwatch _stopwatch;
 
         public TestRunner(TestClientBase client)
         {
@@ -36,14 +38,15 @@ namespace TranscriptTestRunner
             }
         }
 
-        public async Task RunTestAsync(string transcriptPath, CancellationToken cancellationToken = default)
+        public async Task RunTestAsync(string transcriptPath, [CallerMemberName] string callerName = "", CancellationToken cancellationToken = default)
         {
             ConvertTranscript(transcriptPath);
-            await ExecuteTestScriptAsync(cancellationToken).ConfigureAwait(false);
+            await ExecuteTestScriptAsync(callerName, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task SendActivityAsync(Activity sendActivity, CancellationToken cancellationToken = default)
         {
+            Debug.WriteLine($"[{_stopwatch.Elapsed}] User sends: {sendActivity.Text}");
             await _testClient.SendActivityAsync(sendActivity, cancellationToken).ConfigureAwait(false);
         }
 
@@ -58,6 +61,7 @@ namespace TranscriptTestRunner
                 {
                     if (activity != null && activity.Type != ActivityTypes.Trace && activity.Type != ActivityTypes.Typing)
                     {
+                        Debug.WriteLine($"[{_stopwatch.Elapsed}] Bot Responds: {activity.Text}");
                         return activity;
                     }
 
@@ -93,8 +97,12 @@ namespace TranscriptTestRunner
             TranscriptConverter.Convert();
         }
 
-        private async Task ExecuteTestScriptAsync(CancellationToken cancellationToken)
+        private async Task ExecuteTestScriptAsync(string callerName, CancellationToken cancellationToken)
         {
+            Debug.WriteLine($"\n------ Starting test {callerName} ----------");
+            _stopwatch = new Stopwatch();
+            _stopwatch.Start();
+
             using var reader = new StreamReader(TranscriptConverter.TestScript);
 
             var testScript = JsonConvert.DeserializeObject<TestScript[]>(await reader.ReadToEndAsync().ConfigureAwait(false));
@@ -140,6 +148,9 @@ namespace TranscriptTestRunner
                         throw new InvalidOperationException($"Invalid script activity type {scriptActivity.Role}.");
                 }
             }
+
+            Debug.WriteLine($"======== Test run finished in: {_stopwatch.Elapsed} =============\n");
+            _stopwatch.Stop();
         }
 
         private bool IgnoreScriptActivity(TestScript activity)
