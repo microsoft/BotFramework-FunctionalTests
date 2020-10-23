@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
 using System;
@@ -84,7 +84,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot
                 // Send a trace activity, which will be displayed in the Bot Framework Emulator
                 await turnContext.TraceActivityAsync("OnTurnError Trace", exception.ToString(), "https://www.botframework.com/schemas/error", "TurnError", cancellationToken);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError(ex, $"Exception caught in SendErrorMessageAsync : {ex}");
             }
@@ -120,7 +120,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot
                     await _skillClient.PostActivityAsync(botId, activeSkill, _skillsConfig.SkillHostEndpoint, (Activity)endOfConversation, cancellationToken);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError(ex, $"Exception caught on attempting to send EndOfConversation : {ex}");
             }

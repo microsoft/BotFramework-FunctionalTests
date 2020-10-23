@@ -13,13 +13,13 @@ namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot.Bots
 {
     public class EchoBot : ActivityHandler
     {
-        private readonly LoginDialog loginDialog;
-        private readonly ConversationState conversationState;
+        private readonly LoginDialog _loginDialog;
+        private readonly ConversationState _conversationState;
 
         public EchoBot(ConversationState conversationState, LoginDialog loginDialog)
         {
-            this.conversationState = conversationState ?? throw new ArgumentNullException(nameof(conversationState));
-            this.loginDialog = loginDialog ?? throw new ArgumentNullException(nameof(loginDialog));  
+            _conversationState = conversationState ?? throw new ArgumentNullException(nameof(conversationState));
+            _loginDialog = loginDialog ?? throw new ArgumentNullException(nameof(loginDialog));  
         }
 
         /// <summary>
@@ -32,10 +32,10 @@ namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot.Bots
         {
             if (turnContext.Activity.Text.Contains("auth") || turnContext.Activity.Text.Contains("logout") || turnContext.Activity.Text.Contains("Yes") || turnContext.Activity.Text.Contains("No"))
             {
-                await loginDialog.RunAsync(turnContext, conversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
+                await _loginDialog.RunAsync(turnContext, _conversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
                 
                 // Save any state changes that might have occurred during the turn.
-                await conversationState.SaveChangesAsync(turnContext, false, cancellationToken);
+                await _conversationState.SaveChangesAsync(turnContext, false, cancellationToken);
             }
             else if (turnContext.Activity.Text.Contains("end") || turnContext.Activity.Text.Contains("stop"))
             {
@@ -69,7 +69,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot.Bots
         protected override async Task OnTokenResponseEventAsync(ITurnContext<IEventActivity> turnContext, CancellationToken cancellationToken)
         {
             // Run the Dialog with the new Token Response Event Activity.
-            await loginDialog.RunAsync(turnContext, conversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
+            await _loginDialog.RunAsync(turnContext, _conversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
         }
     }
 }

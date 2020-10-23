@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Connector.DirectLine;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Rest.TransientFaultHandling;
 using Newtonsoft.Json;
 using BotActivity = Microsoft.Bot.Schema.Activity;
 
@@ -42,6 +43,7 @@ namespace TranscriptTestRunner.TestClients
             }
 
             _dlClient = new DirectLineClient(directLineSecret);
+            _dlClient.SetRetryPolicy(new RetryPolicy(new HttpStatusCodeErrorDetectionStrategy(), 0));
         }
 
         public override async Task SendActivityAsync(BotActivity activity, CancellationToken cancellationToken)

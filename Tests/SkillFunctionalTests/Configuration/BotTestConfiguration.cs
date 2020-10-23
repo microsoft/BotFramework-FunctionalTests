@@ -25,7 +25,9 @@ namespace SkillFunctionalTests.Configuration
         /// Initializes static members of the <see cref="BotTestConfiguration"/> class.
         /// Static constructor to initialize IConfiguration only once.
         /// </summary>
+#pragma warning disable CA1810 // Initialize reference type static fields inline (To avoid breaking changes in current tests. This will be replaced later).
         static BotTestConfiguration()
+#pragma warning restore CA1810 // Initialize reference type static fields inline
         {
             _configuration = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
