@@ -8,6 +8,8 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Schema;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Newtonsoft.Json;
 using Activity = Microsoft.Bot.Schema.Activity;
 
@@ -18,22 +20,24 @@ namespace TranscriptTestRunner
         private readonly int _replyTimeout;
         private readonly TestClientBase _testClient;
         private Stopwatch _stopwatch;
+        private readonly ILogger _logger;
 
-        public TestRunner(TestClientBase client)
+        public TestRunner(TestClientBase client, ILogger logger = null)
         {
             _testClient = client;
             _replyTimeout = 45000;
+            _logger = logger ?? NullLogger.Instance;
         }
 
         private TranscriptConverter TranscriptConverter { get; set; }
 
         // TODO: Not sure if it is better to avoid this and have another constructor.
-        public static async Task RunTestAsync(ClientType client, params string[] transcriptPaths)
+        public static async Task RunTestAsync(ClientType client, ILogger logger = null, params string[] transcriptPaths)
         {
             foreach (var transcriptPath in transcriptPaths)
             {
                 // TODO: This should be outside of the loop
-                var runner = new TestRunner(new TestClientFactory(client).GetTestClient());
+                var runner = new TestRunner(new TestClientFactory(client).GetTestClient(), logger);
                 await runner.RunTestAsync(transcriptPath).ConfigureAwait(false);
             }
         }
@@ -46,7 +50,7 @@ namespace TranscriptTestRunner
 
         public async Task SendActivityAsync(Activity sendActivity, CancellationToken cancellationToken = default)
         {
-            Debug.WriteLine($"[{_stopwatch.Elapsed}] User sends: {sendActivity.Text}");
+            _logger.LogInformation($"[{_stopwatch.Elapsed}] User sends: {sendActivity.Text}.");
             await _testClient.SendActivityAsync(sendActivity, cancellationToken).ConfigureAwait(false);
         }
 
@@ -61,7 +65,7 @@ namespace TranscriptTestRunner
                 {
                     if (activity != null && activity.Type != ActivityTypes.Trace && activity.Type != ActivityTypes.Typing)
                     {
-                        Debug.WriteLine($"[{_stopwatch.Elapsed}] Bot Responds: {activity.Text}");
+                        _logger.LogInformation($"[{_stopwatch.Elapsed}] Bot Responds: {activity.Text}.");
                         return activity;
                     }
 
@@ -99,7 +103,7 @@ namespace TranscriptTestRunner
 
         private async Task ExecuteTestScriptAsync(string callerName, CancellationToken cancellationToken)
         {
-            Debug.WriteLine($"\n------ Starting test {callerName} ----------");
+            _logger.LogInformation($"\n------ Starting test {callerName} ----------");
             _stopwatch = new Stopwatch();
             _stopwatch.Start();
 
@@ -149,7 +153,7 @@ namespace TranscriptTestRunner
                 }
             }
 
-            Debug.WriteLine($"======== Test run finished in: {_stopwatch.Elapsed} =============\n");
+            _logger.LogInformation($"======== Test run finished in: {_stopwatch.Elapsed} =============\n");
             _stopwatch.Stop();
         }
 
