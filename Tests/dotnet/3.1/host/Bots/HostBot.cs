@@ -29,7 +29,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Bots
         private readonly SkillHttpClient _skillClient;
         private readonly SkillsConfiguration _skillsConfig;
         private readonly BotFrameworkSkill _targetSkill;
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="HostBot"/> class.
         /// </summary>
