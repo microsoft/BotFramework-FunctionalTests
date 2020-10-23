@@ -51,7 +51,7 @@ namespace SkillFunctionalTests
                 throw new XunitException(error.Text);
             }
 
-            await testBot.SignInAndVerifyOAuthAsync(activities.FirstOrDefault(m => m.Attachments != null && m.Attachments.Any()), cancellationTokenSource.Token).ConfigureAwait(false);
+            await testBot.SignInAndVerifyOAuthAsync(activities.FirstOrDefault(m => m.Attachments != null && m.Attachments.Any())).ConfigureAwait(false);
         }
     }
 }

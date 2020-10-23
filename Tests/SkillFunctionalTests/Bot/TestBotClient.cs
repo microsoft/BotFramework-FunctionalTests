@@ -17,7 +17,9 @@ using Xunit;
 
 namespace SkillFunctionalTests.Bot
 {
+#pragma warning disable CA1001 // Types that own disposable fields should be disposable (To avoid breaking changes in current tests. This class will be replaced later).
     public class TestBotClient
+#pragma warning restore CA1001 // Types that own disposable fields should be disposable
     {
         private const string OriginHeaderKey = "Origin";
         private const string OriginHeaderValue = "https://carlos.test.com";
@@ -185,7 +187,7 @@ namespace SkillFunctionalTests.Bot
             return activitySet?.Activities?.Where(activity => activity.From.Id == _config.BotId);
         }
 
-        public async Task SignInAndVerifyOAuthAsync(Activity oAuthCard, CancellationToken cancellationToken = default)
+        public async Task SignInAndVerifyOAuthAsync(Activity oAuthCard)
         {
             // We obtained what we think is an OAuthCard. Steps to follow:
             // 1- Verify we have a sign in link
