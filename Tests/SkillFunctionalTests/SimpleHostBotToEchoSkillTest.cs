@@ -5,6 +5,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TranscriptTestRunner;
+using TranscriptTestRunner.XUnit;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -35,7 +36,7 @@ namespace SkillFunctionalTests
         [InlineData("HostReceivesEndOfConversation.transcript")]
         public async Task RunScripts(string transcript)
         {
-            var runner = new TestRunner(new TestClientFactory(ClientType.DirectLine).GetTestClient(), _logger);
+            var runner = new XUnitTestRunner(new TestClientFactory(ClientType.DirectLine).GetTestClient(), _logger);
             await runner.RunTestAsync(Path.Combine(_transcriptsFolder, transcript));
         }
 

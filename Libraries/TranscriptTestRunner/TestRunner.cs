@@ -98,10 +98,17 @@ namespace TranscriptTestRunner
             }
         }
 
-        public async Task AssertReplyAsync(Action<Activity> validateAction, CancellationToken cancellationToken = default)
+        protected virtual void AssertReply(TestScript expectedActivity, Activity actualActivity)
         {
-            var nextReply = await GetNextReplyAsync(cancellationToken).ConfigureAwait(false);
-            validateAction(nextReply);
+            if (expectedActivity.Type != actualActivity.Type)
+            {
+                throw new Exception($"Invalid activity type. Expected: {expectedActivity.Type} Actual: {actualActivity.Type}");
+            }
+
+            if (expectedActivity.Text != actualActivity.Text)
+            {
+                throw new Exception($"Invalid activity text. Expected: {expectedActivity.Text} Actual: {actualActivity.Text}");
+            }
         }
 
         private void ConvertTranscript(string transcriptPath)
@@ -142,20 +149,8 @@ namespace TranscriptTestRunner
                         // Assert the activity returned
                         if (!IgnoreScriptActivity(scriptActivity))
                         {
-                            await AssertReplyAsync(
-                                nextReply =>
-                                {
-                                    if (scriptActivity.Type != nextReply.Type)
-                                    {
-                                        throw new Exception($"Invalid activity type. Expected: {scriptActivity.Type} Actual: {nextReply.Type}");
-                                    }
-
-                                    if (scriptActivity.Text != nextReply.Text)
-                                    {
-                                        throw new Exception($"Invalid activity text. Expected: {scriptActivity.Text} Actual: {nextReply.Text}");
-                                    }
-                                },
-                                cancellationToken).ConfigureAwait(false);
+                            var nextReply = await GetNextReplyAsync(cancellationToken).ConfigureAwait(false);
+                            AssertReply(scriptActivity, nextReply);
                         }
 
                         break;
