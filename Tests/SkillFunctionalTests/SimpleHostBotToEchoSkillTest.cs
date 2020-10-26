@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TranscriptTestRunner;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace SkillFunctionalTests
 {
@@ -15,33 +16,27 @@ namespace SkillFunctionalTests
         private readonly string _transcriptsFolder = Directory.GetCurrentDirectory() + @"/SourceTranscripts";
         private readonly ILogger<SimpleHostBotToEchoSkillTest> _logger;
 
-        public SimpleHostBotToEchoSkillTest()
+        public SimpleHostBotToEchoSkillTest(ITestOutputHelper output)
         {
             var loggerFactory = LoggerFactory.Create(builder =>
             {
                 builder
                     .SetMinimumLevel(LogLevel.Trace)
                     .AddConsole()
-                    .AddDebug();
+                    .AddDebug()
+                    .AddXunit(output);
             });
 
             _logger = loggerFactory.CreateLogger<SimpleHostBotToEchoSkillTest>();
         }
 
-        [Fact]
-        public async Task HostWhenRequestedShouldRedirectToSkill()
+        [Theory]
+        [InlineData("ShouldRedirectToSkill.transcript")]
+        [InlineData("HostReceivesEndOfConversation.transcript")]
+        public async Task RunScripts(string transcript)
         {
             var runner = new TestRunner(new TestClientFactory(ClientType.DirectLine).GetTestClient(), _logger);
-
-            await runner.RunTestAsync($"{_transcriptsFolder}/ShouldRedirectToSkill.transcript").ConfigureAwait(false);
-        }
-
-        [Fact]
-        public async Task HostWhenSkillEndsHostReceivesEndOfConversation()
-        {
-            var runner = new TestRunner(new TestClientFactory(ClientType.DirectLine).GetTestClient(), _logger);
-
-            await runner.RunTestAsync($"{_transcriptsFolder}/HostReceivesEndOfConversation.transcript").ConfigureAwait(false);
+            await runner.RunTestAsync(Path.Combine(_transcriptsFolder, transcript));
         }
 
         [Fact]
