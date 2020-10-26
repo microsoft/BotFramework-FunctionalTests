@@ -17,10 +17,11 @@ namespace TranscriptTestRunner
 {
     public class TestRunner
     {
+        private readonly ILogger _logger;
         private readonly int _replyTimeout;
         private readonly TestClientBase _testClient;
         private Stopwatch _stopwatch;
-        private readonly ILogger _logger;
+        private TranscriptConverter _transcriptConverter;
 
         public TestRunner(TestClientBase client, ILogger logger = null)
         {
@@ -29,7 +30,19 @@ namespace TranscriptTestRunner
             _logger = logger ?? NullLogger.Instance;
         }
 
-        private TranscriptConverter TranscriptConverter { get; set; }
+        private Stopwatch Stopwatch
+        {
+            get
+            {
+                if (_stopwatch == null)
+                {
+                    _stopwatch = new Stopwatch();
+                    _stopwatch.Start();
+                }
+
+                return _stopwatch;
+            }
+        }
 
         // TODO: Not sure if it is better to avoid this and have another constructor.
         public static async Task RunTestAsync(ClientType client, ILogger logger = null, params string[] transcriptPaths)
@@ -44,13 +57,14 @@ namespace TranscriptTestRunner
 
         public async Task RunTestAsync(string transcriptPath, [CallerMemberName] string callerName = "", CancellationToken cancellationToken = default)
         {
+            _logger.LogInformation($"======== Running script: {transcriptPath} ========");
             ConvertTranscript(transcriptPath);
             await ExecuteTestScriptAsync(callerName, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task SendActivityAsync(Activity sendActivity, CancellationToken cancellationToken = default)
         {
-            _logger.LogInformation($"[{_stopwatch.Elapsed}] User sends: {sendActivity.Text}.");
+            _logger.LogInformation($"[{Stopwatch.Elapsed}] User sends: {sendActivity.Text}.");
             await _testClient.SendActivityAsync(sendActivity, cancellationToken).ConfigureAwait(false);
         }
 
@@ -65,13 +79,13 @@ namespace TranscriptTestRunner
                 {
                     if (activity != null && activity.Type != ActivityTypes.Trace && activity.Type != ActivityTypes.Typing)
                     {
-                        _logger.LogInformation($"[{_stopwatch.Elapsed}] Bot Responds: {activity.Text}.");
+                        _logger.LogInformation($"[{Stopwatch.Elapsed}] Bot Responds: {activity.Text}.");
                         return activity;
                     }
 
                     // Pop the next activity un the queue.
                     activity = await _testClient.GetNextReplyAsync(cancellationToken).ConfigureAwait(false);
-                } 
+                }
                 while (activity != null);
 
                 // Wait a bit for the bot
@@ -92,22 +106,20 @@ namespace TranscriptTestRunner
 
         private void ConvertTranscript(string transcriptPath)
         {
-            TranscriptConverter = new TranscriptConverter
+            _transcriptConverter = new TranscriptConverter
             {
                 EmulatorTranscript = transcriptPath,
                 TestScript = $"{Directory.GetCurrentDirectory()}/TestScripts/{Path.GetFileNameWithoutExtension(transcriptPath)}.json"
             };
 
-            TranscriptConverter.Convert();
+            _transcriptConverter.Convert();
         }
 
         private async Task ExecuteTestScriptAsync(string callerName, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"\n------ Starting test {callerName} ----------");
-            _stopwatch = new Stopwatch();
-            _stopwatch.Start();
 
-            using var reader = new StreamReader(TranscriptConverter.TestScript);
+            using var reader = new StreamReader(_transcriptConverter.TestScript);
 
             var testScript = JsonConvert.DeserializeObject<TestScript[]>(await reader.ReadToEndAsync().ConfigureAwait(false));
 
@@ -153,8 +165,7 @@ namespace TranscriptTestRunner
                 }
             }
 
-            _logger.LogInformation($"======== Test run finished in: {_stopwatch.Elapsed} =============\n");
-            _stopwatch.Stop();
+            _logger.LogInformation($"======== Finished running script: {Stopwatch.Elapsed} =============\n");
         }
 
         private bool IgnoreScriptActivity(TestScript activity)
