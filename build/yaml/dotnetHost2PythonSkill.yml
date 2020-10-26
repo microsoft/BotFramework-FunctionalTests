@@ -68,9 +68,21 @@ stages:
       variables:
         Registry: $[variables.RegistryUrlHost]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
-        Parameters.solution: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionHost)/host/SimpleHostBot.sln'
-        Parameters.project: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionHost)/host/SimpleHostBot.csproj'
       steps:
+      - powershell: |
+         if("$env:NetCoreSdkVersionHost".Trim() -eq "3.1")
+         {
+           $SolutionPath = "Bots/DotNet/Consumers/CodeFirst/SimpleHostBot/SimpleHostBot.sln"
+           $ProjectPath = "Bots/DotNet/Consumers/CodeFirst/SimpleHostBot/SimpleHostBot.csproj"
+         }
+         if("$env:NetCoreSdkVersionHost".Trim() -eq "2.1")
+         {
+           $SolutionPath = "Bots/DotNet/Consumers/CodeFirst/SimpleHostBot-2.1/SimpleHostBot.sln"
+           $ProjectPath = "Bots/DotNet/Consumers/CodeFirst/SimpleHostBot-2.1/SimpleHostBot.csproj"
+         }
+         Write-Host "##vso[task.setvariable variable=Parameters.solution;]$SolutionPath"
+         Write-Host "##vso[task.setvariable variable=Parameters.project;]$ProjectPath"
+        displayName: 'Set solution and project paths'
       - template: dotnetInstallPackagesSteps.yml
       - template: dotnetBuildSteps.yml
       - template: dotnetTagBotBuilderVersion.yml
@@ -88,9 +100,21 @@ stages:
         DeployAppSecret: $(DotNetPyHostAppSecret)
         Registry: $[variables.RegistryUrlHost]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
-        Parameters.project: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionHost)/host/SimpleHostBot.csproj'
-        TemplateLocation: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionHost)/host/DeploymentTemplates/template-with-new-rg.json'
       steps:
+      - powershell: |
+         if("$env:NetCoreSdkVersionHost".Trim() -eq "3.1")
+         {
+           $ProjectPath = "Bots/DotNet/Consumers/CodeFirst/SimpleHostBot/SimpleHostBot.csproj"
+           $TemplatePath = "Bots/DotNet/Consumers/CodeFirst/SimpleHostBot/DeploymentTemplates/template-with-new-rg.json"
+         }
+         if("$env:NetCoreSdkVersionHost".Trim() -eq "2.1")
+         {
+           $ProjectPath = "Bots/DotNet/Consumers/CodeFirst/SimpleHostBot-2.1/SimpleHostBot.csproj"
+           $TemplatePath = "Bots/DotNet/Consumers/CodeFirst/SimpleHostBot-2.1/DeploymentTemplates/template-with-new-rg.json"
+         }
+         Write-Host "##vso[task.setvariable variable=Parameters.project;]$ProjectPath"
+         Write-Host "##vso[task.setvariable variable=TemplateLocation;]$TemplatePath"
+        displayName: 'Set solution and project paths'
       - template: dotnetSetConfigFileSteps.yml
       - template: dotnetDeploySteps.yml
 
@@ -101,8 +125,8 @@ stages:
         DeployAppSecret: $(DotNetPySkillAppSecret)
         Registry: $[variables.RegistryUrlSkill]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
-        Parameters.sourceLocation: 'SkillsFunctionalTests/python/skill'
-        TemplateLocation: 'SkillsFunctionalTests/python/skill/deploymentTemplates/template-with-new-rg.json'
+        Parameters.sourceLocation: 'Bots/Python/Skills/CodeFirst/EchoSkillBot'
+        TemplateLocation: 'Bots/Python/Skills/CodeFirst/EchoSkillBot/deploymentTemplates/template-with-new-rg.json'
       steps:
       - template: pythonDeploySteps.yml
 
@@ -125,8 +149,8 @@ stages:
     - job: Run_Functional_Test
       variables:
         HostBotName: $(DotNetPyHostBotName)
-        Parameters.project: 'SkillsFunctionalTests/tests/SkillFunctionalTests/SkillFunctionalTests.csproj'
-        Parameters.solution: 'SkillsFunctionalTests/tests/SkillFunctionalTests.sln'
+        Parameters.project: 'Tests/SkillFunctionalTests/SkillFunctionalTests.csproj'
+        Parameters.solution: 'SkillFunctionalTests.sln'
         DefaultTestFilter: ''
         DotNetTestFilter: $[ coalesce( variables['TestFilter'], variables['DefaultTestFilter'] ) ]
       steps:
