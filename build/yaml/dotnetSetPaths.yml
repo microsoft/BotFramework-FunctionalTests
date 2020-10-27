@@ -1,0 +1,36 @@
+steps:
+- powershell: |
+   if("$(BotType)" -eq "Host")
+   {
+     if("$(NetCoreSdkVersionHost)".Trim() -eq "3.1")
+     {
+       $SolutionPath = "Bots/DotNet/Consumers/CodeFirst/SimpleHostBot/SimpleHostBot.sln"
+       $ProjectPath = "Bots/DotNet/Consumers/CodeFirst/SimpleHostBot/SimpleHostBot.csproj"
+       $TemplatePath = "Bots/DotNet/Consumers/CodeFirst/SimpleHostBot/DeploymentTemplates/template-with-new-rg.json"
+     }
+     if("$(NetCoreSdkVersionHost)".Trim() -eq "2.1")
+     {
+       $SolutionPath = "Bots/DotNet/Consumers/CodeFirst/SimpleHostBot-2.1/SimpleHostBot.sln"
+       $ProjectPath = "Bots/DotNet/Consumers/CodeFirst/SimpleHostBot-2.1/SimpleHostBot.csproj"
+       $TemplatePath = "Bots/DotNet/Consumers/CodeFirst/SimpleHostBot-2.1/DeploymentTemplates/template-with-new-rg.json"
+     }
+   }
+   if("$(BotType)" -eq "EchoSkill")
+   {
+     if("$(NetCoreSdkVersionSkill)".Trim() -eq "3.1")
+     {
+       $SolutionPath = "Bots/DotNet/Skills/CodeFirst/EchoSkillBot/EchoSkillBot.sln"
+       $ProjectPath = "Bots/DotNet/Skills/CodeFirst/EchoSkillBot/EchoSkillBot.csproj"
+       $TemplatePath = "Bots/DotNet/Skills/CodeFirst/EchoSkillBot/DeploymentTemplates/template-with-new-rg.json"
+     }
+     if("$(NetCoreSdkVersionSkill)".Trim() -eq "2.1")
+     {
+       $SolutionPath = "Bots/DotNet/Skills/CodeFirst/EchoSkillBot-2.1/EchoSkillBot.sln"
+       $ProjectPath = "Bots/DotNet/Skills/CodeFirst/EchoSkillBot-2.1/EchoSkillBot.csproj"
+       $TemplatePath = "Bots/DotNet/Skills/CodeFirst/EchoSkillBot-2.1/DeploymentTemplates/template-with-new-rg.json"
+     }
+   }
+   Write-Host "##vso[task.setvariable variable=Parameters.solution;]$SolutionPath"
+   Write-Host "##vso[task.setvariable variable=Parameters.project;]$ProjectPath"
+   Write-Host "##vso[task.setvariable variable=TemplateLocation;]$TemplatePath"
+  displayName: 'Set path variables'

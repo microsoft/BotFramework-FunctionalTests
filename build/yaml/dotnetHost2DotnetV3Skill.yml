@@ -66,21 +66,9 @@ stages:
       variables:
         Registry: $[variables.RegistryUrlHost]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
+        BotType: Host
       steps:
-      - powershell: |
-         if("$env:NetCoreSdkVersionHost".Trim() -eq "3.1")
-         {
-           $SolutionPath = "Bots/DotNet/Consumers/CodeFirst/SimpleHostBot/SimpleHostBot.sln"
-           $ProjectPath = "Bots/DotNet/Consumers/CodeFirst/SimpleHostBot/SimpleHostBot.csproj"
-         }
-         if("$env:NetCoreSdkVersionHost".Trim() -eq "2.1")
-         {
-           $SolutionPath = "Bots/DotNet/Consumers/CodeFirst/SimpleHostBot-2.1/SimpleHostBot.sln"
-           $ProjectPath = "Bots/DotNet/Consumers/CodeFirst/SimpleHostBot-2.1/SimpleHostBot.csproj"
-         }
-         Write-Host "##vso[task.setvariable variable=Parameters.solution;]$SolutionPath"
-         Write-Host "##vso[task.setvariable variable=Parameters.project;]$ProjectPath"
-        displayName: 'Set solution and project paths'
+      - template: dotnetSetPaths.yml
       - template: dotnetInstallPackagesSteps.yml
       - template: dotnetBuildSteps.yml
       - template: dotnetTagBotBuilderVersion.yml
@@ -107,21 +95,9 @@ stages:
         DeployAppSecret: $(DotNetDotNetV3HostAppSecret)
         Registry: $[variables.RegistryUrlHost]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
+        BotType: Host
       steps:
-      - powershell: |
-         if("$env:NetCoreSdkVersionHost".Trim() -eq "3.1")
-         {
-           $ProjectPath = "Bots/DotNet/Consumers/CodeFirst/SimpleHostBot/SimpleHostBot.csproj"
-           $TemplatePath = "Bots/DotNet/Consumers/CodeFirst/SimpleHostBot/DeploymentTemplates/template-with-new-rg.json"
-         }
-         if("$env:NetCoreSdkVersionHost".Trim() -eq "2.1")
-         {
-           $ProjectPath = "Bots/DotNet/Consumers/CodeFirst/SimpleHostBot-2.1/SimpleHostBot.csproj"
-           $TemplatePath = "Bots/DotNet/Consumers/CodeFirst/SimpleHostBot-2.1/DeploymentTemplates/template-with-new-rg.json"
-         }
-         Write-Host "##vso[task.setvariable variable=Parameters.project;]$ProjectPath"
-         Write-Host "##vso[task.setvariable variable=TemplateLocation;]$TemplatePath"
-        displayName: 'Set solution and project paths'
+      - template: dotnetSetPaths.yml
       - template: dotnetSetConfigFileSteps.yml
       - template: dotnetDeploySteps.yml
 
