@@ -3,11 +3,13 @@
 
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 using TranscriptTestRunner;
 using TranscriptTestRunner.XUnit;
 using Xunit;
 using Xunit.Abstractions;
+using ActivityTypes = Microsoft.Bot.Connector.DirectLine.ActivityTypes;
 
 namespace SkillFunctionalTests
 {
@@ -41,13 +43,17 @@ namespace SkillFunctionalTests
         }
 
         [Fact]
-        public async Task HostWhenRequestedShouldRunTestTranscript()
+        public async Task ManualTest()
         {
-            await TestRunner.RunTestAsync(
-                ClientType.DirectLine, 
-                _logger,
-                $"{_transcriptsFolder}/ShouldRedirectToSkill.transcript",
-                $"{_transcriptsFolder}/HostReceivesEndOfConversation.transcript").ConfigureAwait(false);
+            var runner = new XUnitTestRunner(new TestClientFactory(ClientType.DirectLine).GetTestClient(), _logger);
+
+            await runner.SendActivityAsync(new Activity(ActivityTypes.ConversationUpdate));
+
+            await runner.AssertReplyAsync(activity =>
+            {
+                Assert.Equal(ActivityTypes.Message, activity.Type);
+                Assert.Equal("Hello and welcome!", activity.Text);
+            });
         }
     }
 }

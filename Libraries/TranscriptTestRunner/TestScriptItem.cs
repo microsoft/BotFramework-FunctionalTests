@@ -3,7 +3,7 @@
 
 namespace TranscriptTestRunner
 {
-    public class TestScript
+    public class TestScriptItem
     {
         public string Type { get; set; }
 
