@@ -31,6 +31,9 @@ steps:
      }
    }
    Write-Host "##vso[task.setvariable variable=Parameters.solution;]$SolutionPath"
+   Write-Host "Solution path set to $SolutionPath"
    Write-Host "##vso[task.setvariable variable=Parameters.project;]$ProjectPath"
+   Write-Host "Project path set to $ProjectPath"
    Write-Host "##vso[task.setvariable variable=TemplateLocation;]$TemplatePath"
+   Write-Host "Template path set to $TemplatePath"
   displayName: 'Set path variables'
