@@ -64,7 +64,7 @@ namespace TranscriptTestRunner
 
         public async Task SendActivityAsync(Activity sendActivity, CancellationToken cancellationToken = default)
         {
-            _logger.LogInformation($"[{Stopwatch.Elapsed}] User sends: {sendActivity.Text}.");
+            _logger.LogInformation("Elapsed Time: {Elapsed}, User sends: {Text}", Stopwatch.Elapsed, sendActivity.Text);
             await _testClient.SendActivityAsync(sendActivity, cancellationToken).ConfigureAwait(false);
         }
 
@@ -79,7 +79,7 @@ namespace TranscriptTestRunner
                 {
                     if (activity != null && activity.Type != ActivityTypes.Trace && activity.Type != ActivityTypes.Typing)
                     {
-                        _logger.LogInformation($"[{Stopwatch.Elapsed}] Bot Responds: {activity.Text}.");
+                        _logger.LogInformation("Elapsed Time: {Elapsed}, Bot Responds: {Text}", Stopwatch.Elapsed, activity.Text);
                         return activity;
                     }
 
