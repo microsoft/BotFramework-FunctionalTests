@@ -44,17 +44,6 @@ namespace TranscriptTestRunner
             }
         }
 
-        // TODO: Not sure if it is better to avoid this and have another constructor.
-        public static async Task RunTestAsync(ClientType client, ILogger logger = null, params string[] transcriptPaths)
-        {
-            foreach (var transcriptPath in transcriptPaths)
-            {
-                // TODO: This should be outside of the loop
-                var runner = new TestRunner(new TestClientFactory(client).GetTestClient(), logger);
-                await runner.RunTestAsync(transcriptPath).ConfigureAwait(false);
-            }
-        }
-
         public async Task RunTestAsync(string transcriptPath, [CallerMemberName] string callerName = "", CancellationToken cancellationToken = default)
         {
             _logger.LogInformation($"======== Running script: {transcriptPath} ========");
@@ -104,6 +93,21 @@ namespace TranscriptTestRunner
             validateAction(nextReply);
         }
 
+        protected virtual Task AssertActivityAsync(TestScriptItem expectedActivity, Activity actualActivity, CancellationToken cancellationToken = default)
+        {
+            if (expectedActivity.Type != actualActivity.Type)
+            {
+                throw new Exception($"Invalid activity type. Expected: {expectedActivity.Type} Actual: {actualActivity.Type}");
+            }
+
+            if (expectedActivity.Text != actualActivity.Text)
+            {
+                throw new Exception($"Invalid activity text. Expected: {expectedActivity.Text} Actual: {actualActivity.Text}");
+            }
+
+            return Task.CompletedTask;
+        }
+
         private void ConvertTranscript(string transcriptPath)
         {
             _transcriptConverter = new TranscriptConverter
@@ -121,7 +125,7 @@ namespace TranscriptTestRunner
 
             using var reader = new StreamReader(_transcriptConverter.TestScript);
 
-            var testScript = JsonConvert.DeserializeObject<TestScript[]>(await reader.ReadToEndAsync().ConfigureAwait(false));
+            var testScript = JsonConvert.DeserializeObject<TestScriptItem[]>(await reader.ReadToEndAsync().ConfigureAwait(false));
 
             foreach (var scriptActivity in testScript)
             {
@@ -142,20 +146,8 @@ namespace TranscriptTestRunner
                         // Assert the activity returned
                         if (!IgnoreScriptActivity(scriptActivity))
                         {
-                            await AssertReplyAsync(
-                                nextReply =>
-                                {
-                                    if (scriptActivity.Type != nextReply.Type)
-                                    {
-                                        throw new Exception($"Invalid activity type. Expected: {scriptActivity.Type} Actual: {nextReply.Type}");
-                                    }
-
-                                    if (scriptActivity.Text != nextReply.Text)
-                                    {
-                                        throw new Exception($"Invalid activity text. Expected: {scriptActivity.Text} Actual: {nextReply.Text}");
-                                    }
-                                },
-                                cancellationToken).ConfigureAwait(false);
+                            var nextReply = await GetNextReplyAsync(cancellationToken).ConfigureAwait(false);
+                            await AssertActivityAsync(scriptActivity, nextReply, cancellationToken).ConfigureAwait(false);
                         }
 
                         break;
@@ -168,7 +160,7 @@ namespace TranscriptTestRunner
             _logger.LogInformation($"======== Finished running script: {Stopwatch.Elapsed} =============\n");
         }
 
-        private bool IgnoreScriptActivity(TestScript activity)
+        private bool IgnoreScriptActivity(TestScriptItem activity)
         {
             return activity.Type == ActivityTypes.Trace || activity.Type == ActivityTypes.Typing;
         }
