@@ -3,6 +3,7 @@
 
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 using TranscriptTestRunner;
@@ -21,12 +22,19 @@ namespace SkillFunctionalTests
 
         public SimpleHostBotToEchoSkillTest(ITestOutputHelper output)
         {
+            var configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .AddJsonFile("appsettings.Development.json", true, true)
+                .AddEnvironmentVariables()
+                .Build();
+
             var loggerFactory = LoggerFactory.Create(builder =>
             {
                 builder
-                    .SetMinimumLevel(LogLevel.Trace)
+                    .AddConfiguration(configuration)
                     .AddConsole()
                     .AddDebug()
+                    .AddFile(Directory.GetCurrentDirectory() + @"/Logs/Log.json", isJson: true)
                     .AddXunit(output);
             });
 
