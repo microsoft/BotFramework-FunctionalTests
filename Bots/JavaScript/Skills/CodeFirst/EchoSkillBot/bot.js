@@ -41,6 +41,7 @@ class EchoBot extends ActivityHandler {
                 break;
             case 'end':
             case 'stop':
+                await context.sendActivity(`Ending conversation from the skill...`);
                 await context.sendActivity({
                     type: ActivityTypes.EndOfConversation,
                     code: EndOfConversationCodes.CompletedSuccessfully
