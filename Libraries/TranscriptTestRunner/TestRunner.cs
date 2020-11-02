@@ -7,6 +7,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using AdaptiveExpressions;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -22,6 +23,7 @@ namespace TranscriptTestRunner
         private readonly TestClientBase _testClient;
         private Stopwatch _stopwatch;
         private TranscriptConverter _transcriptConverter;
+        private string _testScriptPath;
 
         public TestRunner(TestClientBase client, ILogger logger = null)
         {
@@ -47,7 +49,16 @@ namespace TranscriptTestRunner
         public async Task RunTestAsync(string transcriptPath, [CallerMemberName] string callerName = "", CancellationToken cancellationToken = default)
         {
             _logger.LogInformation($"======== Running script: {transcriptPath} ========");
-            ConvertTranscript(transcriptPath);
+
+            if (transcriptPath.EndsWith(".transcript", StringComparison.Ordinal))
+            {
+                ConvertTranscript(transcriptPath);
+            }
+            else
+            {
+                _testScriptPath = transcriptPath;
+            }
+
             await ExecuteTestScriptAsync(callerName, cancellationToken).ConfigureAwait(false);
         }
 
@@ -95,14 +106,19 @@ namespace TranscriptTestRunner
 
         protected virtual Task AssertActivityAsync(TestScriptItem expectedActivity, Activity actualActivity, CancellationToken cancellationToken = default)
         {
-            if (expectedActivity.Type != actualActivity.Type)
+            foreach (var assertion in expectedActivity.Assertions)
             {
-                throw new Exception($"Invalid activity type. Expected: {expectedActivity.Type} Actual: {actualActivity.Type}");
-            }
+                var (result, error) = Expression.Parse(assertion).TryEvaluate<bool>(actualActivity);
 
-            if (expectedActivity.Text != actualActivity.Text)
-            {
-                throw new Exception($"Invalid activity text. Expected: {expectedActivity.Text} Actual: {actualActivity.Text}");
+                if (!result)
+                {
+                    throw new Exception($"Assertion failed: {assertion}.");
+                }
+
+                if (error != null)
+                {
+                    throw new Exception(error);
+                }
             }
 
             return Task.CompletedTask;
@@ -117,13 +133,15 @@ namespace TranscriptTestRunner
             };
 
             _transcriptConverter.Convert();
+
+            _testScriptPath = _transcriptConverter.TestScript;
         }
 
         private async Task ExecuteTestScriptAsync(string callerName, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"\n------ Starting test {callerName} ----------");
 
-            using var reader = new StreamReader(_transcriptConverter.TestScript);
+            using var reader = new StreamReader(_testScriptPath);
 
             var testScript = JsonConvert.DeserializeObject<TestScriptItem[]>(await reader.ReadToEndAsync().ConfigureAwait(false));
 

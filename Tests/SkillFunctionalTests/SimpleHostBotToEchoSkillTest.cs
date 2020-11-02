@@ -3,8 +3,8 @@
 
 using System.IO;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Bot.Schema;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using TranscriptTestRunner;
 using TranscriptTestRunner.XUnit;
@@ -18,6 +18,7 @@ namespace SkillFunctionalTests
     public class SimpleHostBotToEchoSkillTest
     {
         private readonly string _transcriptsFolder = Directory.GetCurrentDirectory() + @"/SourceTranscripts";
+        private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/SourceTestScripts";
         private readonly ILogger<SimpleHostBotToEchoSkillTest> _logger;
 
         public SimpleHostBotToEchoSkillTest(ITestOutputHelper output)
