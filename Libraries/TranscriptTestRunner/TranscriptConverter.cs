@@ -291,7 +291,7 @@ namespace TranscriptTestRunner
         {
             var json = JsonConvert.SerializeObject(
                 testScript,
-                Formatting.None,
+                Formatting.Indented,
                 new JsonSerializerSettings
                 {
                     NullValueHandling = NullValueHandling.Ignore
