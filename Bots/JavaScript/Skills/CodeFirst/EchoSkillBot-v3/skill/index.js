@@ -36,7 +36,7 @@ const bot = new builder.UniversalBot(connector, function (session) {
     switch (session.message.text.toLowerCase()) {
         case 'end':
         case 'stop':
-            session.endConversation();
+            session.endConversation("Ending conversation from the skill...");
             break;
         default:
             session.send("Echo: %s", session.message.text);

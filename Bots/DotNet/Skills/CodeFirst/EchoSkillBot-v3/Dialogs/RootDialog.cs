@@ -28,13 +28,13 @@ namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot.Dialogs
                 await context.PostAsync($"Ending conversation from the skill...");
                 var endOfConversation = activity.CreateReply();
                 endOfConversation.Type = ActivityTypes.EndOfConversation;
-                endOfConversation.Code = EndOfConversationCodes.UserCancelled;
+                endOfConversation.Code = EndOfConversationCodes.CompletedSuccessfully;
                 await context.PostAsync(endOfConversation);
             }
             else
             {
                 await context.PostAsync($"Echo: {activity.Text}");
-                await context.PostAsync($"Say 'end' or 'stop' and I'll end the conversation and back to the parent.");
+                await context.PostAsync($"Say \"end\" or \"stop\" and I'll end the conversation and back to the parent.");
             }
 
             context.Wait(MessageReceivedAsync);
