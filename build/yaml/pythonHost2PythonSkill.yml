@@ -34,16 +34,6 @@ pool:
   vmImage: 'windows-2019'
 
 stages:
-- stage: Prepare
-  condition: and(succeeded(), in(variables['TriggeredReason'], 'Schedule', 'Manual', 'BuildRunner'))
-  jobs:
-    - job: Delete_Preexisting_Resources
-      variables:
-        HostBotName: $(PyPyHostBotName)
-        SkillBotName: $(PyPySkillBotName)
-      steps:
-      - template: cleanResourcesStep.yml
-
 - stage: Tag
   condition: succeededOrFailed()
   jobs:
