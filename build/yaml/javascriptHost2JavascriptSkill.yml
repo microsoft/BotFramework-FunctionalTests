@@ -57,6 +57,7 @@ stages:
         continueOnError: true
        
 - stage: Deploy
+  dependsOn: Prepare
   condition: and(succeeded(), in(variables['TriggeredReason'], 'Schedule', 'Manual', 'BuildRunner'))
   jobs:
     - job: Deploy_Host
