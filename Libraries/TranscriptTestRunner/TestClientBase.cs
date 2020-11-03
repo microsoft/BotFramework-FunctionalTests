@@ -12,5 +12,7 @@ namespace TranscriptTestRunner
         public abstract Task SendActivityAsync(Activity activity, CancellationToken cancellationToken);
 
         public abstract Task<Activity> GetNextReplyAsync(CancellationToken cancellationToken);
+
+        public abstract Task SignInAsync(string signInUrl);
     }
 }

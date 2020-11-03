@@ -4,6 +4,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -80,6 +81,15 @@ namespace TranscriptTestRunner
                     if (activity != null && activity.Type != ActivityTypes.Trace && activity.Type != ActivityTypes.Typing)
                     {
                         _logger.LogInformation("Elapsed Time: {Elapsed}, Bot Responds: {Text}", Stopwatch.Elapsed, activity.Text);
+                        
+                        if (activity.Attachments != null && activity.Attachments.Any())
+                        {
+                            foreach (var attachment in activity.Attachments)
+                            {
+                                _logger.LogInformation("Elapsed Time: {Elapsed}, Attachment included: {Type} - {Attachment}", Stopwatch.Elapsed, attachment.ContentType, attachment.Content);
+                            }
+                        }
+
                         return activity;
                     }
 
@@ -102,6 +112,40 @@ namespace TranscriptTestRunner
         {
             var nextReply = await GetNextReplyAsync(cancellationToken).ConfigureAwait(false);
             validateAction(nextReply);
+        }
+
+        public async Task SignInAndVerifyOAuthAsync(Activity activity)
+        {
+            if (activity == null)
+            {
+                throw new Exception("OAuthCard is null");
+            }
+
+            if (activity.Attachments == null)
+            {
+                throw new Exception("OAuthCard.Attachments = null");
+            }
+
+            var card = JsonConvert.DeserializeObject<SigninCard>(JsonConvert.SerializeObject(activity.Attachments.FirstOrDefault().Content));
+
+            if (card == null)
+            {
+                throw new Exception("No SignIn Card received in activity");
+            }
+
+            if (card.Buttons == null || !card.Buttons.Any())
+            {
+                throw new Exception("No buttons received in sign in card");
+            }
+
+            var signInUrl = card.Buttons[0].Value?.ToString();
+
+            if (string.IsNullOrEmpty(signInUrl) || !signInUrl.StartsWith("https://", StringComparison.Ordinal))
+            {
+                throw new Exception($"Sign in url is empty or badly formatted. Url received: {signInUrl}");
+            }
+
+            await _testClient.SignInAsync(signInUrl).ConfigureAwait(false);
         }
 
         protected virtual Task AssertActivityAsync(TestScriptItem expectedActivity, Activity actualActivity, CancellationToken cancellationToken = default)
@@ -161,11 +205,17 @@ namespace TranscriptTestRunner
                         break;
 
                     case RoleTypes.Bot:
-                        // Assert the activity returned
-                        if (!IgnoreScriptActivity(scriptActivity))
+                        if (IgnoreScriptActivity(scriptActivity))
                         {
-                            var nextReply = await GetNextReplyAsync(cancellationToken).ConfigureAwait(false);
-                            await AssertActivityAsync(scriptActivity, nextReply, cancellationToken).ConfigureAwait(false);
+                            break;
+                        }
+                        
+                        var nextReply = await GetNextReplyAsync(cancellationToken).ConfigureAwait(false);
+                        await AssertActivityAsync(scriptActivity, nextReply, cancellationToken).ConfigureAwait(false);
+
+                        if (nextReply.Attachments != null && nextReply.Attachments.Any() && nextReply.Attachments[0].ContentType == "application/vnd.microsoft.card.oauth")
+                        {
+                            await SignInAndVerifyOAuthAsync(nextReply).ConfigureAwait(false);
                         }
 
                         break;
