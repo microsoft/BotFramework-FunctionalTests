@@ -32,9 +32,9 @@ variables:
 pool:
   vmImage: 'windows-2019'
 
-- stages:
-  - stage: Prepare
-    jobs:
+stages:
+- stage: Prepare
+  jobs:
     - job: Delete_Preexisting_Resources
       variables:
         HostBotName: $(PyPyHostBotName)
@@ -42,9 +42,9 @@ pool:
       steps:
       - template: cleanResourcesStep.yml
 
-  - stage: Deploy
-    dependsOn: Prepare  
-    jobs:
+- stage: Deploy
+  dependsOn: Prepare  
+  jobs:
     - job: Deploy_Host
       variables:
         HostBotName: $(PyPyHostBotName)
@@ -93,9 +93,9 @@ pool:
            call az bot authsetting create -g "$(PyPySkillBotName)-RG" -n "$(PyPySkillBotName)" -c TestOAuthProvider --client-id "$(PyPySkillAppId)" --client-secret '$(PyPySkillAppSecret)'' --service "oauth2" --provider-scope-string '""' --parameters authorizationUrl=https://webjobs.botframework.com/api/testauthprovider/authorize tokenUrl=https://webjobs.botframework.com/api/testauthprovider/token refreshUrl=https://webjobs.botframework.com/api/testauthprovider/refresh clientId="$(PyPySkillAppId)" clientSecret="$(PyPySkillAppSecret)"
         condition: always()
 
-  - stage: Test
-    dependsOn: Deploy
-    jobs:
+- stage: Test
+  dependsOn: Deploy
+  jobs:
     - job: Run_Functional_Test
       variables:
         HostBotName: $(PyPyHostBotName)
@@ -106,12 +106,12 @@ pool:
       steps:
       - template: functionalTestSteps.yml
 
-  - stage: Cleanup
-    dependsOn:
-    - Deploy
-    - Test
-    condition: always()
-    jobs:
+- stage: Cleanup
+  dependsOn:
+  - Deploy
+  - Test
+  condition: always()
+  jobs:
     - job: Delete_RG
       steps:
       - task: AzureCLI@1
