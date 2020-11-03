@@ -71,6 +71,7 @@ stages:
       - template: pythonDeploySteps.yml
 
     - job: Deploy_Skill
+      dependsOn: Deploy_Host
       variables:
         BotName: $(PyPySkillBotName)
         DeployAppId: $(PyPySkillAppId)
