@@ -17,8 +17,6 @@ variables:
   # BotBuilderPackageVersionHost: (optional) define in Azure
   # BotBuilderPackageVersionSkill: (optional) define in Azure
   # DeleteResourceGroup: (optional) define in Azure
-  # ExecutePipelinesPersonalAccessToken: (optional) define in Azure
-  # NextBuild: define in Azure and set to either a build name or an empty string
   # PyPyHostAppId: define in Azure
   # PyPyHostAppSecret: define in Azure
   # PyPyHostBotName: define in Azure
@@ -34,6 +32,7 @@ pool:
 
 stages:
 - stage: Prepare
+  condition: and(succeeded(), ne(variables['DeleteResourceGroup'], 'false'))
   jobs:
     - job: Delete_Preexisting_Resources
       variables:
@@ -110,7 +109,7 @@ stages:
   dependsOn:
   - Deploy
   - Test
-  condition: always()
+  condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
   jobs:
     - job: Delete_RG
       steps:
@@ -122,4 +121,3 @@ stages:
           inlineScript: |
            call az group delete -n "$(PyPyHostBotName)-RG" --yes
            call az group delete -n "$(PyPySkillBotName)-RG" --yes
-        condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))

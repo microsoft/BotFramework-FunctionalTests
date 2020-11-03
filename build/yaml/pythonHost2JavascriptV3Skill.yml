@@ -1,5 +1,5 @@
 #
-# Optionally deploy a Python Host bot and a V3 JS Skill bot and run functional tests. (No build stage.)
+# Deploy a Python Host bot and a V3 JS Skill bot and run functional tests. (No build stage.)
 #
 
 # "name" here defines the build number format. Build number is accessed via $(Build.BuildNumber)
@@ -44,20 +44,6 @@ stages:
         SkillBotName: $(PyJsV3SkillBotName)
       steps:
       - template: cleanResourcesStep.yml
-
-- stage: Tag
-  condition: always()
-  jobs:
-    - job: Tag
-      steps:
-      - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
-        displayName: 'Tag Build with TriggeredReason, TriggeredBy, NextBuild'
-        inputs:
-          tags: |
-            TriggeredReason=$(TriggeredReason)
-            $(TriggeredBy)
-            NextBuild=$(NextBuild)
-        continueOnError: true
 
 - stage: Deploy
   condition: and(succeeded(), in(variables['TriggeredReason'], 'Schedule', 'Manual', 'BuildRunner'))
