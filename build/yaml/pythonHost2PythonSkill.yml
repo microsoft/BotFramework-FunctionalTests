@@ -32,7 +32,17 @@ variables:
 pool:
   vmImage: 'windows-2019'
 
+- stage: Prepare
+  jobs:
+    - job: Delete_Preexisting_Resources
+      variables:
+        HostBotName: $(PyPyHostBotName)
+        SkillBotName: $(PyPySkillBotName)
+      steps:
+      - template: cleanResourcesStep.yml
+
 - stage: Deploy
+  dependsOn: Prepare  
   jobs:
     - job: Deploy_Host
       variables:
