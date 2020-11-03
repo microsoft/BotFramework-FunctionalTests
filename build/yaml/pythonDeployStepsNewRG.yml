@@ -1,3 +1,6 @@
+#
+# template-with-new-rg.json errors when run simultaneously in two deploys with 'Azure Error: DeploymentActive'.
+#
 steps:
 - powershell: |
     switch ("$(Registry)".ToUpper())

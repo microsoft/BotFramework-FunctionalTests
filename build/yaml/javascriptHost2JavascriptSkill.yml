@@ -57,7 +57,6 @@ stages:
         continueOnError: true
        
 - stage: Deploy
-  dependsOn: Prepare
   condition: and(succeeded(), in(variables['TriggeredReason'], 'Schedule', 'Manual', 'BuildRunner'))
   jobs:
     - job: Deploy_Host
@@ -77,7 +76,6 @@ stages:
       - template: javascriptDeploySteps.yml
 
     - job: Deploy_Skill
-      dependsOn: Deploy_Host
       variables:
         BotName: $(JsJsSkillBotName)
         DeployAppId: $(JsJsSkillAppId)

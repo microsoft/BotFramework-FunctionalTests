@@ -87,7 +87,7 @@ stages:
         TemplateLocation: 'SkillsFunctionalTests/python/host/deploymentTemplates/template-with-new-rg.json'
       steps:
       - template: pythonSetConfigFileSteps.yml
-      - template: pythonDeploySteps.yml
+      - template: pythonDeployStepsNewRG.yml
 
     - job: Deploy_Skill
       variables:
