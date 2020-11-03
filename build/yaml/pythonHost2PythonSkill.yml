@@ -8,6 +8,7 @@ trigger: none
 pr: none
 
 variables:
+  BotGroup: '$(BotName)-RG'
   BuildConfiguration: 'Debug'
   BuildPlatform: 'any cpu'
   TriggeredReason: $[ coalesce( variables['TriggeringBuildReason'], variables['Build.Reason'] ) ]
@@ -62,6 +63,7 @@ stages:
         Registry: $[variables.RegistryUrlHost]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
         Parameters.sourceLocation: 'SkillsFunctionalTests/python/host'
+        TemplateLocation: 'SkillsFunctionalTests/python/host/deploymentTemplates/template-with-preexisting-rg.json'
         #TemplateLocation: 'SkillsFunctionalTests/python/host/deploymentTemplates/template-with-new-rg.json'
       steps:
       - template: pythonSetConfigFileSteps.yml
@@ -75,6 +77,7 @@ stages:
         Registry: $[variables.RegistryUrlSkill]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
         Parameters.sourceLocation: 'SkillsFunctionalTests/python/skill'
+        TemplateLocation: 'SkillsFunctionalTests/python/host/deploymentTemplates/template-with-preexisting-rg.json'
         #TemplateLocation: 'SkillsFunctionalTests/python/skill/deploymentTemplates/template-with-new-rg.json'
       steps:
       - template: pythonDeployStepsExistingRG.yml

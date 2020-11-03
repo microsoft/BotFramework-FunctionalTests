@@ -2,10 +2,6 @@
 # Deploys using the template SkillsFunctionalTests/python/host/deploymentTemplates/template-with-preexisting-rg.json
 #
 steps:
-  variables:
-    BotGroup: '$(BotName)-RG'
-    TemplateLocation: 'SkillsFunctionalTests/python/host/deploymentTemplates/template-with-preexisting-rg.json'
-
 - powershell: |
     switch ("$(Registry)".ToUpper())
     {
