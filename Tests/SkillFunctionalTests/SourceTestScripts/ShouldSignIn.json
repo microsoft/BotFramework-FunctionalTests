@@ -113,12 +113,12 @@
   {
     "type": "message",
     "role": "bot",
-    "text": "ending conversation from the skill...",
+    "text": "Ending conversation from the skill...",
     "assertions": [
       "type == 'message'",
       "from.role == 'bot'",
       "recipient.role == 'user'",
-      "text == 'ending conversation from the skill...'",
+      "text == 'Ending conversation from the skill...'",
       "inputHint == 'acceptingInput'"
     ]
   },

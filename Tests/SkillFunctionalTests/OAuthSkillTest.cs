@@ -3,8 +3,6 @@
 
 using System.IO;
 using System.Threading.Tasks;
-using Microsoft.Bot.Connector.DirectLine;
-using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using TranscriptTestRunner;
@@ -51,49 +49,6 @@ namespace SkillFunctionalTests
         {
             var runner = new XUnitTestRunner(new TestClientFactory(ClientType.DirectLine).GetTestClient(), _logger);
             await runner.RunTestAsync(Path.Combine(_transcriptsFolder, transcript));
-        }
-
-        [Fact]
-        public async Task ManualTest()
-        {
-            var runner = new XUnitTestRunner(new TestClientFactory(ClientType.DirectLine).GetTestClient(), _logger);
-
-            await runner.SendActivityAsync(new Activity(ActivityTypes.ConversationUpdate));
-            await runner.AssertReplyAsync(activity =>
-            {
-                Assert.Equal(ActivityTypes.Message, activity.Type);
-                Assert.Equal("Hello and welcome!", activity.Text);
-            });
-
-            await runner.SendActivityAsync(new Activity() { Type = ActivityTypes.Message, Text = "skill" });
-            await runner.AssertReplyAsync(activity =>
-            {
-                Assert.Equal(ActivityTypes.Message, activity.Type);
-                Assert.Equal("Got it, connecting you to the skill...", activity.Text);
-            });
-            await runner.AssertReplyAsync(activity =>
-            {
-                Assert.Equal(ActivityTypes.Message, activity.Type);
-                Assert.Equal("Echo: skill", activity.Text);
-            });
-            await runner.AssertReplyAsync(activity =>
-            {
-                Assert.Equal(ActivityTypes.Message, activity.Type);
-                Assert.Equal("Say \"end\" or \"stop\" and I\'ll end the conversation and back to the parent.", activity.Text);
-            });
-
-            await runner.SendActivityAsync(new Activity() { Type = ActivityTypes.Message, Text = "auth" });
-            await runner.AssertReplyAsync(async activity =>
-            {
-                Assert.Equal(ActivityTypes.Message, activity.Type);
-                Assert.True(activity.Attachments.Count > 0);
-                await runner.SignInAndVerifyOAuthAsync(activity);
-            });
-            await runner.AssertReplyAsync(activity =>
-            {
-                Assert.Equal(ActivityTypes.Message, activity.Type);
-                Assert.Equal("You are now logged in.", activity.Text);
-            });
         }
     }
 }

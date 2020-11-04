@@ -165,7 +165,7 @@ namespace TranscriptTestRunner.TestClients
                         {
                             if (!response.IsSuccessStatusCode || !text.Contains("You are now signed in and can close this window."))
                             {
-                                throw new Exception("An error ocurred sigin in");
+                                throw new Exception("An error occurred signing in");
                             }
 
                             return;
