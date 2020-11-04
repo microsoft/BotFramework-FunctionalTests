@@ -104,7 +104,7 @@ stages:
         Parameters.sourceLocation: 'SkillsFunctionalTests/python/skill'
         TemplateLocation: 'SkillsFunctionalTests/python/skill/deploymentTemplates/template-with-new-rg.json'
       steps:
-      - template: pythonDeploySteps.yml
+      - template: pythonDeployStepsNewRG.yml
 
     - job: Configure_OAuth
       dependsOn: Deploy_Skill

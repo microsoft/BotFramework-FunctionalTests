@@ -1,3 +1,6 @@
+#
+# Deploys using the template SkillsFunctionalTests/python/host/deploymentTemplates/template-with-preexisting-rg.json
+#
 steps:
 - powershell: |
     switch ("$(Registry)".ToUpper())
@@ -85,13 +88,19 @@ steps:
   
 - template: pythonTagBotBuilderVersion.yml
 
-- task: AzureCLI@1
-  displayName: 'Create resource group and deploy bot'
+- task: AzureCLI@2
+  displayName: 'create Azure resources - pre-existing RG template'
   inputs:
-    azureSubscription: $(AzureSubscription)
+    azureSubscription: 'FUSE Temporary (174c5021-8109-4087-a3e2-a1de20420569)'
+    scriptType: ps
     scriptLocation: inlineScript
     inlineScript: |
-     az deployment create --name "$(BotName)-RG" --template-file "$(System.DefaultWorkingDirectory)/$(TemplateLocation)" --location "westus" --parameters appId="$(DeployAppId)" appSecret="$(DeployAppSecret)" botId="$(BotName)" botSku=F0 newAppServicePlanName="$(BotName)" newWebAppName="$(BotName)-$(Build.BuildId)" groupName="$(BotName)-RG" groupLocation="westus" newAppServicePlanLocation="westus"
+     Set-PSDebug -Trace 1;
+     az group create --location westus --name $(BotGroup);
+
+     # set up bot channels registration, app service, app service plan
+     az deployment group create --resource-group "$(BotGroup)" --template-file "$(System.DefaultWorkingDirectory)/$(TemplateLocation)" --parameters appId="$(DeployAppId)" appSecret="$(DeployAppSecret)" botId="$(BotName)" newWebAppName="$(BotName)-$(Build.BuildId)" newAppServicePlanName="$(BotName)" appServicePlanLocation="westus" --name "$(BotName)";
+     Set-PSDebug -Trace 0;
 
 - script: |
    git config --global user.name "GitPythonDeploymentUser"
