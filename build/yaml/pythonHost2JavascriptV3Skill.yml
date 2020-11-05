@@ -8,17 +8,16 @@ trigger: none
 pr: none
 
 variables:
+  BotGroup: '$(BotName)-RG'
   BuildConfiguration: 'Debug'
   BuildPlatform: 'any cpu'
-  TriggeredReason: $[ coalesce( variables['TriggeringBuildReason'], variables['Build.Reason'] ) ]
+  CodesignValidation: false
   # AzureDeploymentPassword: define in Azure
   # AzureDeploymentUser: define in Azure
   # AzureSubscription: define in Azure
   # BotBuilderPackageVersionHost: (optional) define in Azure
   # BotBuilderPackageVersionSkill: (optional) define in Azure
   # DeleteResourceGroup: (optional) define in Azure
-  # ExecutePipelinesPersonalAccessToken: (optional) define in Azure
-  # NextBuild: define in Azure and set to either a build name or an empty string
   # PyJsV3HostAppId: define in Azure
   # PyJsV3HostAppSecret: define in Azure
   # PyJsV3HostBotName: define in Azure
@@ -26,17 +25,15 @@ variables:
   # PyJsV3SkillAppSecret: define in Azure
   # PyJsV3SkillBotName: define in Azure
   # RegistryUrlHost: (optional) define in Azure
-  # NextBuild: define in Azure and set to either a build name or an empty string
   # RegistryUrlSkill (Optional): define this in Azure
   # TestFilter: (optional) define in Azure. Example: '&TestCategory!=SkipForV3Bots'
-  # TriggeredBy: define in Azure and set to an empty string
 
 pool:
   vmImage: 'windows-2019'
 
 stages:
 - stage: Prepare
-  condition: and(succeeded(), in(variables['TriggeredReason'], 'Schedule', 'Manual', 'BuildRunner'))
+  condition: and(succeeded(), ne(variables['DeleteResourceGroup'], 'false'))
   jobs:
     - job: Delete_Preexisting_Resources
       variables:
@@ -93,7 +90,7 @@ stages:
   dependsOn:
   - Deploy
   - Test
-  condition: and(always(), in(variables['TriggeredReason'], 'Schedule', 'Manual', 'BuildRunner'))
+  condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
   jobs:
     - job: Delete_RG
       steps:
@@ -106,20 +103,3 @@ stages:
            call az group delete -n "$(PyJsV3HostBotName)-RG" --yes
            call az group delete -n "$(PyJsV3SkillBotName)-RG" --yes
         condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
-
-- stage: QueueNext
-  condition: and(succeededOrFailed(), ne(variables['TriggeredReason'], 'Manual'), ne(variables['NextBuild'], ''))
-  jobs:
-    - job: TriggerBuild
-      steps:
-      - task: benjhuser.tfs-extensions-build-tasks.trigger-build-task.TriggerBuild@3
-        displayName: 'Trigger build $(NextBuild)'
-        inputs:
-          buildDefinition: '$(NextBuild)'
-          queueBuildForUserThatTriggeredBuild: true
-          buildParameters: 'TriggeringBuildReason: $(TriggeredReason), TriggeredBy: Triggered_by_$(Build.DefinitionName)/$(Build.BuildNumber)'
-          password: '$(ExecutePipelinesPersonalAccessToken)'
-          enableBuildInQueueCondition: true
-          blockingBuildsList: '$(NextBuild)'
-        continueOnError: true
-        condition: and(succeededOrFailed(), ne(variables['TriggeredReason'], 'Manual'), ne(variables['NextBuild'], ''), ne(variables['ExecutePipelinesPersonalAccessToken'], ''))

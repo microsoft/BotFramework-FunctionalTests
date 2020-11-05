@@ -9,8 +9,8 @@ pr: none
 
 variables:
   BotGroup: '$(BotName)-RG'
-  BuildPlatform: 'any cpu'
   BuildConfiguration: 'Debug'
+  BuildPlatform: 'any cpu'
   CodesignValidation: false
   # AzureSubscription: define in Azure
   # BotBuilderPackageVersionHost: (optional) define in Azure
