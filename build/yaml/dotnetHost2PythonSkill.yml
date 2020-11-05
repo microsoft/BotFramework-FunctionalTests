@@ -44,6 +44,7 @@ stages:
       - template: cleanResourcesStep.yml
 
 - stage: Build
+  dependsOn: []    # makes this run in parallel
   jobs:
     - job: Validate_Host_NetCore_Version
       variables:

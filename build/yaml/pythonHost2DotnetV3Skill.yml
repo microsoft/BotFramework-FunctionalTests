@@ -10,6 +10,7 @@ pr: none
 variables:
   BuildConfiguration: 'Debug'
   BuildPlatform: 'any cpu'
+  CodesignValidation: false
   # AzureDeploymentPassword: define in Azure
   # AzureDeploymentUser: define in Azure
   # AzureSubscription: define in Azure
@@ -41,7 +42,7 @@ stages:
       - template: cleanResourcesStep.yml
 
 - stage: Build
-  condition: succeededOrFailed()
+  dependsOn: []    # makes this run in parallel
   jobs:
     - job: Build_Skill_Bot
       variables:
