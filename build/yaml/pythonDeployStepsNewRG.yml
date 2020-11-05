@@ -95,8 +95,10 @@ steps:
     scriptType: ps
     scriptLocation: inlineScript
     inlineScript: |
+     Set-PSDebug -Trace 1;
      # set up resource group, bot channels registration, app service, app service plan
      az deployment sub create --name "$(BotName)-RG" --template-file "$(System.DefaultWorkingDirectory)/$(TemplateLocation)" --location "westus" --parameters appId="$(DeployAppId)" appSecret="$(DeployAppSecret)" botId="$(BotName)" botSku=F0 newAppServicePlanName="$(BotName)" newWebAppName="$(BotName)-$(Build.BuildId)" groupName="$(BotName)-RG" groupLocation="westus" newAppServicePlanLocation="westus";
+     Set-PSDebug -Trace 0;
 
 - script: |
    git config --global user.name "GitPythonDeploymentUser"
