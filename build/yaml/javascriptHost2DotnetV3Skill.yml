@@ -8,6 +8,7 @@ trigger: none
 pr: none
 
 variables:
+  BotGroup: '$(BotName)-RG'
   BuildPlatform: 'any cpu'
   BuildConfiguration: 'Debug'
   CodesignValidation: false
