@@ -76,7 +76,8 @@
         "resourcesLocation": "[parameters('newAppServicePlanLocation')]",
         "webAppName": "[if(empty(parameters('newWebAppName')), parameters('botId'), parameters('newWebAppName'))]",
         "siteHost": "[concat(variables('webAppName'), '.azurewebsites.net')]",
-        "botEndpoint": "[concat('https://', variables('siteHost'), '/api/messages')]"
+        "botEndpoint": "[concat('https://', variables('siteHost'), '/api/messages')]",
+        "resourceGroupId": "[concat(subscription().id, '/resourceGroups/', parameters('groupName'))]"
     },
     "resources": [
         {
@@ -84,8 +85,7 @@
             "type": "Microsoft.Resources/resourceGroups",
             "apiVersion": "2018-05-01",
             "location": "[parameters('groupLocation')]",
-            "properties": {
-            }
+            "properties": {}
         },
         {
             "type": "Microsoft.Resources/deployments",
@@ -97,97 +97,36 @@
             ],
             "properties": {
                 "mode": "Incremental",
-				"expressionEvaluationOptions": {
-					"scope": "inner"
-				},
-				"parameters": {
-					"appIdForTemplate": {
-						"value": "[parameters('appId')]"
-					},
-					"appServicePlanNameForTemplate": {
-						"value": "[variables('appServicePlanName')]"
-					},
-					"appSecretForTemplate": {
-						"value": "[parameters('appSecret')]"
-					},
-					"botEndPointForTemplate": {
-						"value": "[variables('botEndpoint')]"
-					},
-					"botIdForTemplate": {
-						"value": "[parameters('botId')]"
-					},
-					"botSkuForTemplate": {
-						"value": "[parameters('botSku')]"
-					},
-					"resourcesLocationForTemplate": {
-						"value": "[variables('resourcesLocation')]"
-					},
-					"newAppServicePlanSkuForTemplate":{
-						"value": "[parameters('newAppServicePlanSku')]"
-					},
-					"webAppNameForTemplate": {
-						"value": "[variables('webAppName')]"
-					}
-				},
                 "template": {
                     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
                     "contentVersion": "1.0.0.0",
-					"parameters": {
-						"appIdForTemplate": {
-							"type": "string"
-						},
-						"appServicePlanNameForTemplate": {
-							"type": "string"
-						},
-						"appSecretForTemplate": {
-							"type": "string"
-						},
-						"botEndPointForTemplate": {
-							"type": "string"
-						},
-						"botIdForTemplate": {
-							"type": "string"
-						},
-						"botSkuForTemplate": {
-							"type": "string"
-						},
-						"resourcesLocationForTemplate": {
-							"type": "string"
-						},
-						"newAppServicePlanSkuForTemplate": {
-							"type": "object"
-						},
-						"webAppNameForTemplate": {
-							"type": "string"
-						}
-							
-					},
+                    "parameters": {},
                     "variables": {},
                     "resources": [
                         {
                             "comments": "Create a new App Service Plan",
                             "type": "Microsoft.Web/serverfarms",
-                            "name": "[parameters('appServicePlanNameForTemplate')]",
+                            "name": "[variables('appServicePlanName')]",
                             "apiVersion": "2018-02-01",
-                            "location": "[parameters('resourcesLocationForTemplate')]",
-                            "sku": "[parameters('newAppServicePlanSkuForTemplate')]",
+                            "location": "[variables('resourcesLocation')]",
+                            "sku": "[parameters('newAppServicePlanSku')]",
                             "properties": {
-                                "name": "[parameters('appServicePlanNameForTemplate')]"
+                                "name": "[variables('appServicePlanName')]"
                             }
                         },
                         {
                             "comments": "Create a Web App using the new App Service Plan",
                             "type": "Microsoft.Web/sites",
                             "apiVersion": "2015-08-01",
-                            "location": "[parameters('resourcesLocationForTemplate')]",
+                            "location": "[variables('resourcesLocation')]",
                             "kind": "app",
                             "dependsOn": [
-                                "[resourceId('Microsoft.Web/serverfarms/', parameters('appServicePlanNameForTemplate'))]"
+                                "[concat(variables('resourceGroupId'), '/providers/Microsoft.Web/serverfarms/', variables('appServicePlanName'))]"
                             ],
-                            "name": "[parameters('webAppNameForTemplate')]",
+                            "name": "[variables('webAppName')]",
                             "properties": {
-                                "name": "[parameters('webAppNameForTemplate')]",
-                                "serverFarmId": "[parameters('appServicePlanNameForTemplate')]",
+                                "name": "[variables('webAppName')]",
+                                "serverFarmId": "[variables('appServicePlanName')]",
                                 "siteConfig": {
                                     "appSettings": [
                                         {
@@ -196,11 +135,11 @@
                                         },
                                         {
                                             "name": "MicrosoftAppId",
-                                            "value": "[parameters('appIdForTemplate')]"
+                                            "value": "[parameters('appId')]"
                                         },
                                         {
                                             "name": "MicrosoftAppPassword",
-                                            "value": "[parameters('appSecretForTemplate')]"
+                                            "value": "[parameters('appSecret')]"
                                         }
                                     ],
                                     "cors": {
@@ -208,31 +147,32 @@
                                             "https://botservice.hosting.portal.azure.net",
                                             "https://hosting.onecloud.azure-test.net/"
                                         ]
-                                    }
+                                    },
+                                    "webSocketsEnabled": true
                                 }
                             }
                         },
                         {
                             "apiVersion": "2017-12-01",
                             "type": "Microsoft.BotService/botServices",
-                            "name": "[parameters('botIdForTemplate')]",
+                            "name": "[parameters('botId')]",
                             "location": "global",
                             "kind": "bot",
                             "sku": {
-                                "name": "[parameters('botSkuForTemplate')]"
+                                "name": "[parameters('botSku')]"
                             },
                             "properties": {
-                                "name": "[parameters('botIdForTemplate')]",
-                                "displayName": "[parameters('botIdForTemplate')]",
-                                "endpoint": "[parameters('botEndpointForTemplate')]",
-                                "msaAppId": "[parameters('appIdForTemplate')]",
+                                "name": "[parameters('botId')]",
+                                "displayName": "[parameters('botId')]",
+                                "endpoint": "[variables('botEndpoint')]",
+                                "msaAppId": "[parameters('appId')]",
                                 "developerAppInsightsApplicationId": null,
                                 "developerAppInsightKey": null,
                                 "publishingCredentials": null,
                                 "storageResourceId": null
                             },
                             "dependsOn": [
-                                "[resourceId('Microsoft.Web/sites/', parameters('webAppNameForTemplate'))]"
+                                "[concat(variables('resourceGroupId'), '/providers/Microsoft.Web/sites/', variables('webAppName'))]"
                             ]
                         }
                     ],
