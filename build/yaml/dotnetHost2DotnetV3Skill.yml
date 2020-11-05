@@ -74,6 +74,7 @@ stages:
   dependsOn:
   - Prepare
   - Build
+  condition: succeeded('Build')
   jobs:
     - job: Deploy_Host
       variables:
