@@ -43,6 +43,7 @@
     },
     "locale": "",
     "text": "Would you like to view your token?",
+    "inputHint": "acceptingInput",
     "suggestedActions": {
       "actions": [
         {

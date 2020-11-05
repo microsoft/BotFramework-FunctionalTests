@@ -116,9 +116,14 @@ namespace TranscriptTestRunner
 
         public async Task ClientSignInAsync(string signInUrl)
         {
-            if (string.IsNullOrEmpty(signInUrl) || !signInUrl.StartsWith("https://", StringComparison.Ordinal))
+            if (string.IsNullOrEmpty(signInUrl))
             {
-                throw new Exception($"Sign in url is empty or badly formatted. Url received: {signInUrl}");
+                throw new ArgumentNullException(signInUrl);
+            }
+
+            if (!signInUrl.StartsWith("https://", StringComparison.Ordinal))
+            {
+                throw new Exception($"Sign in url is badly formatted. Url received: {signInUrl}");
             }
 
             await _testClient.SignInAsync(signInUrl).ConfigureAwait(false);

@@ -12,7 +12,6 @@ using TranscriptTestRunner;
 using TranscriptTestRunner.XUnit;
 using Xunit;
 using Xunit.Abstractions;
-using Activity = Microsoft.Bot.Schema.Activity;
 using ActivityTypes = Microsoft.Bot.Connector.DirectLine.ActivityTypes;
 
 namespace SkillFunctionalTests
@@ -50,21 +49,25 @@ namespace SkillFunctionalTests
         public async Task ShouldSignIn()
         {
             var runner = new XUnitTestRunner(new TestClientFactory(ClientType.DirectLine).GetTestClient(), _logger);
+            var signInUrl = string.Empty;
             
             // Execute the first part of the conversation.
             await runner.RunTestAsync(Path.Combine(_transcriptsFolder, "ShouldSignIn1.transcript"));
 
-            await runner.SendActivityAsync(new Activity { Type = ActivityTypes.Message, Text = "auth" });
-            
-            // Obtain the signIn url and execute the SignIn.
-            await runner.AssertReplyAsync(async activity =>
+            // Obtain the signIn url.
+            await runner.AssertReplyAsync(activity =>
             {
                 Assert.Equal(ActivityTypes.Message, activity.Type);
                 Assert.True(activity.Attachments.Count > 0);
+                
                 var card = JsonConvert.DeserializeObject<SigninCard>(JsonConvert.SerializeObject(activity.Attachments.FirstOrDefault().Content));
-                var signInUrl = card.Buttons[0].Value?.ToString();
-                await runner.ClientSignInAsync(signInUrl);
+                signInUrl = card.Buttons[0].Value?.ToString();
+
+                Assert.False(string.IsNullOrEmpty(signInUrl));
             });
+
+            // Execute the SignIn.
+            await runner.ClientSignInAsync(signInUrl);
 
             // Execute the rest of the conversation.
             await runner.RunTestAsync(Path.Combine(_transcriptsFolder, "ShouldSignIn2.transcript"));
