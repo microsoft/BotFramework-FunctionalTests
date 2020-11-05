@@ -114,32 +114,8 @@ namespace TranscriptTestRunner
             validateAction(nextReply);
         }
 
-        public async Task SignInAndVerifyOAuthAsync(Activity activity)
+        public async Task ClientSignInAsync(string signInUrl)
         {
-            if (activity == null)
-            {
-                throw new Exception("OAuthCard is null");
-            }
-
-            if (activity.Attachments == null)
-            {
-                throw new Exception("OAuthCard.Attachments = null");
-            }
-
-            var card = JsonConvert.DeserializeObject<SigninCard>(JsonConvert.SerializeObject(activity.Attachments.FirstOrDefault().Content));
-
-            if (card == null)
-            {
-                throw new Exception("No SignIn Card received in activity");
-            }
-
-            if (card.Buttons == null || !card.Buttons.Any())
-            {
-                throw new Exception("No buttons received in sign in card");
-            }
-
-            var signInUrl = card.Buttons[0].Value?.ToString();
-
             if (string.IsNullOrEmpty(signInUrl) || !signInUrl.StartsWith("https://", StringComparison.Ordinal))
             {
                 throw new Exception($"Sign in url is empty or badly formatted. Url received: {signInUrl}");
@@ -212,12 +188,6 @@ namespace TranscriptTestRunner
                         
                         var nextReply = await GetNextReplyAsync(cancellationToken).ConfigureAwait(false);
                         await AssertActivityAsync(scriptActivity, nextReply, cancellationToken).ConfigureAwait(false);
-
-                        if (nextReply.Attachments != null && nextReply.Attachments.Any() && nextReply.Attachments[0].ContentType == "application/vnd.microsoft.card.oauth")
-                        {
-                            await SignInAndVerifyOAuthAsync(nextReply).ConfigureAwait(false);
-                        }
-
                         break;
 
                     default:

@@ -2,9 +2,12 @@
 // Licensed under the MIT License.
 
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Bot.Connector.DirectLine;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using TranscriptTestRunner;
 using TranscriptTestRunner.XUnit;
 using Xunit;
@@ -43,12 +46,28 @@ namespace SkillFunctionalTests
             _logger = loggerFactory.CreateLogger<OAuthSkillTest>();
         }
 
-        [Theory]
-        [InlineData("ShouldSignIn.transcript")]
-        public async Task RunScripts(string transcript)
+        [Fact]
+        public async Task ShouldSignIn()
         {
             var runner = new XUnitTestRunner(new TestClientFactory(ClientType.DirectLine).GetTestClient(), _logger);
-            await runner.RunTestAsync(Path.Combine(_transcriptsFolder, transcript));
+            
+            // Execute the first part of the conversation.
+            await runner.RunTestAsync(Path.Combine(_transcriptsFolder, "ShouldSignIn1.transcript"));
+
+            await runner.SendActivityAsync(new Activity { Type = ActivityTypes.Message, Text = "auth" });
+            
+            // Obtain the signIn url and execute the SignIn.
+            await runner.AssertReplyAsync(async activity =>
+            {
+                Assert.Equal(ActivityTypes.Message, activity.Type);
+                Assert.True(activity.Attachments.Count > 0);
+                var card = JsonConvert.DeserializeObject<SigninCard>(JsonConvert.SerializeObject(activity.Attachments.FirstOrDefault().Content));
+                var signInUrl = card.Buttons[0].Value?.ToString();
+                await runner.ClientSignInAsync(signInUrl);
+            });
+
+            // Execute the rest of the conversation.
+            await runner.RunTestAsync(Path.Combine(_transcriptsFolder, "ShouldSignIn2.transcript"));
         }
     }
 }
