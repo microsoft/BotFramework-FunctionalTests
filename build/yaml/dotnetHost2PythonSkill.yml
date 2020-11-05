@@ -84,6 +84,7 @@ stages:
       - template: dotnetDeploySteps.yml
 
     - job: Deploy_Skill
+      #dependsOn: Deploy_Host
       variables:
         BotName: $(DotNetPySkillBotName)
         DeployAppId: $(DotNetPySkillAppId)
@@ -91,9 +92,12 @@ stages:
         Registry: $[variables.RegistryUrlSkill]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
         Parameters.sourceLocation: 'SkillsFunctionalTests/python/skill'
-        TemplateLocation: 'SkillsFunctionalTests/python/skill/deploymentTemplates/template-with-new-rg.json'
+        TemplateLocation: 'SkillsFunctionalTests/python/skill/deploymentTemplates/template-with-preexisting-rg.json'
+        # To use template-with-new-rg.json when Deploy_Host and Deploy_Skill run in parallel gets 'Azure Error: DeploymentActive'.
+        #TemplateLocation: 'SkillsFunctionalTests/python/skill/deploymentTemplates/template-with-new-rg.json'
       steps:
-      - template: pythonDeployStepsNewRG.yml
+      - template: pythonDeployStepsExistingRG.yml
+      #- template: pythonDeployStepsNewRG.yml
 
     - job: Configure_OAuth
       dependsOn: Deploy_Skill
