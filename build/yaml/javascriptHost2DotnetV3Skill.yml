@@ -57,7 +57,7 @@ stages:
   - Prepare
   - Build
   condition: succeeded('Build')
- jobs:
+  jobs:
     - job: Deploy_Host
       variables:
         HostBotName: $(JsDotNetV3HostBotName)
