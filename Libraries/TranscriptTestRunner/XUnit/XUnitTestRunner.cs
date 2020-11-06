@@ -11,13 +11,29 @@ using Xunit;
 
 namespace TranscriptTestRunner.XUnit
 {
+    /// <summary>
+    /// XUnit extension of <see cref="TestRunner"/>.
+    /// </summary>
     public class XUnitTestRunner : TestRunner
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="XUnitTestRunner"/> class.
+        /// </summary>
+        /// <param name="client">Test client to use.</param>
+        /// <param name="logger">Optional. Instance of <see cref="ILogger"/> to use.</param>
         public XUnitTestRunner(TestClientBase client, ILogger logger = null)
             : base(client, logger)
         {
         }
 
+        /// <summary>
+        /// Validates an <see cref="Activity"/> according to an expected activity <see cref="TestScriptItem"/> using XUnit.
+        /// </summary>
+        /// <param name="expectedActivity">The expected activity of type <see cref="TestScriptItem"/>.</param>
+        /// <param name="actualActivity">The actual response <see cref="Activity"/> recieved.</param>
+        /// <param name="cancellationToken">Optional. A <see cref="CancellationToken"/> that can be used by other objects
+        /// or threads to receive notice of cancellation.</param>
+        /// <returns>A task that represents the work queued to execute.</returns>
         protected override Task AssertActivityAsync(TestScriptItem expectedActivity, Activity actualActivity, CancellationToken cancellationToken = default)
         {
             foreach (var assertion in expectedActivity.Assertions)

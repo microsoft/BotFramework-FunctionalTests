@@ -6,10 +6,17 @@ using TranscriptTestRunner.TestClients;
 
 namespace TranscriptTestRunner
 {
+    /// <summary>
+    /// Factory class to create instances of <see cref="TestClientBase"/>.
+    /// </summary>
     public class TestClientFactory
     {
         private readonly TestClientBase _testClientBase;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TestClientFactory"/> class.
+        /// </summary>
+        /// <param name="client">The type of client to create.</param>
         public TestClientFactory(ClientType client)
         {
             var configuration = new ConfigurationBuilder()
@@ -37,6 +44,10 @@ namespace TranscriptTestRunner
             }
         }
 
+        /// <summary>
+        /// Gets the test client.
+        /// </summary>
+        /// <returns>The test client.</returns>
         public TestClientBase GetTestClient()
         {
             return _testClientBase;

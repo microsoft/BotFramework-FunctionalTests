@@ -17,6 +17,9 @@ using Activity = Microsoft.Bot.Schema.Activity;
 
 namespace TranscriptTestRunner
 {
+    /// <summary>
+    /// Test runner implementation.
+    /// </summary>
     public class TestRunner
     {
         private readonly ILogger _logger;
@@ -26,6 +29,11 @@ namespace TranscriptTestRunner
         private TranscriptConverter _transcriptConverter;
         private string _testScriptPath;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TestRunner"/> class.
+        /// </summary>
+        /// <param name="client">Test client to use.</param>
+        /// <param name="logger">Optional. Instance of <see cref="ILogger"/> to use.</param>
         public TestRunner(TestClientBase client, ILogger logger = null)
         {
             _testClient = client;
@@ -47,6 +55,17 @@ namespace TranscriptTestRunner
             }
         }
 
+        /// <summary>
+        /// Executes a test script with the test steps.
+        /// </summary>
+        /// <remarks>
+        /// If the file is of type <i>.transcript</i> it will be converted to an intermediary <i>TestScript.json</i> file.
+        /// </remarks>
+        /// <param name="transcriptPath">Path to the file to use.</param>
+        /// <param name="callerName">Optional. The name of the method caller.</param>
+        /// <param name="cancellationToken">Optional. A <see cref="CancellationToken"/> that can be used by other objects
+        /// or threads to receive notice of cancellation.</param>
+        /// <returns>A task that represents the work queued to execute.</returns>
         public async Task RunTestAsync(string transcriptPath, [CallerMemberName] string callerName = "", CancellationToken cancellationToken = default)
         {
             _logger.LogInformation($"======== Running script: {transcriptPath} ========");
@@ -63,12 +82,25 @@ namespace TranscriptTestRunner
             await ExecuteTestScriptAsync(callerName, cancellationToken).ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// Sends an <see cref="Activity"/> to the bot through the test client.
+        /// </summary>
+        /// <param name="sendActivity"><see cref="Activity"/> to send.</param>
+        /// <param name="cancellationToken">Optional. A <see cref="CancellationToken"/> that can be used by other objects
+        /// or threads to receive notice of cancellation.</param>
+        /// <returns>A task that represents the work queued to execute.</returns>
         public async Task SendActivityAsync(Activity sendActivity, CancellationToken cancellationToken = default)
         {
             _logger.LogInformation("Elapsed Time: {Elapsed}, User sends: {Text}", Stopwatch.Elapsed, sendActivity.Text);
             await _testClient.SendActivityAsync(sendActivity, cancellationToken).ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// Gets the next reply <see cref="Activity"/> from the bot through the test client.
+        /// </summary>
+        /// <param name="cancellationToken">Optional. A <see cref="CancellationToken"/> that can be used by other objects
+        /// or threads to receive notice of cancellation.</param>
+        /// <returns>The reply Activity from the bot.</returns>
         public async Task<Activity> GetNextReplyAsync(CancellationToken cancellationToken = default)
         {
             var timeoutCheck = new Stopwatch();
@@ -108,12 +140,24 @@ namespace TranscriptTestRunner
             }
         }
 
+        /// <summary>
+        /// Validates the reply <see cref="Activity"/> from the bot according to the validateAction parameter.
+        /// </summary>
+        /// <param name="validateAction">The <see cref="Action"/> to validate the reply <see cref="Activity"/> from the bot.</param>
+        /// <param name="cancellationToken">Optional. A <see cref="CancellationToken"/> that can be used by other objects
+        /// or threads to receive notice of cancellation.</param>
+        /// <returns>A task that represents the work queued to execute.</returns>
         public async Task AssertReplyAsync(Action<Activity> validateAction, CancellationToken cancellationToken = default)
         {
             var nextReply = await GetNextReplyAsync(cancellationToken).ConfigureAwait(false);
             validateAction(nextReply);
         }
 
+        /// <summary>
+        /// Signs in to the bot through the test client.
+        /// </summary>
+        /// <param name="signInUrl">The sign in Url.</param>
+        /// <returns>A task that represents the work queued to execute.</returns>
         public async Task ClientSignInAsync(string signInUrl)
         {
             if (string.IsNullOrEmpty(signInUrl))
@@ -129,6 +173,14 @@ namespace TranscriptTestRunner
             await _testClient.SignInAsync(signInUrl).ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// Validates an <see cref="Activity"/> according to an expected activity <see cref="TestScriptItem"/>.
+        /// </summary>
+        /// <param name="expectedActivity">The expected activity of type <see cref="TestScriptItem"/>.</param>
+        /// <param name="actualActivity">The actual response <see cref="Activity"/> received.</param>
+        /// <param name="cancellationToken">Optional. A <see cref="CancellationToken"/> that can be used by other objects
+        /// or threads to receive notice of cancellation.</param>
+        /// <returns>A task that represents the work queued to execute.</returns>
         protected virtual Task AssertActivityAsync(TestScriptItem expectedActivity, Activity actualActivity, CancellationToken cancellationToken = default)
         {
             foreach (var assertion in expectedActivity.Assertions)
