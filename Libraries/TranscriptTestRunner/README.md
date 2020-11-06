@@ -5,7 +5,7 @@
 Transcript Test Runner aims to simplify complex conversation scenarios against bots.
 Starting from a transcript file containing the user-bot interactions to be tested, the Transcript Test Runner converts the transcript into a test script used to replicate the messages sent by the user and evaluate the answers from the bot.
 
-The Transcript Test Runner also offers the possibility of running the tests directly from a test script (link to schema), adding flexibility to the assertions for the bot's messages.
+The Transcript Test Runner also offers the possibility of running the tests directly from a [test script](testscript.schema), adding flexibility to the assertions for the bot's messages.
 
 The Test Runner supports different formats of transcript files (Emulator, Teams, Slack, etc.) and
 can be connected to the bots using different channels (*):
@@ -91,10 +91,13 @@ The following sample shows how to create a simple test programmatically.
 ```csharp
 // Create a DirectLine client instance that will be used to communicate with your bot.
 var directLineClient = new TestClientFactory(ClientType.DirectLine).GetTestClient();
+
 // Instantiate the TestRunner and set up the DirectLine client.
 var runner = new TestRunner(directLineClient);
-// Send an Activity to be evaluated.
+
+// Send an Activity to the bot.
 await runner.SendActivityAsync(new Activity(ActivityTypes.ConversationUpdate));
+
 // Asserts the reply received from the bot.
 await runner.AssertReplyAsync(activity =>
 {
@@ -122,7 +125,7 @@ var directLineClient = new TestClientFactory(ClientType.DirectLine).GetTestClien
 var runner = new TestRunner(directLineClient);
 var signInUrl = string.Empty;
 
-// Sends an Activity to be evaluated.
+// Sends an Activity to the bot.
 await runner.SendActivityAsync(new Activity { Type = ActivityTypes.Message, Text = "auth" });
 
 // Obtain the sign in url.
@@ -142,11 +145,11 @@ await runner.AssertReplyAsync(activity =>
 await runner.ClientSignInAsync(signInUrl);
 
 // If the sign in succeeded you can continue to execute the rest of the conversation
-// either programmatically or test file.
+// either programmatically or with a test file.
 ```
 
 ### Setting up a Logger (Optional).
-TestRunner uses [ILogger](https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.logging.ilogger) when it comes to display an output for each interaction between the test and bot.
+TestRunner uses [ILogger](https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.logging.ilogger) when it comes to display an output for each interaction between the test and the bot.
 
 The following sample shows how to create and pass an `ILogger` to the `TestRunner` with a `LoggerFactory`.
 
@@ -172,9 +175,7 @@ var runner = new TestRunner(directLineClient, logger);
 ```
 
 ### Extend TestRunner functionality
-TestRunner can be inherited to extend its functionality and provide a set of custom configurations.
-
-The following sample shows a custom `AssertActivityAsync` method overriding the default one to do assertions.
+TestRunner has an Xunit extention to allow the users that prefer this test framework, to override the `AssertActivityAsync` with Xunit assertions.
 
 ```csharp
 public class XUnitTestRunner : TestRunner
