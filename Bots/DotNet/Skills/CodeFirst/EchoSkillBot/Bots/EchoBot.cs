@@ -40,7 +40,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot.Bots
             else if (turnContext.Activity.Text.Contains("end") || turnContext.Activity.Text.Contains("stop"))
             {
                 // Send End of conversation at the end.
-                await turnContext.SendActivityAsync(MessageFactory.Text($"ending conversation from the skill..."), cancellationToken);
+                await turnContext.SendActivityAsync(MessageFactory.Text($"Ending conversation from the skill..."), cancellationToken);
                 var endOfConversation = Activity.CreateEndOfConversationActivity();
                 endOfConversation.Code = EndOfConversationCodes.CompletedSuccessfully;
                 await turnContext.SendActivityAsync(endOfConversation, cancellationToken);
