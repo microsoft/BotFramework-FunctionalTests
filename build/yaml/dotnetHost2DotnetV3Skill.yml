@@ -11,7 +11,7 @@ variables:
   BotGroup: '$(BotName)-RG'
   BuildConfiguration: 'Debug'
   BuildPlatform: 'any cpu'
-  CodesignValidation: false
+  runCodesignValidationInjection: false
   # AzureSubscription: define in Azure
   # BotBuilderPackageVersionHost: (optional) define in Azure
   # BotBuilderPackageVersionSkill: (optional) define in Azure
