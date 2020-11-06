@@ -1,7 +1,7 @@
 steps:
 - powershell: |
     Write-host "Setting values in .env file"
-    $file = "$(System.DefaultWorkingDirectory)/SkillsFunctionalTests/javascript/host/.env";
+    $file = "$(System.DefaultWorkingDirectory)/Bots/JavaScript/Consumers/CodeFirst/SimpleHostBot/.env";
     $content = Get-Content -Raw $file | ConvertFrom-StringData;
 
     $content.SkillHostEndpoint = "https://$(HostBotName)-$(Build.BuildId).azurewebsites.net/api/skills";

@@ -1,6 +1,6 @@
 steps:
 - powershell: |
-    $result = Get-ChildItem "$(Build.SourcesDirectory)\SkillsFunctionalTests\dotnet\v3\skill\packages\Microsoft.Bot.Builder.[0-9]*" -directory | Sort LastWriteTime -Descending
+    $result = Get-ChildItem "$(Build.SourcesDirectory)\Bots\DotNet\Skills\CodeFirst\EchoSkillBot-v3\packages\Microsoft.Bot.Builder.[0-9]*" -directory | Sort LastWriteTime -Descending
     
     $version = $result[0].Name.Replace("Microsoft.Bot.Builder.", "")
     $versionTag = ""

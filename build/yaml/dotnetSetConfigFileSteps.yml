@@ -1,7 +1,14 @@
 steps:
 - powershell: |
    # Set values in appsettings.json file.
-   $file = "$(System.DefaultWorkingDirectory)\SkillsFunctionalTests\dotnet\$(NetCoreSdkVersionHost)\host\appsettings.json";
+   if("$env:NetCoreSdkVersionHost".Trim() -eq "3.1")
+   {
+     $file = "Bots/DotNet/Consumers/CodeFirst/SimpleHostBot/appsettings.json"
+   }
+   if("$env:NetCoreSdkVersionHost".Trim() -eq "2.1")
+   {
+     $file = "Bots/DotNet/Consumers/CodeFirst/SimpleHostBot-2.1/appsettings.json"
+   }
    $content = Get-Content -Raw $file | ConvertFrom-Json;
    $content.SkillHostEndpoint = "https://$(HostBotName)-$(Build.BuildId).azurewebsites.net/api/skills";
 
