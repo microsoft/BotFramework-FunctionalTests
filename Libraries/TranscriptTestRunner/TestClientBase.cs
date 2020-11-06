@@ -19,7 +19,7 @@ namespace TranscriptTestRunner
         /// Sends an <see cref="Activity"/> to the bot.
         /// </summary>
         /// <param name="activity"><see cref="Activity"/> to send.</param>
-        /// <param name="cancellationToken">Optional. A <see cref="CancellationToken"/> that can be used by other objects
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used by other objects
         /// or threads to receive notice of cancellation.</param>
         /// <returns>A task that represents the work queued to execute.</returns>
         public abstract Task SendActivityAsync(Activity activity, CancellationToken cancellationToken);
@@ -27,7 +27,7 @@ namespace TranscriptTestRunner
         /// <summary>
         /// Gets the next reply from the bot.
         /// </summary>
-        /// <param name="cancellationToken">Optional. A <see cref="CancellationToken"/> that can be used by other objects
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used by other objects
         /// or threads to receive notice of cancellation.</param>
         /// <returns>A task that represents the work queued to execute.</returns>
         public abstract Task<Activity> GetNextReplyAsync(CancellationToken cancellationToken);

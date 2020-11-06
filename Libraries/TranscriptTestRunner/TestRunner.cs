@@ -154,7 +154,7 @@ namespace TranscriptTestRunner
         }
 
         /// <summary>
-        /// Signs in to the bot trough the test client.
+        /// Signs in to the bot through the test client.
         /// </summary>
         /// <param name="signInUrl">The sign in Url.</param>
         /// <returns>A task that represents the work queued to execute.</returns>
