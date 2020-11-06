@@ -3,8 +3,8 @@
 
 using System.IO;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Bot.Schema;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using TranscriptTestRunner;
 using TranscriptTestRunner.XUnit;

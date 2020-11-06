@@ -47,7 +47,7 @@ class HostBot extends ActivityHandler {
                     // Send the activity to the skill
                     await this.sendToSkill(context, this.targetSkill);
                 } else {
-                    await context.sendActivity("Me no nothin'. Say 'skill' and I'll patch you through");
+                    await context.sendActivity("Me no nothin'. Say \"skill\" and I'll patch you through");
                 }
             }
 
@@ -73,8 +73,8 @@ class HostBot extends ActivityHandler {
 
                 await context.sendActivity(eocActivityMessage);
 
-                // We are back at the root
-                await context.sendActivity('Back in the root bot. Say \'skill\' and I\'ll patch you through');
+                // We are back at the host
+                await context.sendActivity('Back in the host bot. Say "skill" and I\'ll patch you through');
 
                 // Save conversation state
                 await this.conversationState.saveChanges(context, true);

@@ -36,10 +36,15 @@ const bot = new builder.UniversalBot(connector, function (session) {
     switch (session.message.text.toLowerCase()) {
         case 'end':
         case 'stop':
+            session.say("Ending conversation from the skill...", {
+                inputHint: builder.InputHint.acceptingInput
+            });
             session.endConversation();
             break;
         default:
-            session.send("Echo: %s", session.message.text);
-            session.send('Say "end" or "stop" and I\'ll end the conversation and back to the parent.');
+            session.say('Echo: ' + session.message.text, {
+                inputHint: builder.InputHint.acceptingInput
+            });
+            session.say('Say "end" or "stop" and I\'ll end the conversation and back to the parent.');
     }
 }).set('storage', inMemoryStorage); // Register in memory storage
