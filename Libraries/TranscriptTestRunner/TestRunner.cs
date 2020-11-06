@@ -59,9 +59,9 @@ namespace TranscriptTestRunner
         /// Executes a test script with the test steps.
         /// </summary>
         /// <remarks>
-        /// If the transcript file is of type <i>.transcript</i> it will be converted to an intermediary <i>.json</i> file.
+        /// If the file is of type <i>.transcript</i> it will be converted to an intermediary <i>TestScript.json</i> file.
         /// </remarks>
-        /// <param name="transcriptPath">Path to the transcript file to use.</param>
+        /// <param name="transcriptPath">Path to the file to use.</param>
         /// <param name="callerName">Optional. The name of the method caller.</param>
         /// <param name="cancellationToken">Optional. A <see cref="CancellationToken"/> that can be used by other objects
         /// or threads to receive notice of cancellation.</param>
@@ -100,7 +100,7 @@ namespace TranscriptTestRunner
         /// </summary>
         /// <param name="cancellationToken">Optional. A <see cref="CancellationToken"/> that can be used by other objects
         /// or threads to receive notice of cancellation.</param>
-        /// <returns>A task that represents the work queued to execute.</returns>
+        /// <returns>The reply Activity from the bot.</returns>
         public async Task<Activity> GetNextReplyAsync(CancellationToken cancellationToken = default)
         {
             var timeoutCheck = new Stopwatch();
@@ -141,9 +141,9 @@ namespace TranscriptTestRunner
         }
 
         /// <summary>
-        /// Validates the next reply <see cref="Activity"/> from the bot according to the validateAction parameter.
+        /// Validates the reply <see cref="Activity"/> from the bot according to the validateAction parameter.
         /// </summary>
-        /// <param name="validateAction">The <see cref="Action"/> to validate the next reply <see cref="Activity"/> from the bot.</param>
+        /// <param name="validateAction">The <see cref="Action"/> to validate the reply <see cref="Activity"/> from the bot.</param>
         /// <param name="cancellationToken">Optional. A <see cref="CancellationToken"/> that can be used by other objects
         /// or threads to receive notice of cancellation.</param>
         /// <returns>A task that represents the work queued to execute.</returns>
@@ -177,7 +177,7 @@ namespace TranscriptTestRunner
         /// Validates an <see cref="Activity"/> according to an expected activity <see cref="TestScriptItem"/>.
         /// </summary>
         /// <param name="expectedActivity">The expected activity of type <see cref="TestScriptItem"/>.</param>
-        /// <param name="actualActivity">The actual response <see cref="Activity"/> recieved.</param>
+        /// <param name="actualActivity">The actual response <see cref="Activity"/> received.</param>
         /// <param name="cancellationToken">Optional. A <see cref="CancellationToken"/> that can be used by other objects
         /// or threads to receive notice of cancellation.</param>
         /// <returns>A task that represents the work queued to execute.</returns>
