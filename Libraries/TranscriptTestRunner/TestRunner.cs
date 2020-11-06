@@ -56,7 +56,7 @@ namespace TranscriptTestRunner
         }
 
         /// <summary>
-        /// Runs a test transcript.
+        /// Executes a test script with the test steps.
         /// </summary>
         /// <remarks>
         /// If the transcript file is of type <i>.transcript</i> it will be converted to an intermediary <i>.json</i> file.
