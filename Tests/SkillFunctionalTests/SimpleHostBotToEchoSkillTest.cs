@@ -18,6 +18,7 @@ namespace SkillFunctionalTests
     public class SimpleHostBotToEchoSkillTest
     {
         private readonly string _transcriptsFolder = Directory.GetCurrentDirectory() + @"/SourceTranscripts";
+        private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/SourceTestScripts";
         private readonly ILogger<SimpleHostBotToEchoSkillTest> _logger;
 
         public SimpleHostBotToEchoSkillTest(ITestOutputHelper output)

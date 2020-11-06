@@ -3,8 +3,10 @@
 
 using System.Threading;
 using System.Threading.Tasks;
+using AdaptiveExpressions;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Xunit;
 
 namespace TranscriptTestRunner.XUnit
@@ -18,8 +20,12 @@ namespace TranscriptTestRunner.XUnit
 
         protected override Task AssertActivityAsync(TestScriptItem expectedActivity, Activity actualActivity, CancellationToken cancellationToken = default)
         {
-            Assert.Equal(expectedActivity.Type, actualActivity.Type);
-            Assert.Equal(expectedActivity.Text, actualActivity.Text);
+            foreach (var assertion in expectedActivity.Assertions)
+            {
+                var (result, error) = Expression.Parse(assertion).TryEvaluate<bool>(actualActivity);
+
+                Assert.True(result, $"The bot's response was different than expected. The assertion: \"{assertion}\" was evaluated as false.\nActual Activity:\n{JsonConvert.SerializeObject(actualActivity, Formatting.Indented)}");
+            }
 
             return Task.CompletedTask;
         }

@@ -6,10 +6,14 @@ using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Connector.DirectLine;
+using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Rest.TransientFaultHandling;
 using Newtonsoft.Json;
+using Activity = Microsoft.Bot.Connector.DirectLine.Activity;
 using BotActivity = Microsoft.Bot.Schema.Activity;
+using BotChannelAccount = Microsoft.Bot.Schema.ChannelAccount;
+using ChannelAccount = Microsoft.Bot.Connector.DirectLine.ChannelAccount;
 
 namespace TranscriptTestRunner.TestClients
 {
@@ -120,7 +124,10 @@ namespace TranscriptTestRunner.TestClients
                     if (dlActivity.From.Id == _botId)
                     {
                         // Convert the DL Activity object to a BF activity object.
-                        _activityQueue.Enqueue(JsonConvert.DeserializeObject<BotActivity>(JsonConvert.SerializeObject(dlActivity)));
+                        var botActivity = JsonConvert.DeserializeObject<BotActivity>(JsonConvert.SerializeObject(dlActivity));
+                        botActivity.From.Role = RoleTypes.Bot;
+                        botActivity.Recipient = new BotChannelAccount(role: RoleTypes.User);
+                        _activityQueue.Enqueue(botActivity);
                     }
                 }
             }
