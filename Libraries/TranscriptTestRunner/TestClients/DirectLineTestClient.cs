@@ -22,6 +22,9 @@ using ChannelAccount = Microsoft.Bot.Connector.DirectLine.ChannelAccount;
 
 namespace TranscriptTestRunner.TestClients
 {
+    /// <summary>
+    /// DirectLine implementation of <see cref="TestClientBase"/>.
+    /// </summary>
     public class DirectLineTestClient : TestClientBase, IDisposable
     {
         // DL client sample: https://github.com/microsoft/BotFramework-DirectLine-DotNet/tree/main/samples/core-DirectLine/DirectLineClient
@@ -41,6 +44,10 @@ namespace TranscriptTestRunner.TestClients
         private bool _disposed;
         private string _watermark;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DirectLineTestClient"/> class.
+        /// </summary>
+        /// <param name="config">Client configuration.</param>
         public DirectLineTestClient(IConfiguration config)
         {
             _botId = config[BotIdKey];
@@ -95,6 +102,7 @@ namespace TranscriptTestRunner.TestClients
             }
         }
 
+        /// <inheritdoc/>
         public override async Task SendActivityAsync(BotActivity activity, CancellationToken cancellationToken)
         {
             if (!_conversationStarted)
@@ -112,6 +120,7 @@ namespace TranscriptTestRunner.TestClients
             await _dlClient.Conversations.PostActivityAsync(_conversationId, activityPost, cancellationToken).ConfigureAwait(false);
         }
 
+        /// <inheritdoc/>
         public override async Task<BotActivity> GetNextReplyAsync(CancellationToken cancellationToken)
         {
             await PullActivitiesFromDirectLineAsync(cancellationToken).ConfigureAwait(false);
@@ -126,6 +135,7 @@ namespace TranscriptTestRunner.TestClients
             return null;
         }
 
+        /// <inheritdoc/>
         public override async Task SignInAsync(string url)
         {
             var directLineSession = await GetSessionInfoAsync().ConfigureAwait(false);
@@ -178,12 +188,19 @@ namespace TranscriptTestRunner.TestClients
             throw new Exception("Sign in did not succeed. Set a breakpoint in TestBotClient.SignInAsync() to debug the redirect sequence.");
         }
 
+        /// <summary>
+        /// Frees resources.
+        /// </summary>
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        /// <param name="disposing">Boolean value that determines whether to free resources or not.</param>
         protected virtual void Dispose(bool disposing)
         {
             if (_disposed)

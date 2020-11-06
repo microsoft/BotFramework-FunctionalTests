@@ -1,0 +1,386 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>TranscriptTestRunner</name>
+    </assembly>
+    <members>
+        <member name="T:TranscriptTestRunner.ClientType">
+            <summary>
+            List of possible client types.
+            </summary>
+        </member>
+        <member name="F:TranscriptTestRunner.ClientType.DirectLine">
+            <summary>
+            DirectLine client.
+            </summary>
+        </member>
+        <member name="F:TranscriptTestRunner.ClientType.Emulator">
+            <summary>
+            Emulator client.
+            </summary>
+        </member>
+        <member name="F:TranscriptTestRunner.ClientType.Teams">
+            <summary>
+            Teams client.
+            </summary>
+        </member>
+        <member name="F:TranscriptTestRunner.ClientType.Facebook">
+            <summary>
+            Facebook client.
+            </summary>
+        </member>
+        <member name="F:TranscriptTestRunner.ClientType.Slack">
+            <summary>
+            Slack client.
+            </summary>
+        </member>
+        <member name="T:TranscriptTestRunner.TestClientBase">
+            <summary>
+            Base class for test clients.
+            </summary>
+            <remarks>
+            Test clients act as intermediaries between tests and bots.
+            </remarks>
+        </member>
+        <member name="M:TranscriptTestRunner.TestClientBase.SendActivityAsync(Microsoft.Bot.Schema.Activity,System.Threading.CancellationToken)">
+            <summary>
+            Sends an <see cref="T:Microsoft.Bot.Schema.Activity"/> to the bot.
+            </summary>
+            <param name="activity"><see cref="T:Microsoft.Bot.Schema.Activity"/> to send.</param>
+            <param name="cancellationToken">Optional. A <see cref="T:System.Threading.CancellationToken"/> that can be used by other objects
+            or threads to receive notice of cancellation.</param>
+            <returns>A task that represents the work queued to execute.</returns>
+        </member>
+        <member name="M:TranscriptTestRunner.TestClientBase.GetNextReplyAsync(System.Threading.CancellationToken)">
+            <summary>
+            Gets the next reply from the bot.
+            </summary>
+            <param name="cancellationToken">Optional. A <see cref="T:System.Threading.CancellationToken"/> that can be used by other objects
+            or threads to receive notice of cancellation.</param>
+            <returns>A task that represents the work queued to execute.</returns>
+        </member>
+        <member name="M:TranscriptTestRunner.TestClientBase.SignInAsync(System.String)">
+            <summary>
+            Signs in to the bot.
+            </summary>
+            <param name="signInUrl">The sign in Url.</param>
+            <returns>A task that represents the work queued to execute.</returns>
+        </member>
+        <member name="T:TranscriptTestRunner.TestClientFactory">
+            <summary>
+            Factory class to create instances of <see cref="T:TranscriptTestRunner.TestClientBase"/>.
+            </summary>
+        </member>
+        <member name="M:TranscriptTestRunner.TestClientFactory.#ctor(TranscriptTestRunner.ClientType)">
+            <summary>
+            Initializes a new instance of the <see cref="T:TranscriptTestRunner.TestClientFactory"/> class.
+            </summary>
+            <param name="client">The type of client to create.</param>
+        </member>
+        <member name="M:TranscriptTestRunner.TestClientFactory.GetTestClient">
+            <summary>
+            Gets the test client.
+            </summary>
+            <returns>The test client.</returns>
+        </member>
+        <member name="T:TranscriptTestRunner.TestClients.DirectLineSession">
+            <summary>
+            DirectLine session definition.
+            </summary>
+        </member>
+        <member name="P:TranscriptTestRunner.TestClients.DirectLineSession.SessionId">
+            <summary>
+            Gets or sets the DirectLine session ID.
+            </summary>
+            <value>
+            The DirectLine session ID.
+            </value>
+        </member>
+        <member name="T:TranscriptTestRunner.TestClients.DirectLineSessionInfo">
+            <summary>
+            DirectLine session information definition.
+            </summary>
+        </member>
+        <member name="P:TranscriptTestRunner.TestClients.DirectLineSessionInfo.SessionId">
+            <summary>
+            Gets or sets the DirectLine session ID.
+            </summary>
+            <value>
+            The DirectLine session ID.
+            </value>
+        </member>
+        <member name="P:TranscriptTestRunner.TestClients.DirectLineSessionInfo.Cookie">
+            <summary>
+            Gets or sets the DirectLine session cookie.
+            </summary>
+            <value>
+            The DirectLine session cookie.
+            </value>
+        </member>
+        <member name="T:TranscriptTestRunner.TestClients.DirectLineTestClient">
+            <summary>
+            DirectLine implementation of <see cref="T:TranscriptTestRunner.TestClientBase"/>.
+            </summary>
+        </member>
+        <member name="M:TranscriptTestRunner.TestClients.DirectLineTestClient.#ctor(Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            Initializes a new instance of the <see cref="T:TranscriptTestRunner.TestClients.DirectLineTestClient"/> class.
+            </summary>
+            <param name="config">Client configuration.</param>
+        </member>
+        <member name="M:TranscriptTestRunner.TestClients.DirectLineTestClient.SendActivityAsync(Microsoft.Bot.Schema.Activity,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TranscriptTestRunner.TestClients.DirectLineTestClient.GetNextReplyAsync(System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TranscriptTestRunner.TestClients.DirectLineTestClient.SignInAsync(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TranscriptTestRunner.TestClients.DirectLineTestClient.Dispose">
+            <summary>
+            Frees resources.
+            </summary>
+        </member>
+        <member name="M:TranscriptTestRunner.TestClients.DirectLineTestClient.Dispose(System.Boolean)">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+            <param name="disposing">Boolean value that determines whether to free resources or not.</param>
+        </member>
+        <member name="T:TranscriptTestRunner.TestClients.DirectLineToken">
+            <summary>
+            DirectLine token definition.
+            </summary>
+        </member>
+        <member name="P:TranscriptTestRunner.TestClients.DirectLineToken.Token">
+            <summary>
+            Gets or sets the DirectLine token string.
+            </summary>
+            <value>
+            The DirectLine token string.
+            </value>
+        </member>
+        <member name="P:TranscriptTestRunner.TestClients.DirectLineToken.ConversationId">
+            <summary>
+            Gets or sets the DirectLine conversation ID.
+            </summary>
+            <value>
+            The DirectLine conversation ID.
+            </value>
+        </member>
+        <member name="T:TranscriptTestRunner.TestRunner">
+            <summary>
+            Test runner implementation.
+            </summary>
+        </member>
+        <member name="M:TranscriptTestRunner.TestRunner.#ctor(TranscriptTestRunner.TestClientBase,Microsoft.Extensions.Logging.ILogger)">
+            <summary>
+            Initializes a new instance of the <see cref="T:TranscriptTestRunner.TestRunner"/> class.
+            </summary>
+            <param name="client">Test client to use.</param>
+            <param name="logger">Optional. Instance of <see cref="T:Microsoft.Extensions.Logging.ILogger"/> to use.</param>
+        </member>
+        <member name="M:TranscriptTestRunner.TestRunner.RunTestAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Runs a test transcript.
+            </summary>
+            <remarks>
+            If the transcript file is of type <i>.transcript</i> it will be converted to an intermediary <i>.json</i> file.
+            </remarks>
+            <param name="transcriptPath">Path to the transcript file to use.</param>
+            <param name="callerName">Optional. The name of the method caller.</param>
+            <param name="cancellationToken">Optional. A <see cref="T:System.Threading.CancellationToken"/> that can be used by other objects
+            or threads to receive notice of cancellation.</param>
+            <returns>A task that represents the work queued to execute.</returns>
+        </member>
+        <member name="M:TranscriptTestRunner.TestRunner.SendActivityAsync(Microsoft.Bot.Schema.Activity,System.Threading.CancellationToken)">
+            <summary>
+            Sends an <see cref="T:Microsoft.Bot.Schema.Activity"/> to the bot though the test client.
+            </summary>
+            <param name="sendActivity"><see cref="T:Microsoft.Bot.Schema.Activity"/> to send.</param>
+            <param name="cancellationToken">Optional. A <see cref="T:System.Threading.CancellationToken"/> that can be used by other objects
+            or threads to receive notice of cancellation.</param>
+            <returns>A task that represents the work queued to execute.</returns>
+        </member>
+        <member name="M:TranscriptTestRunner.TestRunner.GetNextReplyAsync(System.Threading.CancellationToken)">
+            <summary>
+            Gets the next reply <see cref="T:Microsoft.Bot.Schema.Activity"/> from the bot through the test client.
+            </summary>
+            <param name="cancellationToken">Optional. A <see cref="T:System.Threading.CancellationToken"/> that can be used by other objects
+            or threads to receive notice of cancellation.</param>
+            <returns>A task that represents the work queued to execute.</returns>
+        </member>
+        <member name="M:TranscriptTestRunner.TestRunner.AssertReplyAsync(System.Action{Microsoft.Bot.Schema.Activity},System.Threading.CancellationToken)">
+            <summary>
+            Validates the next reply <see cref="T:Microsoft.Bot.Schema.Activity"/> from the bot according to the validateAction parameter.
+            </summary>
+            <param name="validateAction">The <see cref="T:System.Action"/> to validate the next reply <see cref="T:Microsoft.Bot.Schema.Activity"/> from the bot.</param>
+            <param name="cancellationToken">Optional. A <see cref="T:System.Threading.CancellationToken"/> that can be used by other objects
+            or threads to receive notice of cancellation.</param>
+            <returns>A task that represents the work queued to execute.</returns>
+        </member>
+        <member name="M:TranscriptTestRunner.TestRunner.ClientSignInAsync(System.String)">
+            <summary>
+            Signs in to the bot trough the test client.
+            </summary>
+            <param name="signInUrl">The sign in Url.</param>
+            <returns>A task that represents the work queued to execute.</returns>
+        </member>
+        <member name="M:TranscriptTestRunner.TestRunner.AssertActivityAsync(TranscriptTestRunner.TestScriptItem,Microsoft.Bot.Schema.Activity,System.Threading.CancellationToken)">
+            <summary>
+            Validates an <see cref="T:Microsoft.Bot.Schema.Activity"/> according to an expected activity <see cref="T:TranscriptTestRunner.TestScriptItem"/>.
+            </summary>
+            <param name="expectedActivity">The expected activity of type <see cref="T:TranscriptTestRunner.TestScriptItem"/>.</param>
+            <param name="actualActivity">The actual response <see cref="T:Microsoft.Bot.Schema.Activity"/> recieved.</param>
+            <param name="cancellationToken">Optional. A <see cref="T:System.Threading.CancellationToken"/> that can be used by other objects
+            or threads to receive notice of cancellation.</param>
+            <returns>A task that represents the work queued to execute.</returns>
+        </member>
+        <member name="T:TranscriptTestRunner.TestScriptItem">
+            <summary>
+            <see cref="T:TranscriptTestRunner.TestRunner"/> representation of an activity.
+            </summary>
+        </member>
+        <member name="P:TranscriptTestRunner.TestScriptItem.Type">
+            <summary>
+            Gets or sets the activity type.
+            </summary>
+            <value>
+            The activity type.
+            </value>
+        </member>
+        <member name="P:TranscriptTestRunner.TestScriptItem.Role">
+            <summary>
+            Gets or sets the activity role.
+            </summary>
+            <value>
+            The activity role.
+            </value>
+        </member>
+        <member name="P:TranscriptTestRunner.TestScriptItem.Text">
+            <summary>
+            Gets or sets the activity text.
+            </summary>
+            <value>
+            The activity text.
+            </value>
+        </member>
+        <member name="P:TranscriptTestRunner.TestScriptItem.Assertions">
+            <summary>
+            Gets the activity assertion collection.
+            </summary>
+            <value>
+            The activity assertion collection.
+            </value>
+        </member>
+        <member name="M:TranscriptTestRunner.TestScriptItem.ShouldSerializeAssertions">
+            <summary>
+            Prevents the serializer from creating the assertions collection if its empty.
+            </summary>
+            <returns><c>true</c> if the assertions collection should be serialized.</returns>
+        </member>
+        <member name="T:TranscriptTestRunner.TranscriptConverter">
+            <summary>
+            Class for converting a transcript into a Test Script file.
+            </summary>
+        </member>
+        <member name="P:TranscriptTestRunner.TranscriptConverter.EmulatorTranscript">
+            <summary>
+            Gets or sets the path to the emulator transcript file.
+            </summary>
+            <value>The path to the emulator transcript file.</value>
+        </member>
+        <member name="P:TranscriptTestRunner.TranscriptConverter.TestScript">
+            <summary>
+            Gets or sets the path to the resulting test script file.
+            </summary>
+            <value>The path to the resulting test script file.</value>
+        </member>
+        <member name="M:TranscriptTestRunner.TranscriptConverter.Convert">
+            <summary>
+            Converts the .transcript file in a test script.
+            </summary>
+        </member>
+        <member name="M:TranscriptTestRunner.TranscriptConverter.RemoveFields(Newtonsoft.Json.Linq.JToken,System.Func{Newtonsoft.Json.Linq.JProperty,System.Boolean})">
+            <summary>
+            Recursively goes through the json content removing the undesired elements.
+            </summary>
+            <param name="token">The JToken element to process.</param>
+            <param name="callback">The recursive function to iterate over the JToken.</param>
+        </member>
+        <member name="M:TranscriptTestRunner.TranscriptConverter.IsGuid(System.String)">
+            <summary>
+            Checks if a string is a GUID value.
+            </summary>
+            <param name="guid">The string to check.</param>
+            <returns>True if the string is a GUID, otherwise, returns false.</returns>
+        </member>
+        <member name="M:TranscriptTestRunner.TranscriptConverter.IsId(System.String)">
+            <summary>
+            Checks if a string is an ID value.
+            </summary>
+            <param name="id">The string to check.</param>
+            <returns>True if the string is an ID, otherwise, returns false.</returns>
+        </member>
+        <member name="M:TranscriptTestRunner.TranscriptConverter.IsJsonObject(System.String)">
+            <summary>
+            Checks if a string is a JSON Object.
+            </summary>
+            <param name="value">The string to check.</param>
+            <returns>True if the string is a JSON Object, otherwise, returns false.</returns>
+        </member>
+        <member name="M:TranscriptTestRunner.TranscriptConverter.RemoveUndesiredFields(System.String)">
+            <summary>
+            Removes the IDs and DateTime fields from the transcript file.
+            </summary>
+            <param name="transcript">The transcript file content.</param>
+            <returns>The transcript content without the undesired fields.</returns>
+        </member>
+        <member name="M:TranscriptTestRunner.TranscriptConverter.IsDateTime(System.String)">
+            <summary>
+            Checks if a string is a DateTime value.
+            </summary>
+            <param name="datetime">The string to check.</param>
+            <returns>True if the string is a DateTime, otherwise, returns false.</returns>
+        </member>
+        <member name="M:TranscriptTestRunner.TranscriptConverter.ValidatePaths">
+            <summary>
+            Validates the paths for the transcript and the test script files.
+            </summary>
+        </member>
+        <member name="M:TranscriptTestRunner.TranscriptConverter.ReadEmulatorTranscript">
+            <summary>
+            Reads the emulator transcript file.
+            </summary>
+            <returns>A string with the transcript content.</returns>
+        </member>
+        <member name="M:TranscriptTestRunner.TranscriptConverter.WriteTestScript(System.Collections.Generic.List{TranscriptTestRunner.TestScriptItem})">
+            <summary>
+            Writes the test script content to the path set in the TestScript property.
+            </summary>
+        </member>
+        <member name="T:TranscriptTestRunner.XUnit.XUnitTestRunner">
+            <summary>
+            XUnit extension of <see cref="T:TranscriptTestRunner.TestRunner"/>.
+            </summary>
+        </member>
+        <member name="M:TranscriptTestRunner.XUnit.XUnitTestRunner.#ctor(TranscriptTestRunner.TestClientBase,Microsoft.Extensions.Logging.ILogger)">
+            <summary>
+            Initializes a new instance of the <see cref="T:TranscriptTestRunner.XUnit.XUnitTestRunner"/> class.
+            </summary>
+            <param name="client">Test client to use.</param>
+            <param name="logger">Optional. Instance of <see cref="T:Microsoft.Extensions.Logging.ILogger"/> to use.</param>
+        </member>
+        <member name="M:TranscriptTestRunner.XUnit.XUnitTestRunner.AssertActivityAsync(TranscriptTestRunner.TestScriptItem,Microsoft.Bot.Schema.Activity,System.Threading.CancellationToken)">
+            <summary>
+            Validates an <see cref="T:Microsoft.Bot.Schema.Activity"/> according to an expected activity <see cref="T:TranscriptTestRunner.TestScriptItem"/> using XUnit.
+            </summary>
+            <param name="expectedActivity">The expected activity of type <see cref="T:TranscriptTestRunner.TestScriptItem"/>.</param>
+            <param name="actualActivity">The actual response <see cref="T:Microsoft.Bot.Schema.Activity"/> recieved.</param>
+            <param name="cancellationToken">Optional. A <see cref="T:System.Threading.CancellationToken"/> that can be used by other objects
+            or threads to receive notice of cancellation.</param>
+            <returns>A task that represents the work queued to execute.</returns>
+        </member>
+    </members>
+</doc>
