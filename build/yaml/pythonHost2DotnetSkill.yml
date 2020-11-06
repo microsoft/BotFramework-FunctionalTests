@@ -68,9 +68,9 @@ stages:
       variables:
         Registry: $[variables.RegistryUrlSkill]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
-        Parameters.solution: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionSkill)/skill/EchoSkillBot.sln'
-        Parameters.project: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionSkill)/skill/EchoSkillBot.csproj'
+        BotType: EchoSkill
       steps:
+      - template: dotnetSetPaths.yml
       - template: dotnetInstallPackagesSteps.yml
       - template: dotnetBuildSteps.yml
       - template: dotnetTagBotBuilderVersion.yml
@@ -88,8 +88,8 @@ stages:
         DeployAppSecret: $(PyDotNetHostAppSecret)
         Registry: $[variables.RegistryUrlHost]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
-        Parameters.sourceLocation: 'SkillsFunctionalTests/python/host'
-        TemplateLocation: 'SkillsFunctionalTests/python/host/deploymentTemplates/template-with-new-rg.json'
+        Parameters.sourceLocation: 'Bots/Python/Consumers/CodeFirst/SimpleHostBot'
+        TemplateLocation: 'Bots/Python/Consumers/CodeFirst/SimpleHostBot/deploymentTemplates/template-with-new-rg.json'
       steps:
       - template: pythonSetConfigFileSteps.yml
       - template: pythonDeploySteps.yml
@@ -101,9 +101,9 @@ stages:
         DeployAppSecret: $(PyDotNetSkillAppSecret)
         Registry: $[variables.RegistryUrlSkill]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
-        Parameters.project: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionSkill)/skill/EchoSkillBot.csproj'
-        TemplateLocation: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionSkill)/skill/DeploymentTemplates/template-with-new-rg.json'
+        BotType: EchoSkill
       steps:
+      - template: dotnetSetPaths.yml
       - template: dotnetDeploySteps.yml
 
     - job: Configure_OAuth
@@ -125,8 +125,8 @@ stages:
     - job: Run_Functional_Test
       variables:
         HostBotName: $(PyDotNetHostBotName)
-        Parameters.project: 'SkillsFunctionalTests/tests/SkillFunctionalTests/SkillFunctionalTests.csproj'
-        Parameters.solution: 'SkillsFunctionalTests/tests/SkillFunctionalTests.sln'
+        Parameters.project: 'Tests/SkillFunctionalTests/SkillFunctionalTests.csproj'
+        Parameters.solution: 'SkillFunctionalTests.sln'
         DefaultTestFilter: ''
         DotNetTestFilter: $[ coalesce( variables['TestFilter'], variables['DefaultTestFilter'] ) ]
       steps:

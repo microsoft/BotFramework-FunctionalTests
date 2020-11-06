@@ -65,7 +65,7 @@ stages:
       variables:
         Registry: $[variables.RegistryUrlSkill]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
-        Parameters.solution: 'SkillsFunctionalTests/dotnet/v3/skill/EchoSkillBot.sln'
+        Parameters.solution: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3/EchoSkillBot.sln'
       steps:
       - template: dotnetV3BuildSteps.yml
       - template: dotnetV3TagBotBuilderVersion.yml
@@ -83,8 +83,8 @@ stages:
         DeployAppSecret: $(PyDotNetV3HostAppSecret)
         Registry: $[variables.RegistryUrlHost]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
-        Parameters.sourceLocation: 'SkillsFunctionalTests/python/host'
-        TemplateLocation: 'SkillsFunctionalTests/python/host/deploymentTemplates/template-with-new-rg.json'
+        Parameters.sourceLocation: 'Bots/Python/Consumers/CodeFirst/SimpleHostBot'
+        TemplateLocation: 'Bots/Python/Consumers/CodeFirst/SimpleHostBot/deploymentTemplates/template-with-new-rg.json'
       steps:
       - template: pythonSetConfigFileSteps.yml
       - template: pythonDeploySteps.yml
@@ -96,9 +96,9 @@ stages:
         DeployAppSecret: $(PyDotNetV3SkillAppSecret)
         Registry: $[variables.RegistryUrlSkill]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
-        Parameters.solution: 'SkillsFunctionalTests/dotnet/v3/skill/EchoSkillBot.sln'
-        Parameters.sourceLocation: 'SkillsFunctionalTests/dotnet/v3/skill/'
-        TemplateLocation: 'SkillsFunctionalTests/dotnet/v3/skill/DeploymentTemplates/template-with-new-rg.json'
+        Parameters.solution: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3/EchoSkillBot.sln'
+        Parameters.sourceLocation: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3/'
+        TemplateLocation: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3/DeploymentTemplates/template-with-new-rg.json'
       steps:
       - template: dotnetV3DeploySteps.yml
 
@@ -108,8 +108,8 @@ stages:
     - job: Run_Functional_Test
       variables:
         HostBotName: $(PyDotNetV3HostBotName)
-        Parameters.project: 'SkillsFunctionalTests/tests/SkillFunctionalTests/SkillFunctionalTests.csproj'
-        Parameters.solution: 'SkillsFunctionalTests/tests/SkillFunctionalTests.sln'
+        Parameters.project: 'Tests/SkillFunctionalTests/SkillFunctionalTests.csproj'
+        Parameters.solution: 'SkillFunctionalTests.sln'
         DefaultTestFilter: ''
         DotNetTestFilter: $[ coalesce( variables['TestFilter'], variables['DefaultTestFilter'] ) ]
       steps:

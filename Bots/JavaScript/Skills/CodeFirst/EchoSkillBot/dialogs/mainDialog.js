@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 const { ConfirmPrompt, DialogSet, DialogTurnStatus, OAuthPrompt, WaterfallDialog } = require('botbuilder-dialogs');
+const { MessageFactory } = require('botbuilder-core');
 
 const { LogoutDialog } = require('./logoutDialog');
 
@@ -57,7 +58,7 @@ class MainDialog extends LogoutDialog {
         const tokenResponse = stepContext.result;
         if (tokenResponse) {
             await stepContext.context.sendActivity('You are now logged in.');
-            return await stepContext.prompt(CONFIRM_PROMPT, 'Would you like to view your token?');
+            return await stepContext.prompt(CONFIRM_PROMPT, MessageFactory.text('Would you like to view your token?'));
         }
         await stepContext.context.sendActivity('Login was not successful please try again.');
         return await stepContext.endDialog();
