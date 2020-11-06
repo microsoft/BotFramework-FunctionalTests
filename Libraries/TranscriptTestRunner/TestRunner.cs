@@ -83,7 +83,7 @@ namespace TranscriptTestRunner
         }
 
         /// <summary>
-        /// Sends an <see cref="Activity"/> to the bot though the test client.
+        /// Sends an <see cref="Activity"/> to the bot through the test client.
         /// </summary>
         /// <param name="sendActivity"><see cref="Activity"/> to send.</param>
         /// <param name="cancellationToken">Optional. A <see cref="CancellationToken"/> that can be used by other objects
