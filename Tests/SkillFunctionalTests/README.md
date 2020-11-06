@@ -9,7 +9,7 @@ The matrix consists of all the available combinations to test in this repository
 <table>
     <tr>
         <th align="center">Host/Skill</th>
-        <th align="center">C# Net Core 2.1</th>     
+        <th align="center">C# Net Core 2.1</th>
         <th align="center">C# Net Core 3.1</th>
         <th align="center">JavaScript</th>
         <th align="center">Python</th>
@@ -57,9 +57,9 @@ The matrix consists of all the available combinations to test in this repository
 
 ### Content
 
-This section contains a `SimpleHostBot` and an `EchoSkillBot` sample for each language available to be used in the functional tests. To run the test we use YAML files to set up a pipeline that deploys a pair of Host and Skill bots to Azure and then run functional tests where the HostBot consumes the SkillBot.
+This section uses a `SimpleHostBot` and an `EchoSkillBot` sample for each language available to run the functional tests. We use YAML files to set up a pipeline that deploys a pair of Host and Skill bots to Azure and then run functional tests where the HostBot consumes the SkillBot.
 
-The functional tests are located in the `tests` folder. This test is written in DotNet and can be used to test the bots independently of the language these are written in. For this, the test communicate with the bots deployed to Azure using a [direct line channel](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-channel-directline) to the `HostBot`, and ask it to be delegated to the skill to then get an echo message.
+The functional tests are located in the `tests` folder. These tests are written in DotNet and can be used to test the bots independently of the language these are written in. For this, the tests use the [TranscriptTestRunner](../../Libraries/TranscriptTestRunner) library to run a recorded transcript and communicate with the bots deployed to Azure using a [direct line channel](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-channel-directline) to the `HostBot` and compare the messages received from the bot in different scenarios.
 
 ### Tests
 
@@ -72,17 +72,17 @@ The following tests are run in the pipeline using the Host and Skill bots deploy
         <th align="center">Additional Info</th>
     </tr>
     <tr>
-        <td>Host_WhenRequested_ShouldRedirectToSkill</td>
+        <td>SimpleHostBotToEchoSkilTest.ShouldRedirectToSkill</td>
         <td>Tests that the host bot communicates with the skill bot when asked.</td>
         <td></td>
     </tr>
     <tr>
-        <td>Host_WhenSkillEnds_HostReceivesEndOfConversation</td>
+        <td>SimpleHostBotToEchoSkilTest.HostReceivesEndOfConversation</td>
         <td>Tests that the skill bot returns the control of the conversation to the host bot when asked.</td>
         <td></td>
     </tr>
     <tr>
-        <td>Skill_OAuthCard_SignInSuccessful</td>
+        <td>OAuthSkillTest.ShouldSignIn</td>
         <td>Tests that the skill bot Sign In successfully using the OAuth service.</td>
         <td>Skipped when a v3 Skill bot is used</td>
     </tr>
@@ -116,15 +116,15 @@ The following steps will guide you trough the creation of a pipeline that runs o
 
    | Host\Skill            | C# Net Core 3.1                                                                | JavaScript                                                                              | Python                                                                         |  C# Net Core 2.1                                                               |  v3 Javascript                                                                            |  v3 C#                                                                              |
    |-----------------------|--------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------|--------------------------------------------------------------------------------|--------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------|
-   | **C# Net Core 3.1**   | [dotnetHost2DotnetSkill.yml](../build/yaml/dotnetHost2dotnetSkill.yml)         | [dotnetHost2JavascriptSkill.yml](../build/yaml/dotnetHost2JavascriptSkill.yml)          | [dotnetHost2PythonSkill.yml](../build/yaml/dotnetHost2PythonSkill.yml)         | [dotnetHost2DotnetSkill.yml](../build/yaml/dotnetHost2dotnetSkill.yml)         | [dotnetHost2JavascriptV3Skill.yml](../build/yaml/dotnetHost2JavascriptV3Skill.yml)        | [dotnetHost2DotnetV3Skill.yml](../build/yaml/dotnetHost2DotnetV3Skill.yml)          |
-   | **JavaScript**        | [javascriptHost2DotnetSkill.yml](../build/yaml/javascriptHost2DotnetSkill.yml) | [javascriptHost2JavascriptSkill.yml](../build/yaml/javascriptHost2JavascriptSkill.yml)  | [javascriptHost2PythonSkill.yml](../build/yaml/javascriptHost2PythonSkill.yml) | [javascriptHost2DotnetSkill.yml](../build/yaml/javascriptHost2DotnetSkill.yml) | [javascriptHost2JavascriptV3Skill.yml](../build/yaml/javascriptHost2JavascriptV3Skill.yml)| [javascriptHost2DotnetV3Skill.yml](../build/yaml/javascriptHost2DotnetV3Skill.yml)  |
-   | **Python**            | [pythonHost2DotnetSkill.yml](../build/yaml/pythonHost2DotnetSkill.yml)         | [pythonHost2JavascriptSkill.yml](../build/yaml/pythonHost2JavascriptSkill.yml)          | [pythonHost2PythonSkill.yml](../build/yaml/pythonHost2PythonSkill.yml)         | [pythonHost2DotnetSkill.yml](../build/yaml/pythonHost2DotnetSkill.yml)         | [pythonHost2JavascriptV3Skill.yml](../build/yaml/pythonHost2JavascriptV3Skill.yml)        | [pythonHost2DotnetV3Skill.yml](../build/yaml/pythonHost2DotnetSkill.yml)            |
-   | **C# Net Core 2.1**   | [dotnetHost2DotnetSkill.yml](../build/yaml/dotnetHost2dotnetSkill.yml)         | [dotnetHost2JavascriptSkill.yml](../build/yaml/dotnetHost2JavascriptSkill.yml)          | [dotnetHost2PythonSkill.yml](../build/yaml/dotnetHost2PythonSkill.yml)         | [dotnetHost2DotnetSkill.yml](../build/yaml/dotnetHost2dotnetSkill.yml)         | [dotnetHost2JavascriptV3Skill.yml](../build/yaml/dotnetHost2JavascriptV3Skill.yml)        | [dotnetHost2DotnetV3Skill.yml](../build/yaml/dotnetHost2DotnetV3Skill.yml)          |
+   | **C# Net Core 3.1**   | [dotnetHost2DotnetSkill.yml](../../build/yaml/dotnetHost2dotnetSkill.yml)         | [dotnetHost2JavascriptSkill.yml](../../build/yaml/dotnetHost2JavascriptSkill.yml)          | [dotnetHost2PythonSkill.yml](../../build/yaml/dotnetHost2PythonSkill.yml)         | [dotnetHost2DotnetSkill.yml](../../build/yaml/dotnetHost2dotnetSkill.yml)         | [dotnetHost2JavascriptV3Skill.yml](../../build/yaml/dotnetHost2JavascriptV3Skill.yml)        | [dotnetHost2DotnetV3Skill.yml](../../build/yaml/dotnetHost2DotnetV3Skill.yml)          |
+   | **JavaScript**        | [javascriptHost2DotnetSkill.yml](../../build/yaml/javascriptHost2DotnetSkill.yml) | [javascriptHost2JavascriptSkill.yml](../../build/yaml/javascriptHost2JavascriptSkill.yml)  | [javascriptHost2PythonSkill.yml](../../build/yaml/javascriptHost2PythonSkill.yml) | [javascriptHost2DotnetSkill.yml](../../build/yaml/javascriptHost2DotnetSkill.yml) | [javascriptHost2JavascriptV3Skill.yml](../../build/yaml/javascriptHost2JavascriptV3Skill.yml)| [javascriptHost2DotnetV3Skill.yml](../../build/yaml/javascriptHost2DotnetV3Skill.yml)  |
+   | **Python**            | [pythonHost2DotnetSkill.yml](../../build/yaml/pythonHost2DotnetSkill.yml)         | [pythonHost2JavascriptSkill.yml](../../build/yaml/pythonHost2JavascriptSkill.yml)          | [pythonHost2PythonSkill.yml](../../build/yaml/pythonHost2PythonSkill.yml)         | [pythonHost2DotnetSkill.yml](../../build/yaml/pythonHost2DotnetSkill.yml)         | [pythonHost2JavascriptV3Skill.yml](../../build/yaml/pythonHost2JavascriptV3Skill.yml)        | [pythonHost2DotnetV3Skill.yml](../../build/yaml/pythonHost2DotnetSkill.yml)            |
+   | **C# Net Core 2.1**   | [dotnetHost2DotnetSkill.yml](../../build/yaml/dotnetHost2dotnetSkill.yml)         | [dotnetHost2JavascriptSkill.yml](../../build/yaml/dotnetHost2JavascriptSkill.yml)          | [dotnetHost2PythonSkill.yml](../../build/yaml/dotnetHost2PythonSkill.yml)         | [dotnetHost2DotnetSkill.yml](../../build/yaml/dotnetHost2dotnetSkill.yml)         | [dotnetHost2JavascriptV3Skill.yml](../../build/yaml/dotnetHost2JavascriptV3Skill.yml)        | [dotnetHost2DotnetV3Skill.yml](../../build/yaml/dotnetHost2DotnetV3Skill.yml)          |
 
 4. In the variables section add the following variables.
-    
+
    #### **Variables**
- 
+
    | Name                                                   | Source                                                                                                                                            | Description                                                                                                                                                                                                       | Options                                             |
    |--------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------|
    | **AzureSubscription**                                  | User                                                                                                                                              | The name of the *Azure Resource Manager service connection* configured in the pipeline.                                                                                                                           | <ul><li>**required**</li></ul>                      |
@@ -143,9 +143,9 @@ The following steps will guide you trough the creation of a pipeline that runs o
    | **NetCoreSdkVersionHost**                              | User                                                                                                                                              | The version of the NetCore SDK the Host bot will use. This variable is required for dotnet Host bots. The supported values are 2.1 and 3.1, any other value will cause the pipeline to fail.                      | <ul><li>**dotnet**</li></ul>                        |
    | **NetCoreSdkVersionSkill**                             | User                                                                                                                                              | The version of the NetCore SDK the Skill bot will use. This variable is required for dotnet Skill bots. The supported values are 2.1 and 3.1, any other value will cause the pipeline to fail.                    | <ul><li>**dotnet**</li></ul>                        |
    | **NextBuild**                                          | User                                                                                                                                              | The name of the next build in the chain.                                                                                                                                                                          | <ul><li>**optional**</li></ul>                      |
-   | **RegistryUrlHost** <br> **RegistryUrlSkill**          | User                                                                                                                                              | The registry where the BotBuilder packages will be downloaded. <br><br> Available registry options: <ul><li>**C# (.Net)** <ul><li>**MyGet**</li><li>**NuGet**</li><li>**Custom (*)**</li><li>**Default:** MyGet</li></ul> </li><li>**JavaScript**<ul><li>**MyGet**</li><li>**Npm**</li><li>**Custom (*)**</li><li>**Default:** MyGet</li></ul></li> <li>**Python**<ul><li>**PyPi**</li><li>**Test.PyPi**</li><li>**Custom (*)**</li><li>**Default:** Test.PyPi</li></ul> </li></ul> <br> **(*) Custom:** Any public feed URL.                                                                                                | <ul><li>**optional**</li></ul>                      |
+   | **RegistryUrlHost** <br> **RegistryUrlSkill**          | User                                                                                                                                              | The registry where the BotBuilder packages will be downloaded. <br><br> Available registry options: <ul><li>**C# (.Net)**<ul><li>**Artifacts**</li><li>**MyGet**</li><li>**NuGet**</li><li>**Custom (*)**</li><li>**Default:** Artifacts (**)</li></ul> </li><li>**JavaScript**<ul><li>**MyGet**</li><li>**Npm**</li><li>**Custom (*)**</li><li>**Default:** MyGet</li></ul></li> <li>**Python**<ul><li>**Artifacts**</li><li>**PyPi**</li><li>**Test.PyPi**</li><li>**Custom (*)**</li><li>**Default:** Artifacts</li></ul> </li></ul> <br> **(*) Custom:** Any public feed URL. <br> **(\*\*) C# default:** V3 bot uses default MyGet.                                                                                                | <ul><li>**optional**</li></ul>
+   | **TestFilter**                                        | User                                                                                                                                              | Set this variable with arguments to filter out tests.<ul><li>&TestCategory!=SkipForV3Bots<ul><li>**This will omit the tests with Category "SkipForV3Bots".**                                                                                                                                                          | <ul><li>**optional**</li></ul>
    | **TriggeredBy**                                        | User                                                                                                                                              | The name of the previous build from which was triggered.                                                                                                                                                          | <ul><li>**optional**</li></ul>                      |
-
 
    #### **Prefix Variables**
 
@@ -156,7 +156,6 @@ The following steps will guide you trough the creation of a pipeline that runs o
    | **Python**          | PyDotNet        | PyJs       | PyPy     | PyDotNet        | PyJsV3        | PyDotNetV3     |
    | **C# Net Core 2.1** | DotNetDotNet    | DotNetJs   | DotNetPy | DotNetDotNet    | DotNetJsV3    | DotNetDotNetV3 |
 
-
    #### **Options**
 
    | Name         | Description                                             |
@@ -166,6 +165,5 @@ The following steps will guide you trough the creation of a pipeline that runs o
    | **private**  | These variables are private.                            |
    | **python**   | These variables are required when a python bot is used. |
    | **dotnet**   | These variables are required when a dotnet bot is used. |
-
 
 5. (Optional) Configure the triggers for the pipeline. By default, this pipelines have all the triggers from commits and PRs disabled.
