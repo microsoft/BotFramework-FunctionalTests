@@ -135,7 +135,7 @@ await runner.AssertReplyAsync(activity =>
     Assert.True(activity.Attachments.Count > 0);
     
     var attachment = JsonConvert.SerializeObject(activity.Attachments.FirstOrDefault().Content);
-    var card = JsonConvert.DeserializeObject<SigninCard>(attachment );
+    var card = JsonConvert.DeserializeObject<SigninCard>(attachment);
     signInUrl = card.Buttons[0].Value?.ToString();
 
     Assert.False(string.IsNullOrEmpty(signInUrl));
