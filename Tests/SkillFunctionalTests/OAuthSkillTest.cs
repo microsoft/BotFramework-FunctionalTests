@@ -1,15 +1,18 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using System;
+using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Connector.DirectLine;
-using SkillFunctionalTests.Bot;
-using SkillFunctionalTests.Configuration;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using TranscriptTestRunner;
+using TranscriptTestRunner.XUnit;
 using Xunit;
-using Xunit.Sdk;
+using Xunit.Abstractions;
+using ActivityTypes = Microsoft.Bot.Connector.DirectLine.ActivityTypes;
 
 namespace SkillFunctionalTests
 {
@@ -18,40 +21,56 @@ namespace SkillFunctionalTests
     [Trait("TestCategory", "SkipForV3Bots")]
     public class OAuthSkillTest
     {
-        [Fact]
-        public async Task SkillOAuthCardSignInSuccessful()
+        private readonly string _transcriptsFolder = Directory.GetCurrentDirectory() + @"/SourceTranscripts";
+        private readonly ILogger<OAuthSkillTest> _logger;
+
+        public OAuthSkillTest(ITestOutputHelper output)
         {
-            // If the test takes more than two minutes, declare failure.
-            using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromMinutes(2));
+            var configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .AddJsonFile("appsettings.Development.json", true, true)
+                .AddEnvironmentVariables()
+                .Build();
 
-            var testBot = new TestBotClient(new BotTestConfiguration());
-
-            await testBot.StartConversation(cancellationTokenSource.Token).ConfigureAwait(false);
-            await testBot.SendMessageAsync("Hello", cancellationTokenSource.Token).ConfigureAwait(false);
-            await testBot.AssertReplyAsync("Me no nothin", cancellationTokenSource.Token).ConfigureAwait(false);
-            await testBot.SendMessageAsync("skill", cancellationTokenSource.Token).ConfigureAwait(false);
-            await testBot.AssertReplyAsync("Echo: skill", cancellationTokenSource.Token).ConfigureAwait(false);
-            await testBot.SendMessageAsync("auth", cancellationTokenSource.Token).ConfigureAwait(false);
-            var messages = await testBot.ReadBotMessagesAsync(cancellationTokenSource.Token).ConfigureAwait(false);
-
-            var activities = messages.ToList();
-
-            Console.WriteLine("Enumerating activities:");
-            
-            foreach (var a in activities)
+            var loggerFactory = LoggerFactory.Create(builder =>
             {
-                Console.WriteLine($"Type={a.Type}; Text={a.Text}; Code={a.Code}; Attachments count={a.Attachments.Count}");
-            }
+                builder
+                    .AddConfiguration(configuration)
+                    .AddConsole()
+                    .AddDebug()
+                    .AddFile(Directory.GetCurrentDirectory() + @"/Logs/Log.json", isJson: true)
+                    .AddXunit(output);
+            });
 
-            var error = activities.FirstOrDefault(
-                m => m.Type == ActivityTypes.EndOfConversation && m.Code == "SkillError");
+            _logger = loggerFactory.CreateLogger<OAuthSkillTest>();
+        }
+
+        [Fact]
+        public async Task ShouldSignIn()
+        {
+            var runner = new XUnitTestRunner(new TestClientFactory(ClientType.DirectLine).GetTestClient(), _logger);
+            var signInUrl = string.Empty;
             
-            if (error != null)
-            {
-                throw new XunitException(error.Text);
-            }
+            // Execute the first part of the conversation.
+            await runner.RunTestAsync(Path.Combine(_transcriptsFolder, "ShouldSignIn1.transcript"));
 
-            await testBot.SignInAndVerifyOAuthAsync(activities.FirstOrDefault(m => m.Attachments != null && m.Attachments.Any())).ConfigureAwait(false);
+            // Obtain the signIn url.
+            await runner.AssertReplyAsync(activity =>
+            {
+                Assert.Equal(ActivityTypes.Message, activity.Type);
+                Assert.True(activity.Attachments.Count > 0);
+                
+                var card = JsonConvert.DeserializeObject<SigninCard>(JsonConvert.SerializeObject(activity.Attachments.FirstOrDefault().Content));
+                signInUrl = card.Buttons[0].Value?.ToString();
+
+                Assert.False(string.IsNullOrEmpty(signInUrl));
+            });
+
+            // Execute the SignIn.
+            await runner.ClientSignInAsync(signInUrl);
+
+            // Execute the rest of the conversation.
+            await runner.RunTestAsync(Path.Combine(_transcriptsFolder, "ShouldSignIn2.transcript"));
         }
     }
 }
