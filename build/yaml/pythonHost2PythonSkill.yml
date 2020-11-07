@@ -11,14 +11,13 @@ variables:
   BotGroup: '$(BotName)-RG'
   BuildConfiguration: 'Debug'
   BuildPlatform: 'any cpu'
+  runCodesignValidationInjection: false
   # AzureDeploymentPassword: define in Azure
   # AzureDeploymentUser: define in Azure
   # AzureSubscription: define in Azure
   # BotBuilderPackageVersionHost: (optional) define in Azure
   # BotBuilderPackageVersionSkill: (optional) define in Azure
   # DeleteResourceGroup: (optional) define in Azure
-  # ExecutePipelinesPersonalAccessToken: (optional) define in Azure
-  # NextBuild: define in Azure and set to either a build name or an empty string
   # PyPyHostAppId: define in Azure
   # PyPyHostAppSecret: define in Azure
   # PyPyHostBotName: define in Azure
@@ -34,6 +33,7 @@ pool:
 
 stages:
 - stage: Prepare
+  condition: and(succeeded(), ne(variables['DeleteResourceGroup'], 'false'))
   jobs:
     - job: Delete_Preexisting_Resources
       variables:
@@ -44,6 +44,7 @@ stages:
 
 - stage: Deploy
   dependsOn: Prepare  
+  condition: succeededOrFailed()
   jobs:
     - job: Deploy_Host
       variables:
@@ -73,7 +74,7 @@ stages:
         Registry: $[variables.RegistryUrlSkill]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
         Parameters.sourceLocation: 'SkillsFunctionalTests/python/skill'
-        TemplateLocation: 'SkillsFunctionalTests/python/host/deploymentTemplates/template-with-preexisting-rg.json'
+        TemplateLocation: 'SkillsFunctionalTests/python/skill/deploymentTemplates/template-with-preexisting-rg.json'
         # Using template-with-new-rg.json when Deploy_Host and Deploy_Skill run in parallel gets 'Azure Error: DeploymentActive'.
         #TemplateLocation: 'SkillsFunctionalTests/python/skill/deploymentTemplates/template-with-new-rg.json'
       steps:
@@ -110,7 +111,7 @@ stages:
   dependsOn:
   - Deploy
   - Test
-  condition: always()
+  condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
   jobs:
     - job: Delete_RG
       steps:
@@ -122,4 +123,3 @@ stages:
           inlineScript: |
            call az group delete -n "$(PyPyHostBotName)-RG" --yes
            call az group delete -n "$(PyPySkillBotName)-RG" --yes
-        condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))

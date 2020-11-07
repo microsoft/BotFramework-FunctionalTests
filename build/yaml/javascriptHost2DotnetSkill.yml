@@ -1,5 +1,5 @@
 #
-# Build a C# Skill bot. Optionally deploy it and a Javascript Host bot and run functional tests.
+# Build a C# Skill bot. Deploy it and a Javascript Host bot and run functional tests.
 #
 
 # "name" here defines the build number format. Build number is accessed via $(Build.BuildNumber)
@@ -8,14 +8,14 @@ trigger: none
 pr: none
 
 variables:
+  BotGroup: '$(BotName)-RG'
   BuildConfiguration: 'Debug'
   BuildPlatform: 'any cpu'
-  TriggeredReason: $[ coalesce( variables['TriggeringBuildReason'], variables['Build.Reason'] ) ]
+  runCodesignValidationInjection: false
   # AzureSubscription: define in Azure
   # BotBuilderPackageVersionHost: (optional) define in Azure
   # BotBuilderPackageVersionSkill: (optional) define in Azure
   # DeleteResourceGroup: (optional) define in Azure
-  # ExecutePipelinesPersonalAccessToken: (optional) define in Azure
   # JsDotNetHostAppId: define in Azure
   # JsDotNetHostAppSecret: define in Azure
   # JsDotNetHostBotName: define in Azure
@@ -23,18 +23,16 @@ variables:
   # JsDotNetSkillAppSecret: define in Azure
   # JsDotNetSkillBotName: define in Azure
   # NetCoreSdkVersionSkill: define in Azure
-  # NextBuild: define in Azure and set to either a build name or an empty string
   # RegistryUrlHost (Optional): define this in Azure
   # RegistryUrlSkill (Optional): define this in Azure
   # TestFilter: (optional) define in Azure. Example: '&TestCategory!=SkipForV3Bots'
-  # TriggeredBy: define in Azure and set to an empty string
 
 pool:
   vmImage: 'windows-2019'
 
 stages:
 - stage: Prepare
-  condition: and(succeeded(), in(variables['TriggeredReason'], 'Schedule', 'Manual', 'BuildRunner'))
+  condition: and(succeeded(), ne(variables['DeleteResourceGroup'], 'false'))
   jobs:
     - job: Delete_Preexisting_Resources
       variables:
@@ -44,21 +42,12 @@ stages:
       - template: cleanResourcesStep.yml
 
 - stage: Build
-  condition: succeededOrFailed()
+  dependsOn: []    # makes this run in parallel
   jobs:
     - job: Validate_Skill_NetCore_Version
       variables:
         Parameters.netCoreSdkVersion: $(NetCoreSdkVersionSkill)
       steps:
-      - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
-        displayName: 'Tag Build with TriggeredReason, TriggeredBy, NextBuild'
-        inputs:
-          tags: |
-            TriggeredReason=$(TriggeredReason)
-            $(TriggeredBy)
-            NextBuild=$(NextBuild)
-        continueOnError: true
-
       - template: dotnetValidateNetCoreSdkVersion.yml
 
     - job: Build_Skill_Bot
@@ -74,7 +63,10 @@ stages:
       - template: dotnetTagBotBuilderVersion.yml
 
 - stage: Deploy
-  condition: and(succeeded(), in(variables['TriggeredReason'], 'Schedule', 'Manual', 'BuildRunner'))
+  dependsOn:
+  - Prepare
+  - Build
+  condition: succeeded('Build')
   jobs:
     - job: Deploy_Host
       variables:
@@ -134,7 +126,7 @@ stages:
   dependsOn:
   - Deploy
   - Test
-  condition: and(succeeded('Build'), in(variables['TriggeredReason'], 'Schedule', 'Manual', 'BuildRunner'))
+  condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
   jobs:
     - job: Delete_RG
       steps:
@@ -147,20 +139,3 @@ stages:
            call az group delete -n "$(JsDotNetHostBotName)-RG" --yes
            call az group delete -n "$(JsDotNetSkillBotName)-RG" --yes
         condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
-
-- stage: QueueNext
-  condition: and(succeededOrFailed(), ne(variables['TriggeredReason'], 'Manual'), ne(variables['NextBuild'], ''))
-  jobs:
-    - job: TriggerBuild
-      steps:
-      - task: benjhuser.tfs-extensions-build-tasks.trigger-build-task.TriggerBuild@3
-        displayName: 'Trigger build $(NextBuild)'
-        inputs:
-          buildDefinition: '$(NextBuild)'
-          queueBuildForUserThatTriggeredBuild: true
-          buildParameters: 'TriggeringBuildReason: $(TriggeredReason), TriggeredBy: Triggered_by_$(Build.DefinitionName)/$(Build.BuildNumber)'
-          password: '$(ExecutePipelinesPersonalAccessToken)'
-          enableBuildInQueueCondition: true
-          blockingBuildsList: '$(NextBuild)'
-        continueOnError: true
-        condition: and(succeededOrFailed(), ne(variables['TriggeredReason'], 'Manual'), ne(variables['NextBuild'], ''), ne(variables['ExecutePipelinesPersonalAccessToken'], ''))
