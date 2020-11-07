@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Bot.Builder;
@@ -27,13 +28,15 @@ namespace Microsoft.BotBuilderSamples.SimpleRootBot.Controllers
         [HttpPost]
         public async Task PostAsync()
         {
-            await _adapter.ProcessAsync(Request, Response, _bot);
-        }
-
-        [HttpGet]
-        public string Status()
-        {
-            return "working";
+            try
+            {
+                await _adapter.ProcessAsync(Request, Response, _bot);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
         }
     }
 }

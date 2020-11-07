@@ -18,8 +18,8 @@
       "name": "default",
       "protocol": "BotFrameworkV3",
       "description": "Default endpoint for the skill",
-      "endpointUrl": "http://echoskillbot.contoso.com/api/messages",
-      "msAppId": "00000000-0000-0000-0000-000000000000"
+      "endpointUrl": "https://ggechoskillbot.azurewebsites.net/api/messages",
+      "msAppId": "f3fe8762-e50c-4688-b202-a040f522d916"
     }
   ]
 }

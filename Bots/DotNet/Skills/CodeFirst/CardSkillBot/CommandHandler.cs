@@ -1,15 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using AdaptiveCards;
-using Microsoft.Bot.Builder;
-using Microsoft.Bot.Builder.Teams;
-using Microsoft.Bot.Connector.Authentication;
-using Microsoft.Bot.Schema;
-using Microsoft.Bot.Schema.Teams;
-using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -21,6 +12,15 @@ using System.Security.Policy;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
+using AdaptiveCards;
+using Microsoft.Bot.Builder;
+using Microsoft.Bot.Builder.Teams;
+using Microsoft.Bot.Connector.Authentication;
+using Microsoft.Bot.Schema;
+using Microsoft.Bot.Schema.Teams;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace CardSkill
 {
@@ -29,7 +29,8 @@ namespace CardSkill
         public static readonly string CorgiOnCarouselVideo = "https://www.youtube.com/watch?v=LvqzubPZjHE";
         public static readonly string MindBlownGif = "https://media3.giphy.com/media/xT0xeJpnrWC4XWblEk/giphy.gif?cid=ecf05e47mye7k75sup6tcmadoom8p1q8u03a7g2p3f76upp9&rid=giphy.gif";
 
-        public static IEnumerable<Attachment> ListOfAllCards = new [] { 
+        private static IEnumerable<Attachment> _listOfAllCards = new[]
+        {
             MakeAdaptiveCard("botaction").ToAttachment(),
             MakeAdaptiveCard("taskmodule").ToAttachment(),
             MakeAdaptiveCard("submitaction").ToAttachment(),
@@ -37,17 +38,12 @@ namespace CardSkill
             CardSampleHelper.CreateThumbnailCard().ToAttachment(),
             CardSampleHelper.CreateReceiptCard().ToAttachment(),
             CardSampleHelper.CreateSigninCard().ToAttachment(),
-            MakeO365CardAttachmentAsync()//,
-            //MakeFileCard()
-       };
+            MakeO365CardAttachmentAsync()
+        };
 
-        private struct CardData
+        public static IEnumerable<Attachment> GetListOfAllCards()
         {
-            public string Title { get; set; }
-
-            public string Subtitle { get; set; }
-
-            public string Text { get; set; }
+            return _listOfAllCards;
         }
 
         public static async Task HandleCommand(ITurnContext<IMessageActivity> turnContext, string actualText, CardBot bot, CancellationToken cancellationToken)
@@ -66,7 +62,6 @@ namespace CardSkill
             {
                 throw new NullReferenceException(nameof(bot));
             }
-
 
             switch (actualText.ToLowerInvariant())
             {
@@ -128,6 +123,108 @@ namespace CardSkill
             }
         }
 
+        internal static Task<MessagingExtensionActionResponse> CreateCardCommand(MessagingExtensionAction action)
+        {
+            if (action == null)
+            {
+                throw new NullReferenceException(nameof(action));
+            }
+
+            // The user has chosen to create a card by choosing the 'Create Card' context menu command.
+            var createCardData = ((JObject)action.Data).ToObject<CardData>();
+
+            var card = new HeroCard
+            {
+                Title = createCardData.Title,
+                Subtitle = createCardData.Subtitle,
+                Text = createCardData.Text,
+            };
+
+            var attachments = new List<MessagingExtensionAttachment>
+            {
+                new MessagingExtensionAttachment
+                {
+                    Content = card,
+                    ContentType = HeroCard.ContentType,
+                    Preview = card.ToAttachment(),
+                }
+            };
+
+            return Task.FromResult(new MessagingExtensionActionResponse
+            {
+                ComposeExtension = new MessagingExtensionResult
+                {
+                    AttachmentLayout = "list",
+                    Type = "result",
+                    Attachments = attachments,
+                },
+            });
+        }
+
+        internal static Task<MessagingExtensionActionResponse> ShareMessageCommand(MessagingExtensionAction action)
+        {
+            // The user has chosen to share a message by choosing the 'Share Message' context menu command.
+            var heroCard = new HeroCard
+            {
+                Title = $"{action.MessagePayload.From?.User?.DisplayName} orignally sent this message:",
+                Text = action.MessagePayload.Body.Content,
+            };
+
+            if (action.MessagePayload.Attachments?.Count > 0)
+            {
+                // This sample does not add the MessagePayload Attachments.  This is left as an
+                // exercise for the user.
+                heroCard.Subtitle = $"({action.MessagePayload.Attachments.Count} Attachments not included)";
+            }
+
+            // This Messaging Extension example allows the user to check a box to include an image with the
+            // shared message.  This demonstrates sending custom parameters along with the message payload.
+            var includeImage = ((JObject)action.Data)["includeImage"]?.ToString();
+            if (!string.IsNullOrEmpty(includeImage) && includeImage == bool.TrueString)
+            {
+                heroCard.Images = new List<CardImage>
+                {
+                    new CardImage { Url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtB3AwMUeNoq4gUBGe6Ocj8kyh3bXa9ZbV7u1fVKQoyKFHdkqU" },
+                };
+            }
+
+            return Task.FromResult(new MessagingExtensionActionResponse
+            {
+                ComposeExtension = new MessagingExtensionResult
+                {
+                    Type = "result",
+                    AttachmentLayout = "list",
+                    Attachments = new List<MessagingExtensionAttachment>()
+                    {
+                        new MessagingExtensionAttachment
+                        {
+                            Content = heroCard,
+                            ContentType = HeroCard.ContentType,
+                            Preview = heroCard.ToAttachment(),
+                        },
+                    }
+                },
+            });
+        }
+
+        internal static Task<MessagingExtensionActionResponse> CreateMessagePreview(MessagingExtensionAction action)
+        {
+            var sampleData = JsonConvert.DeserializeObject<SampleData>(action.Data.ToString());
+            var adaptiveCard = CardSampleHelper.CreateAdaptiveCard(sampleData);
+            return Task.FromResult(new MessagingExtensionActionResponse
+            {
+                ComposeExtension = new MessagingExtensionResult
+                {
+                    Type = "botMessagePreview",
+                    ActivityPreview = MessageFactory.Attachment(new Attachment
+                    {
+                        Content = adaptiveCard,
+                        ContentType = AdaptiveCard.ContentType,
+                    }) as Activity,
+                },
+            });
+        }
+
         private static AnimationCard MakeAnimationCard()
         {
             MediaUrl url = new MediaUrl(url: MindBlownGif);
@@ -142,7 +239,7 @@ namespace CardSkill
 
         private static AudioCard MakeAudiocard()
         {
-            MediaUrl url = new MediaUrl(url: "http://localhost:39783/api/bell");
+            MediaUrl url = new MediaUrl(url: "https://skillsbot.azurewebsites.net/api/bell");
             return new AudioCard(title: "Audio Card", media: new[] { url }, autoloop: true);
         }
 
@@ -215,7 +312,7 @@ namespace CardSkill
 
                 string filePath = Path.Combine("Files", file.Name);
 
-                using var client = bot._clientFactory.CreateClient();
+                using var client = bot.GetClientFactory().CreateClient();
                 var response = await client.GetAsync(new Uri(fileDownload.DownloadUrl)).ConfigureAwait(false);
                 using var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None);
                 await response.Content.CopyToAsync(fileStream).ConfigureAwait(false);
@@ -233,106 +330,13 @@ namespace CardSkill
             }
         }
 
-        internal static Task<MessagingExtensionActionResponse> CreateCardCommand(MessagingExtensionAction action)
+        private struct CardData
         {
-            if (action == null)
-            {
-                throw new NullReferenceException(nameof(action));
-            }
+            public string Title { get; set; }
 
-            // The user has chosen to create a card by choosing the 'Create Card' context menu command.
-            var createCardData = ((JObject)action.Data).ToObject<CardData>();
+            public string Subtitle { get; set; }
 
-            var card = new HeroCard
-            {
-                Title = createCardData.Title,
-                Subtitle = createCardData.Subtitle,
-                Text = createCardData.Text,
-            };
-
-            var attachments = new List<MessagingExtensionAttachment>
-            {
-                new MessagingExtensionAttachment
-                {
-                    Content = card,
-                    ContentType = HeroCard.ContentType,
-                    Preview = card.ToAttachment(),
-                }
-            };
-
-            return Task.FromResult(new MessagingExtensionActionResponse
-            {
-                ComposeExtension = new MessagingExtensionResult
-                {
-                    AttachmentLayout = "list",
-                    Type = "result",
-                    Attachments = attachments,
-                },
-            });
-        }
-
-        internal static Task<MessagingExtensionActionResponse> ShareMessageCommand(MessagingExtensionAction action)
-        {
-            // The user has chosen to share a message by choosing the 'Share Message' context menu command.
-            var heroCard = new HeroCard
-            {
-                Title = $"{action.MessagePayload.From?.User?.DisplayName} orignally sent this message:",
-                Text = action.MessagePayload.Body.Content,
-            };
-
-            if (action.MessagePayload.Attachments?.Count > 0)
-            {
-                // This sample does not add the MessagePayload Attachments.  This is left as an
-                // exercise for the user.
-                heroCard.Subtitle = $"({action.MessagePayload.Attachments.Count} Attachments not included)";
-            }
-
-            // This Messaging Extension example allows the user to check a box to include an image with the
-            // shared message.  This demonstrates sending custom parameters along with the message payload.
-            var includeImage = ((JObject)action.Data)["includeImage"]?.ToString();
-            if (!string.IsNullOrEmpty(includeImage) && bool.TrueString == includeImage)
-            {
-                heroCard.Images = new List<CardImage>
-                {
-                    new CardImage { Url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtB3AwMUeNoq4gUBGe6Ocj8kyh3bXa9ZbV7u1fVKQoyKFHdkqU" },
-                };
-            }
-
-            return Task.FromResult(new MessagingExtensionActionResponse
-            {
-                ComposeExtension = new MessagingExtensionResult
-                {
-                    Type = "result",
-                    AttachmentLayout = "list",
-                    Attachments = new List<MessagingExtensionAttachment>()
-                    {
-                        new MessagingExtensionAttachment
-                        {
-                            Content = heroCard,
-                            ContentType = HeroCard.ContentType,
-                            Preview = heroCard.ToAttachment(),
-                        },
-                    }
-                },
-            });
-        }
-
-        internal static Task<MessagingExtensionActionResponse> CreateMessagePreview(MessagingExtensionAction action)
-        {
-            var sampleData = JsonConvert.DeserializeObject<SampleData>(action.Data.ToString());
-            var adaptiveCard = CardSampleHelper.CreateAdaptiveCard(sampleData);
-            return Task.FromResult(new MessagingExtensionActionResponse
-            {
-                ComposeExtension = new MessagingExtensionResult
-                {
-                    Type = "botMessagePreview",
-                    ActivityPreview = MessageFactory.Attachment(new Attachment
-                    {
-                        Content = adaptiveCard,
-                        ContentType = AdaptiveCard.ContentType,
-                    }) as Activity,
-                },
-            });
+            public string Text { get; set; }
         }
     }
 }

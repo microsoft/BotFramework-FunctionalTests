@@ -32,9 +32,7 @@ namespace Microsoft.BotBuilderSamples.EchoSkillBot
             services.AddSingleton<IBotFrameworkHttpAdapter, SkillAdapterWithErrorHandler>();
 
             // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
-            services.AddTransient<IBot, WeatherBot>();
-
-            services.AddSingleton<IChannelProvider, ConfigurationChannelProvider>();
+            services.AddTransient<IBot, EchoBot>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

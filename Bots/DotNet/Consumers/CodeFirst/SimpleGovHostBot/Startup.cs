@@ -41,6 +41,8 @@ namespace Microsoft.BotBuilderSamples.SimpleRootBot
             services.AddSingleton<SkillConversationIdFactoryBase, SkillConversationIdFactory>();
             services.AddHttpClient<SkillHttpClient>();
             services.AddSingleton<ChannelServiceHandler, SkillHandler>();
+
+            // Register a ConfigurationChannelProvider -- this is only for Azure Gov.
             services.AddSingleton<IChannelProvider, ConfigurationChannelProvider>();
 
             // Register the storage we'll be using for User and Conversation state. (Memory is great for testing purposes.)

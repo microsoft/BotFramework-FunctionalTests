@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration.AspNet.Core.Skills;
 using Microsoft.Bot.Builder.Skills;
+using Microsoft.Bot.Builder.Teams;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Configuration;
@@ -16,7 +17,7 @@ using Newtonsoft.Json;
 
 namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Bots
 {
-    public class HostBot : ActivityHandler
+    public class HostBot : TeamsActivityHandler
     {
         public const string ActiveSkillPropertyName = "activeSkillProperty";
         

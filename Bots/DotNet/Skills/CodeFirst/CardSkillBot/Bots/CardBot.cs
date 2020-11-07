@@ -14,20 +14,24 @@ namespace CardSkill
 {
     public class CardBot : ActivityHandler
     {
-        public readonly string WelcomeMessage = "Send me one of these messages for a card: botActions, taskModule, submitAction, hero.";
-        public readonly string PossibleCards = "botaction, taskmodule, submit, hero, thumbnail, receipt, signin, carousel, list, o365, file, uploadfile, animation, video, audio";
-        internal readonly IHttpClientFactory _clientFactory;
+        private readonly string _possibleCards = "botaction, taskmodule, submit, hero, thumbnail, receipt, signin, carousel, list, o365, file, uploadfile, animation, video, audio";
+        private readonly IHttpClientFactory _clientFactory;
 
         public CardBot(IHttpClientFactory clientFactory)
         {
             _clientFactory = clientFactory;
         }
 
+        public IHttpClientFactory GetClientFactory()
+        {
+            return _clientFactory;
+        }
+
         protected override async Task OnConversationUpdateActivityAsync(ITurnContext<IConversationUpdateActivity> turnContext, CancellationToken cancellationToken)
         {
             await turnContext.SendActivityAsync(MessageFactory.Text("Here is a carousel of most of the cards I have.")).ConfigureAwait(false);
-            await turnContext.SendActivityAsync(MessageFactory.Attachment(CommandHandler.ListOfAllCards)).ConfigureAwait(false);
-            await turnContext.SendActivityAsync(MessageFactory.Text($"You can send me the following messages to see all cards: {PossibleCards}"));
+            await turnContext.SendActivityAsync(MessageFactory.Attachment(CommandHandler.GetListOfAllCards())).ConfigureAwait(false);
+            await turnContext.SendActivityAsync(MessageFactory.Text($"You can send me the following messages to see all cards: {_possibleCards}"));
         }
 
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
@@ -71,21 +75,5 @@ namespace CardSkill
             // Perform cleanup of resources if needed.
             return Task.CompletedTask;
         }
-
-        //private static async Task SendAdaptiveCardAsync(ITurnContext<IMessageActivity> turnContext, string cardType, CancellationToken cancellationToken)
-        //{
-        //    AdaptiveCard adaptiveCard = cardType switch
-        //    {
-        //        "botaction" => CommandHandler.MakeAdaptiveCard("botaction"),
-        //        "taskmodule" => CardSampleHelper.CreateAdaptiveCard2(),
-        //        "submit" => CardSampleHelper.CreateAdaptiveCard3(),
-
-        //        _ => throw new ArgumentOutOfRangeException(nameof(cardNumber)),
-        //    };
-        //    var replyActivity = MessageFactory.Attachment(adaptiveCard.ToAttachment());
-        //    await turnContext.SendActivityAsync(replyActivity, cancellationToken).ConfigureAwait(false);
-        //}
-
-       
     }
 }

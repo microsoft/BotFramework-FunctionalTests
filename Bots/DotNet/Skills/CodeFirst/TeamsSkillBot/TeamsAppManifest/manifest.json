@@ -2,10 +2,10 @@
   "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.5/MicrosoftTeams.schema.json",
   "manifestVersion": "1.5",
   "version": "1.0.0",
-  "id": "<<YOUR-MICROSOFT-APP-ID>>",
-  "packageName": "com.teams.sample.teamsconversationbot",
+  "id": "",
+  "packageName": "com.botframework.skill.teamsskillbot",
   "developer": {
-    "name": "teamsConversationBot",
+    "name": "TeamsSkillBot",
     "websiteUrl": "https://www.microsoft.com",
     "privacyUrl": "https://www.teams.com/privacy",
     "termsOfUseUrl": "https://www.teams.com/termsofuser"
@@ -15,17 +15,17 @@
     "color": "icon-color.png"
   },
   "name": {
-    "short": "TeamsConversationBot",
-    "full": "TeamsConversationBot"
+    "short": "TeamsSkillBot",
+    "full": "TeamsSkillBot"
   },
   "description": {
-    "short": "TeamsConversationBot",
-    "full": "TeamsConversationBot"
+    "short": "TeamsSkillBot",
+    "full": "TeamsSkillBot"
   },
   "accentColor": "#FFFFFF",
   "bots": [
     {
-      "botId": "<<YOUR-MICROSOFT-APP-ID>>",
+      "botId": "",
       "scopes": [
         "personal",
         "groupchat",

@@ -20,12 +20,14 @@ namespace DotnetIntegrationBot
         private readonly IBotFrameworkHttpAdapter _adapter;
         private readonly IBot _bot;
         private readonly ILogger _logger;
+        private readonly Microsoft.Extensions.Configuration.IConfiguration _config;
 
-        public BotController(IBotFrameworkHttpAdapter adapter, IBot bot, ILogger<BotController> logger)
+        public BotController(IBotFrameworkHttpAdapter adapter, IBot bot, ILogger<BotController> logger, Microsoft.Extensions.Configuration.IConfiguration config)
         {
             _adapter = adapter;
             _bot = bot;
             _logger = logger;
+            _config = config;
         }
 
         [HttpPost]

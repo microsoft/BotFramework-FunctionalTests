@@ -2,14 +2,11 @@
 // Licensed under the MIT License.
 
 using System.IO;
-using System.Media;
 using System.Threading.Tasks;
 using CardSkill;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
-
-
 
 namespace Microsoft.BotBuilderSamples.EchoSkillBot.Controllers
 {
@@ -41,8 +38,8 @@ namespace Microsoft.BotBuilderSamples.EchoSkillBot.Controllers
         public ActionResult PlaySound()
         {
             var filename = Constants.BellSound;
-            var filePath = Path.Combine("Files", filename);
-
+            
+            var filePath = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Files", filename);
             using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read);
             var br = new BinaryReader(fs);
             long numBytes = new FileInfo(filePath).Length;

@@ -43,7 +43,7 @@ namespace Microsoft.BotBuilderSamples.SimpleRootBot.Bots
             }
 
             // We use a single skill in this example.
-            var targetSkillId = "WeatherSkillBot";
+            var targetSkillId = "EchoSkillBot";
             if (!_skillsConfig.Skills.TryGetValue(targetSkillId, out _targetSkill))
             {
                 throw new ArgumentException($"Skill with ID \"{targetSkillId}\" not found in configuration");
@@ -71,7 +71,7 @@ namespace Microsoft.BotBuilderSamples.SimpleRootBot.Bots
             await base.OnTurnAsync(turnContext, cancellationToken);
 
             // Save any state changes that might have occured during the turn.
-            //await _conversationState.SaveChangesAsync(turnContext, false, cancellationToken);
+            await _conversationState.SaveChangesAsync(turnContext, false, cancellationToken);
         }
 
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
