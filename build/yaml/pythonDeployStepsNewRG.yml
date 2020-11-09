@@ -1,3 +1,6 @@
+#
+# template-with-new-rg.json errors when run simultaneously in two deploys with 'Azure Error: DeploymentActive'.
+#
 steps:
 - powershell: |
     switch ("$(Registry)".ToUpper())
@@ -85,13 +88,17 @@ steps:
   
 - template: pythonTagBotBuilderVersion.yml
 
-- task: AzureCLI@1
-  displayName: 'Create resource group and deploy bot'
+- task: AzureCLI@2
+  displayName: 'create Azure resources - new RG template'
   inputs:
-    azureSubscription: $(AzureSubscription)
+    azureSubscription: 'FUSE Temporary (174c5021-8109-4087-a3e2-a1de20420569)'
+    scriptType: ps
     scriptLocation: inlineScript
     inlineScript: |
-     az deployment create --name "$(BotName)-RG" --template-file "$(System.DefaultWorkingDirectory)/$(TemplateLocation)" --location "westus" --parameters appId="$(DeployAppId)" appSecret="$(DeployAppSecret)" botId="$(BotName)" botSku=F0 newAppServicePlanName="$(BotName)" newWebAppName="$(BotName)-$(Build.BuildId)" groupName="$(BotName)-RG" groupLocation="westus" newAppServicePlanLocation="westus"
+     Set-PSDebug -Trace 1;
+     # set up resource group, bot channels registration, app service, app service plan
+     az deployment sub create --name "$(BotName)$(Build.BuildId)" --template-file "$(System.DefaultWorkingDirectory)/$(TemplateLocation)" --location "westus" --parameters appId="$(DeployAppId)" appSecret="$(DeployAppSecret)" botId="$(BotName)" botSku=F0 newAppServicePlanName="$(BotName)" newWebAppName="$(BotName)-$(Build.BuildId)" groupName="$(BotGroup)" groupLocation="westus" newAppServicePlanLocation="westus";
+     Set-PSDebug -Trace 0;
 
 - script: |
    git config --global user.name "GitPythonDeploymentUser"

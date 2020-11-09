@@ -10,13 +10,17 @@ steps:
     arguments: '--output $(System.DefaultWorkingDirectory)\publishedbot\$(BotName)'
     modifyOutputPath: false
 
-- task: AzureCLI@1
-  displayName: 'Create resource group'
+- task: AzureCLI@2
+  displayName: 'create Azure resources - new RG template'
   inputs:
     azureSubscription: $(AzureSubscription)
+    scriptType: ps
     scriptLocation: inlineScript
     inlineScript: |
-     call az deployment create --name $(BotName) --template-file "$(TemplateLocation)" --location "westus" --parameters appId="$(DeployAppId)" appSecret="$(DeployAppSecret)" botId="$(BotName)" botSku=F0 newAppServicePlanName="$(BotName)" newWebAppName="$(BotName)-$(Build.BuildId)" groupName="$(BotName)-RG" groupLocation="westus" newAppServicePlanLocation="westus"
+     Set-PSDebug -Trace 1;
+     # set up resource group, bot channels registration, app service, app service plan
+     az deployment sub create --name "$(BotName)$(Build.BuildId)" --template-file "$(TemplateLocation)" --location "westus" --parameters appId="$(DeployAppId)" appSecret="$(DeployAppSecret)" botId="$(BotName)" botSku=F0 newAppServicePlanName="$(BotName)" newWebAppName="$(BotName)-$(Build.BuildId)" groupName="$(BotGroup)" groupLocation="westus" newAppServicePlanLocation="westus"
+     Set-PSDebug -Trace 0;
 
 - task: AzureCLI@1
   displayName: 'Deploy bot'

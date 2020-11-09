@@ -1,5 +1,5 @@
 #
-# Build a C# Host bot. Optionally deploy it and a Python Skill bot and run functional tests.
+# Build a C# Host bot. Deploy it and a Python Skill bot and run functional tests.
 #
 
 # "name" here defines the build number format. Build number is accessed via $(Build.BuildNumber)
@@ -8,9 +8,10 @@ trigger: none
 pr: none
 
 variables:
+  BotGroup: '$(BotName)-RG'
   BuildConfiguration: 'Debug'
   BuildPlatform: 'any cpu'
-  TriggeredReason: $[ coalesce( variables['TriggeringBuildReason'], variables['Build.Reason'] ) ]
+  runCodesignValidationInjection: false
   # AzureDeploymentPassword: define in Azure
   # AzureDeploymentUser: define in Azure
   # AzureSubscription: define in Azure
@@ -23,20 +24,17 @@ variables:
   # DotNetPySkillAppId: define in Azure
   # DotNetPySkillAppSecret: define in Azure
   # DotNetPySkillBotName: define in Azure
-  # ExecutePipelinesPersonalAccessToken: (optional) define in Azure
   # NetCoreSdkVersionHost: define in Azure
-  # NextBuild: define in Azure and set to either a build name or an empty string
   # RegistryUrlSkill: (optional) define in Azure
   # RegistryUrlHost (Optional): define this in Azure
   # TestFilter: (optional) define in Azure. Example: '&TestCategory!=SkipForV3Bots'
-  # TriggeredBy: define in Azure and set to an empty string
 
 pool:
   vmImage: 'windows-2019'
 
 stages:
 - stage: Prepare
-  condition: and(succeeded(), in(variables['TriggeredReason'], 'Schedule', 'Manual', 'BuildRunner'))
+  condition: and(succeeded(), ne(variables['DeleteResourceGroup'], 'false'))
   jobs:
     - job: Delete_Preexisting_Resources
       variables:
@@ -46,21 +44,12 @@ stages:
       - template: cleanResourcesStep.yml
 
 - stage: Build
-  condition: succeededOrFailed()
+  dependsOn: []    # makes this run in parallel
   jobs:
     - job: Validate_Host_NetCore_Version
       variables:
         Parameters.netCoreSdkVersion: $(NetCoreSdkVersionHost)
       steps:
-      - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
-        displayName: 'Tag Build with TriggeredReason, TriggeredBy, NextBuild'
-        inputs:
-          tags: |
-            TriggeredReason=$(TriggeredReason)
-            $(TriggeredBy)
-            NextBuild=$(NextBuild)
-        continueOnError: true
-
       - template: dotnetValidateNetCoreSdkVersion.yml
 
     - job: Build_Host_Bot
@@ -76,7 +65,10 @@ stages:
       - template: dotnetTagBotBuilderVersion.yml
 
 - stage: Deploy
-  condition: and(succeeded(), in(variables['TriggeredReason'], 'Schedule', 'Manual', 'BuildRunner'))
+  dependsOn:
+  - Prepare
+  - Build
+  condition: succeeded('Build')
   jobs:
     - job: Deploy_Host
       variables:
@@ -95,6 +87,7 @@ stages:
       - template: dotnetDeploySteps.yml
 
     - job: Deploy_Skill
+      #dependsOn: Deploy_Host
       variables:
         BotName: $(DotNetPySkillBotName)
         DeployAppId: $(DotNetPySkillAppId)
@@ -102,9 +95,12 @@ stages:
         Registry: $[variables.RegistryUrlSkill]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
         Parameters.sourceLocation: 'Bots/Python/Skills/CodeFirst/EchoSkillBot'
-        TemplateLocation: 'Bots/Python/Skills/CodeFirst/EchoSkillBot/deploymentTemplates/template-with-new-rg.json'
+        TemplateLocation: 'Bots/Python/Skills/CodeFirst/EchoSkillBot/deploymentTemplates/template-with-preexisting-rg.json'
+        # To use template-with-new-rg.json when Deploy_Host and Deploy_Skill run in parallel gets 'Azure Error: DeploymentActive'.
+        #TemplateLocation: 'Bots/Python/Skills/CodeFirst/EchoSkillBot/deploymentTemplates/template-with-new-rg.json'
       steps:
-      - template: pythonDeploySteps.yml
+      - template: pythonDeployStepsExistingRG.yml
+      #- template: pythonDeployStepsNewRG.yml
 
     - job: Configure_OAuth
       dependsOn: Deploy_Skill
@@ -136,7 +132,7 @@ stages:
   dependsOn:
   - Deploy
   - Test
-  condition: and(succeeded('Build'), in(variables['TriggeredReason'], 'Schedule', 'Manual', 'BuildRunner'))
+  condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
   jobs:
     - job: Delete_RG
       steps:
@@ -149,20 +145,3 @@ stages:
            call az group delete -n "$(DotNetPyHostBotName)-RG" --yes
            call az group delete -n "$(DotNetPySkillBotName)-RG" --yes
         condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
-
-- stage: QueueNext
-  condition: and(succeededOrFailed(), ne(variables['TriggeredReason'], 'Manual'), ne(variables['NextBuild'], ''))
-  jobs:
-    - job: TriggerBuild
-      steps:
-      - task: benjhuser.tfs-extensions-build-tasks.trigger-build-task.TriggerBuild@3
-        displayName: 'Trigger build $(NextBuild)'
-        inputs:
-          buildDefinition: '$(NextBuild)'
-          queueBuildForUserThatTriggeredBuild: true
-          buildParameters: 'TriggeringBuildReason: $(TriggeredReason), TriggeredBy: Triggered_by_$(Build.DefinitionName)/$(Build.BuildNumber)'
-          password: '$(ExecutePipelinesPersonalAccessToken)'
-          enableBuildInQueueCondition: true
-          blockingBuildsList: '$(NextBuild)'
-        continueOnError: true
-        condition: and(succeededOrFailed(), ne(variables['TriggeredReason'], 'Manual'), ne(variables['NextBuild'], ''), ne(variables['ExecutePipelinesPersonalAccessToken'], ''))
