@@ -27,6 +27,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TeamsSkillBot", "Skills\Cod
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeatherSkill", "Skills\CodeFirst\WeatherSkillBot\WeatherSkill.csproj", "{C62D367B-BBA3-4F0F-B170-52AE28910F01}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EchoSkillBot", "Skills\CodeFirst\EchoSkillBot\EchoSkillBot.csproj", "{692F26DD-F7BA-49F3-AC6D-73047C1E5D61}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -65,6 +67,10 @@ Global
 		{C62D367B-BBA3-4F0F-B170-52AE28910F01}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C62D367B-BBA3-4F0F-B170-52AE28910F01}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C62D367B-BBA3-4F0F-B170-52AE28910F01}.Release|Any CPU.Build.0 = Release|Any CPU
+		{692F26DD-F7BA-49F3-AC6D-73047C1E5D61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{692F26DD-F7BA-49F3-AC6D-73047C1E5D61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{692F26DD-F7BA-49F3-AC6D-73047C1E5D61}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{692F26DD-F7BA-49F3-AC6D-73047C1E5D61}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -80,6 +86,7 @@ Global
 		{5AF618C7-C75B-4F34-A77C-66F3E3B758E2} = {6EF38D8C-7953-4D54-BA31-FFF055B7B217}
 		{66E3D426-7627-4D6C-9FAA-87618724F326} = {6EF38D8C-7953-4D54-BA31-FFF055B7B217}
 		{C62D367B-BBA3-4F0F-B170-52AE28910F01} = {6EF38D8C-7953-4D54-BA31-FFF055B7B217}
+		{692F26DD-F7BA-49F3-AC6D-73047C1E5D61} = {6EF38D8C-7953-4D54-BA31-FFF055B7B217}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2B77A921-EEA6-4006-ABD2-159C92F9F874}
