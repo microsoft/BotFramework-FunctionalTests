@@ -119,7 +119,7 @@ namespace Microsoft.BotBuilderSamples.DialogSkillBot.Dialogs
             return new DialogTurnResult(DialogTurnStatus.Complete);
         }
 
-        private static async Task<DialogTurnResult> BeginGetWeather(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        private async Task<DialogTurnResult> BeginGetWeather(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             var activity = stepContext.Context.Activity;
             var location = new Location();

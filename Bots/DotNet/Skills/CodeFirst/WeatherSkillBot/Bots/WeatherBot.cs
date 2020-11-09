@@ -2,26 +2,22 @@
 // Licensed under the MIT License.
 
 using System;
-using System.IO;
-using System.Net;
+using System.Collections.Generic;
 using System.Net.Http;
-using System.Text.Json;
 using System.Threading;
-using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
 using Newtonsoft.Json;
-using System.Collections;
-using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.BotBuilderSamples.EchoSkillBot.Bots
 {
-    
     public class WeatherBot : ActivityHandler
     {
-        HttpClient _client;
-        Uri _url;
+        private readonly HttpClient _client;
+        private readonly Uri _url;
+
         public WeatherBot()
         {
             _client = new HttpClient();
@@ -34,7 +30,7 @@ namespace Microsoft.BotBuilderSamples.EchoSkillBot.Bots
             if (turnContext.Activity.Text.Contains("end") || turnContext.Activity.Text.Contains("stop"))
             {
                 // Send End of conversation at the end.
-                var messageText = $"ending conversation from the skill...";
+                var messageText = "ending conversation from the skill...";
                 await turnContext.SendActivityAsync(MessageFactory.Text(messageText, messageText, InputHints.IgnoringInput), cancellationToken);
                 var endOfConversation = Activity.CreateEndOfConversationActivity();
                 endOfConversation.Code = EndOfConversationCodes.CompletedSuccessfully;
@@ -42,9 +38,9 @@ namespace Microsoft.BotBuilderSamples.EchoSkillBot.Bots
             }
             else
             {
-                var messageText = "";
+                string messageText;
                 var weatherReport = await _client.GetAsync(_url);
-                if(weatherReport.IsSuccessStatusCode)
+                if (weatherReport.IsSuccessStatusCode)
                 {
                     var obj = JObject.Parse(await weatherReport.Content.ReadAsStringAsync());
                     var report = JsonConvert.DeserializeObject<List<SingleDay>>(JsonConvert.SerializeObject(obj["properties"]["periods"]))[0];
@@ -53,9 +49,10 @@ namespace Microsoft.BotBuilderSamples.EchoSkillBot.Bots
                 }
                 else
                 {
-                    messageText = $"Something went wrong with the weather API.";
+                    messageText = "Something went wrong with the weather API.";
                     await turnContext.SendActivityAsync(MessageFactory.Text(messageText, messageText, InputHints.IgnoringInput), cancellationToken);
                 }
+
                 messageText = "Say \"end\" or \"stop\" and I'll end the conversation and back to the parent.";
                 await turnContext.SendActivityAsync(MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput), cancellationToken);
             }
