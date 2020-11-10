@@ -10,6 +10,6 @@ namespace CardSkill
         public static readonly string NugetBaseUrl = "https://www.nuget.org";
         public static readonly string TeamsLogoFileName = "teams-logo.png";
         public static readonly string TeamsSettingsPageUrl = "https://teamssettingspagescenario.azurewebsites.net";
-        public static readonly string BellSound = "serviceBell.wav";
+        public static readonly string BellSound = "music.mp3";
     }
 }

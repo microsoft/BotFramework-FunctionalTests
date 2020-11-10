@@ -35,17 +35,23 @@ namespace Microsoft.BotBuilderSamples.EchoSkillBot.Controllers
 
         [Route("api/bell")]
         [HttpGet]
-        public ActionResult PlaySound()
+        public ActionResult ReturnFile()
         {
             var filename = Constants.BellSound;
-            
-            var filePath = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Files", filename);
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files", filename);
+            byte[] fileData = System.IO.File.ReadAllBytes(filePath);
+
+            /*
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files", filename);
             using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read);
             var br = new BinaryReader(fs);
             long numBytes = new FileInfo(filePath).Length;
             var buff = br.ReadBytes((int)numBytes);
             
-            return File(buff, "audio/wav", "callrecording.wav");
+            return File(buff, "audio/mp3", "callrecording.wav");
+            */
+
+            return File(fileData, "audio/mp3");
         }
     }
 }

@@ -1,0 +1,11 @@
+[import](common.lg)
+
+# SendActivity_Welcome
+- ${WelcomeUser()}
+
+
+# TextInput_Prompt_CRjp6k()
+- What is your name?
+# SendActivity_SDxH8e()
+- Your name is '${turn.activity.text}'
+
