@@ -220,9 +220,9 @@ namespace TranscriptTestRunner
 
             using var reader = new StreamReader(_testScriptPath);
 
-            var testScript = JsonConvert.DeserializeObject<TestScriptItem[]>(await reader.ReadToEndAsync().ConfigureAwait(false));
+            var testScript = JsonConvert.DeserializeObject<TestScript>(await reader.ReadToEndAsync().ConfigureAwait(false));
 
-            foreach (var scriptActivity in testScript)
+            foreach (var scriptActivity in testScript.Items)
             {
                 switch (scriptActivity.Role)
                 {
