@@ -134,13 +134,13 @@ namespace DotnetIntegrationBot
 
         protected override async Task<MessagingExtensionActionResponse> OnTeamsMessagingExtensionFetchTaskAsync(ITurnContext<IInvokeActivity> turnContext, MessagingExtensionAction action, CancellationToken cancellationToken)
         {
-            var tokenResponse = await (turnContext.Adapter as IUserTokenProvider).GetUserTokenAsync(turnContext, _connectionName, string.Empty, cancellationToken: cancellationToken);
+            var tokenResponse = await (turnContext.Adapter as IUserTokenProvider).GetUserTokenAsync(turnContext, _connectionName, string.Empty, cancellationToken: cancellationToken).ConfigureAwait(false);
             if (tokenResponse == null || string.IsNullOrEmpty(tokenResponse.Token))
             {
                 // There is no token, so the user has not signed in yet.
 
                 // Retrieve the OAuth Sign in Link to use in the MessagingExtensionResult Suggested Actions
-                var signInLink = await (turnContext.Adapter as IUserTokenProvider).GetOauthSignInLinkAsync(turnContext, _connectionName, cancellationToken);
+                var signInLink = await (turnContext.Adapter as IUserTokenProvider).GetOauthSignInLinkAsync(turnContext, _connectionName, cancellationToken).ConfigureAwait(false);
 
                 return new MessagingExtensionActionResponse
                 {
@@ -177,13 +177,13 @@ namespace DotnetIntegrationBot
             var data = turnContext.Activity.Value as JObject;
             if (data != null && data["state"] != null)
             {
-                var tokenResponse = await (turnContext.Adapter as IUserTokenProvider).GetUserTokenAsync(turnContext, _connectionName, data["state"].ToString(), cancellationToken: cancellationToken);
+                var tokenResponse = await (turnContext.Adapter as IUserTokenProvider).GetUserTokenAsync(turnContext, _connectionName, data["state"].ToString(), cancellationToken: cancellationToken).ConfigureAwait(false);
                 return new TaskModuleResponse() { Task = new TaskModuleContinueResponse(CreateSignedInTaskModuleTaskInfo(tokenResponse.Token)) };
             }
             else
             {
                 var reply2 = MessageFactory.Text("OnTeamsTaskModuleFetchAsync called without 'state' in Activity.Value");
-                await turnContext.SendActivityAsync(reply2, cancellationToken);
+                await turnContext.SendActivityAsync(reply2, cancellationToken).ConfigureAwait(false);
                 return null;
             }
         }
@@ -194,8 +194,8 @@ namespace DotnetIntegrationBot
             if (asJObject != null && asJObject.ContainsKey("key") && asJObject["key"].ToString() == "signout")
             {
                 // User clicked the Sign Out button from a Task Module
-                await (turnContext.Adapter as IUserTokenProvider).SignOutUserAsync(turnContext, _connectionName, turnContext.Activity.From.Id, cancellationToken);
-                await turnContext.SendActivityAsync(MessageFactory.Text($"Signed Out: {turnContext.Activity.From.Name}"), cancellationToken);
+                await (turnContext.Adapter as IUserTokenProvider).SignOutUserAsync(turnContext, _connectionName, turnContext.Activity.From.Id, cancellationToken).ConfigureAwait(false);
+                await turnContext.SendActivityAsync(MessageFactory.Text($"Signed Out: {turnContext.Activity.From.Name}"), cancellationToken).ConfigureAwait(false);
             }
 
             return null;
@@ -465,24 +465,6 @@ namespace DotnetIntegrationBot
             if (batch.Count > 0)
             {
                 await turnContext.SendActivityAsync(MessageFactory.Text(string.Join("<br>", batch)), cancellationToken).ConfigureAwait(false);
-            }
-        }
-
-        private async Task ShowChannelsAsync(ITurnContext<IMessageActivity> turnContext, TeamsSkillBot bot, CancellationToken cancellationToken)
-        {
-            if (await TeamScopeCheck(turnContext, cancellationToken).ConfigureAwait(false))
-            {
-                var teamId = turnContext.Activity.TeamsGetTeamInfo().Id;
-
-                var channels = await TeamsInfo.GetTeamChannelsAsync(turnContext, teamId, cancellationToken).ConfigureAwait(false);
-
-                var replyActivity = MessageFactory.Text($"Total of {channels.Count} channels are currently in team");
-
-                await turnContext.SendActivityAsync(replyActivity).ConfigureAwait(false);
-
-                var messages = channels.Select(channel => $"{channel.Id} --> {channel.Name}");
-
-                await SendInBatchesAsync(turnContext, messages, cancellationToken).ConfigureAwait(false);
             }
         }
 
