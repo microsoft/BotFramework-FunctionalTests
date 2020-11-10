@@ -33,6 +33,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Composer", "Composer", "{33
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Composer", "Composer", "{33E2281F-C6A7-40EC-961A-FF9FF254FDDC}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AttachmentsSkillBot", "Skills\CodeFirst\AttachmentsSkillBot\AttachmentsSkillBot.csproj", "{2567B219-4384-4BBE-A2DC-475359B2DD9D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +77,10 @@ Global
 		{692F26DD-F7BA-49F3-AC6D-73047C1E5D61}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{692F26DD-F7BA-49F3-AC6D-73047C1E5D61}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{692F26DD-F7BA-49F3-AC6D-73047C1E5D61}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2567B219-4384-4BBE-A2DC-475359B2DD9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2567B219-4384-4BBE-A2DC-475359B2DD9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2567B219-4384-4BBE-A2DC-475359B2DD9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2567B219-4384-4BBE-A2DC-475359B2DD9D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -93,6 +99,7 @@ Global
 		{692F26DD-F7BA-49F3-AC6D-73047C1E5D61} = {6EF38D8C-7953-4D54-BA31-FFF055B7B217}
 		{33FA275E-9E5D-4582-BFF7-24B2C5DB2962} = {12088D79-235C-4387-9DA8-69AB93D52A8E}
 		{33E2281F-C6A7-40EC-961A-FF9FF254FDDC} = {39117C87-FD02-40CD-A9A9-9A4C0A630521}
+		{2567B219-4384-4BBE-A2DC-475359B2DD9D} = {6EF38D8C-7953-4D54-BA31-FFF055B7B217}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2B77A921-EEA6-4006-ABD2-159C92F9F874}
