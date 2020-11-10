@@ -17,7 +17,7 @@ using Newtonsoft.Json;
 
 namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Bots
 {
-    public class HostBot : TeamsActivityHandler
+    public class HostBot : ActivityHandler
     {
         public const string ActiveSkillPropertyName = "activeSkillProperty";
         
