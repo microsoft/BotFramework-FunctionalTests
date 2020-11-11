@@ -11,7 +11,8 @@ using Microsoft.Extensions.Logging;
 
 namespace Microsoft.BotBuilderSamples
 {
-    public class AuthBot<T> : DialogBot<T> where T : Dialog
+    public class AuthBot<T> : DialogBot<T> 
+        where T : Dialog
     {
         public AuthBot(ConversationState conversationState, UserState userState, T dialog, ILogger<DialogBot<T>> logger)
             : base(conversationState, userState, dialog, logger)
@@ -31,10 +32,10 @@ namespace Microsoft.BotBuilderSamples
 
         protected override async Task OnTokenResponseEventAsync(ITurnContext<IEventActivity> turnContext, CancellationToken cancellationToken)
         {
-            Logger.LogInformation("Running dialog with Token Response Event Activity.");
+            _logger.LogInformation("Running dialog with Token Response Event Activity.");
 
             // Run the Dialog with the new Token Response Event Activity.
-            await Dialog.RunAsync(turnContext, ConversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
+            await _dialog.RunAsync(turnContext, _conversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
         }
     }
 }

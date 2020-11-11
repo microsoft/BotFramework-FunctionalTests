@@ -4,7 +4,12 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Bot.Builder;
+using Microsoft.Bot.Builder.BotFramework;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
+using Microsoft.Bot.Connector.Authentication;
+using Microsoft.BotBuilderSamples.EchoSkillBot;
+using Microsoft.BotBuilderSamples.EchoSkillBot.Authentication;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -12,13 +17,26 @@ namespace Microsoft.BotBuilderSamples
 {
     public class Startup
     {
+        public Startup(IConfiguration config)
+        {
+            Configuration = config;
+        }
+
+        public IConfiguration Configuration { get; }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers().AddNewtonsoftJson();
 
+            // Configure credentials
+            services.AddSingleton<ICredentialProvider, ConfigurationCredentialProvider>();
+
             // Create the Bot Framework Adapter with error handling enabled.
-            services.AddSingleton<IBotFrameworkHttpAdapter, AdapterWithErrorHandler>();
+            services.AddSingleton<IBotFrameworkHttpAdapter, SkillAdapterWithErrorHandler>();
+
+            // Register AuthConfiguration to enable custom claim validation.
+            services.AddSingleton(sp => new AuthenticationConfiguration { ClaimsValidator = new AllowedCallersClaimsValidator(sp.GetService<IConfiguration>()) });
 
             // Create the storage we'll be using for User and Conversation state. (Memory is great for testing purposes.)
             services.AddSingleton<IStorage, MemoryStorage>();
@@ -34,6 +52,12 @@ namespace Microsoft.BotBuilderSamples
 
             // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
             services.AddTransient<IBot, AuthBot<MainDialog>>();
+
+            if (!string.IsNullOrEmpty(Configuration["ChannelService"]))
+            {
+                // Register a ConfigurationChannelProvider -- this is only for Azure Gov.
+                services.AddSingleton<IChannelProvider, ConfigurationChannelProvider>();
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

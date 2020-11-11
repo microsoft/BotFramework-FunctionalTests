@@ -13,12 +13,12 @@ namespace Microsoft.BotBuilderSamples
 {
     public class MainDialog : LogoutDialog
     {
-        protected readonly ILogger Logger;
+        private readonly ILogger _logger;
 
         public MainDialog(IConfiguration configuration, ILogger<MainDialog> logger)
             : base(nameof(MainDialog), configuration["ConnectionName"])
         {
-            Logger = logger;
+            _logger = logger;
 
             AddDialog(new OAuthPrompt(
                 nameof(OAuthPrompt),
@@ -32,13 +32,7 @@ namespace Microsoft.BotBuilderSamples
 
             AddDialog(new ConfirmPrompt(nameof(ConfirmPrompt)));
 
-            AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[]
-            {
-                PromptStepAsync,
-                LoginStepAsync,
-                DisplayTokenPhase1Async,
-                DisplayTokenPhase2Async,
-            }));
+            _ = AddDialog(new WaterfallDialog(nameof(WaterfallDialog), actions: new WaterfallStep[] { PromptStepAsync, LoginStepAsync, DisplayTokenPhase1Async, DisplayTokenPhase2Async }));
 
             // The initial child Dialog to run.
             InitialDialogId = nameof(WaterfallDialog);
