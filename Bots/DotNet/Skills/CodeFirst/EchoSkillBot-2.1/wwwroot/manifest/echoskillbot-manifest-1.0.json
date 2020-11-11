@@ -1,6 +1,6 @@
 {
   "$schema": "https://schemas.botframework.com/schemas/skills/skill-manifest-2.0.0.json",
-  "$id": "EchoSkillBot",
+  "$id": "EchoSkillBot-2.1",
   "name": "Echo Skill bot",
   "version": "1.0",
   "description": "This is a sample echo skill",

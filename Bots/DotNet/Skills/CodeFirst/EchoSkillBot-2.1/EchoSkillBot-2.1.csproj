@@ -4,8 +4,8 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <LangVersion>latest</LangVersion>
     <UserSecretsId>f94e58a2-e019-4a0c-a6c2-59ecb1115b80</UserSecretsId>
-    <AssemblyName>Microsoft.BotFrameworkFunctionalTests.EchoSkillBot</AssemblyName>
-    <RootNamespace>Microsoft.BotFrameworkFunctionalTests.EchoSkillBot</RootNamespace>
+    <AssemblyName>Microsoft.BotFrameworkFunctionalTests.EchoSkillBot21</AssemblyName>
+    <RootNamespace>Microsoft.BotFrameworkFunctionalTests.EchoSkillBot21</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

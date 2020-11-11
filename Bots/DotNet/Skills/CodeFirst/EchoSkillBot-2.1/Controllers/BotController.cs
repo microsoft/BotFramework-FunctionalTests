@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 
-namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot.Controllers
+namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot21.Controllers
 {
     /// <summary>
     /// This ASP Controller is created to handle a request. Dependency Injection will provide the Adapter and IBot implementation at runtime.
