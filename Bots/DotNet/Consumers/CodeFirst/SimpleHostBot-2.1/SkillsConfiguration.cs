@@ -37,13 +37,15 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot21
         }
 
         /// <summary>
-        /// The URI representing the endpoint of the host bot.
+        /// Gets the URI representing the endpoint of the host bot.
         /// </summary>
+        /// <value>The host bot endpoint URI.</value>
         public Uri SkillHostEndpoint { get; }
 
         /// <summary>
-        /// The key-value pairs with the skills bots.
+        /// Gets the key-value pairs with the skills bots.
         /// </summary>
+        /// <value>The key-value pairs with the skills bots.</value>
         public Dictionary<string, BotFrameworkSkill> Skills { get; } = new Dictionary<string, BotFrameworkSkill>();
     }
 }
