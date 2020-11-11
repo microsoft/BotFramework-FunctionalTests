@@ -6,7 +6,7 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Builder.Skills;
 
-namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Controllers
+namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot21.Controllers
 {
     /// <summary>
     /// A controller that handles skill replies to the bot.

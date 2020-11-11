@@ -8,7 +8,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.Bot.Connector.Authentication;
 
-namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Authentication
+namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot21.Authentication
 {
     /// <summary>
     /// Sample claims validator that loads an allowed list from configuration if present

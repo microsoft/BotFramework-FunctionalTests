@@ -11,11 +11,11 @@ using Microsoft.Bot.Builder.Skills;
 using Microsoft.Bot.Builder.TraceExtensions;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Bot.Schema;
-using Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Bots;
+using Microsoft.BotFrameworkFunctionalTests.SimpleHostBot21.Bots;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot
+namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot21
 {
     public class AdapterWithErrorHandler : BotFrameworkHttpAdapter
     {
