@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
 
-namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot.Dialogs
+namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBotv3.Dialogs
 {
     [Serializable]
     public class RootDialog : IDialog<object>

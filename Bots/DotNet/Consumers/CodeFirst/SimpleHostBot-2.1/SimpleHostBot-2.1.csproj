@@ -3,9 +3,12 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <LangVersion>latest</LangVersion>
-    <UserSecretsId>f94e58a2-e019-4a0c-a6c2-59ecb1115b80</UserSecretsId>
-    <AssemblyName>Microsoft.BotFrameworkFunctionalTests.EchoSkillBot</AssemblyName>
-    <RootNamespace>Microsoft.BotFrameworkFunctionalTests.EchoSkillBot</RootNamespace>
+    <UserSecretsId>6310bd04-2272-4a74-82fa-6791f5c7e115</UserSecretsId>
+    <AssemblyName>Microsoft.BotFrameworkFunctionalTests.SimpleHostBot21</AssemblyName>
+    <RootNamespace>Microsoft.BotFrameworkFunctionalTests.SimpleHostBot21</RootNamespace>
+    <ApplicationIcon />
+    <OutputType>Exe</OutputType>
+    <StartupObject />
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -15,17 +18,12 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="4.7.2" />
-    <PackageReference Include="Microsoft.Bot.Builder.Dialogs" Version="4.8.0" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="OAuth\" />
   </ItemGroup>
 
 </Project>

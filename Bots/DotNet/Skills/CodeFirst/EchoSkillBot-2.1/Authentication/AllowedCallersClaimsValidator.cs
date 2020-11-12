@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Extensions.Configuration;
 
-namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot.Authentication
+namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot21.Authentication
 {
     /// <summary>
     /// Sample claims validator that loads an allowed list from configuration if present
