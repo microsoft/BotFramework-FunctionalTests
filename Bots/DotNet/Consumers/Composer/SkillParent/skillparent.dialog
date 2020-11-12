@@ -49,6 +49,13 @@
       "intent": "skill",
       "actions": [
         {
+          "$kind": "Microsoft.SendActivity",
+          "$designer": {
+            "id": "OZC59F"
+          },
+          "activity": "${SendActivity_OZC59F()}"
+        },
+        {
           "$kind": "Microsoft.BeginSkill",
           "$designer": {
             "id": "Lz8BZP"
@@ -60,6 +67,21 @@
           "allowInterruptions": true,
           "skillEndpoint": "=settings.skill['Echo'].endpointUrl",
           "skillAppId": "=settings.skill['Echo'].msAppId"
+        }
+      ]
+    },
+    {
+      "$kind": "Microsoft.OnEndOfConversationActivity",
+      "$designer": {
+        "id": "tXooCo"
+      },
+      "actions": [
+        {
+          "$kind": "Microsoft.SendActivity",
+          "$designer": {
+            "id": "VXDqMV"
+          },
+          "activity": "${SendActivity_VXDqMV()}"
         }
       ]
     }

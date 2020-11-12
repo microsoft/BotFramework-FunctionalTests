@@ -45,31 +45,48 @@
       ]
     },
     {
-      "$kind": "Microsoft.OnUnknownIntent",
+      "$kind": "Microsoft.OnMessageActivity",
       "$designer": {
-        "id": "TXzOie"
+        "id": "ugucCr"
       },
       "actions": [
         {
-          "$kind": "Microsoft.TextInput",
+          "$kind": "Microsoft.IfCondition",
           "$designer": {
-            "id": "CRjp6k"
+            "id": "m0KElz"
           },
-          "disabled": false,
-          "maxTurnCount": 3,
-          "alwaysPrompt": false,
-          "allowInterruptions": false,
-          "prompt": "${TextInput_Prompt_CRjp6k()}",
-          "unrecognizedPrompt": "",
-          "invalidPrompt": "",
-          "defaultValueResponse": ""
-        },
-        {
-          "$kind": "Microsoft.SendActivity",
-          "$designer": {
-            "id": "SDxH8e"
-          },
-          "activity": "${SendActivity_SDxH8e()}"
+          "condition": "turn.activity.text != 'end' && turn.activity.text != \"stop\"",
+          "actions": [
+            {
+              "$kind": "Microsoft.SendActivity",
+              "$designer": {
+                "id": "GEF4bc"
+              },
+              "activity": "${SendActivity_GEF4bc()}"
+            },
+            {
+              "$kind": "Microsoft.SendActivity",
+              "$designer": {
+                "id": "7pKydX"
+              },
+              "activity": "${SendActivity_7pKydX()}"
+            },
+            {
+              "$kind": "Microsoft.EndTurn",
+              "$designer": {
+                "id": "rEK1j9"
+              }
+            }
+          ],
+          "elseActions": [
+            {
+              "$kind": "Microsoft.SendActivity",
+              "$designer": {
+                "id": "QyeDYH"
+              },
+              "activity": "${SendActivity_QyeDYH()}"
+            }
+          ]
         }
       ]
     }
