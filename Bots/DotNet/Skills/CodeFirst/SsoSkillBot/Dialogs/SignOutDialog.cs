@@ -11,16 +11,14 @@ namespace Microsoft.BotBuilderSamples.SkillBot.Dialogs
 {
     public class SignOutDialog : ComponentDialog
     {
-        string _connectionName;
+        private readonly string _connectionName;
 
         public SignOutDialog(IConfiguration configuration)
             : base(nameof(SignOutDialog))
         {
             _connectionName = configuration.GetSection("ConnectionName")?.Value;
 
-            var steps = new WaterfallStep[] {
-                SignOutAsync
-            };
+            var steps = new WaterfallStep[] { SignOutAsync };
 
             AddDialog(new WaterfallDialog(nameof(SignInDialog), steps));
         }

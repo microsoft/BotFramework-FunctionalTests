@@ -4,8 +4,8 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <LangVersion>latest</LangVersion>
     <UserSecretsId>6310bd04-2272-4a74-82fa-6791f5c7e115</UserSecretsId>
-    <AssemblyName>Microsoft.BotBuilderSamples.RootBot</AssemblyName>
-    <RootNamespace>Microsoft.BotBuilderSamples.RootBot</RootNamespace>
+    <AssemblyName>Microsoft.BotBuilderSamples.SsoRootBot</AssemblyName>
+    <RootNamespace>Microsoft.BotBuilderSamples.SsoRootBot</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -14,8 +14,8 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.1" />
-    <PackageReference Include="Microsoft.Bot.Builder.Dialogs" Version="4.8.0" />
-    <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="4.8.0" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs" Version="4.11.0" />
+    <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="4.11.0" />
   </ItemGroup>
 
   <ItemGroup>

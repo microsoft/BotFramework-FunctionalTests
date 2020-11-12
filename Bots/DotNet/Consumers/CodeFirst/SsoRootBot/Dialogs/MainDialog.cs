@@ -11,16 +11,16 @@ using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace Microsoft.BotBuilderSamples.RootBot.Dialogs
+namespace Microsoft.BotBuilderSamples.SsoRootBot.Dialogs
 {
     public class MainDialog : ComponentDialog
     {
-        protected readonly ILogger Logger;
+        private readonly ILogger _logger;
 
         public MainDialog(ConversationState conversationState, SkillsConfiguration skillsConfig, SkillHttpClient skillClient, IConfiguration configuration, SkillConversationIdFactoryBase conversationIdFactory, ILogger<MainDialog> logger)
             : base(nameof(MainDialog))
         {
-            Logger = logger;
+            _logger = logger;
 
             AddDialog(new SignInDialog(configuration));
             AddDialog(new SignOutDialog(configuration));

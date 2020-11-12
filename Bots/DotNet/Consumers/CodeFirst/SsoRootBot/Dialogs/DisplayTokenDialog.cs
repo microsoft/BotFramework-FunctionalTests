@@ -3,24 +3,22 @@
 
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder;
+using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Extensions.Configuration;
 
-namespace Microsoft.BotBuilderSamples.RootBot.Dialogs
+namespace Microsoft.BotBuilderSamples.SsoRootBot.Dialogs
 {
     public class DisplayTokenDialog : ComponentDialog
     {
-        string _connectionName;
+        private readonly string _connectionName;
 
         public DisplayTokenDialog(IConfiguration configuration)
             : base(nameof(DisplayTokenDialog))
         {
             _connectionName = configuration.GetSection("ConnectionName")?.Value;
 
-            var steps = new WaterfallStep[] {
-                DisplayTokenAsync
-            };
+            var steps = new WaterfallStep[] { DisplayTokenAsync };
 
             AddDialog(new WaterfallDialog(nameof(SignInDialog), steps));
         }

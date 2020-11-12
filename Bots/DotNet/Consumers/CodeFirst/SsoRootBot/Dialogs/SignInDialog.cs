@@ -7,21 +7,18 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Configuration;
 
-namespace Microsoft.BotBuilderSamples.RootBot.Dialogs
+namespace Microsoft.BotBuilderSamples.SsoRootBot.Dialogs
 {
     public class SignInDialog : ComponentDialog
     {
-        string _connectionName;
+        private readonly string _connectionName;
 
         public SignInDialog(IConfiguration configuration)
             : base(nameof(SignInDialog))
         {
             _connectionName = configuration.GetSection("ConnectionName")?.Value;
 
-            var steps = new WaterfallStep[] {
-                SignInStepAsync,
-                DisplayTokenAsync
-            };
+            var steps = new WaterfallStep[] { SignInStepAsync, DisplayTokenAsync };
 
             AddDialog(new WaterfallDialog(nameof(SignInDialog), steps));
             AddDialog(new OAuthPrompt(nameof(OAuthPrompt), new OAuthPromptSettings() { ConnectionName = _connectionName, Text = "Sign In to AAD", Title = "Sign In" }));

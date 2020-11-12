@@ -8,7 +8,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.Bot.Connector.Authentication;
 
-namespace Microsoft.BotBuilderSamples.RootBot.Authentication
+namespace Microsoft.BotBuilderSamples.SsoRootBot.Authentication
 {
     /// <summary>
     /// Sample claims validator that loads an allowed list from configuration if present

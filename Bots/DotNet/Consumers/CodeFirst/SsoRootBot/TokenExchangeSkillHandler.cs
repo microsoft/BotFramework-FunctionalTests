@@ -17,7 +17,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 
-namespace Microsoft.BotBuilderSamples.RootBot
+namespace Microsoft.BotBuilderSamples.SsoRootBot
 {
     public class TokenExchangeSkillHandler : SkillHandler
     {
@@ -132,6 +132,7 @@ namespace Microsoft.BotBuilderSamples.RootBot
                     }
                 }
             }
+
             return false;
         }
 
@@ -155,7 +156,7 @@ namespace Microsoft.BotBuilderSamples.RootBot
             var response = await _skillClient.PostActivityAsync(_botId, targetSkill, _skillsConfig.SkillHostEndpoint, activity, cancellationToken);
 
             // Check response status: true if success, false if failure
-            return (response.Status >= 200 && response.Status <= 299);
+            return response.Status >= 200 && response.Status <= 299;
         }
     }
 }

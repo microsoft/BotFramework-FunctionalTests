@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
@@ -13,12 +12,13 @@ using Microsoft.Bot.Builder.Skills;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
 
-namespace Microsoft.BotBuilderSamples.RootBot.Bots
+namespace Microsoft.BotBuilderSamples.SsoRootBot.Bots
 {
-    public class RootBot : ActivityHandler
+    public class SsoRootBot : ActivityHandler
     {
+        public const string ActiveSkillPropertyName = "activeSkillProperty";
+
         private readonly IStatePropertyAccessor<BotFrameworkSkill> _activeSkillProperty;
         private readonly string _botId;
         private readonly ConversationState _conversationState;
@@ -28,9 +28,7 @@ namespace Microsoft.BotBuilderSamples.RootBot.Bots
         private readonly SkillsConfiguration _skillsConfig;
         private readonly BotFrameworkSkill _targetSkill;
 
-        public const string ActiveSkillPropertyName = "activeSkillProperty";
-
-        public RootBot(ConversationState conversationState, UserState userState, Dialog dialog, SkillsConfiguration skillsConfig, SkillHttpClient skillClient, IConfiguration configuration)
+        public SsoRootBot(ConversationState conversationState, UserState userState, Dialog dialog, SkillsConfiguration skillsConfig, SkillHttpClient skillClient, IConfiguration configuration)
         {
             _conversationState = conversationState ?? throw new ArgumentNullException(nameof(conversationState));
             _userState = userState ?? throw new ArgumentNullException(nameof(userState));

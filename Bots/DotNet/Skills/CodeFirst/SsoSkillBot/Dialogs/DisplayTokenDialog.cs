@@ -14,16 +14,14 @@ namespace Microsoft.BotBuilderSamples.SkillBot.Dialogs
 {
     public class DisplayTokenDialog : ComponentDialog
     {
-        string _connectionName;
+        private string _connectionName;
 
         public DisplayTokenDialog(IConfiguration configuration)
             : base(nameof(DisplayTokenDialog))
         {
             _connectionName = configuration.GetSection("ConnectionName")?.Value;
 
-            var steps = new WaterfallStep[] {
-                DisplayTokenAsync
-            };
+            var steps = new WaterfallStep[] { DisplayTokenAsync };
 
             AddDialog(new WaterfallDialog(nameof(SignInDialog), steps));
         }

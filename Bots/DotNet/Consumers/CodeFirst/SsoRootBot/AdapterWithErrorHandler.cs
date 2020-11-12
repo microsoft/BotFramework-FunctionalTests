@@ -14,7 +14,7 @@ using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace Microsoft.BotBuilderSamples.RootBot
+namespace Microsoft.BotBuilderSamples.SsoRootBot
 {
     public class AdapterWithErrorHandler : BotFrameworkHttpAdapter
     {
@@ -81,7 +81,7 @@ namespace Microsoft.BotBuilderSamples.RootBot
                 // a chance to clean up.
                 // Note: ActiveSkillPropertyName is set by the RooBot while messages are being
                 // forwarded to a Skill.
-                var activeSkill = await _conversationState.CreateProperty<BotFrameworkSkill>(Bots.RootBot.ActiveSkillPropertyName).GetAsync(turnContext, () => null);
+                var activeSkill = await _conversationState.CreateProperty<BotFrameworkSkill>(Bots.SsoRootBot.ActiveSkillPropertyName).GetAsync(turnContext, () => null);
                 if (activeSkill != null)
                 {
                     var botId = _configuration.GetSection(MicrosoftAppCredentials.MicrosoftAppIdKey)?.Value;

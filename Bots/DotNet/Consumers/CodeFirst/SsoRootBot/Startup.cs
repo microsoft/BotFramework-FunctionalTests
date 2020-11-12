@@ -10,12 +10,12 @@ using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Builder.Integration.AspNet.Core.Skills;
 using Microsoft.Bot.Builder.Skills;
 using Microsoft.Bot.Connector.Authentication;
-using Microsoft.BotBuilderSamples.RootBot.Authentication;
-using Microsoft.BotBuilderSamples.RootBot.Dialogs;
+using Microsoft.BotBuilderSamples.SsoRootBot.Authentication;
+using Microsoft.BotBuilderSamples.SsoRootBot.Dialogs;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Microsoft.BotBuilderSamples.RootBot
+namespace Microsoft.BotBuilderSamples.SsoRootBot
 {
     public class Startup
     {
@@ -51,8 +51,9 @@ namespace Microsoft.BotBuilderSamples.RootBot
             services.AddSingleton<UserState>();
 
             services.AddSingleton<Dialog, MainDialog>();
+
             // Register the bot as a transient. In this case the ASP Controller is expecting an IBot.
-            services.AddTransient<IBot, Bots.RootBot>();
+            services.AddTransient<IBot, Bots.SsoRootBot>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

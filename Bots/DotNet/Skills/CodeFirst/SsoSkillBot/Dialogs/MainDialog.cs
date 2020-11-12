@@ -13,12 +13,12 @@ namespace Microsoft.BotBuilderSamples.SkillBot.Dialogs
 {
     public class MainDialog : ComponentDialog
     {
-        protected readonly ILogger Logger;
+        private readonly ILogger _logger;
 
         public MainDialog(IConfiguration configuration, ILogger<MainDialog> logger)
             : base(nameof(MainDialog))
         {
-            Logger = logger;
+            _logger = logger;
 
             AddDialog(new SignInDialog(configuration));
             AddDialog(new SignOutDialog(configuration));
@@ -32,7 +32,7 @@ namespace Microsoft.BotBuilderSamples.SkillBot.Dialogs
                 var text = innerDc.Context.Activity.Text.ToLowerInvariant();
                 DialogTurnResult dialogResult;
 
-                text = text.Replace("skill ", string.Empty).Replace("skill: ", string.Empty); ;
+                text = text.Replace("skill ", string.Empty).Replace("skill: ", string.Empty);
 
                 // Top level commands
                 if (text == "signin" || text == "login" || text == "sign in" || text == "log in")
