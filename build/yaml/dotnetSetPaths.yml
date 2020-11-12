@@ -11,7 +11,7 @@ steps:
      if("$(NetCoreSdkVersionHost)".Trim() -eq "2.1")
      {
        $SolutionPath = "Bots/DotNet/Consumers/CodeFirst/SimpleHostBot-2.1/SimpleHostBot.sln"
-       $ProjectPath = "Bots/DotNet/Consumers/CodeFirst/SimpleHostBot-2.1/SimpleHostBot.csproj"
+       $ProjectPath = "Bots/DotNet/Consumers/CodeFirst/SimpleHostBot-2.1/SimpleHostBot-2.1.csproj"
        $TemplatePath = "Bots/DotNet/Consumers/CodeFirst/SimpleHostBot-2.1/DeploymentTemplates/template-with-new-rg.json"
      }
    }
@@ -26,7 +26,7 @@ steps:
      if("$(NetCoreSdkVersionSkill)".Trim() -eq "2.1")
      {
        $SolutionPath = "Bots/DotNet/Skills/CodeFirst/EchoSkillBot-2.1/EchoSkillBot.sln"
-       $ProjectPath = "Bots/DotNet/Skills/CodeFirst/EchoSkillBot-2.1/EchoSkillBot.csproj"
+       $ProjectPath = "Bots/DotNet/Skills/CodeFirst/EchoSkillBot-2.1/EchoSkillBot-2.1.csproj"
        $TemplatePath = "Bots/DotNet/Skills/CodeFirst/EchoSkillBot-2.1/DeploymentTemplates/template-with-new-rg.json"
      }
    }
