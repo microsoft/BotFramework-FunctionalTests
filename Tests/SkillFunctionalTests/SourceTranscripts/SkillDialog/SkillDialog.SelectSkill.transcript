@@ -1,0 +1,209 @@
+[
+  {
+    "type": "conversationUpdate",
+    "membersAdded": [
+      {
+        "id": "6c63b280-120d-11eb-979b-d13c2a24d2aa",
+        "name": "Bot"
+      },
+      {
+        "id": "fc06e806-06d3-45e3-8e4b-8dadcc318925",
+        "name": "User"
+      }
+    ],
+    "membersRemoved": [],
+    "channelId": "emulator",
+    "conversation": {
+      "id": "bf3014d0-1213-11eb-979b-d13c2a24d2aa|livechat"
+    },
+    "id": "bf3f5710-1213-11eb-a1ea-1fc58ac8ae73",
+    "localTimestamp": "2020-10-19T10:02:38-04:00",
+    "recipient": {
+      "id": "6c63b280-120d-11eb-979b-d13c2a24d2aa",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "timestamp": "2020-10-19T14:02:38.721Z",
+    "from": {
+      "id": "fc06e806-06d3-45e3-8e4b-8dadcc318925",
+      "name": "User",
+      "role": "user"
+    },
+    "locale": "en-US",
+    "serviceUrl": "http://localhost:52454"
+  },
+  {
+    "type": "message",
+    "serviceUrl": "http://localhost:52454",
+    "channelId": "emulator",
+    "from": {
+      "id": "6c63b280-120d-11eb-979b-d13c2a24d2aa",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "conversation": {
+      "id": "bf3014d0-1213-11eb-979b-d13c2a24d2aa|livechat"
+    },
+    "recipient": {
+      "id": "fc06e806-06d3-45e3-8e4b-8dadcc318925",
+      "role": "user"
+    },
+    "attachmentLayout": "list",
+    "locale": "en-US",
+    "speak": "Welcome to the Dialog Skill Prototype!",
+    "inputHint": "acceptingInput",
+    "attachments": [
+      {
+        "contentType": "application/vnd.microsoft.card.adaptive",
+        "content": {
+          "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+          "type": "AdaptiveCard",
+          "version": "1.0",
+          "body": [
+            {
+              "type": "Image",
+              "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtB3AwMUeNoq4gUBGe6Ocj8kyh3bXa9ZbV7u1fVKQoyKFHdkqU",
+              "size": "stretch"
+            },
+            {
+              "type": "TextBlock",
+              "spacing": "Medium",
+              "size": "Medium",
+              "weight": "Bolder",
+              "text": "Welcome to the Skill Dialog Sample!",
+              "wrap": true,
+              "maxLines": 0,
+              "color": "Accent"
+            },
+            {
+              "type": "TextBlock",
+              "size": "default",
+              "text": "This sample allows you to connect to a skill using a SkillDialog and invoke several actions.",
+              "wrap": true,
+              "maxLines": 0
+            }
+          ]
+        }
+      }
+    ],
+    "entities": [],
+    "replyToId": "bf3f5710-1213-11eb-a1ea-1fc58ac8ae73",
+    "id": "bf53a260-1213-11eb-a1ea-1fc58ac8ae73",
+    "localTimestamp": "2020-10-19T10:02:38-04:00",
+    "timestamp": "2020-10-19T14:02:38.854Z"
+  },
+  {
+    "type": "message",
+    "serviceUrl": "http://localhost:52454",
+    "channelId": "emulator",
+    "from": {
+      "id": "6c63b280-120d-11eb-979b-d13c2a24d2aa",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "conversation": {
+      "id": "bf3014d0-1213-11eb-979b-d13c2a24d2aa|livechat"
+    },
+    "recipient": {
+      "id": "fc06e806-06d3-45e3-8e4b-8dadcc318925",
+      "role": "user"
+    },
+    "locale": "en-US",
+    "text": "What skill would you like to call?",
+    "speak": "What skill would you like to call?",
+    "inputHint": "expectingInput",
+    "suggestedActions": {
+      "actions": [
+        {
+          "type": "imBack",
+          "title": "EchoSkillBot",
+          "value": "EchoSkillBot"
+        },
+        {
+          "type": "imBack",
+          "title": "DialogSkillBot",
+          "value": "DialogSkillBot"
+        },
+        {
+          "type": "imBack",
+          "title": "TeamsSkillBot",
+          "value": "TeamsSkillBot"
+        },
+        {
+          "type": "imBack",
+          "title": "ProactiveSkillBot",
+          "value": "ProactiveSkillBot"
+        }
+      ]
+    },
+    "attachments": [],
+    "entities": [],
+    "replyToId": "bf3f5710-1213-11eb-a1ea-1fc58ac8ae73",
+    "id": "bf61fa40-1213-11eb-a1ea-1fc58ac8ae73",
+    "localTimestamp": "2020-10-19T10:02:38-04:00",
+    "timestamp": "2020-10-19T14:02:38.948Z"
+  },
+  {
+    "channelData": {
+      "clientActivityID": "1603116171807a870p6jwqfo",
+      "clientTimestamp": "2020-10-19T14:02:51.807Z"
+    },
+    "text": "DialogSkillBot",
+    "textFormat": "plain",
+    "type": "message",
+    "channelId": "emulator",
+    "from": {
+      "id": "fc06e806-06d3-45e3-8e4b-8dadcc318925",
+      "name": "User",
+      "role": "user"
+    },
+    "locale": "en-US",
+    "timestamp": "2020-10-19T14:02:51.825Z",
+    "entities": [
+      {
+        "requiresBotState": true,
+        "supportsListening": true,
+        "supportsTts": true,
+        "type": "ClientCapabilities"
+      }
+    ],
+    "conversation": {
+      "id": "bf3014d0-1213-11eb-979b-d13c2a24d2aa|livechat"
+    },
+    "id": "c70eda10-1213-11eb-a1ea-1fc58ac8ae73",
+    "localTimestamp": "2020-10-19T10:02:51-04:00",
+    "recipient": {
+      "id": "6c63b280-120d-11eb-979b-d13c2a24d2aa",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "serviceUrl": "http://localhost:52454"
+  },
+  {
+    "type": "message",
+    "serviceUrl": "http://localhost:52454",
+    "channelId": "emulator",
+    "from": {
+      "id": "6c63b280-120d-11eb-979b-d13c2a24d2aa",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "conversation": {
+      "id": "bf3014d0-1213-11eb-979b-d13c2a24d2aa|livechat"
+    },
+    "recipient": {
+      "id": "fc06e806-06d3-45e3-8e4b-8dadcc318925",
+      "role": "user"
+    },
+    "locale": "en-US",
+    "text": "Select an action # to send to **DialogSkillBot**.\n\nOr just type in a message and it will be forwarded to the skill as a message activity.\n\n   1. BookFlight\n   2. BookFlight with input parameters\n   3. GetWeather\n   4. OAuthTest\n   5. EchoSkill (Root->DialogSkill->EchoSkill)\n   6. Message (sends 'Book a flight' as message)",
+    "speak": "Select an action # to send to **DialogSkillBot**.\n\nOr just type in a message and it will be forwarded to the skill as a message activity.",
+    "inputHint": "expectingInput",
+    "attachments": [],
+    "entities": [],
+    "replyToId": "c70eda10-1213-11eb-a1ea-1fc58ac8ae73",
+    "id": "c724d310-1213-11eb-a1ea-1fc58ac8ae73",
+    "localTimestamp": "2020-10-19T10:02:51-04:00",
+    "timestamp": "2020-10-19T14:02:51.969Z"
+  }
+]

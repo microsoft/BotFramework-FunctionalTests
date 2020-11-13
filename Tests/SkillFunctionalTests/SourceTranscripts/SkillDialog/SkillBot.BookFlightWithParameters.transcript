@@ -1,0 +1,637 @@
+[
+  {
+    "type": "conversationUpdate",
+    "membersAdded": [
+      {
+        "id": "6c63b280-120d-11eb-979b-d13c2a24d2aa",
+        "name": "Bot"
+      },
+      {
+        "id": "cc7f28b6-7f56-45aa-939e-6c6229406354",
+        "name": "User"
+      }
+    ],
+    "membersRemoved": [],
+    "channelId": "emulator",
+    "conversation": {
+      "id": "c5e55160-1217-11eb-979b-d13c2a24d2aa|livechat"
+    },
+    "id": "c5f44580-1217-11eb-a1ea-1fc58ac8ae73",
+    "localTimestamp": "2020-10-19T10:31:27-04:00",
+    "recipient": {
+      "id": "6c63b280-120d-11eb-979b-d13c2a24d2aa",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "timestamp": "2020-10-19T14:31:27.960Z",
+    "from": {
+      "id": "cc7f28b6-7f56-45aa-939e-6c6229406354",
+      "name": "User",
+      "role": "user"
+    },
+    "locale": "en-US",
+    "serviceUrl": "http://localhost:52454"
+  },
+  {
+    "type": "message",
+    "serviceUrl": "http://localhost:52454",
+    "channelId": "emulator",
+    "from": {
+      "id": "6c63b280-120d-11eb-979b-d13c2a24d2aa",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "conversation": {
+      "id": "c5e55160-1217-11eb-979b-d13c2a24d2aa|livechat"
+    },
+    "recipient": {
+      "id": "cc7f28b6-7f56-45aa-939e-6c6229406354",
+      "role": "user"
+    },
+    "attachmentLayout": "list",
+    "locale": "en-US",
+    "speak": "Welcome to the Dialog Skill Prototype!",
+    "inputHint": "acceptingInput",
+    "attachments": [
+      {
+        "contentType": "application/vnd.microsoft.card.adaptive",
+        "content": {
+          "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+          "type": "AdaptiveCard",
+          "version": "1.0",
+          "body": [
+            {
+              "type": "Image",
+              "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtB3AwMUeNoq4gUBGe6Ocj8kyh3bXa9ZbV7u1fVKQoyKFHdkqU",
+              "size": "stretch"
+            },
+            {
+              "type": "TextBlock",
+              "spacing": "Medium",
+              "size": "Medium",
+              "weight": "Bolder",
+              "text": "Welcome to the Skill Dialog Sample!",
+              "wrap": true,
+              "maxLines": 0,
+              "color": "Accent"
+            },
+            {
+              "type": "TextBlock",
+              "size": "default",
+              "text": "This sample allows you to connect to a skill using a SkillDialog and invoke several actions.",
+              "wrap": true,
+              "maxLines": 0
+            }
+          ]
+        }
+      }
+    ],
+    "entities": [],
+    "replyToId": "c5f44580-1217-11eb-a1ea-1fc58ac8ae73",
+    "id": "c6058390-1217-11eb-a1ea-1fc58ac8ae73",
+    "localTimestamp": "2020-10-19T10:31:28-04:00",
+    "timestamp": "2020-10-19T14:31:28.073Z"
+  },
+  {
+    "type": "message",
+    "serviceUrl": "http://localhost:52454",
+    "channelId": "emulator",
+    "from": {
+      "id": "6c63b280-120d-11eb-979b-d13c2a24d2aa",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "conversation": {
+      "id": "c5e55160-1217-11eb-979b-d13c2a24d2aa|livechat"
+    },
+    "recipient": {
+      "id": "cc7f28b6-7f56-45aa-939e-6c6229406354",
+      "role": "user"
+    },
+    "locale": "en-US",
+    "text": "What skill would you like to call?",
+    "speak": "What skill would you like to call?",
+    "inputHint": "expectingInput",
+    "suggestedActions": {
+      "actions": [
+        {
+          "type": "imBack",
+          "title": "EchoSkillBot",
+          "value": "EchoSkillBot"
+        },
+        {
+          "type": "imBack",
+          "title": "DialogSkillBot",
+          "value": "DialogSkillBot"
+        },
+        {
+          "type": "imBack",
+          "title": "TeamsSkillBot",
+          "value": "TeamsSkillBot"
+        },
+        {
+          "type": "imBack",
+          "title": "ProactiveSkillBot",
+          "value": "ProactiveSkillBot"
+        }
+      ]
+    },
+    "attachments": [],
+    "entities": [],
+    "replyToId": "c5f44580-1217-11eb-a1ea-1fc58ac8ae73",
+    "id": "c6105900-1217-11eb-a1ea-1fc58ac8ae73",
+    "localTimestamp": "2020-10-19T10:31:28-04:00",
+    "timestamp": "2020-10-19T14:31:28.144Z"
+  },
+  {
+    "channelData": {
+      "clientActivityID": "1603117889369p3ytmm1eaxj",
+      "clientTimestamp": "2020-10-19T14:31:29.369Z"
+    },
+    "text": "DialogSkillBot",
+    "textFormat": "plain",
+    "type": "message",
+    "channelId": "emulator",
+    "from": {
+      "id": "cc7f28b6-7f56-45aa-939e-6c6229406354",
+      "name": "User",
+      "role": "user"
+    },
+    "locale": "en-US",
+    "timestamp": "2020-10-19T14:31:29.385Z",
+    "entities": [
+      {
+        "requiresBotState": true,
+        "supportsListening": true,
+        "supportsTts": true,
+        "type": "ClientCapabilities"
+      }
+    ],
+    "conversation": {
+      "id": "c5e55160-1217-11eb-979b-d13c2a24d2aa|livechat"
+    },
+    "id": "c6cdb590-1217-11eb-a1ea-1fc58ac8ae73",
+    "localTimestamp": "2020-10-19T10:31:29-04:00",
+    "recipient": {
+      "id": "6c63b280-120d-11eb-979b-d13c2a24d2aa",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "serviceUrl": "http://localhost:52454"
+  },
+  {
+    "type": "message",
+    "serviceUrl": "http://localhost:52454",
+    "channelId": "emulator",
+    "from": {
+      "id": "6c63b280-120d-11eb-979b-d13c2a24d2aa",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "conversation": {
+      "id": "c5e55160-1217-11eb-979b-d13c2a24d2aa|livechat"
+    },
+    "recipient": {
+      "id": "cc7f28b6-7f56-45aa-939e-6c6229406354",
+      "role": "user"
+    },
+    "locale": "en-US",
+    "text": "Select an action # to send to **DialogSkillBot**.\n\nOr just type in a message and it will be forwarded to the skill as a message activity.\n\n   1. BookFlight\n   2. BookFlight with input parameters\n   3. GetWeather\n   4. OAuthTest\n   5. EchoSkill (Root->DialogSkill->EchoSkill)\n   6. Message (sends 'Book a flight' as message)",
+    "speak": "Select an action # to send to **DialogSkillBot**.\n\nOr just type in a message and it will be forwarded to the skill as a message activity.",
+    "inputHint": "expectingInput",
+    "attachments": [],
+    "entities": [],
+    "replyToId": "c6cdb590-1217-11eb-a1ea-1fc58ac8ae73",
+    "id": "c6df68d0-1217-11eb-a1ea-1fc58ac8ae73",
+    "localTimestamp": "2020-10-19T10:31:29-04:00",
+    "timestamp": "2020-10-19T14:31:29.501Z"
+  },
+  {
+    "channelData": {
+      "clientActivityID": "1603117892927452d7yeo1so",
+      "clientTimestamp": "2020-10-19T14:31:32.927Z"
+    },
+    "text": "2",
+    "textFormat": "plain",
+    "type": "message",
+    "channelId": "emulator",
+    "from": {
+      "id": "cc7f28b6-7f56-45aa-939e-6c6229406354",
+      "name": "User",
+      "role": "user"
+    },
+    "locale": "en-US",
+    "timestamp": "2020-10-19T14:31:32.943Z",
+    "conversation": {
+      "id": "c5e55160-1217-11eb-979b-d13c2a24d2aa|livechat"
+    },
+    "id": "c8ec9df0-1217-11eb-a1ea-1fc58ac8ae73",
+    "localTimestamp": "2020-10-19T10:31:32-04:00",
+    "recipient": {
+      "id": "6c63b280-120d-11eb-979b-d13c2a24d2aa",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "serviceUrl": "http://localhost:52454"
+  },
+  {
+    "type": "trace",
+    "timestamp": "2020-10-19T14:31:33.073Z",
+    "serviceUrl": "http://localhost:52454",
+    "channelId": "emulator",
+    "from": {
+      "id": "6c63b280-120d-11eb-979b-d13c2a24d2aa",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "conversation": {
+      "id": "c5e55160-1217-11eb-979b-d13c2a24d2aa|livechat"
+    },
+    "recipient": {
+      "id": "cc7f28b6-7f56-45aa-939e-6c6229406354",
+      "role": "user"
+    },
+    "locale": "en-US",
+    "replyToId": "c8ec9df0-1217-11eb-a1ea-1fc58ac8ae73",
+    "label": "Using activity of type: event",
+    "name": "SkillDialog.BeginDialogAsync()",
+    "id": "c9007410-1217-11eb-a1ea-1fc58ac8ae73",
+    "localTimestamp": "2020-10-19T10:31:33-04:00"
+  },
+  {
+    "type": "trace",
+    "timestamp": "2020-10-19T14:31:33.285Z",
+    "serviceUrl": "http://localhost:52454",
+    "channelId": "emulator",
+    "from": {
+      "id": "6c63b280-120d-11eb-979b-d13c2a24d2aa",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "conversation": {
+      "id": "c5e55160-1217-11eb-979b-d13c2a24d2aa|livechat"
+    },
+    "recipient": {
+      "id": "cc7f28b6-7f56-45aa-939e-6c6229406354",
+      "role": "user"
+    },
+    "locale": "en-US",
+    "replyToId": "c8ec9df0-1217-11eb-a1ea-1fc58ac8ae73",
+    "label": "Got ActivityType: event",
+    "name": "ActivityRouterDialog.ProcessActivityAsync()",
+    "id": "c920cd50-1217-11eb-a1ea-1fc58ac8ae73",
+    "localTimestamp": "2020-10-19T10:31:33-04:00"
+  },
+  {
+    "type": "trace",
+    "timestamp": "2020-10-19T14:31:33.453Z",
+    "serviceUrl": "http://localhost:52454",
+    "channelId": "emulator",
+    "from": {
+      "id": "6c63b280-120d-11eb-979b-d13c2a24d2aa",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "conversation": {
+      "id": "c5e55160-1217-11eb-979b-d13c2a24d2aa|livechat"
+    },
+    "recipient": {
+      "id": "cc7f28b6-7f56-45aa-939e-6c6229406354",
+      "role": "user"
+    },
+    "locale": "en-US",
+    "replyToId": "c8ec9df0-1217-11eb-a1ea-1fc58ac8ae73",
+    "label": "Name: BookFlight. Value: {\"origin\":\"New York\",\"destination\":\"Seattle\"}",
+    "name": "ActivityRouterDialog.OnEventActivityAsync()",
+    "id": "c93a6fd0-1217-11eb-a1ea-1fc58ac8ae73",
+    "localTimestamp": "2020-10-19T10:31:33-04:00"
+  },
+  {
+    "type": "message",
+    "serviceUrl": "http://localhost:52454",
+    "channelId": "emulator",
+    "from": {
+      "id": "6c63b280-120d-11eb-979b-d13c2a24d2aa",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "conversation": {
+      "id": "c5e55160-1217-11eb-979b-d13c2a24d2aa|livechat"
+    },
+    "recipient": {
+      "id": "cc7f28b6-7f56-45aa-939e-6c6229406354",
+      "role": "user"
+    },
+    "locale": "en-US",
+    "text": "When would you like to travel?",
+    "speak": "When would you like to travel?",
+    "inputHint": "expectingInput",
+    "attachments": [],
+    "entities": [],
+    "replyToId": "c8ec9df0-1217-11eb-a1ea-1fc58ac8ae73",
+    "id": "c956d170-1217-11eb-a1ea-1fc58ac8ae73",
+    "localTimestamp": "2020-10-19T10:31:33-04:00",
+    "timestamp": "2020-10-19T14:31:33.639Z"
+  },
+  {
+    "channelData": {
+      "clientActivityID": "1603117900114qxibdiwiiq",
+      "clientTimestamp": "2020-10-19T14:31:40.114Z"
+    },
+    "text": "next monday",
+    "textFormat": "plain",
+    "type": "message",
+    "channelId": "emulator",
+    "from": {
+      "id": "cc7f28b6-7f56-45aa-939e-6c6229406354",
+      "name": "User",
+      "role": "user"
+    },
+    "locale": "en-US",
+    "timestamp": "2020-10-19T14:31:40.142Z",
+    "conversation": {
+      "id": "c5e55160-1217-11eb-979b-d13c2a24d2aa|livechat"
+    },
+    "id": "cd3718e0-1217-11eb-a1ea-1fc58ac8ae73",
+    "localTimestamp": "2020-10-19T10:31:40-04:00",
+    "recipient": {
+      "id": "6c63b280-120d-11eb-979b-d13c2a24d2aa",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "serviceUrl": "http://localhost:52454"
+  },
+  {
+    "type": "trace",
+    "timestamp": "2020-10-19T14:31:40.271Z",
+    "serviceUrl": "http://localhost:52454",
+    "channelId": "emulator",
+    "from": {
+      "id": "6c63b280-120d-11eb-979b-d13c2a24d2aa",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "conversation": {
+      "id": "c5e55160-1217-11eb-979b-d13c2a24d2aa|livechat"
+    },
+    "recipient": {
+      "id": "cc7f28b6-7f56-45aa-939e-6c6229406354",
+      "role": "user"
+    },
+    "locale": "en-US",
+    "replyToId": "cd3718e0-1217-11eb-a1ea-1fc58ac8ae73",
+    "label": "ActivityType: message",
+    "name": "SkillDialog.ContinueDialogAsync()",
+    "id": "cd4ac7f0-1217-11eb-a1ea-1fc58ac8ae73",
+    "localTimestamp": "2020-10-19T10:31:40-04:00"
+  },
+  {
+    "type": "message",
+    "serviceUrl": "http://localhost:52454",
+    "channelId": "emulator",
+    "from": {
+      "id": "6c63b280-120d-11eb-979b-d13c2a24d2aa",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "conversation": {
+      "id": "c5e55160-1217-11eb-979b-d13c2a24d2aa|livechat"
+    },
+    "recipient": {
+      "id": "cc7f28b6-7f56-45aa-939e-6c6229406354",
+      "role": "user"
+    },
+    "locale": "en-US",
+    "text": "Please confirm, I have you traveling to: Seattle from: New York on: 2020-11-02. Is this correct?",
+    "speak": "Please confirm, I have you traveling to: Seattle from: New York on: 2020-11-02. Is this correct?",
+    "inputHint": "expectingInput",
+    "suggestedActions": {
+      "actions": [
+        {
+          "type": "imBack",
+          "title": "Yes",
+          "value": "Yes"
+        },
+        {
+          "type": "imBack",
+          "title": "No",
+          "value": "No"
+        }
+      ]
+    },
+    "attachments": [],
+    "entities": [],
+    "replyToId": "cd3718e0-1217-11eb-a1ea-1fc58ac8ae73",
+    "id": "cd6de050-1217-11eb-a1ea-1fc58ac8ae73",
+    "localTimestamp": "2020-10-19T10:31:40-04:00",
+    "timestamp": "2020-10-19T14:31:40.501Z"
+  },
+  {
+    "channelData": {
+      "clientActivityID": "1603117902000w7zahjseeja",
+      "clientTimestamp": "2020-10-19T14:31:42.000Z"
+    },
+    "text": "yes",
+    "textFormat": "plain",
+    "type": "message",
+    "channelId": "emulator",
+    "from": {
+      "id": "cc7f28b6-7f56-45aa-939e-6c6229406354",
+      "name": "User",
+      "role": "user"
+    },
+    "locale": "en-US",
+    "timestamp": "2020-10-19T14:31:42.020Z",
+    "conversation": {
+      "id": "c5e55160-1217-11eb-979b-d13c2a24d2aa|livechat"
+    },
+    "id": "ce55a840-1217-11eb-a1ea-1fc58ac8ae73",
+    "localTimestamp": "2020-10-19T10:31:42-04:00",
+    "recipient": {
+      "id": "6c63b280-120d-11eb-979b-d13c2a24d2aa",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "serviceUrl": "http://localhost:52454"
+  },
+  {
+    "type": "trace",
+    "timestamp": "2020-10-19T14:31:42.122Z",
+    "serviceUrl": "http://localhost:52454",
+    "channelId": "emulator",
+    "from": {
+      "id": "6c63b280-120d-11eb-979b-d13c2a24d2aa",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "conversation": {
+      "id": "c5e55160-1217-11eb-979b-d13c2a24d2aa|livechat"
+    },
+    "recipient": {
+      "id": "cc7f28b6-7f56-45aa-939e-6c6229406354",
+      "role": "user"
+    },
+    "locale": "en-US",
+    "replyToId": "ce55a840-1217-11eb-a1ea-1fc58ac8ae73",
+    "label": "ActivityType: message",
+    "name": "SkillDialog.ContinueDialogAsync()",
+    "id": "ce6538a0-1217-11eb-a1ea-1fc58ac8ae73",
+    "localTimestamp": "2020-10-19T10:31:42-04:00"
+  },
+  {
+    "type": "trace",
+    "timestamp": "2020-10-19T14:31:42.330Z",
+    "serviceUrl": "http://localhost:52454",
+    "channelId": "emulator",
+    "from": {
+      "id": "6c63b280-120d-11eb-979b-d13c2a24d2aa",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "conversation": {
+      "id": "c5e55160-1217-11eb-979b-d13c2a24d2aa|livechat"
+    },
+    "recipient": {
+      "id": "cc7f28b6-7f56-45aa-939e-6c6229406354",
+      "role": "user"
+    },
+    "locale": "en-US",
+    "replyToId": "ce55a840-1217-11eb-a1ea-1fc58ac8ae73",
+    "label": "Dialog ActivityRouterDialog has **completed**. Sending EndOfConversation.",
+    "valueType": "BookingDetails",
+    "value": {
+      "destination": "Seattle",
+      "origin": "New York",
+      "travelDate": "2020-11-02"
+    },
+    "name": "Dialog.RunAsync()",
+    "id": "ce84f5a0-1217-11eb-a1ea-1fc58ac8ae73",
+    "localTimestamp": "2020-10-19T10:31:42-04:00"
+  },
+  {
+    "type": "trace",
+    "timestamp": "2020-10-19T14:31:42.471Z",
+    "serviceUrl": "http://localhost:52454",
+    "channelId": "emulator",
+    "from": {
+      "id": "6c63b280-120d-11eb-979b-d13c2a24d2aa",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "conversation": {
+      "id": "c5e55160-1217-11eb-979b-d13c2a24d2aa|livechat"
+    },
+    "recipient": {
+      "id": "cc7f28b6-7f56-45aa-939e-6c6229406354",
+      "role": "user"
+    },
+    "locale": "en-US",
+    "replyToId": "ce55a840-1217-11eb-a1ea-1fc58ac8ae73",
+    "label": "ActivityType: endOfConversation",
+    "name": "SkillDialog.ContinueDialogAsync()",
+    "id": "ce9a7970-1217-11eb-a1ea-1fc58ac8ae73",
+    "localTimestamp": "2020-10-19T10:31:42-04:00"
+  },
+  {
+    "type": "trace",
+    "timestamp": "2020-10-19T14:31:42.535Z",
+    "serviceUrl": "http://localhost:52454",
+    "channelId": "emulator",
+    "from": {
+      "id": "6c63b280-120d-11eb-979b-d13c2a24d2aa",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "conversation": {
+      "id": "c5e55160-1217-11eb-979b-d13c2a24d2aa|livechat"
+    },
+    "recipient": {
+      "id": "cc7f28b6-7f56-45aa-939e-6c6229406354",
+      "role": "user"
+    },
+    "locale": "en-US",
+    "replyToId": "ce55a840-1217-11eb-a1ea-1fc58ac8ae73",
+    "label": "Got endOfConversation",
+    "name": "SkillDialog.ContinueDialogAsync()",
+    "id": "cea43d70-1217-11eb-a1ea-1fc58ac8ae73",
+    "localTimestamp": "2020-10-19T10:31:42-04:00"
+  },
+  {
+    "type": "message",
+    "serviceUrl": "http://localhost:52454",
+    "channelId": "emulator",
+    "from": {
+      "id": "6c63b280-120d-11eb-979b-d13c2a24d2aa",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "conversation": {
+      "id": "c5e55160-1217-11eb-979b-d13c2a24d2aa|livechat"
+    },
+    "recipient": {
+      "id": "cc7f28b6-7f56-45aa-939e-6c6229406354",
+      "role": "user"
+    },
+    "locale": "en-US",
+    "text": "Skill \"DialogSkillBot\" invocation complete. Result: {\"destination\":\"Seattle\",\"origin\":\"New York\",\"travelDate\":\"2020-11-02\"}",
+    "speak": "Skill \"DialogSkillBot\" invocation complete. Result: {\"destination\":\"Seattle\",\"origin\":\"New York\",\"travelDate\":\"2020-11-02\"}",
+    "inputHint": "ignoringInput",
+    "attachments": [],
+    "entities": [],
+    "replyToId": "ce55a840-1217-11eb-a1ea-1fc58ac8ae73",
+    "id": "ceaec4c0-1217-11eb-a1ea-1fc58ac8ae73",
+    "localTimestamp": "2020-10-19T10:31:42-04:00",
+    "timestamp": "2020-10-19T14:31:42.604Z"
+  },
+  {
+    "type": "message",
+    "serviceUrl": "http://localhost:52454",
+    "channelId": "emulator",
+    "from": {
+      "id": "6c63b280-120d-11eb-979b-d13c2a24d2aa",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "conversation": {
+      "id": "c5e55160-1217-11eb-979b-d13c2a24d2aa|livechat"
+    },
+    "recipient": {
+      "id": "cc7f28b6-7f56-45aa-939e-6c6229406354",
+      "role": "user"
+    },
+    "locale": "en-US",
+    "text": "Done with \"DialogSkillBot\". \n\n What skill would you like to call?",
+    "speak": "Done with \"DialogSkillBot\". \n\n What skill would you like to call?",
+    "inputHint": "expectingInput",
+    "suggestedActions": {
+      "actions": [
+        {
+          "type": "imBack",
+          "title": "EchoSkillBot",
+          "value": "EchoSkillBot"
+        },
+        {
+          "type": "imBack",
+          "title": "DialogSkillBot",
+          "value": "DialogSkillBot"
+        },
+        {
+          "type": "imBack",
+          "title": "TeamsSkillBot",
+          "value": "TeamsSkillBot"
+        },
+        {
+          "type": "imBack",
+          "title": "ProactiveSkillBot",
+          "value": "ProactiveSkillBot"
+        }
+      ]
+    },
+    "attachments": [],
+    "entities": [],
+    "replyToId": "ce55a840-1217-11eb-a1ea-1fc58ac8ae73",
+    "id": "ceb92500-1217-11eb-a1ea-1fc58ac8ae73",
+    "localTimestamp": "2020-10-19T10:31:42-04:00",
+    "timestamp": "2020-10-19T14:31:42.672Z"
+  }
+]
