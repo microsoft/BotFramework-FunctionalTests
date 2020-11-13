@@ -5,7 +5,6 @@
     <LangVersion>latest</LangVersion>
     <AssemblyName>Microsoft.BotFrameworkFunctionalTests.DialogSkillBot</AssemblyName>
     <RootNamespace>Microsoft.BotFrameworkFunctionalTests.DialogSkillBot</RootNamespace>
-    <UserSecretsId>917ebc62-8596-495e-be22-5ef824e48917</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
