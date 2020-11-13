@@ -38,13 +38,11 @@ steps:
       default { $version = "$(BBVersion)" }
     }
 
-    if ("$(Parameters.sourceLocation)".Trim().Contains("/host"))
+    switch -wildcard ("$(Parameters.sourceLocation)".Trim())
     {
-        echo "##vso[task.setvariable variable=HostOrSkill]Host"
-    }
-    else
-    {
-        echo "##vso[task.setvariable variable=HostOrSkill]Skill"
+      "*/Consumers/*" { echo "##vso[task.setvariable variable=HostOrSkill]Host" }
+      "*/Skills/*" { echo "##vso[task.setvariable variable=HostOrSkill]Skill" }
+      default { echo "##vso[task.setvariable variable=HostOrSkill]" }
     }
 
     write-host "Version: " $version $versionTag

@@ -57,9 +57,9 @@ stages:
       variables:
         Registry: $[variables.RegistryUrlHost]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
-        Parameters.solution: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionHost)/host/SimpleHostBot.sln'
-        Parameters.project: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionHost)/host/SimpleHostBot.csproj'
+        BotType: Host
       steps:
+      - template: dotnetSetPaths.yml
       - template: dotnetInstallPackagesSteps.yml
       - template: dotnetBuildSteps.yml
       - template: dotnetTagBotBuilderVersion.yml
@@ -80,9 +80,9 @@ stages:
         DeployAppSecret: $(DotNetPyHostAppSecret)
         Registry: $[variables.RegistryUrlHost]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
-        Parameters.project: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionHost)/host/SimpleHostBot.csproj'
-        TemplateLocation: 'SkillsFunctionalTests/dotnet/$(NetCoreSdkVersionHost)/host/DeploymentTemplates/template-with-new-rg.json'
+        BotType: Host
       steps:
+      - template: dotnetSetPaths.yml
       - template: dotnetSetConfigFileSteps.yml
       - template: dotnetDeploySteps.yml
 
@@ -94,10 +94,10 @@ stages:
         DeployAppSecret: $(DotNetPySkillAppSecret)
         Registry: $[variables.RegistryUrlSkill]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
-        Parameters.sourceLocation: 'SkillsFunctionalTests/python/skill'
-        TemplateLocation: 'SkillsFunctionalTests/python/skill/deploymentTemplates/template-with-preexisting-rg.json'
+        Parameters.sourceLocation: 'Bots/Python/Skills/CodeFirst/EchoSkillBot'
+        TemplateLocation: 'Bots/Python/Skills/CodeFirst/EchoSkillBot/deploymentTemplates/template-with-preexisting-rg.json'
         # To use template-with-new-rg.json when Deploy_Host and Deploy_Skill run in parallel gets 'Azure Error: DeploymentActive'.
-        #TemplateLocation: 'SkillsFunctionalTests/python/skill/deploymentTemplates/template-with-new-rg.json'
+        #TemplateLocation: 'Bots/Python/Skills/CodeFirst/EchoSkillBot/deploymentTemplates/template-with-new-rg.json'
       steps:
       - template: pythonDeployStepsExistingRG.yml
       #- template: pythonDeployStepsNewRG.yml
@@ -121,8 +121,8 @@ stages:
     - job: Run_Functional_Test
       variables:
         HostBotName: $(DotNetPyHostBotName)
-        Parameters.project: 'SkillsFunctionalTests/tests/SkillFunctionalTests/SkillFunctionalTests.csproj'
-        Parameters.solution: 'SkillsFunctionalTests/tests/SkillFunctionalTests.sln'
+        Parameters.project: 'Tests/SkillFunctionalTests/SkillFunctionalTests.csproj'
+        Parameters.solution: 'SkillFunctionalTests.sln'
         DefaultTestFilter: ''
         DotNetTestFilter: $[ coalesce( variables['TestFilter'], variables['DefaultTestFilter'] ) ]
       steps:

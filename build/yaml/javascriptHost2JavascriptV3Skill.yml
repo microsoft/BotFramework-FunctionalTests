@@ -54,8 +54,8 @@ stages:
         DeployAppSecret: $(JsJsV3HostAppSecret)
         Registry: $[variables.RegistryUrlHost]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
-        Parameters.sourceLocation: 'SkillsFunctionalTests/javascript/host'
-        TemplateLocation: 'SkillsFunctionalTests/javascript/host/DeploymentTemplates/template-with-new-rg.json'
+        Parameters.sourceLocation: 'Bots/JavaScript/Consumers/CodeFirst/SimpleHostBot'
+        TemplateLocation: 'Bots/JavaScript/Consumers/CodeFirst/SimpleHostBot/deploymentTemplates/template-with-new-rg.json'
       steps:
       - template: javascriptSetConfigFileSteps.yml
       - template: javascriptDeploySteps.yml
@@ -67,8 +67,8 @@ stages:
         DeployAppSecret: $(JsJsV3SkillAppSecret)
         Registry: $[variables.RegistryUrlSkill]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
-        Parameters.sourceLocation: 'SkillsFunctionalTests/javascript/v3/skill'
-        TemplateLocation: 'SkillsFunctionalTests/javascript/v3/skill/DeploymentTemplates/template-with-new-rg.json'
+        Parameters.sourceLocation: 'Bots/JavaScript/Skills/CodeFirst/EchoSkillBot-v3/skill'
+        TemplateLocation: 'Bots/JavaScript/Skills/CodeFirst/EchoSkillBot-v3/skill/deploymentTemplates/template-with-new-rg.json'
       steps:
       - template: javascriptDeploySteps.yml
 
@@ -78,8 +78,8 @@ stages:
     - job: Run_Functional_Test
       variables:
         HostBotName: $(JsJsV3HostBotName)
-        Parameters.project: 'SkillsFunctionalTests/tests/SkillFunctionalTests/SkillFunctionalTests.csproj'
-        Parameters.solution: 'SkillsFunctionalTests/tests/SkillFunctionalTests.sln'
+        Parameters.project: 'Tests/SkillFunctionalTests/SkillFunctionalTests.csproj'
+        Parameters.solution: 'SkillFunctionalTests.sln'
         DefaultTestFilter: ''
         DotNetTestFilter: $[ coalesce( variables['TestFilter'], variables['DefaultTestFilter'] ) ]
       steps:

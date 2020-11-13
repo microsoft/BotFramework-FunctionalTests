@@ -5,18 +5,19 @@ steps:
     $packageVersion = pip show botbuilder-integration-aiohttp | Where-Object { $_ -match '^Version' }
     $version = $packageVersion.Split(" ")[1]
     $versionTag = ""
+
     if ("$(BBVersion)" -in("stable","preview"))
     {
       $versionTag = " ($(BBVersion))"
     }
-    if ("$(Parameters.sourceLocation)".Trim().Contains("/host"))
+
+    switch -wildcard ("$(Parameters.sourceLocation)".Trim())
     {
-        echo "##vso[task.setvariable variable=HostOrSkill]Host"
+      "*/Consumers/*" { echo "##vso[task.setvariable variable=HostOrSkill]Host" }
+      "*/Skills/*" { echo "##vso[task.setvariable variable=HostOrSkill]Skill" }
+      default { echo "##vso[task.setvariable variable=HostOrSkill]" }
     }
-    else
-    {
-        echo "##vso[task.setvariable variable=HostOrSkill]Skill"
-    }
+
     write-host "Version: " $version $versionTag
     echo "##vso[task.setvariable variable=PackagesVersionTag]$versionTag"
     echo "##vso[task.setvariable variable=PackagesVersion]$version"
