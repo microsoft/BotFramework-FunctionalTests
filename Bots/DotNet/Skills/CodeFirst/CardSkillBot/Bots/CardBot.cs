@@ -122,7 +122,9 @@ namespace Microsoft.BotFrameworkFunctionalTests.CardSkillBot.Bots
                             await ShowUploadFile(turnContext, cancellationToken).ConfigureAwait(false);
                             break;
                         default:
-                            await turnContext.SendActivityAsync(MessageFactory.Text($"You said: {turnContext.Activity.Text}"), cancellationToken).ConfigureAwait(false);
+                            await turnContext.SendActivityAsync(MessageFactory.Text($"I didn't understand: {turnContext.Activity.Text}"), cancellationToken).ConfigureAwait(false);
+                            await turnContext.SendActivityAsync(MessageFactory.Text($"You can send me the following messages to see all cards: {_possibleCards}"), cancellationToken);
+
                             break;
                     }
                 }
