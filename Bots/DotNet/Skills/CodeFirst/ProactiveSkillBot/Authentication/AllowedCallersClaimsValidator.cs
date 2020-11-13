@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Extensions.Configuration;
 
-namespace Microsoft.BotBuilderSamples.ProactiveSkillBot.Authentication
+namespace Microsoft.BotFrameworkFunctionalTests.ProactiveSkillBot.Authentication
 {
     /// <summary>
     /// Sample claims validator that loads an allowed list from configuration if present

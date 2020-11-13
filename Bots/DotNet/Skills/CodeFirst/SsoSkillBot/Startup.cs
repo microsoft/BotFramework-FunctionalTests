@@ -8,14 +8,14 @@ using Microsoft.Bot.Builder.BotFramework;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Connector.Authentication;
-using Microsoft.BotBuilderSamples.SkillBot.Authentication;
-using Microsoft.BotBuilderSamples.SkillBot.Bots;
-using Microsoft.BotBuilderSamples.SkillBot.Dialogs;
+using Microsoft.BotFrameworkFunctionalTests.SsoSkillBot.Authentication;
+using Microsoft.BotFrameworkFunctionalTests.SsoSkillBot.Bots;
+using Microsoft.BotFrameworkFunctionalTests.SsoSkillBot.Dialogs;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Microsoft.BotBuilderSamples.SkillBot
+namespace Microsoft.BotFrameworkFunctionalTests.SsoSkillBot
 {
     public class Startup
     {

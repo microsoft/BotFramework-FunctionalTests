@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
 
-namespace DotnetIntegrationBot
+namespace Microsoft.BotFrameworkFunctionalTests.TeamsSkillBot
 {
     public class ActivityLog
     {

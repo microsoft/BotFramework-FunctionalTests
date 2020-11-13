@@ -7,9 +7,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
-using Microsoft.BotBuilderSamples.ProactiveSkillBot.Controllers;
+using Microsoft.BotFrameworkFunctionalTests.ProactiveSkillBot.Controllers;
 
-namespace Microsoft.BotBuilderSamples.ProactiveSkillBot.Bots
+namespace Microsoft.BotFrameworkFunctionalTests.ProactiveSkillBot.Bots
 {
     public class ProactiveBot : ActivityHandler
     {

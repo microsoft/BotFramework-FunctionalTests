@@ -7,14 +7,14 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.BotFramework;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Connector.Authentication;
-using Microsoft.BotBuilderSamples.DialogSkillBot.Authentication;
-using Microsoft.BotBuilderSamples.DialogSkillBot.Bots;
-using Microsoft.BotBuilderSamples.DialogSkillBot.Dialogs;
+using Microsoft.BotFrameworkFunctionalTests.DialogSkillBot.Authentication;
+using Microsoft.BotFrameworkFunctionalTests.DialogSkillBot.Bots;
+using Microsoft.BotFrameworkFunctionalTests.DialogSkillBot.Dialogs;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Microsoft.BotBuilderSamples.DialogSkillBot
+namespace Microsoft.BotFrameworkFunctionalTests.DialogSkillBot
 {
     public class Startup
     {

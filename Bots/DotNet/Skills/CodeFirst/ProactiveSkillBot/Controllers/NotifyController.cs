@@ -12,7 +12,7 @@ using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Configuration;
 
-namespace Microsoft.BotBuilderSamples.ProactiveSkillBot.Controllers
+namespace Microsoft.BotFrameworkFunctionalTests.ProactiveSkillBot.Controllers
 {
     [Route("api/notify")]
     [ApiController]

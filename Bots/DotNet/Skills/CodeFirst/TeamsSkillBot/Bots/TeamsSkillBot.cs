@@ -3,15 +3,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using AdaptiveCards;
-using DotnetIntegrationBot;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Teams;
 using Microsoft.Bot.Connector;
@@ -19,10 +15,9 @@ using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Bot.Schema;
 using Microsoft.Bot.Schema.Teams;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace DotnetIntegrationBot
+namespace Microsoft.BotFrameworkFunctionalTests.TeamsSkillBot.Bots
 {
     public class TeamsSkillBot : TeamsActivityHandler
     {

@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-namespace CardSkill
+namespace Microsoft.BotFrameworkFunctionalTests.CardSkillBot
 {
     public static class Constants
     {

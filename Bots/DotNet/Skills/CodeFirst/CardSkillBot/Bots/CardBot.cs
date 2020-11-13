@@ -15,15 +15,15 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace CardSkill
+namespace Microsoft.BotFrameworkFunctionalTests.CardSkillBot.Bots
 {
     public class CardBot : ActivityHandler
     {
         private static readonly string _corgiOnCarouselVideo = "https://www.youtube.com/watch?v=LvqzubPZjHE";
         private static readonly string _mindBlownGif = "https://media3.giphy.com/media/xT0xeJpnrWC4XWblEk/giphy.gif?cid=ecf05e47mye7k75sup6tcmadoom8p1q8u03a7g2p3f76upp9&rid=giphy.gif";
-        private readonly string _possibleCards = "botaction, taskmodule, submit, hero, thumbnail, receipt, signin, carousel, list, o365, file, uploadfile, animation, video, audio";
-        private readonly IConfiguration _config;
         private readonly IHttpClientFactory _clientFactory;
+        private readonly IConfiguration _config;
+        private readonly string _possibleCards = "botaction, taskmodule, submit, hero, thumbnail, receipt, signin, carousel, list, o365, file, uploadfile, animation, video, audio";
 
         public CardBot(IHttpClientFactory clientFactory, IConfiguration config)
         {
@@ -48,7 +48,7 @@ namespace CardSkill
                 if (turnContext.Activity.Text.Contains("end") || turnContext.Activity.Text.Contains("stop"))
                 {
                     // Send End of conversation at the end.
-                    var messageText = $"ending conversation from the skill...";
+                    var messageText = "ending conversation from the skill...";
                     await turnContext.SendActivityAsync(MessageFactory.Text(messageText, messageText, InputHints.IgnoringInput), cancellationToken);
                     var endOfConversation = Activity.CreateEndOfConversationActivity();
                     endOfConversation.Code = EndOfConversationCodes.CompletedSuccessfully;
@@ -83,13 +83,23 @@ namespace CardSkill
                         case "carousel":
                             // NOTE: if cards are NOT the same height in a carousel, Teams will instead display as AttachmentLayoutTypes.List
                             await turnContext.SendActivityAsync(
-                                MessageFactory.Carousel(new[] { CardSampleHelper.CreateHeroCard().ToAttachment(), CardSampleHelper.CreateHeroCard().ToAttachment(), CardSampleHelper.CreateHeroCard().ToAttachment() }),
+                                MessageFactory.Carousel(new[]
+                                {
+                                    CardSampleHelper.CreateHeroCard().ToAttachment(),
+                                    CardSampleHelper.CreateHeroCard().ToAttachment(),
+                                    CardSampleHelper.CreateHeroCard().ToAttachment()
+                                }),
                                 cancellationToken).ConfigureAwait(false);
                             break;
                         case "list":
                             // NOTE: MessageFactory.Attachment with multiple attachments will default to AttachmentLayoutTypes.List
                             await turnContext.SendActivityAsync(
-                                MessageFactory.Attachment(new[] { CardSampleHelper.CreateHeroCard().ToAttachment(), CardSampleHelper.CreateHeroCard().ToAttachment(), CardSampleHelper.CreateHeroCard().ToAttachment() }),
+                                MessageFactory.Attachment(new[]
+                                {
+                                    CardSampleHelper.CreateHeroCard().ToAttachment(),
+                                    CardSampleHelper.CreateHeroCard().ToAttachment(),
+                                    CardSampleHelper.CreateHeroCard().ToAttachment()
+                                }),
                                 cancellationToken).ConfigureAwait(false);
                             break;
                         case "o365":
@@ -206,7 +216,7 @@ namespace CardSkill
                 {
                     Type = "result",
                     AttachmentLayout = "list",
-                    Attachments = new List<MessagingExtensionAttachment>()
+                    Attachments = new List<MessagingExtensionAttachment>
                     {
                         new MessagingExtensionAttachment
                         {
@@ -239,7 +249,7 @@ namespace CardSkill
 
         private AdaptiveCard MakeAdaptiveCard(string cardType)
         {
-            AdaptiveCard adaptiveCard = cardType switch
+            var adaptiveCard = cardType switch
             {
                 "botaction" => CardSampleHelper.CreateAdaptiveCardBotAction(),
                 "taskmodule" => CardSampleHelper.CreateAdaptiveCardTaskModule(),
@@ -298,31 +308,31 @@ namespace CardSkill
 
         private AnimationCard MakeAnimationCard()
         {
-            MediaUrl url = new MediaUrl(url: _mindBlownGif);
+            var url = new MediaUrl(url: _mindBlownGif);
             return new AnimationCard(title: "Animation Card", media: new[] { url }, autostart: true);
         }
 
         private VideoCard MakeVideoCard()
         {
-            MediaUrl url = new MediaUrl(url: _corgiOnCarouselVideo);
+            var url = new MediaUrl(url: _corgiOnCarouselVideo);
             return new VideoCard(title: "Video Card", media: new[] { url });
         }
 
         private AudioCard MakeAudiocard()
         {
-            MediaUrl url = new MediaUrl(url: _config["AudioUrl"]);
+            var url = new MediaUrl(url: _config["AudioUrl"]);
             return new AudioCard(title: "Audio Card", media: new[] { url }, autoloop: true);
         }
 
         private async Task ShowUploadFile(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
-            bool messageWithFileDownloadInfo = turnContext.Activity.Attachments?[0].ContentType == FileDownloadInfo.ContentType;
+            var messageWithFileDownloadInfo = turnContext.Activity.Attachments?[0].ContentType == FileDownloadInfo.ContentType;
             if (messageWithFileDownloadInfo)
             {
                 var file = turnContext.Activity.Attachments[0];
                 var fileDownload = JObject.FromObject(file.Content).ToObject<FileDownloadInfo>();
 
-                string filePath = Path.Combine("Files", file.Name);
+                var filePath = Path.Combine("Files", file.Name);
 
                 using var client = GetClientFactory().CreateClient();
                 var response = await client.GetAsync(new Uri(fileDownload.DownloadUrl)).ConfigureAwait(false);
@@ -335,9 +345,9 @@ namespace CardSkill
             }
             else
             {
-                string filename = Constants.TeamsLogoFileName;
-                string filePath = Path.Combine("Files", filename);
-                long fileSize = new FileInfo(filePath).Length;
+                var filename = Constants.TeamsLogoFileName;
+                var filePath = Path.Combine("Files", filename);
+                var fileSize = new FileInfo(filePath).Length;
                 await turnContext.SendActivityAsync(MessageFactory.Attachment(MakeFileCardAttachment(filename, fileSize))).ConfigureAwait(false);
             }
         }

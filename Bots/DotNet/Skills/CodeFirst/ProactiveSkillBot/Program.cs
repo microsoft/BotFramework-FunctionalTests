@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Microsoft.BotBuilderSamples.ProactiveSkillBot
+namespace Microsoft.BotFrameworkFunctionalTests.ProactiveSkillBot
 {
     public class Program
     {

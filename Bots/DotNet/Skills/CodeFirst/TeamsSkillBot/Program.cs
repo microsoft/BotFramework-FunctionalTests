@@ -4,7 +4,7 @@
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
-namespace DotnetIntegrationBot
+namespace Microsoft.BotFrameworkFunctionalTests.TeamsSkillBot
 {
     public static class Program
     {

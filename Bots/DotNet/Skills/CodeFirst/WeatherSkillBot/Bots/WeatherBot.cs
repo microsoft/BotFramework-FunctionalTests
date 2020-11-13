@@ -11,7 +11,7 @@ using Microsoft.Bot.Schema;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Microsoft.BotBuilderSamples.EchoSkillBot.Bots
+namespace Microsoft.BotFrameworkFunctionalTests.WeatherSkillBot.Bots
 {
     public class WeatherBot : ActivityHandler
     {

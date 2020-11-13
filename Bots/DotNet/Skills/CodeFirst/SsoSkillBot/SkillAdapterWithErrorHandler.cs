@@ -2,9 +2,6 @@
 // Licensed under the MIT License.
 
 using System;
-using System.Collections.Concurrent;
-using System.Linq;
-using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
@@ -15,7 +12,7 @@ using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace Microsoft.BotBuilderSamples.SkillBot
+namespace Microsoft.BotFrameworkFunctionalTests.SsoSkillBot
 {
     public class SkillAdapterWithErrorHandler : BotFrameworkHttpAdapter
     {

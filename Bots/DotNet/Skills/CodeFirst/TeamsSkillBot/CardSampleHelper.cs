@@ -8,7 +8,7 @@ using Microsoft.Bot.Schema;
 using Microsoft.Bot.Schema.Teams;
 using Newtonsoft.Json.Linq;
 
-namespace DotnetIntegrationBot
+namespace Microsoft.BotFrameworkFunctionalTests.TeamsSkillBot
 {
     public static class CardSampleHelper
     {

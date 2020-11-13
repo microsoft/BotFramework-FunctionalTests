@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 
-namespace Microsoft.BotBuilderSamples.ProactiveSkillBot.Controllers
+namespace Microsoft.BotFrameworkFunctionalTests.ProactiveSkillBot.Controllers
 {
     // This ASP Controller is created to handle a request. Dependency Injection will provide the Adapter and IBot
     // implementation at runtime. Multiple different IBot implementations running at different endpoints can be

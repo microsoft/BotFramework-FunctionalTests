@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Microsoft.BotFramework.FunctionalTests.Attachments
+namespace Microsoft.BotFrameworkFunctionalTests.AttachmentsSkillBot
 {
     public class Program
     {

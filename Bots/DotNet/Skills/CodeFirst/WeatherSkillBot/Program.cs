@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Microsoft.BotBuilderSamples.EchoSkillBot
+namespace Microsoft.BotFrameworkFunctionalTests.WeatherSkillBot
 {
     public class Program
     {

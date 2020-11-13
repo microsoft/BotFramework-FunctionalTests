@@ -11,7 +11,7 @@ using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace Microsoft.BotBuilderSamples.SsoRootBot.Dialogs
+namespace Microsoft.BotFrameworkFunctionalTests.SsoRootBot.Dialogs
 {
     public class MainDialog : ComponentDialog
     {

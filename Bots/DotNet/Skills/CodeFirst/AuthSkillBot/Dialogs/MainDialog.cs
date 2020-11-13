@@ -9,7 +9,7 @@ using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace Microsoft.BotBuilderSamples
+namespace Microsoft.BotFrameworkFunctionalTests.AuthSkillBot.Dialogs
 {
     public class MainDialog : LogoutDialog
     {

@@ -1,14 +1,13 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 
-namespace Microsoft.BotBuilderSamples.SkillBot.Bots
+namespace Microsoft.BotFrameworkFunctionalTests.SsoSkillBot.Bots
 {
     public class ChildBot : ActivityHandler
     {

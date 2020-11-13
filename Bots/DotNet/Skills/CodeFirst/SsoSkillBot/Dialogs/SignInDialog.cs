@@ -7,7 +7,7 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Configuration;
 
-namespace Microsoft.BotBuilderSamples.SkillBot.Dialogs
+namespace Microsoft.BotFrameworkFunctionalTests.SsoSkillBot.Dialogs
 {
     public class SignInDialog : ComponentDialog
     {

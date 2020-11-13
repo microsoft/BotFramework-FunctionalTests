@@ -12,7 +12,7 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Connector;
 using Microsoft.Bot.Schema;
 
-namespace Microsoft.BotFramework.FunctionalTests
+namespace Microsoft.BotFrameworkFunctionalTests.AttachmentsSkillBot.Bots
 {
     // Represents a bot that processes incoming activities.
     // For each user interaction, an instance of this class is created and the OnTurnAsync method is called.

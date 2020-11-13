@@ -9,7 +9,7 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.Recognizers.Text.DataTypes.TimexExpression;
 
-namespace Microsoft.BotBuilderSamples.DialogSkillBot.Dialogs
+namespace Microsoft.BotFrameworkFunctionalTests.DialogSkillBot.Dialogs
 {
     public class DateResolverDialog : CancelAndHelpDialog
     {

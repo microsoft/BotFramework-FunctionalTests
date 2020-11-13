@@ -9,7 +9,7 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 
-namespace Microsoft.BotBuilderSamples
+namespace Microsoft.BotFrameworkFunctionalTests.AuthSkillBot.Bots
 {
     public class AuthBot<T> : DialogBot<T> 
         where T : Dialog

@@ -11,7 +11,7 @@ using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace Microsoft.BotBuilderSamples.ProactiveSkillBot
+namespace Microsoft.BotFrameworkFunctionalTests.ProactiveSkillBot
 {
     public class SkillAdapterWithErrorHandler : BotFrameworkHttpAdapter
     {

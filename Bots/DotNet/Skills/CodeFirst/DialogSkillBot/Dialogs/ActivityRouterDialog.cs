@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -9,10 +10,10 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.TraceExtensions;
 using Microsoft.Bot.Schema;
-using Microsoft.BotBuilderSamples.DialogSkillBot.CognitiveModels;
+using Microsoft.BotFrameworkFunctionalTests.DialogSkillBot.CognitiveModels;
 using Newtonsoft.Json;
 
-namespace Microsoft.BotBuilderSamples.DialogSkillBot.Dialogs
+namespace Microsoft.BotFrameworkFunctionalTests.DialogSkillBot.Dialogs
 {
     /// <summary>
     /// A root dialog that can route activities sent to the skill to different sub-dialogs.
@@ -93,7 +94,7 @@ namespace Microsoft.BotBuilderSamples.DialogSkillBot.Dialogs
                 // Create a message showing the LUIS results.
                 var sb = new StringBuilder();
                 sb.AppendLine($"LUIS results for \"{activity.Text}\":");
-                var (intent, intentScore) = luisResult.Intents.FirstOrDefault(x => x.Value.Equals(luisResult.Intents.Values.Max()));
+                var (intent, intentScore) = Enumerable.FirstOrDefault<KeyValuePair<FlightBooking.Intent, IntentScore>>(luisResult.Intents, x => x.Value.Equals(Enumerable.Max<IntentScore>(luisResult.Intents.Values)));
                 sb.AppendLine($"Intent: \"{intent}\" Score: {intentScore.Score}");
 
                 await stepContext.Context.SendActivityAsync(MessageFactory.Text(sb.ToString(), inputHint: InputHints.IgnoringInput), cancellationToken);

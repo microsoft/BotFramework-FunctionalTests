@@ -14,7 +14,7 @@ using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace Microsoft.BotBuilderSamples.SsoRootBot
+namespace Microsoft.BotFrameworkFunctionalTests.SsoRootBot
 {
     public class AdapterWithErrorHandler : BotFrameworkHttpAdapter
     {

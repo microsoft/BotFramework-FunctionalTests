@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Microsoft.BotBuilderSamples.EchoSkillBot
+namespace Microsoft.BotFrameworkFunctionalTests.WeatherSkillBot
 {
     public class SingleDay
     {

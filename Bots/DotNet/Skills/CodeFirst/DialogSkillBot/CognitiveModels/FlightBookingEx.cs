@@ -3,9 +3,11 @@
 
 using System.Linq;
 
-namespace Microsoft.BotBuilderSamples.DialogSkillBot.CognitiveModels
+namespace Microsoft.BotFrameworkFunctionalTests.DialogSkillBot.CognitiveModels
 {
-    // Extends the partial FlightBooking class with methods and properties that simplify accessing entities in the LUIS results.
+    /// <summary>
+    /// Extends the partial FlightBooking class with methods and properties that simplify accessing entities in the LUIS results.
+    /// </summary>
     public partial class FlightBooking
     {
         public (string From, string Airport) FromEntities

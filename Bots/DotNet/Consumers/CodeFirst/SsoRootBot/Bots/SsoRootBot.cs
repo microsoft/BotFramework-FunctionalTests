@@ -13,7 +13,7 @@ using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Configuration;
 
-namespace Microsoft.BotBuilderSamples.SsoRootBot.Bots
+namespace Microsoft.BotFrameworkFunctionalTests.SsoRootBot.Bots
 {
     public class SsoRootBot : ActivityHandler
     {

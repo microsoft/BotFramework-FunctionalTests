@@ -10,12 +10,12 @@ using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Builder.Integration.AspNet.Core.Skills;
 using Microsoft.Bot.Builder.Skills;
 using Microsoft.Bot.Connector.Authentication;
-using Microsoft.BotBuilderSamples.SsoRootBot.Authentication;
-using Microsoft.BotBuilderSamples.SsoRootBot.Dialogs;
+using Microsoft.BotFrameworkFunctionalTests.SsoRootBot.Authentication;
+using Microsoft.BotFrameworkFunctionalTests.SsoRootBot.Dialogs;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Microsoft.BotBuilderSamples.SsoRootBot
+namespace Microsoft.BotFrameworkFunctionalTests.SsoRootBot
 {
     public class Startup
     {

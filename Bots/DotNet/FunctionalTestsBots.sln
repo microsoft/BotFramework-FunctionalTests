@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleHostBot-2.1", "Consum
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CodeFirst", "CodeFirst", "{6EF38D8C-7953-4D54-BA31-FFF055B7B217}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CardSkill", "Skills\CodeFirst\CardSkillBot\CardSkill.csproj", "{057D5131-517C-4EBB-BA7B-75E745792DBD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CardSkillBot", "Skills\CodeFirst\CardSkillBot\CardSkillBot.csproj", "{057D5131-517C-4EBB-BA7B-75E745792DBD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DialogSkillBot", "Skills\CodeFirst\DialogSkillBot\DialogSkillBot.csproj", "{64524883-7455-4A7E-AD72-D5D77288D373}"
 EndProject
@@ -25,7 +25,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProactiveSkillBot", "Skills
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TeamsSkillBot", "Skills\CodeFirst\TeamsSkillBot\TeamsSkillBot.csproj", "{66E3D426-7627-4D6C-9FAA-87618724F326}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeatherSkill", "Skills\CodeFirst\WeatherSkillBot\WeatherSkill.csproj", "{C62D367B-BBA3-4F0F-B170-52AE28910F01}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeatherSkillBot", "Skills\CodeFirst\WeatherSkillBot\WeatherSkillBot.csproj", "{C62D367B-BBA3-4F0F-B170-52AE28910F01}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EchoSkillBot", "Skills\CodeFirst\EchoSkillBot\EchoSkillBot.csproj", "{692F26DD-F7BA-49F3-AC6D-73047C1E5D61}"
 EndProject
@@ -35,11 +35,27 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Composer", "Composer", "{33
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AttachmentsSkillBot", "Skills\CodeFirst\AttachmentsSkillBot\AttachmentsSkillBot.csproj", "{2567B219-4384-4BBE-A2DC-475359B2DD9D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthenticationBot", "Skills\CodeFirst\AuthSkillBot\AuthenticationBot.csproj", "{C825AAB4-D555-4AD4-82AC-494BF2F2EF5D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthSkillBot", "Skills\CodeFirst\AuthSkillBot\AuthSkillBot.csproj", "{C825AAB4-D555-4AD4-82AC-494BF2F2EF5D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SsoSkillBot", "Skills\CodeFirst\SsoSkillBot\SsoSkillBot.csproj", "{FBC33793-DE70-47F1-A501-EEA252219342}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SsoHostBot", "Consumers\CodeFirst\SsoRootBot\SsoHostBot.csproj", "{AE84648F-7558-43A4-8EF2-9F2B3167FD51}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SimpleComposerHostBot", "SimpleComposerHostBot", "{23CD821E-D287-4B8A-8174-15C081B566DA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "runtime", "runtime", "{88BD7115-D9EA-4D85-80EF-94594F944231}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "settings", "settings", "{F5187871-1120-4D76-B3B6-53D2F93E3071}"
+	ProjectSection(SolutionItems) = preProject
+		Consumers\Composer\SimpleComposerHostBot\settings\appsettings.json = Consumers\Composer\SimpleComposerHostBot\settings\appsettings.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EchoComposerSkillBot", "EchoComposerSkillBot", "{9FF1FC77-3EBE-4001-864B-59DC0BF5ADDE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "settings", "settings", "{95708A0E-37E4-4EC0-B381-DC2C440F1A1D}"
+	ProjectSection(SolutionItems) = preProject
+		Skills\Composer\EchoComposerSkillBot\settings\appsettings.json = Skills\Composer\EchoComposerSkillBot\settings\appsettings.json
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -121,6 +137,11 @@ Global
 		{C825AAB4-D555-4AD4-82AC-494BF2F2EF5D} = {6EF38D8C-7953-4D54-BA31-FFF055B7B217}
 		{FBC33793-DE70-47F1-A501-EEA252219342} = {6EF38D8C-7953-4D54-BA31-FFF055B7B217}
 		{AE84648F-7558-43A4-8EF2-9F2B3167FD51} = {C7A60083-78C8-4CEF-A358-4E53CBF0D12A}
+		{23CD821E-D287-4B8A-8174-15C081B566DA} = {33FA275E-9E5D-4582-BFF7-24B2C5DB2962}
+		{88BD7115-D9EA-4D85-80EF-94594F944231} = {23CD821E-D287-4B8A-8174-15C081B566DA}
+		{F5187871-1120-4D76-B3B6-53D2F93E3071} = {23CD821E-D287-4B8A-8174-15C081B566DA}
+		{9FF1FC77-3EBE-4001-864B-59DC0BF5ADDE} = {33E2281F-C6A7-40EC-961A-FF9FF254FDDC}
+		{95708A0E-37E4-4EC0-B381-DC2C440F1A1D} = {9FF1FC77-3EBE-4001-864B-59DC0BF5ADDE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2B77A921-EEA6-4006-ABD2-159C92F9F874}

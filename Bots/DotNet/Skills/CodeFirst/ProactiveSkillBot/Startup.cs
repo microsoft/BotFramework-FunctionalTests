@@ -9,13 +9,13 @@ using Microsoft.Bot.Builder.BotFramework;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Bot.Schema;
-using Microsoft.BotBuilderSamples.ProactiveSkillBot.Authentication;
-using Microsoft.BotBuilderSamples.ProactiveSkillBot.Bots;
+using Microsoft.BotFrameworkFunctionalTests.ProactiveSkillBot.Authentication;
+using Microsoft.BotFrameworkFunctionalTests.ProactiveSkillBot.Bots;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Microsoft.BotBuilderSamples.ProactiveSkillBot
+namespace Microsoft.BotFrameworkFunctionalTests.ProactiveSkillBot
 {
     public class Startup
     {

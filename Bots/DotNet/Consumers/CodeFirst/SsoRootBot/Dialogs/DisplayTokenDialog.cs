@@ -7,7 +7,7 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Extensions.Configuration;
 
-namespace Microsoft.BotBuilderSamples.SsoRootBot.Dialogs
+namespace Microsoft.BotFrameworkFunctionalTests.SsoRootBot.Dialogs
 {
     public class DisplayTokenDialog : ComponentDialog
     {

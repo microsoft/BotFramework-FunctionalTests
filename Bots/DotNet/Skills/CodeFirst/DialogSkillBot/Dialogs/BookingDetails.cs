@@ -3,7 +3,7 @@
 
 using Newtonsoft.Json;
 
-namespace Microsoft.BotBuilderSamples.DialogSkillBot.Dialogs
+namespace Microsoft.BotFrameworkFunctionalTests.DialogSkillBot.Dialogs
 {
     public class BookingDetails
     {

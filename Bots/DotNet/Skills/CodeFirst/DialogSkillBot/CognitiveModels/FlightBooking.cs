@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.AI.Luis;
 
-namespace Microsoft.BotBuilderSamples.DialogSkillBot.CognitiveModels
+namespace Microsoft.BotFrameworkFunctionalTests.DialogSkillBot.CognitiveModels
 {
     public partial class FlightBooking: IRecognizerConvert
     {
@@ -75,7 +75,7 @@ namespace Microsoft.BotBuilderSamples.DialogSkillBot.CognitiveModels
 
         public void Convert(dynamic result)
         {
-            var app = JsonConvert.DeserializeObject<DialogSkillBot.CognitiveModels.FlightBooking>(JsonConvert.SerializeObject(result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+            var app = JsonConvert.DeserializeObject<BotFrameworkFunctionalTests.DialogSkillBot.CognitiveModels.FlightBooking>(JsonConvert.SerializeObject(result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
             Text = app.Text;
             AlteredText = app.AlteredText;
             Intents = app.Intents;

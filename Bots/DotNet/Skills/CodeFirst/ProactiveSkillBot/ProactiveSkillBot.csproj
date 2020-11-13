@@ -3,13 +3,14 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <LangVersion>latest</LangVersion>
-    <AssemblyName>Microsoft.BotBuilderSamples.ProactiveSkillBot</AssemblyName>
-    <RootNamespace>Microsoft.BotBuilderSamples.ProactiveSkillBot</RootNamespace>
+    <AssemblyName>Microsoft.BotFrameworkFunctionalTests.ProactiveSkillBot</AssemblyName>
+    <RootNamespace>Microsoft.BotFrameworkFunctionalTests.ProactiveSkillBot</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.1" />
-    <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="4.10.3" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs" Version="4.11.0" />
+    <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="4.11.0" />
   </ItemGroup>
   
   <ItemGroup>

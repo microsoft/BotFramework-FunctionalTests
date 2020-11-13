@@ -20,6 +20,13 @@
       "description": "Default endpoint for the skill",
       "endpointUrl": "http://echoskillbot.contoso.com/api/messages",
       "msAppId": "00000000-0000-0000-0000-000000000000"
+    },
+    {
+      "name": "localhost",
+      "protocol": "BotFrameworkV3",
+      "description": "Localhost endpoint for the skill (on port 39793)",
+      "endpointUrl": "http://localhost:39793/api/messages",
+      "msAppId": "f3fe8762-e50c-4688-b202-a040f522d916"
     }
   ]
 }

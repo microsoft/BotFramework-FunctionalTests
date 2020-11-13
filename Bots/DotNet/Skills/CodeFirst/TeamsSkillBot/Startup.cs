@@ -9,13 +9,12 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.BotFramework;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Connector.Authentication;
-using Microsoft.BotBuilderSamples.EchoSkillBot;
-using Microsoft.BotBuilderSamples.EchoSkillBot.Authentication;
+using Microsoft.BotFrameworkFunctionalTests.TeamsSkillBot.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace DotnetIntegrationBot
+namespace Microsoft.BotFrameworkFunctionalTests.TeamsSkillBot
 {
     public class Startup
     {
@@ -51,7 +50,7 @@ namespace DotnetIntegrationBot
             services.AddSingleton<IBotFrameworkHttpAdapter, SkillAdapterWithErrorHandler>();
 
             // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
-            services.AddTransient<IBot, TeamsSkillBot>();
+            services.AddTransient<IBot, Bots.TeamsSkillBot>();
 
             if (!string.IsNullOrEmpty(Configuration["ChannelService"]))
             {
