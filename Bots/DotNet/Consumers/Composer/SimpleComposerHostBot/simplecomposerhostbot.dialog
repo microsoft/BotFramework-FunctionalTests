@@ -1,0 +1,89 @@
+{
+  "$kind": "Microsoft.AdaptiveDialog",
+  "$designer": {
+    "$designer": {
+      "name": "SimpleComposerHostBot",
+      "description": "",
+      "id": "zzc07D"
+    }
+  },
+  "autoEndDialog": true,
+  "defaultResultProperty": "dialog.result",
+  "triggers": [
+    {
+      "$kind": "Microsoft.OnConversationUpdateActivity",
+      "$designer": {
+        "id": "376720"
+      },
+      "actions": [
+        {
+          "$kind": "Microsoft.SendActivity",
+          "$designer": {
+            "id": "1fPEND"
+          },
+          "activity": "${SendActivity_1fPEND()}"
+        }
+      ]
+    },
+    {
+      "$kind": "Microsoft.OnUnknownIntent",
+      "$designer": {
+        "id": "QrWyk2"
+      },
+      "actions": [
+        {
+          "$kind": "Microsoft.SendActivity",
+          "$designer": {
+            "id": "VV7JVt"
+          },
+          "activity": "${SendActivity_VV7JVt()}"
+        }
+      ]
+    },
+    {
+      "$kind": "Microsoft.OnIntent",
+      "$designer": {
+        "id": "MKei69",
+        "name": "EchoSkillBot"
+      },
+      "intent": "EchoSkillBot",
+      "actions": [
+        {
+          "$kind": "Microsoft.SendActivity",
+          "$designer": {
+            "id": "mb8ZXL"
+          },
+          "activity": "${SendActivity_mb8ZXL()}"
+        },
+        {
+          "$kind": "Microsoft.BeginSkill",
+          "$designer": {
+            "id": "yU7oAp"
+          },
+          "activityProcessed": false,
+          "botId": "=settings.MicrosoftAppId",
+          "skillHostEndpoint": "=settings.skillHostEndpoint",
+          "connectionName": "=settings.connectionName",
+          "allowInterruptions": true,
+          "id": "https://ggechoskillbot.azurewebsites.net/manifest/echoskillbot-manifest-1.0.json",
+          "activity": "${BeginSkill_Activity_yU7oAp()}",
+          "resultProperty": "dialog.result",
+          "skillEndpoint": "https://ggechoskillbot.azurewebsites.net/api/messages",
+          "skillAppId": "0be01cfa-478e-4ec2-b2cc-9a4ec02f101b"
+        }
+      ]
+    }
+  ],
+  "$schema": "https://raw.githubusercontent.com/microsoft/BotFramework-Composer/stable/Composer/packages/server/schemas/sdk.schema",
+  "generator": "simplecomposerhostbot.lg",
+  "id": "SimpleComposerHostBot",
+  "recognizer": {
+    "$kind": "Microsoft.RegexRecognizer",
+    "intents": [
+      {
+        "intent": "EchoSkillBot",
+        "pattern": "skill"
+      }
+    ]
+  }
+}

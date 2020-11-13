@@ -1,0 +1,13 @@
+[import](common.lg)
+
+
+# SendActivity_1fPEND()
+- Hello and welcome!
+# SendActivity_VV7JVt()
+- Me no nothin'. Say "skill" and I'll patch you through
+
+# SendActivity_mb8ZXL()
+- Got it, connecting you to the skill...
+# BeginSkill_Activity_yU7oAp()
+- ${turn.activity.text}
+
