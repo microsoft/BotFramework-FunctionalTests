@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Bot.Builder;
@@ -11,6 +12,7 @@ using Microsoft.Bot.Builder.Skills;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Authentication;
 using Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Bots;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -18,6 +20,13 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot
 {
     public class Startup
     {
+        public Startup(IConfiguration config)
+        {
+            Configuration = config;
+        }
+
+        public IConfiguration Configuration { get; }
+
         /// <summary>
         /// This method gets called by the runtime. Use this method to add services to the container.
         /// </summary>
@@ -44,7 +53,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot
             services.AddSingleton<SkillConversationIdFactoryBase, SkillConversationIdFactory>();
             services.AddHttpClient<SkillHttpClient>();
             services.AddSingleton<ChannelServiceHandler, SkillHandler>();
-
+            
             // Register the storage we'll be using for User and Conversation state. (Memory is great for testing purposes.)
             services.AddSingleton<IStorage, MemoryStorage>();
 
@@ -53,6 +62,12 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot
 
             // Register the bot as a transient. In this case the ASP Controller is expecting an IBot.
             services.AddTransient<IBot, HostBot>();
+
+            if (!string.IsNullOrEmpty(Configuration["ChannelService"]))
+            {
+                // Register a ConfigurationChannelProvider -- this is only for Azure Gov.
+                services.AddSingleton<IChannelProvider, ConfigurationChannelProvider>();
+            }
         }
 
         /// <summary>

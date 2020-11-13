@@ -4,7 +4,7 @@
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
-namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot
+namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot21
 {
     public class Program
     {

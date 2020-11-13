@@ -14,7 +14,7 @@ using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
-namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Bots
+namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot21.Bots
 {
     public class HostBot : ActivityHandler
     {

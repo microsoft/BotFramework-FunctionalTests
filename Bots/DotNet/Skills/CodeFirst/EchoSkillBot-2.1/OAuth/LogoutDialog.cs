@@ -7,7 +7,7 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 
-namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot.OAuth
+namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot21.OAuth
 {
     public class LogoutDialog : ComponentDialog
     {

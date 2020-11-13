@@ -10,14 +10,22 @@ using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Builder.Integration.AspNet.Core.Skills;
 using Microsoft.Bot.Builder.Skills;
 using Microsoft.Bot.Connector.Authentication;
-using Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Authentication;
-using Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Bots;
+using Microsoft.BotFrameworkFunctionalTests.SimpleHostBot21.Authentication;
+using Microsoft.BotFrameworkFunctionalTests.SimpleHostBot21.Bots;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot
+namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot21
 {
     public class Startup
     {
+        public Startup(IConfiguration config)
+        {
+            Configuration = config;
+        }
+
+        public IConfiguration Configuration { get; }
+
         /// <summary>
         /// This method gets called by the runtime. Use this method to add services to the container.
         /// </summary>
@@ -53,6 +61,12 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot
 
             // Register the bot as a transient. In this case the ASP Controller is expecting an IBot.
             services.AddTransient<IBot, HostBot>();
+
+            if (!string.IsNullOrEmpty(Configuration["ChannelService"]))
+            {
+                // Register a ConfigurationChannelProvider -- this is only for Azure Gov.
+                services.AddSingleton<IChannelProvider, ConfigurationChannelProvider>();
+            }
         }
 
         /// <summary>

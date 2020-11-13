@@ -1,0 +1,11 @@
+[import](common.lg)
+
+# SendActivity_Welcome
+- ${WelcomeUser()}
+
+# SendActivity_xkiYnF()
+- Echo: ${turn.activity.text}
+# SendActivity_P5ISO4()
+- Ending conversation from the skill...
+# SendActivity_rKkWVg()
+- Say "end" or "stop" and I'll end the conversation and back to the parent.

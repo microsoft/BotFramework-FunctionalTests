@@ -9,7 +9,7 @@ using Autofac;
 using Microsoft.Bot.Connector;
 using System.Reflection;
 
-namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot
+namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBotv3
 {
     public class WebApiApplication : System.Web.HttpApplication
     {

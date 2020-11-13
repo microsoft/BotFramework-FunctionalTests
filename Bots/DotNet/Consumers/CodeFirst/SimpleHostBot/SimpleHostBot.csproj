@@ -3,7 +3,6 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <LangVersion>latest</LangVersion>
-    <UserSecretsId>6310bd04-2272-4a74-82fa-6791f5c7e115</UserSecretsId>
     <AssemblyName>Microsoft.BotFrameworkFunctionalTests.SimpleHostBot</AssemblyName>
     <RootNamespace>Microsoft.BotFrameworkFunctionalTests.SimpleHostBot</RootNamespace>
     <ApplicationIcon />
@@ -21,6 +20,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="appsettings.Development.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

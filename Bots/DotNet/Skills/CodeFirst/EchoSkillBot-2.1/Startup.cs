@@ -8,20 +8,27 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.BotFramework;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Connector.Authentication;
-using Microsoft.BotFrameworkFunctionalTests.EchoSkillBot.Authentication;
-using Microsoft.BotFrameworkFunctionalTests.EchoSkillBot.Bots;
-using Microsoft.BotFrameworkFunctionalTests.EchoSkillBot.OAuth;
+using Microsoft.BotFrameworkFunctionalTests.EchoSkillBot21.Authentication;
+using Microsoft.BotFrameworkFunctionalTests.EchoSkillBot21.Bots;
+using Microsoft.BotFrameworkFunctionalTests.EchoSkillBot21.OAuth;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot
+namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot21
 {
     public class Startup
     {
+        public Startup(IConfiguration config)
+        {
+            Configuration = config;
+        }
+
+        public IConfiguration Configuration { get; }
+
         /// <summary>
         /// This method gets called by the runtime. Use this method to add services to the container.
         /// </summary>
-        /// <param name="services"></param>
+        /// <param name="services">Method to add services to the container.</param>
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
@@ -41,6 +48,12 @@ namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot
 
             // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
             services.AddTransient<IBot, EchoBot>();
+
+            if (!string.IsNullOrEmpty(Configuration["ChannelService"]))
+            {
+                // Register a ConfigurationChannelProvider -- this is only for Azure Gov.
+                services.AddSingleton<IChannelProvider, ConfigurationChannelProvider>();
+            }
         }
 
         /// <summary>

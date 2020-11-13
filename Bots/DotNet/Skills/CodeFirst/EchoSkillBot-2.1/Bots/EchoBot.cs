@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
-using Microsoft.BotFrameworkFunctionalTests.EchoSkillBot.OAuth;
+using Microsoft.BotFrameworkFunctionalTests.EchoSkillBot21.OAuth;
 
-namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot.Bots
+namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot21.Bots
 {
     public class EchoBot : ActivityHandler
     {
