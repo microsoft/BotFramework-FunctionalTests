@@ -30,6 +30,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EchoSkillBot", "Skills\CodeFirst\EchoSkillBot\EchoSkillBot.csproj", "{692F26DD-F7BA-49F3-AC6D-73047C1E5D61}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Composer", "Composer", "{33FA275E-9E5D-4582-BFF7-24B2C5DB2962}"
+	ProjectSection(SolutionItems) = preProject
+		Consumers\Composer\Directory.Build.props = Consumers\Composer\Directory.Build.props
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Composer", "Composer", "{33E2281F-C6A7-40EC-961A-FF9FF254FDDC}"
 EndProject
@@ -47,6 +50,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "runtime", "runtime", "{88BD
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "settings", "settings", "{F5187871-1120-4D76-B3B6-53D2F93E3071}"
 	ProjectSection(SolutionItems) = preProject
+		Consumers\Composer\SimpleComposerHostBot\settings\appsettings.Development.json = Consumers\Composer\SimpleComposerHostBot\settings\appsettings.Development.json
 		Consumers\Composer\SimpleComposerHostBot\settings\appsettings.json = Consumers\Composer\SimpleComposerHostBot\settings\appsettings.json
 	EndProjectSection
 EndProject
@@ -56,6 +60,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "settings", "settings", "{95
 	ProjectSection(SolutionItems) = preProject
 		Skills\Composer\EchoComposerSkillBot\settings\appsettings.json = Skills\Composer\EchoComposerSkillBot\settings\appsettings.json
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.BotFramework.Composer.Core", "Consumers\Composer\SimpleComposerHostBot\runtime\core\Microsoft.BotFramework.Composer.Core.csproj", "{0A52815F-A057-43B2-8EDC-6885423298CF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.BotFramework.Composer.CustomAction", "Consumers\Composer\SimpleComposerHostBot\runtime\customaction\Microsoft.BotFramework.Composer.CustomAction.csproj", "{3675E7C0-A0F1-478D-A374-5AF2A8A2F18F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.BotFramework.Composer.WebApp", "Consumers\Composer\SimpleComposerHostBot\runtime\azurewebapp\Microsoft.BotFramework.Composer.WebApp.csproj", "{47C03D82-D4CA-4BDD-AD14-40E236746816}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WaterfallHostBot", "Consumers\CodeFirst\WaterfallHostBot\WaterfallHostBot.csproj", "{0417349A-FC6B-4320-822E-6769A63FFF35}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -115,6 +127,22 @@ Global
 		{AE84648F-7558-43A4-8EF2-9F2B3167FD51}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AE84648F-7558-43A4-8EF2-9F2B3167FD51}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AE84648F-7558-43A4-8EF2-9F2B3167FD51}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A52815F-A057-43B2-8EDC-6885423298CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A52815F-A057-43B2-8EDC-6885423298CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A52815F-A057-43B2-8EDC-6885423298CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A52815F-A057-43B2-8EDC-6885423298CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3675E7C0-A0F1-478D-A374-5AF2A8A2F18F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3675E7C0-A0F1-478D-A374-5AF2A8A2F18F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3675E7C0-A0F1-478D-A374-5AF2A8A2F18F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3675E7C0-A0F1-478D-A374-5AF2A8A2F18F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47C03D82-D4CA-4BDD-AD14-40E236746816}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47C03D82-D4CA-4BDD-AD14-40E236746816}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47C03D82-D4CA-4BDD-AD14-40E236746816}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47C03D82-D4CA-4BDD-AD14-40E236746816}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0417349A-FC6B-4320-822E-6769A63FFF35}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0417349A-FC6B-4320-822E-6769A63FFF35}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0417349A-FC6B-4320-822E-6769A63FFF35}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0417349A-FC6B-4320-822E-6769A63FFF35}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -142,6 +170,10 @@ Global
 		{F5187871-1120-4D76-B3B6-53D2F93E3071} = {23CD821E-D287-4B8A-8174-15C081B566DA}
 		{9FF1FC77-3EBE-4001-864B-59DC0BF5ADDE} = {33E2281F-C6A7-40EC-961A-FF9FF254FDDC}
 		{95708A0E-37E4-4EC0-B381-DC2C440F1A1D} = {9FF1FC77-3EBE-4001-864B-59DC0BF5ADDE}
+		{0A52815F-A057-43B2-8EDC-6885423298CF} = {88BD7115-D9EA-4D85-80EF-94594F944231}
+		{3675E7C0-A0F1-478D-A374-5AF2A8A2F18F} = {88BD7115-D9EA-4D85-80EF-94594F944231}
+		{47C03D82-D4CA-4BDD-AD14-40E236746816} = {88BD7115-D9EA-4D85-80EF-94594F944231}
+		{0417349A-FC6B-4320-822E-6769A63FFF35} = {C7A60083-78C8-4CEF-A358-4E53CBF0D12A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2B77A921-EEA6-4006-ABD2-159C92F9F874}
