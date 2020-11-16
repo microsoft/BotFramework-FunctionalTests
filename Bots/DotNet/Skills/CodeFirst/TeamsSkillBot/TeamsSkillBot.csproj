@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AdaptiveCards" Version="1.2.4" />
+    <PackageReference Include="AdaptiveCards" Version="2.2.0" />
     <PackageReference Include="Microsoft.Bot.Builder.Dialogs" Version="4.11.0" />
     <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="4.11.0" />
   </ItemGroup>
