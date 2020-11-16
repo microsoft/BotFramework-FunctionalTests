@@ -13,6 +13,7 @@ using Microsoft.Bot.Builder.AI.Luis;
 using Microsoft.Bot.Builder.AI.QnA;
 using Microsoft.Bot.Builder.ApplicationInsights;
 using Microsoft.Bot.Builder.Azure;
+using Microsoft.Bot.Builder.Azure.Blobs;
 using Microsoft.Bot.Builder.BotFramework;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Adaptive;
@@ -28,6 +29,7 @@ using Microsoft.BotFramework.Composer.Core;
 using Microsoft.BotFramework.Composer.Core.Settings;
 
 //using Microsoft.BotFramework.Composer.CustomAction;
+using Microsoft.BotFramework.Composer.WebAppTemplates.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -49,7 +51,7 @@ namespace Microsoft.BotFramework.Composer.WebAppTemplates
         {
             if (ConfigSectionValid(settings?.BlobStorage?.ConnectionString) && ConfigSectionValid(settings?.BlobStorage?.Container))
             {
-                adapter.Use(new TranscriptLoggerMiddleware(new AzureBlobTranscriptStore(settings?.BlobStorage?.ConnectionString, settings?.BlobStorage?.Container)));
+                adapter.Use(new TranscriptLoggerMiddleware(new BlobsTranscriptStore(settings?.BlobStorage?.ConnectionString, settings?.BlobStorage?.Container)));
             }
         }
 
@@ -84,9 +86,14 @@ namespace Microsoft.BotFramework.Composer.WebAppTemplates
             return storage;
         }
 
+        public bool IsSkill(BotSettings settings)
+        {
+            return settings?.SkillConfiguration?.IsSkill == true;
+        }
+
         public BotFrameworkHttpAdapter GetBotAdapter(IStorage storage, BotSettings settings, UserState userState, ConversationState conversationState, IServiceProvider s, TelemetryInitializerMiddleware telemetryInitializerMiddleware)
         {
-            var adapter = new BotFrameworkHttpAdapter(new ConfigurationCredentialProvider(this.Configuration));
+            var adapter = IsSkill(settings) ? new BotFrameworkHttpAdapter(new ConfigurationCredentialProvider(this.Configuration), s.GetService<AuthenticationConfiguration>()) : new BotFrameworkHttpAdapter(new ConfigurationCredentialProvider(this.Configuration));
 
             adapter
               .UseStorage(storage)
@@ -123,8 +130,8 @@ namespace Microsoft.BotFramework.Composer.WebAppTemplates
             services.AddSingleton<ICredentialProvider, ConfigurationCredentialProvider>();
             services.AddSingleton<BotAdapter>(sp => (BotFrameworkHttpAdapter)sp.GetService<IBotFrameworkHttpAdapter>());
 
-            // Register AuthConfiguration to enable custom claim validation.
-            services.AddSingleton<AuthenticationConfiguration>();
+            // Register AuthConfiguration to enable custom claim validation for skills.
+            services.AddSingleton(sp => new AuthenticationConfiguration { ClaimsValidator = new AllowedCallersClaimsValidator(settings.SkillConfiguration) });
 
             // register components.
             ComponentRegistration.Add(new DialogsComponentRegistration());
@@ -201,6 +208,7 @@ namespace Microsoft.BotFramework.Composer.WebAppTemplates
         {
             app.UseDefaultFiles();
             app.UseStaticFiles();
+            app.UseNamedPipes(System.Environment.GetEnvironmentVariable("APPSETTING_WEBSITE_SITE_NAME") + ".directline");
             app.UseWebSockets();
             app.UseRouting()
                .UseEndpoints(endpoints =>

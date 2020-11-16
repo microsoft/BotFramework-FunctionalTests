@@ -68,8 +68,8 @@
           "id": "https://ggechoskillbot.azurewebsites.net/manifest/echoskillbot-manifest-1.0.json",
           "activity": "${BeginSkill_Activity_yU7oAp()}",
           "resultProperty": "dialog.result",
-          "skillEndpoint": "https://ggechoskillbot.azurewebsites.net/api/messages",
-          "skillAppId": "0be01cfa-478e-4ec2-b2cc-9a4ec02f101b"
+          "skillEndpoint": "=settings.skill['Echo Skill bot'].endpointUrl",
+          "skillAppId": "=settings.skill['Echo Skill bot'].msAppId"
         }
       ]
     }
