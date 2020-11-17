@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
-    <UserSecretsId>1f12a0b7-f7cf-42ae-8401-aa3a61822722</UserSecretsId>
+    <UserSecretsId>b1d2969d-3b28-4766-945f-e59e0571deb5</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
     <None Include="ComposerDialogs\**">

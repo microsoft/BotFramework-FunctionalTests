@@ -12,17 +12,15 @@
       "commandName": "IISExpress",
       "launchBrowser": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "skill__EchoSkillBot__msAppId": "",
-        "skill__EchoSkillBot__endpointUrl": "http://localhost:39800/api/messages"
-      },
-      "BotProject": {
-        "commandName": "Project",
-        "launchBrowser": true,
-        "applicationUrl": "http://localhost:3979",
-        "environmentVariables": {
-          "ASPNETCORE_ENVIRONMENT": "Development"
-        }
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "BotProject": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "applicationUrl": "http://localhost:3979",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
       }
     }
   }
