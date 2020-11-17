@@ -58,18 +58,16 @@
         {
           "$kind": "Microsoft.BeginSkill",
           "$designer": {
-            "id": "yU7oAp"
+            "id": "NKX4SL"
           },
-          "activityProcessed": false,
+          "activityProcessed": true,
           "botId": "=settings.MicrosoftAppId",
           "skillHostEndpoint": "=settings.skillHostEndpoint",
           "connectionName": "=settings.connectionName",
           "allowInterruptions": true,
-          "id": "https://ggechoskillbot.azurewebsites.net/manifest/echoskillbot-manifest-1.0.json",
-          "activity": "${BeginSkill_Activity_yU7oAp()}",
-          "resultProperty": "dialog.result",
-          "skillEndpoint": "=settings.skill['Echo Skill bot'].endpointUrl",
-          "skillAppId": "=settings.skill['Echo Skill bot'].msAppId"
+          "skillEndpoint": "=settings.skill['EchoSkillBot'].endpointUrl",
+          "skillAppId": "=settings.skill['EchoSkillBot'].msAppId",
+          "resultProperty": "dialog.result"
         }
       ]
     }

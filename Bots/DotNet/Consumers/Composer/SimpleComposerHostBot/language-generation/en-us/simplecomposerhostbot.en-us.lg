@@ -7,7 +7,4 @@
 - Me no nothin'. Say "skill" and I'll patch you through
 
 # SendActivity_mb8ZXL()
-- Got it, connecting you to the skill...
-# BeginSkill_Activity_yU7oAp()
-- ${turn.activity.text}
-
+- Got it, connecting you to the skill at ${settings.skill['EchoSkillBot'].endpointUrl}...
