@@ -37,6 +37,6 @@ namespace TranscriptTestRunner
         /// </summary>
         /// <param name="signInUrl">The sign in Url.</param>
         /// <returns>A task that represents the work queued to execute.</returns>
-        public abstract Task SignInAsync(string signInUrl);
+        public abstract Task<bool> SignInAsync(string signInUrl);
     }
 }
