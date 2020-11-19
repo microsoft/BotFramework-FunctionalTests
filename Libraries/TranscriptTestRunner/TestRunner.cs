@@ -3,6 +3,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -185,6 +186,31 @@ namespace TranscriptTestRunner
         {
             foreach (var assertion in expectedActivity.Assertions)
             {
+                if (assertion.Contains("{{"))
+                {
+                    var date = string.Empty;
+                    var botMessage = actualActivity.Text.Split(' ');
+
+                    foreach (var word in botMessage)
+                    {
+                        if (DateTime.TryParse(word, out _))
+                        {
+                            date = word;
+                        }
+                    }
+
+                    var expected = assertion.Split(new string[] { "{{" }, 2, StringSplitOptions.None);
+                    var expected1 = expected[1].Split(new string[] { "}}" }, 2, StringSplitOptions.None);
+                    var expectedValue = expected1[0].Trim();
+
+                    var resultExpression = EvaluateDate(date);
+
+                    if (resultExpression != expectedValue)
+                    {
+                        throw new Exception($"Assertion failed: {assertion}.");
+                    }
+                }
+
                 var (result, error) = Expression.Parse(assertion).TryEvaluate<bool>(actualActivity);
 
                 if (!result)
@@ -199,6 +225,27 @@ namespace TranscriptTestRunner
             }
 
             return Task.CompletedTask;
+        }
+
+        private static string EvaluateDate(string date)
+        {
+            var currentDate = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss.fffZ", CultureInfo.InvariantCulture);
+            var expression = $"dateReadBack('{currentDate}', '{date}')";
+            var parsed = Expression.Parse(expression);
+
+            if (parsed == null)
+            {
+                throw new Exception("Null parsed expression");
+            }
+
+            var (result, msg) = parsed.TryEvaluate(string.Empty);
+
+            if (msg != null)
+            {
+                throw new Exception("An error has occurred while evaluating the date");
+            }
+
+            return result.ToString();
         }
 
         private void ConvertTranscript(string transcriptPath)
