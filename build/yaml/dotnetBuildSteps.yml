@@ -14,10 +14,8 @@ steps:
     version: 3.1.x
   condition: ne(variables['SkipNetCore'], 'true')
 
-- task: NuGetToolInstaller@0
-  displayName: 'Use NuGet 4.9.1'
-  inputs:
-    versionSpec: 4.9.1
+- task: NuGetToolInstaller@1
+  displayName: 'Use NuGet '
 
 - task: NuGetCommand@2
   displayName: 'NuGet restore'
