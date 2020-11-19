@@ -13,10 +13,8 @@ steps:
 
 - template: validateRegistryAndBBVersionSteps.yml
 
-- task: NuGetToolInstaller@0
-  displayName: 'Use NuGet 4.9.1'
-  inputs:
-    versionSpec: 4.9.1
+- task: NuGetToolInstaller@1
+  displayName: 'Use NuGet '
 
 - powershell: |
    Write-Host "BBVersion: "$(BBVersion)
