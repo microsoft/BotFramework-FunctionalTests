@@ -188,14 +188,21 @@ namespace TranscriptTestRunner
             {
                 if (assertion.Contains("{{"))
                 {
-                    var date = string.Empty;
+                    var date = new DateTime();
+                    var stringDate = string.Empty;
                     var botMessage = actualActivity.Text.Split(' ');
 
                     foreach (var word in botMessage)
                     {
-                        if (DateTime.TryParse(word, out _))
+                        //if (DateTime.TryParse(word, out _))
+                        //{
+                        //    date = word;
+                        //}
+                        if (DateTime.TryParse(word, out var d1))
                         {
-                            date = word;
+                            stringDate = word;
+                            date = d1;
+                            break;
                         }
                     }
 
@@ -209,6 +216,10 @@ namespace TranscriptTestRunner
                     {
                         throw new Exception($"Assertion failed: {assertion}.");
                     }
+
+                    //assertion = assertion.Replace($"{{{{{expectedValue}}}}}",
+                    //    date.ToString(CultureInfo.InvariantCulture));
+                    actualActivity.Text = actualActivity.Text.Replace(stringDate, $"{{{{{expectedValue}}}}}");
                 }
 
                 var (result, error) = Expression.Parse(assertion).TryEvaluate<bool>(actualActivity);
@@ -227,10 +238,11 @@ namespace TranscriptTestRunner
             return Task.CompletedTask;
         }
 
-        private static string EvaluateDate(string date)
+        private static string EvaluateDate(DateTime date)
         {
             var currentDate = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss.fffZ", CultureInfo.InvariantCulture);
-            var expression = $"dateReadBack('{currentDate}', '{date}')";
+            var inputDate = date.ToString("yyyy-MM-ddTHH:mm:ss.fffZ", CultureInfo.InvariantCulture);
+            var expression = $"dateReadBack('{currentDate}', '{inputDate}')";
             var parsed = Expression.Parse(expression);
 
             if (parsed == null)

@@ -54,8 +54,8 @@ namespace SkillFunctionalTests
         [Fact]
         public async Task DialogSkillShouldConnect()
         {
-            var runner = new XUnitTestRunner(new TestClientFactory(ClientType.DirectLine).GetTestClient(), _logger);
-            await runner.RunTestAsync(Path.Combine(_transcriptsFolder, "HostReceivesEndOfConversation.transcript"));
+            var runner = new TestRunner(new TestClientFactory(ClientType.DirectLine).GetTestClient(), _logger);
+            await runner.RunTestAsync(Path.Combine(_testScriptsFolder, "DialogSkill.json"));
         }
 
         [Fact]
