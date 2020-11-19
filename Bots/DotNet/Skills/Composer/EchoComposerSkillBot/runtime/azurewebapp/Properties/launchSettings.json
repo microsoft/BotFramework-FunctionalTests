@@ -3,22 +3,22 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:3979/",
+      "applicationUrl": "http://localhost:35410/",
       "sslPort": 0
     }
   },
   "profiles": {
     "IIS Express": {
       "commandName": "IISExpress",
-      "launchBrowser": true,
+      "launchBrowser": false,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "BotProject": {
+    "EchoComposerSkillBotDotNet": {
       "commandName": "Project",
-      "launchBrowser": true,
-      "applicationUrl": "http://localhost:3979",
+      "launchBrowser": false,
+      "applicationUrl": "http://localhost:35410",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

@@ -4,7 +4,7 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:59581",
+      "applicationUrl": "http://localhost:35020",
       "sslPort": 0
     }
   },
@@ -17,11 +17,11 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "WaterfallHostBot": {
+    "WaterfallHostBotDotNet": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "weatherforecast",
-      "applicationUrl": "http://localhost:5000",
+      "applicationUrl": "http://localhost:35020",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
