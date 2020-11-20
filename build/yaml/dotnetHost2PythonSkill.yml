@@ -8,7 +8,6 @@ trigger: none
 pr: none
 
 variables:
-  BotGroup: '$(BotName)-RG'
   BuildConfiguration: 'Debug'
   BuildPlatform: 'any cpu'
   runCodesignValidationInjection: false
@@ -88,6 +87,7 @@ stages:
     - job: Deploy_Skill
       variables:
         BotName: $(DotNetPySkillBotName)
+        BotGroup: '$(BotName)-RG'
         DeployAppId: $(DotNetPySkillAppId)
         DeployAppSecret: $(DotNetPySkillAppSecret)
         Registry: $[variables.RegistryUrlSkill]

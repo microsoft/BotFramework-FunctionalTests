@@ -8,7 +8,6 @@ trigger: none
 pr: none
 
 variables:
-  BotGroup: '$(BotName)-RG'
   BuildConfiguration: 'Debug'
   BuildPlatform: 'any cpu'
   runCodesignValidationInjection: false
@@ -54,6 +53,7 @@ stages:
         SkillBotName: $(PyJsSkillBotName)
         SkillAppId: $(PyJsSkillAppId)
         BotName: $(PyJsHostBotName)
+        BotGroup: '$(BotName)-RG'
         DeployAppId: $(PyJsHostAppId)
         DeployAppSecret: $(PyJsHostAppSecret)
         Registry: $[variables.RegistryUrlHost]
@@ -67,6 +67,7 @@ stages:
     - job: Deploy_Skill
       variables:
         BotName: $(PyJsSkillBotName)
+        BotGroup: '$(BotName)-RG'
         DeployAppId: $(PyJsSkillAppId)
         DeployAppSecret: $(PyJsSkillAppSecret)
         Registry: $[variables.RegistryUrlSkill]
