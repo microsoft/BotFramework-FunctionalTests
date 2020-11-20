@@ -41,7 +41,6 @@ stages:
         HostBotName: $(DotNetDotNetHostBotName)
         SkillBotName: $(DotNetDotNetSkillBotName)
       steps:
-      - checkout: none  # Don't sync sources
       - template: cleanResourcesStep.yml
 
 - stage: Build
@@ -71,7 +70,6 @@ stages:
         - template: dotnetValidateNetCoreSdkVersion.yml
 
     - job: Build_Skill_Bot
-      dependsOn: Validate_Skill_NetCore_Version
       variables:
         Registry: $[variables.RegistryUrlSkill]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]

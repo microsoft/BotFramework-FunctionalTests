@@ -1,4 +1,5 @@
 steps:
+- checkout: none  # Don't sync sources
 - task: AzureCLI@2
   displayName: 'Cleanup Step'
   inputs:
@@ -6,19 +7,19 @@ steps:
     scriptType: ps
     scriptLocation: inlineScript
     inlineScript: |
-     Write-Host "Looking for previously existing resources."
+     Write-Host "Looking for previously existing resources.";
      $resourcesFound = 'false';
      if ((az group exists -n "$(HostBotName)-RG") -eq 'true')
      {
-         Write-Host "Deleting previously existing Resource Group $(HostBotName)-RG."
-         az group delete -n "$(HostBotName)-RG" --yes --no-wait
+         Write-Host "Deleting previously existing Resource Group $(HostBotName)-RG.";
+         az group delete -n "$(HostBotName)-RG" --yes --no-wait;
          $resourcesFound = 'true';
      }
 
      if ((az group exists -n "$(SkillBotName)-RG") -eq 'true')
      {
-         Write-Host "Deleting previously existing Resource Group $(SkillBotName)-RG."
-         az group delete -n "$(SkillBotName)-RG" --yes --no-wait
+         Write-Host "Deleting previously existing Resource Group $(SkillBotName)-RG.";
+         az group delete -n "$(SkillBotName)-RG" --yes --no-wait;
          $resourcesFound = 'true';
      }
 

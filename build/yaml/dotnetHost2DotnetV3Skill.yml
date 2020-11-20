@@ -40,7 +40,6 @@ stages:
         HostBotName: $(DotNetDotNetV3HostBotName)
         SkillBotName: $(DotNetDotNetV3SkillBotName)
       steps:
-      - checkout: none  # Don't sync sources
       - template: cleanResourcesStep.yml
 
 - stage: Build
