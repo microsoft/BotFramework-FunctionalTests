@@ -12,6 +12,7 @@ variables:
   BuildConfiguration: 'Debug'
   BuildPlatform: 'any cpu'
   runCodesignValidationInjection: false
+  skipComponentGovernanceDetection: true
   # AzureDeploymentPassword: define in Azure
   # AzureDeploymentUser: define in Azure
   # AzureSubscription: define in Azure
@@ -43,8 +44,8 @@ stages:
       - template: cleanResourcesStep.yml
 
 - stage: Deploy
-  dependsOn: Prepare  
-  condition: succeededOrFailed()
+  dependsOn:
+  - Prepare
   jobs:
     - job: Deploy_Host
       variables:
@@ -66,7 +67,6 @@ stages:
       #- template: pythonDeployStepsNewRG.yml
 
     - job: Deploy_Skill
-      #dependsOn: Deploy_Host
       variables:
         BotName: $(PyPySkillBotName)
         DeployAppId: $(PyPySkillAppId)
@@ -115,11 +115,12 @@ stages:
   jobs:
     - job: Delete_RG
       steps:
+      - checkout: none  # Don't sync sources
       - task: AzureCLI@1
         displayName: 'Delete Resource Group'
         inputs:
           azureSubscription: $(AzureSubscription)
           scriptLocation: inlineScript
           inlineScript: |
-           call az group delete -n "$(PyPyHostBotName)-RG" --yes
-           call az group delete -n "$(PyPySkillBotName)-RG" --yes
+           call az group delete -n "$(PyPyHostBotName)-RG" --yes --no-wait
+           call az group delete -n "$(PyPySkillBotName)-RG" --yes --no-wait

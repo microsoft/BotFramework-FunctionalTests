@@ -12,6 +12,7 @@ variables:
   BuildConfiguration: 'Debug'
   BuildPlatform: 'any cpu'
   runCodesignValidationInjection: false
+  skipComponentGovernanceDetection: true
   # AzureDeploymentPassword: define in Azure
   # AzureDeploymentUser: define in Azure
   # AzureSubscription: define in Azure
@@ -25,7 +26,7 @@ variables:
   # PyJsV3SkillAppSecret: define in Azure
   # PyJsV3SkillBotName: define in Azure
   # RegistryUrlHost: (optional) define in Azure
-  # RegistryUrlSkill (Optional): define this in Azure
+  # RegistryUrlSkill: (optional) define in Azure
   # TestFilter: (optional) define in Azure. Example: '&TestCategory!=SkipForV3Bots'
 
 pool:
@@ -43,8 +44,8 @@ stages:
       - template: cleanResourcesStep.yml
 
 - stage: Deploy
-  dependsOn: Prepare  
-  condition: succeededOrFailed()
+  dependsOn:
+  - Prepare
   jobs:
     - job: Deploy_Host
       variables:
@@ -95,12 +96,12 @@ stages:
   jobs:
     - job: Delete_RG
       steps:
+      - checkout: none  # Don't sync sources
       - task: AzureCLI@1
         displayName: 'Delete Resource Group'
         inputs:
           azureSubscription: $(AzureSubscription)
           scriptLocation: inlineScript
           inlineScript: |
-           call az group delete -n "$(PyJsV3HostBotName)-RG" --yes
-           call az group delete -n "$(PyJsV3SkillBotName)-RG" --yes
-        condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
+           call az group delete -n "$(PyJsV3HostBotName)-RG" --yes --no-wait
+           call az group delete -n "$(PyJsV3SkillBotName)-RG" --yes --no-wait

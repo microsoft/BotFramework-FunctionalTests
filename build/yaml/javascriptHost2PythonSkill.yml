@@ -12,6 +12,7 @@ variables:
   BuildConfiguration: 'Debug'
   BuildPlatform: 'any cpu'
   runCodesignValidationInjection: false
+  skipComponentGovernanceDetection: true
   # AzureDeploymentPassword: define in Azure
   # AzureDeploymentUser: define in Azure
   # AzureSubscription: define in Azure
@@ -25,7 +26,7 @@ variables:
   # JsPySkillAppSecret: define in Azure
   # JsPySkillBotName: define in Azure
   # RegistryUrlSkill: (optional) define in Azure
-  # RegistryUrlHost (Optional): define this in Azure
+  # RegistryUrlHost: (optional) define in Azure
   # TestFilter: (optional) define in Azure. Example: '&TestCategory!=SkipForV3Bots'
 
 pool:
@@ -108,12 +109,12 @@ stages:
   jobs:
     - job: Delete_RG
       steps:
+      - checkout: none  # Don't sync sources
       - task: AzureCLI@1
         displayName: 'Delete Resource Group'
         inputs:
           azureSubscription: $(AzureSubscription)
           scriptLocation: inlineScript
           inlineScript: |
-           call az group delete -n "$(JsPyHostBotName)-RG" --yes
-           call az group delete -n "$(JsPySkillBotName)-RG" --yes
-        condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
+           call az group delete -n "$(JsPyHostBotName)-RG" --yes --no-wait
+           call az group delete -n "$(JsPySkillBotName)-RG" --yes --no-wait

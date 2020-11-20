@@ -24,8 +24,8 @@ variables:
   # DotNetDotNetV3SkillAppSecret: define in Azure
   # DotNetDotNetV3SkillBotName: define in Azure
   # NetCoreSdkVersionHost: define in Azure
-  # RegistryUrlHost (Optional): define this in Azure
-  # RegistryUrlSkill (Optional): define this in Azure
+  # RegistryUrlHost: (optional) define in Azure
+  # RegistryUrlSkill: (optional) define in Azure
   # TestFilter: (optional) define in Azure. Example: '&TestCategory!=SkipForV3Bots'
 
 pool:
@@ -123,7 +123,7 @@ stages:
   dependsOn:
   - Deploy
   - Test
-  condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
+  condition: and(or(succeeded('Build'), failed('Prepare')), ne(variables['DeleteResourceGroup'], 'false'))
   jobs:
     - job: Delete_RG
       steps:

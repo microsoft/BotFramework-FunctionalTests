@@ -12,6 +12,7 @@ variables:
   BuildConfiguration: 'Debug'
   BuildPlatform: 'any cpu'
   runCodesignValidationInjection: false
+  skipComponentGovernanceDetection: true
   # AzureSubscription: define in Azure
   # BotBuilderPackageVersionHost: (optional) define in Azure
   # BotBuilderPackageVersionSkill: (optional) define in Azure
@@ -23,8 +24,8 @@ variables:
   # DotNetJsV3SkillAppSecret: define in Azure
   # DotNetJsV3SkillBotName: define in Azure
   # NetCoreSdkVersionHost: define in Azure
-  # RegistryUrlSkill (Optional): define this in Azure
-  # RegistryUrlHost (Optional): define this in Azure  
+  # RegistryUrlSkill: (optional) define in Azure
+  # RegistryUrlHost: (optional) define in Azure  
   # TestFilter: (optional) define in Azure. Example: '&TestCategory!=SkipForV3Bots'
 
 pool:
@@ -51,7 +52,6 @@ stages:
       - template: dotnetValidateNetCoreSdkVersion.yml
 
     - job: Build_Host_Bot
-      dependsOn: Validate_Host_NetCore_Version
       variables:
         Registry: $[variables.RegistryUrlHost]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
@@ -113,16 +113,16 @@ stages:
   dependsOn:
   - Deploy
   - Test
-  condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
+  condition: and(or(succeeded('Build'), failed('Prepare')), ne(variables['DeleteResourceGroup'], 'false'))
   jobs:
     - job: Delete_RG
       steps:
+      - checkout: none  # Don't sync sources
       - task: AzureCLI@1
         displayName: 'Delete Resource Group'
         inputs:
           azureSubscription: $(AzureSubscription)
           scriptLocation: inlineScript
           inlineScript: |
-           call az group delete -n "$(DotNetJsV3HostBotName)-RG" --yes
-           call az group delete -n "$(DotNetJsV3SkillBotName)-RG" --yes
-        condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
+           call az group delete -n "$(DotNetJsV3HostBotName)-RG" --yes --no-wait
+           call az group delete -n "$(DotNetJsV3SkillBotName)-RG" --yes --no-wait
