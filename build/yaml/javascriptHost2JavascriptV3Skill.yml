@@ -44,6 +44,7 @@ stages:
 - stage: Deploy
   dependsOn:
   - Prepare
+  condition: in(dependencies.Prepare.result, 'Succeeded', 'Skipped')
   jobs:
     - job: Deploy_Host
       variables:
