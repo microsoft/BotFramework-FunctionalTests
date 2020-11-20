@@ -12,6 +12,7 @@ variables:
   BuildConfiguration: 'Debug'
   BuildPlatform: 'any cpu'
   runCodesignValidationInjection: false
+  skipComponentGovernanceDetection: true
   # AzureSubscription: define in Azure
   # BotBuilderPackageVersionHost: (optional) define in Azure
   # BotBuilderPackageVersionSkill: (optional) define in Azure
@@ -39,6 +40,7 @@ stages:
         HostBotName: $(DotNetDotNetV3HostBotName)
         SkillBotName: $(DotNetDotNetV3SkillBotName)
       steps:
+      - checkout: none  # Don't sync sources
       - template: cleanResourcesStep.yml
 
 - stage: Build
@@ -51,7 +53,6 @@ stages:
       - template: dotnetValidateNetCoreSdkVersion.yml
 
     - job: Build_Host_Bot
-      dependsOn: Validate_Host_NetCore_Version
       variables:
         Registry: $[variables.RegistryUrlHost]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
@@ -127,11 +128,12 @@ stages:
   jobs:
     - job: Delete_RG
       steps:
+      - checkout: none  # Don't sync sources
       - task: AzureCLI@1
         displayName: 'Delete Resource Group'
         inputs:
           azureSubscription: $(AzureSubscription)
           scriptLocation: inlineScript
           inlineScript: |
-           call az group delete -n "$(DotNetDotNetV3HostBotName)-RG" --yes
-           call az group delete -n "$(DotNetDotNetV3SkillBotName)-RG" --yes
+           call az group delete -n "$(DotNetDotNetV3HostBotName)-RG" --yes --no-wait
+           call az group delete -n "$(DotNetDotNetV3SkillBotName)-RG" --yes --no-wait
