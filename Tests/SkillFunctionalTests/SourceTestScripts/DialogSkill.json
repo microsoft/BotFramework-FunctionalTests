@@ -111,12 +111,12 @@
   {
     "type": "message",
     "role": "bot",
-    "text": "Please confirm, I have you traveling to: Spain from: Italy on: 2020-11-20 Is this correct?",
+    "text": "Please confirm, I have you traveling to: Spain from: Italy on: 2020-11-20. Is this correct?",
     "assertions": [
       "type == 'message'",
       "from.role == 'bot'",
       "recipient.role == 'user'",
-      "text == 'Please confirm, I have you traveling to: Spain from: Italy on: {{tomorrow}} Is this correct?'",
+      "text == 'Please confirm, I have you traveling to: Spain from: Italy on: {{tomorrow}}. Is this correct?'",
       "inputHint == 'expectingInput'",
       "suggestedActions.actions[0].type == 'imBack'",
       "suggestedActions.actions[0].title == 'Yes'",
@@ -139,7 +139,7 @@
       "type == 'message'",
       "from.role == 'bot'",
       "recipient.role == 'user'",
-      "text == 'Received endOfConversation.\n\nCode: completedSuccessfully\n\nValue: {\"destination\":\"Spain\",\"origin\":\"Italy\",\"travelDate\":\"2020-11-20\"}'",
+      "text == 'Received endOfConversation.\n\nCode: completedSuccessfully\n\nValue: {\"destination\":\"Spain\",\"origin\":\"Italy\",\"travelDate\":\"{{tomorrow}}\"}'",
       "inputHint == 'acceptingInput'"
     ]
   },

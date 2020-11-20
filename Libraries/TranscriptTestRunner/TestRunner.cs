@@ -7,6 +7,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using AdaptiveExpressions;
@@ -184,42 +185,15 @@ namespace TranscriptTestRunner
         /// <returns>A task that represents the work queued to execute.</returns>
         protected virtual Task AssertActivityAsync(TestScriptItem expectedActivity, Activity actualActivity, CancellationToken cancellationToken = default)
         {
+            var templateRegex = new Regex(@"\{\{[\w\s]*\}\}");
+
             foreach (var assertion in expectedActivity.Assertions)
             {
-                if (assertion.Contains("{{"))
+                var template = templateRegex.Match(assertion);
+
+                if (template.Success)
                 {
-                    var date = new DateTime();
-                    var stringDate = string.Empty;
-                    var botMessage = actualActivity.Text.Split(' ');
-
-                    foreach (var word in botMessage)
-                    {
-                        //if (DateTime.TryParse(word, out _))
-                        //{
-                        //    date = word;
-                        //}
-                        if (DateTime.TryParse(word, out var d1))
-                        {
-                            stringDate = word;
-                            date = d1;
-                            break;
-                        }
-                    }
-
-                    var expected = assertion.Split(new string[] { "{{" }, 2, StringSplitOptions.None);
-                    var expected1 = expected[1].Split(new string[] { "}}" }, 2, StringSplitOptions.None);
-                    var expectedValue = expected1[0].Trim();
-
-                    var resultExpression = EvaluateDate(date);
-
-                    if (resultExpression != expectedValue)
-                    {
-                        throw new Exception($"Assertion failed: {assertion}.");
-                    }
-
-                    //assertion = assertion.Replace($"{{{{{expectedValue}}}}}",
-                    //    date.ToString(CultureInfo.InvariantCulture));
-                    actualActivity.Text = actualActivity.Text.Replace(stringDate, $"{{{{{expectedValue}}}}}");
+                    ValidateVariable(template.Value, actualActivity);
                 }
 
                 var (result, error) = Expression.Parse(assertion).TryEvaluate<bool>(actualActivity);
@@ -236,6 +210,36 @@ namespace TranscriptTestRunner
             }
 
             return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Validates the variable date in the bots message with the value between double curly braces.
+        /// </summary>
+        /// <param name="value">The assertion containing the variable.</param>
+        /// <param name="actualActivity">The activity with the message containing the date.</param>
+        protected void ValidateVariable(string value, Activity actualActivity)
+        {
+            var dateRegex = new Regex(@"\d{4}-\d{2}-\d{2}");
+            var wordRegex = new Regex(@"[\w]+");
+
+            var dateMatch = dateRegex.Match(actualActivity.Text);
+            var resultExpression = string.Empty;
+            var expectedExpression = wordRegex.Match(value).Value;
+            var dateValue = string.Empty;
+            
+            if (dateMatch.Success)
+            {
+                dateValue = dateMatch.Value;
+                var date = Convert.ToDateTime(dateMatch.Value, CultureInfo.InvariantCulture);
+                resultExpression = EvaluateDate(date);
+            }
+
+            if (resultExpression != expectedExpression)
+            {
+                throw new Exception($"Assertion failed. The variable '{expectedExpression}' does not match with the value {dateValue}.");
+            }
+
+            actualActivity.Text = actualActivity.Text.Replace(dateMatch.Value, value);
         }
 
         private static string EvaluateDate(DateTime date)
