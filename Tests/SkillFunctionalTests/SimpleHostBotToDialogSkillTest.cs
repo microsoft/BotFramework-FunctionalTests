@@ -39,7 +39,7 @@ namespace SkillFunctionalTests
             _logger = loggerFactory.CreateLogger<SimpleHostBotToEchoSkillTest>();
         }
 
-        [Fact]
+        [Fact(Skip = "Skipped until DialogSkillBot is supported.")]
         public async Task DialogSkillShouldConnect()
         {
             var runner = new XUnitTestRunner(new TestClientFactory(ClientType.DirectLine).GetTestClient(), _logger);

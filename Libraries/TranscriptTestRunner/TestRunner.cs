@@ -219,7 +219,7 @@ namespace TranscriptTestRunner
         /// <param name="actualActivity">The activity with the message containing the date.</param>
         protected void ValidateVariable(string value, Activity actualActivity)
         {
-            var dateRegex = new Regex(@"\d{4}-\d{2}-\d{2}");
+            var dateRegex = new Regex(@"(\d{1,4}([.\-/])\d{1,2}([.\-/])\d{1,4})");
             var wordRegex = new Regex(@"[\w]+");
 
             var dateMatch = dateRegex.Match(actualActivity.Text);
