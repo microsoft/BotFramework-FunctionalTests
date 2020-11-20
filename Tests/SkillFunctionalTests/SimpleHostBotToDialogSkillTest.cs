@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using TranscriptTestRunner;
+using TranscriptTestRunner.XUnit;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -41,7 +42,7 @@ namespace SkillFunctionalTests
         [Fact]
         public async Task DialogSkillShouldConnect()
         {
-            var runner = new TestRunner(new TestClientFactory(ClientType.DirectLine).GetTestClient(), _logger);
+            var runner = new XUnitTestRunner(new TestClientFactory(ClientType.DirectLine).GetTestClient(), _logger);
             await runner.RunTestAsync(Path.Combine(_testScriptsFolder, "DialogSkill.json"));
         }
     }
