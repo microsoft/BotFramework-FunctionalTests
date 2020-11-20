@@ -12,7 +12,7 @@ steps:
      if ((az group exists -n "$(HostBotName)-RG") -eq 'true')
      {
          Write-Host "Deleting previously existing Resource Group $(HostBotName)-RG.";
-         # We don't use the --no-wait parameter here because when Deploy is the very next stage, the delete would collide.
+         # We don't use the --no-wait parameter here because when Deploy is the very next stage, this delete could collide.
          az group delete -n "$(HostBotName)-RG" --yes;
          $resourcesFound = 'true';
      }
