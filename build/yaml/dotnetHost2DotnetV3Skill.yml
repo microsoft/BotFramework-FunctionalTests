@@ -108,6 +108,7 @@ stages:
 
 - stage: Test
   dependsOn: Deploy
+  condition: succeeded()
   jobs:
     - job: Run_Functional_Test
       variables:
