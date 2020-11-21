@@ -78,6 +78,7 @@ stages:
     - job: Deploy_Skill
       variables:
         BotName: $(JsDotNetV3SkillBotName)
+        BotGroup: '$(BotName)-RG'
         DeployAppId: $(JsDotNetV3SkillAppId)
         DeployAppSecret: $(JsDotNetV3SkillAppSecret)
         Registry: $[variables.RegistryUrlSkill]
