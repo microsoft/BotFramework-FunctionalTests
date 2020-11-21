@@ -74,6 +74,7 @@ stages:
         SkillBotName: $(DotNetPySkillBotName)
         SkillAppId: $(DotNetPySkillAppId)
         BotName: $(DotNetPyHostBotName)
+        BotGroup: '$(BotName)-RG'
         DeployAppId: $(DotNetPyHostAppId)
         DeployAppSecret: $(DotNetPyHostAppSecret)
         Registry: $[variables.RegistryUrlHost]

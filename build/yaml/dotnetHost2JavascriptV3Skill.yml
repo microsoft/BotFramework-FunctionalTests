@@ -73,6 +73,7 @@ stages:
         SkillBotName: $(DotNetJsV3SkillBotName)
         SkillAppId: $(DotNetJsV3SkillAppId)
         BotName: $(DotNetJsV3HostBotName)
+        BotGroup: '$(BotName)-RG'
         DeployAppId: $(DotNetJsV3HostAppId)
         DeployAppSecret: $(DotNetJsV3HostAppSecret)
         Registry: $[variables.RegistryUrlHost]

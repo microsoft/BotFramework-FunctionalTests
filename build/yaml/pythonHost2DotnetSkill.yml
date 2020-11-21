@@ -89,6 +89,7 @@ stages:
     - job: Deploy_Skill
       variables:
         BotName: $(PyDotNetSkillBotName)
+        BotGroup: '$(BotName)-RG'
         DeployAppId: $(PyDotNetSkillAppId)
         DeployAppSecret: $(PyDotNetSkillAppSecret)
         Registry: $[variables.RegistryUrlSkill]

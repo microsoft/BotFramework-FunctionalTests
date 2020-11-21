@@ -8,7 +8,6 @@ trigger: none
 pr: none
 
 variables:
-  BotGroup: '$(BotName)-RG'
   BuildConfiguration: 'Debug'
   BuildPlatform: 'any cpu'
   runCodesignValidationInjection: false
@@ -83,6 +82,7 @@ stages:
         SkillBotName: $(DotNetDotNetV3SkillBotName)
         SkillAppId: $(DotNetDotNetV3SkillAppId)
         BotName: $(DotNetDotNetV3HostBotName)
+        BotGroup: '$(BotName)-RG'
         DeployAppId: $(DotNetDotNetV3HostAppId)
         DeployAppSecret: $(DotNetDotNetV3HostAppSecret)
         Registry: $[variables.RegistryUrlHost]
