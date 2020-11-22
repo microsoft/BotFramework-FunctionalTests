@@ -5,9 +5,6 @@
     <LangVersion>latest</LangVersion>
     <AssemblyName>Microsoft.BotFrameworkFunctionalTests.SimpleHostBot</AssemblyName>
     <RootNamespace>Microsoft.BotFrameworkFunctionalTests.SimpleHostBot</RootNamespace>
-    <ApplicationIcon />
-    <OutputType>Exe</OutputType>
-    <StartupObject />
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
