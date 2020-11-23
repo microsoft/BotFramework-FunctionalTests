@@ -57,6 +57,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "settings", "settings", "{95
 		Skills\Composer\EchoComposerSkillBot\settings\appsettings.json = Skills\Composer\EchoComposerSkillBot\settings\appsettings.json
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TeamsSsoSkillBot", "Skills\CodeFirst\TeamsSsoSkillBot\TeamsSsoSkillBot.csproj", "{148CA3AB-48D0-48F8-A4B7-A3D614132D31}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SsoTeamsHostBot", "Consumers\CodeFirst\SsoTeamsHostBot\SsoTeamsHostBot.csproj", "{A2336381-D247-4DD4-B17E-F8B26CA1141C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -115,6 +119,14 @@ Global
 		{AE84648F-7558-43A4-8EF2-9F2B3167FD51}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AE84648F-7558-43A4-8EF2-9F2B3167FD51}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AE84648F-7558-43A4-8EF2-9F2B3167FD51}.Release|Any CPU.Build.0 = Release|Any CPU
+		{148CA3AB-48D0-48F8-A4B7-A3D614132D31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{148CA3AB-48D0-48F8-A4B7-A3D614132D31}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{148CA3AB-48D0-48F8-A4B7-A3D614132D31}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{148CA3AB-48D0-48F8-A4B7-A3D614132D31}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2336381-D247-4DD4-B17E-F8B26CA1141C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2336381-D247-4DD4-B17E-F8B26CA1141C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2336381-D247-4DD4-B17E-F8B26CA1141C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2336381-D247-4DD4-B17E-F8B26CA1141C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -142,6 +154,8 @@ Global
 		{F5187871-1120-4D76-B3B6-53D2F93E3071} = {23CD821E-D287-4B8A-8174-15C081B566DA}
 		{9FF1FC77-3EBE-4001-864B-59DC0BF5ADDE} = {33E2281F-C6A7-40EC-961A-FF9FF254FDDC}
 		{95708A0E-37E4-4EC0-B381-DC2C440F1A1D} = {9FF1FC77-3EBE-4001-864B-59DC0BF5ADDE}
+		{148CA3AB-48D0-48F8-A4B7-A3D614132D31} = {6EF38D8C-7953-4D54-BA31-FFF055B7B217}
+		{A2336381-D247-4DD4-B17E-F8B26CA1141C} = {C7A60083-78C8-4CEF-A358-4E53CBF0D12A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2B77A921-EEA6-4006-ABD2-159C92F9F874}
