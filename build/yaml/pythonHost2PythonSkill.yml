@@ -8,10 +8,10 @@ trigger: none
 pr: none
 
 variables:
-  BotGroup: '$(BotName)-RG'
   BuildConfiguration: 'Debug'
   BuildPlatform: 'any cpu'
   runCodesignValidationInjection: false
+  skipComponentGovernanceDetection: true
   # AzureDeploymentPassword: define in Azure
   # AzureDeploymentUser: define in Azure
   # AzureSubscription: define in Azure
@@ -43,8 +43,9 @@ stages:
       - template: cleanResourcesStep.yml
 
 - stage: Deploy
-  dependsOn: Prepare  
-  condition: succeededOrFailed()
+  dependsOn:
+  - Prepare
+  condition: in(dependencies.Prepare.result, 'Succeeded', 'Skipped')
   jobs:
     - job: Deploy_Host
       variables:
@@ -52,6 +53,7 @@ stages:
         SkillBotName: $(PyPySkillBotName)
         SkillAppId: $(PyPySkillAppId)
         BotName: $(PyPyHostBotName)
+        BotGroup: '$(BotName)-RG'
         DeployAppId: $(PyPyHostAppId)
         DeployAppSecret: $(PyPyHostAppSecret)
         Registry: $[variables.RegistryUrlHost]
@@ -66,9 +68,9 @@ stages:
       #- template: pythonDeployStepsNewRG.yml
 
     - job: Deploy_Skill
-      #dependsOn: Deploy_Host
       variables:
         BotName: $(PyPySkillBotName)
+        BotGroup: '$(BotName)-RG'
         DeployAppId: $(PyPySkillAppId)
         DeployAppSecret: $(PyPySkillAppSecret)
         Registry: $[variables.RegistryUrlSkill]
@@ -96,6 +98,7 @@ stages:
 
 - stage: Test
   dependsOn: Deploy
+  condition: succeeded('Deploy')
   jobs:
     - job: Run_Functional_Test
       variables:
@@ -115,11 +118,12 @@ stages:
   jobs:
     - job: Delete_RG
       steps:
+      - checkout: none  # Don't sync sources
       - task: AzureCLI@1
         displayName: 'Delete Resource Group'
         inputs:
           azureSubscription: $(AzureSubscription)
           scriptLocation: inlineScript
           inlineScript: |
-           call az group delete -n "$(PyPyHostBotName)-RG" --yes
-           call az group delete -n "$(PyPySkillBotName)-RG" --yes
+           call az group delete -n "$(PyPyHostBotName)-RG" --yes --no-wait
+           call az group delete -n "$(PyPySkillBotName)-RG" --yes --no-wait

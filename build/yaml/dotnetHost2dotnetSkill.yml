@@ -8,10 +8,10 @@ trigger: none
 pr: none
 
 variables:
-  BotGroup: '$(BotName)-RG'
   BuildConfiguration: 'Debug'
   BuildPlatform: 'any cpu'
   runCodesignValidationInjection: false
+  skipComponentGovernanceDetection: true
   # AzureSubscription: define in Azure
   # BotBuilderPackageVersionHost: (optional) define in Azure
   # BotBuilderPackageVersionSkill: (optional) define in Azure
@@ -24,8 +24,8 @@ variables:
   # DotNetDotNetSkillBotName: define in Azure
   # NetCoreSdkVersionHost: define in Azure
   # NetCoreSdkVersionSkill: define in Azure
-  # RegistryUrlHost (Optional): define this in Azure
-  # RegistryUrlSkill (Optional): define this in Azure
+  # RegistryUrlHost: (optional) define in Azure
+  # RegistryUrlSkill: (optional) define in Azure
   # TestFilter: (optional) define in Azure. Example: '&TestCategory!=SkipForV3Bots'
 
 pool:
@@ -52,7 +52,6 @@ stages:
       - template: dotnetValidateNetCoreSdkVersion.yml
 
     - job: Build_Host_Bot
-      dependsOn: Validate_Host_NetCore_Version
       variables:
         Registry: $[variables.RegistryUrlHost]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
@@ -70,7 +69,6 @@ stages:
         - template: dotnetValidateNetCoreSdkVersion.yml
 
     - job: Build_Skill_Bot
-      dependsOn: Validate_Skill_NetCore_Version
       variables:
         Registry: $[variables.RegistryUrlSkill]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
@@ -93,6 +91,7 @@ stages:
         SkillBotName: $(DotNetDotNetSkillBotName)
         SkillAppId: $(DotNetDotNetSkillAppId)
         BotName: $(DotNetDotNetHostBotName)
+        BotGroup: '$(BotName)-RG'
         DeployAppId: $(DotNetDotNetHostAppId)
         DeployAppSecret: $(DotNetDotNetHostAppSecret)
         Registry: $[variables.RegistryUrlHost]
@@ -106,6 +105,7 @@ stages:
     - job: Deploy_Skill
       variables:
         BotName: $(DotNetDotNetSkillBotName)
+        BotGroup: '$(BotName)-RG'
         DeployAppId: $(DotNetDotNetSkillAppId)
         DeployAppSecret: $(DotNetDotNetSkillAppSecret)
         Registry: $[variables.RegistryUrlSkill]
@@ -130,6 +130,7 @@ stages:
 
 - stage: Test
   dependsOn: Deploy
+  condition: succeeded('Deploy')
   jobs:
     - job: Run_Functional_Test
       variables:
@@ -145,16 +146,16 @@ stages:
   dependsOn:
   - Deploy
   - Test
-  condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
+  condition: and(or(succeeded('Build'), failed('Prepare')), ne(variables['DeleteResourceGroup'], 'false'))
   jobs:
     - job: Delete_RG
       steps:
+      - checkout: none  # Don't sync sources
       - task: AzureCLI@1
         displayName: 'Delete Resource Group'
         inputs:
           azureSubscription: $(AzureSubscription)
           scriptLocation: inlineScript
           inlineScript: |
-           call az group delete -n "$(DotNetDotNetHostBotName)-RG" --yes
-           call az group delete -n "$(DotNetDotNetSkillBotName)-RG" --yes
-        condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
+           call az group delete -n "$(DotNetDotNetHostBotName)-RG" --yes --no-wait
+           call az group delete -n "$(DotNetDotNetSkillBotName)-RG" --yes --no-wait
