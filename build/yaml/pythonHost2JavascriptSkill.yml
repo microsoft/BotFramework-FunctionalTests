@@ -119,5 +119,5 @@ stages:
           azureSubscription: $(AzureSubscription)
           scriptLocation: inlineScript
           inlineScript: |
-           call az group delete -n "$(JsJsHostBotName)-RG" --yes --no-wait
-           call az group delete -n "$(JsJsSkillBotName)-RG" --yes --no-wait
+           call az group delete -n "$(PyJsHostBotName)-RG" --yes --no-wait
+           call az group delete -n "$(PyJsSkillBotName)-RG" --yes --no-wait
