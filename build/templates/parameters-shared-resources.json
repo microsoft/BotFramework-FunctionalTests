@@ -1,0 +1,39 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "newAppServicePlanName": {
+            "value": "bffnbotsappservicewin"
+        },
+        "newAppServicePlanSku": {
+            "value": {
+                "name": "S1",
+                "tier": "Standard",
+                "size": "S1",
+                "family": "S",
+                "capacity": 1
+            }
+        },
+        "appServicePlanLocation": {
+            "value": "eastus"
+        },
+        "existingAppServicePlan": {
+            "value": ""
+        },
+        "existingAppServicePlanResourceGroup": {
+            "value": ""
+        },
+        "appInsightsName": {
+            "value": "bffnappinsights"
+        },
+        "keyVaultName": {
+            "value": "bffntestskeyvault"
+        },
+        "secretName": {
+            "value": "secret-test"
+        },
+        "secretValue": {
+            "value": "secret-value"
+        }
+    }
+  }
