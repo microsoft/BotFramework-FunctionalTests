@@ -29,3 +29,11 @@ stages:
           scriptType: ps
           scriptLocation: inlineScript
           inlineScript: 'az deployment group create --name bffnDeployment-"$(Build.BuildId)" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-shared-resources.json --parameters build/templates/parameters-shared-resources.json --parameters objectId="$(KeyVaultObjectId)"'
+
+      - task: AzureCLI@2
+        displayName: 'Create CosmosDB Resources'
+        inputs:
+          azureSubscription: $(AzureSubscription)
+          scriptType: ps
+          scriptLocation: inlineScript
+          inlineScript: 'az deployment group create --name bffnDeployment-"$(Build.BuildId)" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-cosmosdb-resources.json --parameters accountName="$(CosmosDBAccountName)" databaseName="$(CosmosDBDatabaseName)" isZoneRedundant="false"'
