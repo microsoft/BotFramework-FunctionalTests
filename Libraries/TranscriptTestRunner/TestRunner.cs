@@ -37,7 +37,7 @@ namespace TranscriptTestRunner
         public TestRunner(TestClientBase client, ILogger logger = null)
         {
             _testClient = client;
-            _replyTimeout = 45000;
+            _replyTimeout = 100000;
             _logger = logger ?? NullLogger.Instance;
         }
 
