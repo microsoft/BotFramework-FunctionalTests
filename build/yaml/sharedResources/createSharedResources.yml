@@ -22,10 +22,10 @@ stages:
   displayName: Create CosmosDB
   dependsOn: [] # Makes this run in parallel
   jobs:
-    - job: Provisioning
+    - job: Deploy 'bffnbotstatedb'
       steps:
       - task: AzureCLI@2
-        displayName: 'Create CosmosDB Resources'
+        displayName: 'Create CosmosDB'
         inputs:
           azureSubscription: $(AzureSubscription)
           scriptType: ps
@@ -36,10 +36,10 @@ stages:
   displayName: Create Key Vault
   dependsOn: [] # Makes this run in parallel
   jobs:
-    - job: Provisioning
+    - job: Deploy 'bffnbotkeyvault'
       steps:
       - task: AzureCLI@2
-        displayName: 'Create Resources'
+        displayName: 'Create Key Vault'
         inputs:
           azureSubscription: $(AzureSubscription)
           scriptType: ps
@@ -50,10 +50,10 @@ stages:
   displayName: Create Windows Service Plan
   dependsOn: [] # Makes this run in parallel
   jobs:
-    - job: Provisioning
+    - job: Deploy 'bffnbotsappservicewin'
       steps:
       - task: AzureCLI@2
-        displayName: 'Create Resources'
+        displayName: 'Create Windows Service Plan'
         inputs:
           azureSubscription: $(AzureSubscription)
           scriptType: ps
@@ -64,10 +64,10 @@ stages:
   displayName: Create Linux Service Plan
   dependsOn: [] # Makes this run in parallel
   jobs:
-    - job: Provisioning
+    - job: Deploy 'bffnbotsappservicelinux'
       steps:
       - task: AzureCLI@2
-        displayName: 'Create Resources'
+        displayName: 'Create Linux Service Plan'
         inputs:
           azureSubscription: $(AzureSubscription)
           scriptType: ps
@@ -78,10 +78,10 @@ stages:
   displayName: Create App Insights
   dependsOn: Create_Service_Plan_windows
   jobs:
-    - job: Provisioning
+    - job: Deploy 'bffnappinsights'
       steps:
       - task: AzureCLI@2
-        displayName: 'Create Resources'
+        displayName: 'Create App Insights'
         inputs:
           azureSubscription: $(AzureSubscription)
           scriptType: ps
