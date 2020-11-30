@@ -30,7 +30,7 @@ stages:
           azureSubscription: $(AzureSubscription)
           scriptType: ps
           scriptLocation: inlineScript
-          inlineScript: 'az deployment group create --name bffnDeployment-"$(Build.BuildId)" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-cosmosdb-resources.json --parameters accountName="bffnbotstatedb" databaseName="bffnbotstatedb"'
+          inlineScript: 'az deployment group create --name "bffnDeployment" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-cosmosdb-resources.json --parameters accountName="bffnbotstatedb" databaseName="bffnbotstatedb"'
 
 - stage: Create_Key_Vault
   displayName: Create Key Vault
@@ -44,10 +44,11 @@ stages:
           azureSubscription: $(AzureSubscription)
           scriptType: ps
           scriptLocation: inlineScript
-          inlineScript: 'az deployment group create --name bffnDeployment-"$(Build.BuildId)" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-key-vault-resources.json --parameters keyVaultName="bffntestskeyvault" objectId="$(KeyVaultObjectId)"'
+          inlineScript: 'az deployment group create --name "bffnDeployment" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-key-vault-resources.json --parameters keyVaultName="bffntestskeyvault" objectId="$(KeyVaultObjectId)"'
 
 - stage: Create_Service_Plan_Windows
   displayName: Create Service Plan Windows
+  dependsOn: [] # Makes this run in parallel
   jobs:
     - job: Provisioning
       steps:
@@ -61,6 +62,7 @@ stages:
 
 - stage: Create_Service_Plan_Linux
   displayName: Create Service Plan Linux
+  dependsOn: [] # Makes this run in parallel
   jobs:
     - job: Provisioning
       steps:
@@ -84,4 +86,4 @@ stages:
           azureSubscription: $(AzureSubscription)
           scriptType: ps
           scriptLocation: inlineScript
-          inlineScript: 'az deployment group create --name bffnDeployment-"$(Build.BuildId)" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-app-insights-resources.json --parameters appInsightsName="bffnappinsights" appInsightsApplicationId="bffnbotsappservicewin"'
+          inlineScript: 'az deployment group create --name "bffnDeployment" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-app-insights-resources.json --parameters appInsightsName="bffnappinsights" appInsightsApplicationId="bffnbotsappservicewin"'
