@@ -24,6 +24,7 @@
         },
         "appServicePlanLocation": {
             "type": "string",
+            "defaultValue": "westus",
             "metadata": {
                 "description": "The location of the App Service Plan."
             }
