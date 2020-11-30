@@ -44,7 +44,7 @@ stages:
           azureSubscription: $(AzureSubscription)
           scriptType: ps
           scriptLocation: inlineScript
-          inlineScript: 'az deployment group create --name "bffnDeployment" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-key-vault-resources.json --parameters keyVaultName="bffntestskeyvault" objectId="$(KeyVaultObjectId)"'
+          inlineScript: 'az deployment group create --name "bffnDeployment" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-key-vault-resources.json --parameters keyVaultName="bffnbotkeyvault" objectId="$(KeyVaultObjectId)"'
 
 - stage: Create_Service_Plan_windows
   displayName: Create Windows Service Plan
