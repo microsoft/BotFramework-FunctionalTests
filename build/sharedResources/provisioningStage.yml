@@ -57,7 +57,7 @@ stages:
           azureSubscription: $(AzureSubscription)
           scriptType: ps
           scriptLocation: inlineScript
-          inlineScript: 'az deployment group create --name bffnDeployment-"$(Build.BuildId)" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-service-plan-windows-resources.json --parameters TODO'
+          inlineScript: 'az deployment group create --name "bffnDeployment" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-service-plan-windows-resources.json --parameters  newAppServicePlanName="bffnbotsappservicewin" build/templates/parameters-service-plan-windows-resources.json'
 
 - stage: Create_Service_Plan_Linux
   displayName: Create Service Plan Linux
@@ -70,7 +70,7 @@ stages:
           azureSubscription: $(AzureSubscription)
           scriptType: ps
           scriptLocation: inlineScript
-          inlineScript: 'az deployment group create --name bffnDeployment-"$(Build.BuildId)" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-service-plan-linux-resources.json --parameters TODO'
+          inlineScript: 'az deployment group create --name "bffnDeployment" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-service-plan-linux-resources.json --parameters newAppServicePlanName="bffnbotsappservicelinux" build/templates/parameters-service-plan-linux-resources.json'
 
 - stage: Create_App_Insights
   displayName: Create App Insights
