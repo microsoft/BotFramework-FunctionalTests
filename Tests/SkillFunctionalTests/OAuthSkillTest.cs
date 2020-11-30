@@ -49,8 +49,8 @@ namespace SkillFunctionalTests
         [Fact]
         public async Task ShouldSignIn()
         {
-            var tries = 3;
-            for (int index = 0; index < tries; index++)
+            const int tries = 3;
+            for (var index = 0; index < tries; index++)
             {
                 try
                 {
@@ -78,16 +78,13 @@ namespace SkillFunctionalTests
                     // Execute the rest of the conversation.
                     await runner.RunTestAsync(Path.Combine(_transcriptsFolder, "ShouldSignIn2.transcript"));
                 }
-                catch (TimeoutException timeoutException)
+                catch (TimeoutException)
                 {
                     if (index + 1 == tries)
                     {
-                        throw timeoutException;
+                        throw;
                     }
-                    else
-                    {
-                        _logger.LogInformation($"======== Timeout exception on try number {index + 1}, starting retry... ========");
-                    }
+                    _logger.LogInformation($"======== Timeout exception on try number {index + 1}, starting retry... ========");
                 }
             }
         }
