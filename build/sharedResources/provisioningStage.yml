@@ -46,8 +46,8 @@ stages:
           scriptLocation: inlineScript
           inlineScript: 'az deployment group create --name "bffnDeployment" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-key-vault-resources.json --parameters keyVaultName="bffntestskeyvault" objectId="$(KeyVaultObjectId)"'
 
-- stage: Create_Service_Plan_Windows
-  displayName: Create Service Plan Windows
+- stage: Create_Service_Plan_windows
+  displayName: Create Windows Service Plan
   dependsOn: [] # Makes this run in parallel
   jobs:
     - job: Provisioning
@@ -58,10 +58,10 @@ stages:
           azureSubscription: $(AzureSubscription)
           scriptType: ps
           scriptLocation: inlineScript
-          inlineScript: 'az deployment group create --name "bffnDeployment" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-service-plan-windows-resources.json --parameters  newAppServicePlanName="bffnbotsappservicewin" build/templates/parameters-service-plan-windows-resources.json'
+          inlineScript: 'az deployment group create --name "bffnDeployment" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-service-plan-windows-resources.json --parameters  newAppServicePlanName="bffnbotsappservicewin"'
 
 - stage: Create_Service_Plan_Linux
-  displayName: Create Service Plan Linux
+  displayName: Create Linux Service Plan
   dependsOn: [] # Makes this run in parallel
   jobs:
     - job: Provisioning
@@ -72,11 +72,11 @@ stages:
           azureSubscription: $(AzureSubscription)
           scriptType: ps
           scriptLocation: inlineScript
-          inlineScript: 'az deployment group create --name "bffnDeployment" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-service-plan-linux-resources.json --parameters newAppServicePlanName="bffnbotsappservicelinux" build/templates/parameters-service-plan-linux-resources.json'
+          inlineScript: 'az deployment group create --name "bffnDeployment" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-service-plan-linux-resources.json --parameters newAppServicePlanName="bffnbotsappservicelinux"'
 
 - stage: Create_App_Insights
   displayName: Create App Insights
-  dependsOn: Create_Service_Plan_Windows
+  dependsOn: Create_Service_Plan_windows
   jobs:
     - job: Provisioning
       steps:
