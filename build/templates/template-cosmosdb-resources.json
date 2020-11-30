@@ -28,14 +28,14 @@
             "kind": "GlobalDocumentDB",
             "type": "Microsoft.DocumentDb/databaseAccounts",
             "name": "[parameters('accountName')]",
-            "location": "westus",
+            "location": "eastus",
             "properties": {
                 "databaseAccountOfferType": "Standard",
                 "locations": [
                     {
-                        "id": "[concat(variables('accountName'), '-westus')]",
+                        "id": "[concat(variables('accountName'), '-eastus')]",
                         "failoverPriority": 0,
-                        "locationName": "West US"
+                        "locationName": "East US"
                     }
                 ],
                 "backupPolicy": {
