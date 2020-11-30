@@ -30,7 +30,7 @@ stages:
           azureSubscription: $(AzureSubscription)
           scriptType: ps
           scriptLocation: inlineScript
-          inlineScript: 'az deployment group create --name "bffnDeployment" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-cosmosdb-resources.json --parameters accountName="bffnbotstatedb" databaseName="bffnbotstatedb"'
+          inlineScript: 'az deployment group create --name "bffnbotstatedb" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-cosmosdb-resources.json --parameters accountName="bffnbotstatedb" databaseName="bffnbotstatedb"'
 
 - stage: Create_Key_Vault
   displayName: Create Key Vault
@@ -44,7 +44,7 @@ stages:
           azureSubscription: $(AzureSubscription)
           scriptType: ps
           scriptLocation: inlineScript
-          inlineScript: 'az deployment group create --name "bffnDeployment" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-key-vault-resources.json --parameters keyVaultName="bffnbotkeyvault" objectId="$(KeyVaultObjectId)"'
+          inlineScript: 'az deployment group create --name "bffnbotkeyvault" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-key-vault-resources.json --parameters keyVaultName="bffnbotkeyvault" objectId="$(KeyVaultObjectId)"'
 
 - stage: Create_Service_Plan_windows
   displayName: Create Windows Service Plan
@@ -58,7 +58,7 @@ stages:
           azureSubscription: $(AzureSubscription)
           scriptType: ps
           scriptLocation: inlineScript
-          inlineScript: 'az deployment group create --name "bffnDeployment" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-service-plan-windows-resources.json --parameters  newAppServicePlanName="bffnbotsappservicewin"'
+          inlineScript: 'az deployment group create --name "bffnbotsappservicewin" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-service-plan-windows-resources.json --parameters  newAppServicePlanName="bffnbotsappservicewin"'
 
 - stage: Create_Service_Plan_Linux
   displayName: Create Linux Service Plan
@@ -72,7 +72,7 @@ stages:
           azureSubscription: $(AzureSubscription)
           scriptType: ps
           scriptLocation: inlineScript
-          inlineScript: 'az deployment group create --name "bffnDeployment" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-service-plan-linux-resources.json --parameters newAppServicePlanName="bffnbotsappservicelinux"'
+          inlineScript: 'az deployment group create --name "bffnbotsappservicelinux" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-service-plan-linux-resources.json --parameters newAppServicePlanName="bffnbotsappservicelinux"'
 
 - stage: Create_App_Insights
   displayName: Create App Insights
@@ -86,4 +86,4 @@ stages:
           azureSubscription: $(AzureSubscription)
           scriptType: ps
           scriptLocation: inlineScript
-          inlineScript: 'az deployment group create --name "bffnDeployment" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-app-insights-resources.json --parameters appInsightsName="bffnappinsights" appInsightsApplicationId="bffnbotsappservicewin"'
+          inlineScript: 'az deployment group create --name "bffnappinsights" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-app-insights-resources.json --parameters appInsightsName="bffnappinsights" appInsightsApplicationId="bffnbotsappservicewin"'
