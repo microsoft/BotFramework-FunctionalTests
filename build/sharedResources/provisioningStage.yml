@@ -1,0 +1,84 @@
+#
+# Creates the shared resources needed for the Skills Functional Tests.
+#
+
+# "name" here defines the build number format. Build number is accessed via $(Build.BuildNumber)
+name: $(Build.BuildId)
+trigger: none
+pr: none
+
+variables:
+  BuildConfiguration: 'Debug'
+  BuildPlatform: 'any cpu'
+  # AzureSubscription: define in Azure
+  # KeyVaultObjectId: define in Azure
+  # ResourceGroupName: define in Azure
+
+pool:
+  vmImage: 'windows-2019'
+
+stages:
+- stage: Create_Service_Plan_Windows
+  displayName: Create Service Plan Windows
+  jobs:
+    - job: Provisioning
+      steps:
+      - task: AzureCLI@2
+        displayName: 'Create Resources'
+        inputs:
+          azureSubscription: $(AzureSubscription)
+          scriptType: ps
+          scriptLocation: inlineScript
+          inlineScript: 'az deployment group create --name bffnDeployment-"$(Build.BuildId)" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-service-plan-windows-resources.json --parameters TODO'
+
+- stage: Create_Service_Plan_Linux
+  displayName: Create Service Plan Linux
+  jobs:
+    - job: Provisioning
+      steps:
+      - task: AzureCLI@2
+        displayName: 'Create Resources'
+        inputs:
+          azureSubscription: $(AzureSubscription)
+          scriptType: ps
+          scriptLocation: inlineScript
+          inlineScript: 'az deployment group create --name bffnDeployment-"$(Build.BuildId)" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-service-plan-linux-resources.json --parameters TODO'
+
+- stage: Create_Key_Vault
+  displayName: Create Key Vault
+  jobs:
+    - job: Provisioning
+      steps:
+      - task: AzureCLI@2
+        displayName: 'Create Resources'
+        inputs:
+          azureSubscription: $(AzureSubscription)
+          scriptType: ps
+          scriptLocation: inlineScript
+          inlineScript: 'az deployment group create --name bffnDeployment-"$(Build.BuildId)" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-key-vault-resources.json --parameters objectId="$(KeyVaultObjectId)"'
+
+- stage: Create_App_Insights
+  displayName: Create App Insights
+  jobs:
+    - job: Provisioning
+      steps:
+      - task: AzureCLI@2
+        displayName: 'Create Resources'
+        inputs:
+          azureSubscription: $(AzureSubscription)
+          scriptType: ps
+          scriptLocation: inlineScript
+          inlineScript: 'az deployment group create --name bffnDeployment-"$(Build.BuildId)" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-app-insights-resources.json --parameters TODO'
+
+- stage: Create_CosmosDB
+  displayName: Create CosmosDB
+  jobs:
+    - job: Provisioning
+      steps:
+      - task: AzureCLI@2
+        displayName: 'Create CosmosDB Resources'
+        inputs:
+          azureSubscription: $(AzureSubscription)
+          scriptType: ps
+          scriptLocation: inlineScript
+          inlineScript: 'az deployment group create --name bffnDeployment-"$(Build.BuildId)" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-cosmosdb-resources.json --parameters accountName="$(CosmosDBAccountName)" databaseName="$(CosmosDBDatabaseName)" isZoneRedundant="false"'
