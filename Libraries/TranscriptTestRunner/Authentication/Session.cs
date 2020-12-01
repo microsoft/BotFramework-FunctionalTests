@@ -3,18 +3,18 @@
 
 using Newtonsoft.Json;
 
-namespace TranscriptTestRunner.TestClients
+namespace TranscriptTestRunner.Authentication
 {
     /// <summary>
-    /// DirectLine session definition.
+    /// Session definition.
     /// </summary>
-    public class DirectLineSession
+    public class Session
     {
         /// <summary>
-        /// Gets or sets the DirectLine session ID.
+        /// Gets or sets the session ID.
         /// </summary>
         /// <value>
-        /// The DirectLine session ID.
+        /// The session ID.
         /// </value>
         [JsonProperty("sessionId")]
         public string SessionId { get; set; }

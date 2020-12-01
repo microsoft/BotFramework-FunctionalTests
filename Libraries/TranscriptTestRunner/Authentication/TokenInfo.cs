@@ -3,27 +3,27 @@
 
 using Newtonsoft.Json;
 
-namespace TranscriptTestRunner.TestClients
+namespace TranscriptTestRunner.Authentication
 {
     /// <summary>
-    /// DirectLine token definition.
+    /// Token definition.
     /// </summary>
-    public class DirectLineToken
+    public class TokenInfo
     {
         /// <summary>
-        /// Gets or sets the DirectLine token string.
+        /// Gets or sets the token string.
         /// </summary>
         /// <value>
-        /// The DirectLine token string.
+        /// The token string.
         /// </value>
         [JsonProperty("token")]
         public string Token { get; set; }
 
         /// <summary>
-        /// Gets or sets the DirectLine conversation ID.
+        /// Gets or sets the conversation ID.
         /// </summary>
         /// <value>
-        /// The DirectLine conversation ID.
+        /// The conversation ID.
         /// </value>
         [JsonProperty("conversationId")]
         public string ConversationId { get; set; }
