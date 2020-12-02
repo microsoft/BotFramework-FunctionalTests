@@ -3,26 +3,26 @@
 
 using System.Net;
 
-namespace TranscriptTestRunner.TestClients
+namespace TranscriptTestRunner.Authentication
 {
     /// <summary>
-    /// DirectLine session information definition.
+    /// Session information definition.
     /// </summary>
-    public class DirectLineSessionInfo
+    public class SessionInfo
     {
         /// <summary>
-        /// Gets or sets the DirectLine session ID.
+        /// Gets or sets the session ID.
         /// </summary>
         /// <value>
-        /// The DirectLine session ID.
+        /// The session ID.
         /// </value>
         public string SessionId { get; set; }
 
         /// <summary>
-        /// Gets or sets the DirectLine session cookie.
+        /// Gets or sets the session cookie.
         /// </summary>
         /// <value>
-        /// The DirectLine session cookie.
+        /// The session cookie.
         /// </value>
         public Cookie Cookie { get; set; }
     }

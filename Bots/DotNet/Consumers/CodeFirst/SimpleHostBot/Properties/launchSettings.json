@@ -4,7 +4,7 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:3978",
+      "applicationUrl": "http://localhost:35000",
       "sslPort": 0
     }
   },
@@ -16,10 +16,10 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "SimpleHostBot": {
+    "SimpleHostBotDotNet": {
       "commandName": "Project",
       "launchBrowser": true,
-      "applicationUrl": "http://localhost:3978",
+      "applicationUrl": "http://localhost:35000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

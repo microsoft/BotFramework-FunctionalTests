@@ -68,6 +68,8 @@ namespace TranscriptTestRunner
         /// <returns>A task that represents the work queued to execute.</returns>
         public async Task RunTestAsync(string transcriptPath, [CallerMemberName] string callerName = "", CancellationToken cancellationToken = default)
         {
+            var testFileName = $"{callerName} - {Path.GetFileNameWithoutExtension(transcriptPath)}";
+
             _logger.LogInformation($"======== Running script: {transcriptPath} ========");
 
             if (transcriptPath.EndsWith(".transcript", StringComparison.Ordinal))
@@ -79,7 +81,7 @@ namespace TranscriptTestRunner
                 _testScriptPath = transcriptPath;
             }
 
-            await ExecuteTestScriptAsync(callerName, cancellationToken).ConfigureAwait(false);
+            await ExecuteTestScriptAsync(testFileName, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -220,9 +222,9 @@ namespace TranscriptTestRunner
 
             using var reader = new StreamReader(_testScriptPath);
 
-            var testScript = JsonConvert.DeserializeObject<TestScriptItem[]>(await reader.ReadToEndAsync().ConfigureAwait(false));
+            var testScript = JsonConvert.DeserializeObject<TestScript>(await reader.ReadToEndAsync().ConfigureAwait(false));
 
-            foreach (var scriptActivity in testScript)
+            foreach (var scriptActivity in testScript.Items)
             {
                 switch (scriptActivity.Role)
                 {
