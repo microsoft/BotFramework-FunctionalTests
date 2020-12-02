@@ -8,7 +8,6 @@ trigger: none
 pr: none
 
 variables:
-  BotGroup: '$(BotName)-RG'
   BuildConfiguration: 'Debug'
   BuildPlatform: 'any cpu'
   runCodesignValidationInjection: false
@@ -26,7 +25,7 @@ variables:
   # DotNetPySkillBotName: define in Azure
   # NetCoreSdkVersionHost: define in Azure
   # RegistryUrlSkill: (optional) define in Azure
-  # RegistryUrlHost (Optional): define this in Azure
+  # RegistryUrlHost: (optional) define in Azure
   # TestFilter: (optional) define in Azure. Example: '&TestCategory!=SkipForV3Bots'
 
 pool:
@@ -53,7 +52,6 @@ stages:
       - template: dotnetValidateNetCoreSdkVersion.yml
 
     - job: Build_Host_Bot
-      dependsOn: Validate_Host_NetCore_Version
       variables:
         Registry: $[variables.RegistryUrlHost]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
@@ -76,6 +74,7 @@ stages:
         SkillBotName: $(DotNetPySkillBotName)
         SkillAppId: $(DotNetPySkillAppId)
         BotName: $(DotNetPyHostBotName)
+        BotGroup: '$(BotName)-RG'
         DeployAppId: $(DotNetPyHostAppId)
         DeployAppSecret: $(DotNetPyHostAppSecret)
         Registry: $[variables.RegistryUrlHost]
@@ -87,9 +86,9 @@ stages:
       - template: dotnetDeploySteps.yml
 
     - job: Deploy_Skill
-      #dependsOn: Deploy_Host
       variables:
         BotName: $(DotNetPySkillBotName)
+        BotGroup: '$(BotName)-RG'
         DeployAppId: $(DotNetPySkillAppId)
         DeployAppSecret: $(DotNetPySkillAppSecret)
         Registry: $[variables.RegistryUrlSkill]
@@ -117,6 +116,7 @@ stages:
 
 - stage: Test
   dependsOn: Deploy
+  condition: succeeded('Deploy')
   jobs:
     - job: Run_Functional_Test
       variables:
@@ -132,16 +132,16 @@ stages:
   dependsOn:
   - Deploy
   - Test
-  condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
+  condition: and(or(succeeded('Build'), failed('Prepare')), ne(variables['DeleteResourceGroup'], 'false'))
   jobs:
     - job: Delete_RG
       steps:
+      - checkout: none  # Don't sync sources
       - task: AzureCLI@1
         displayName: 'Delete Resource Group'
         inputs:
           azureSubscription: $(AzureSubscription)
           scriptLocation: inlineScript
           inlineScript: |
-           call az group delete -n "$(DotNetPyHostBotName)-RG" --yes
-           call az group delete -n "$(DotNetPySkillBotName)-RG" --yes
-        condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
+           call az group delete -n "$(DotNetPyHostBotName)-RG" --yes --no-wait
+           call az group delete -n "$(DotNetPySkillBotName)-RG" --yes --no-wait

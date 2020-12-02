@@ -3,8 +3,7 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Linq;
-using System.Net;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -15,6 +14,7 @@ using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Rest.TransientFaultHandling;
 using Newtonsoft.Json;
+using TranscriptTestRunner.Authentication;
 using Activity = Microsoft.Bot.Connector.DirectLine.Activity;
 using BotActivity = Microsoft.Bot.Schema.Activity;
 using BotChannelAccount = Microsoft.Bot.Schema.ChannelAccount;
@@ -30,14 +30,12 @@ namespace TranscriptTestRunner.TestClients
         // DL client sample: https://github.com/microsoft/BotFramework-DirectLine-DotNet/tree/main/samples/core-DirectLine/DirectLineClient
         private const string DirectLineSecretKey = "DIRECTLINE";
         private const string BotIdKey = "BOTID";
-        private const string OriginHeaderKey = "Origin";
-        private const string OriginHeaderValue = "https://botframework.test.com";
         private static string _botId;
         private readonly ConcurrentQueue<BotActivity> _activityQueue = new ConcurrentQueue<BotActivity>();
         private readonly DirectLineClient _dlClient;
+        private readonly KeyValuePair<string, string> _originHeader = new KeyValuePair<string, string>("Origin", "https://botframework.test.com");
+        private readonly TokenInfo _tokenInfo;
         private readonly string _user = $"TestUser-{Guid.NewGuid()}";
-        private readonly string _token;
-        private readonly string _conversationId;
         private bool _conversationStarted;
 
         // To detect redundant calls to dispose
@@ -76,7 +74,7 @@ namespace TranscriptTestRunner.TestClients
                 JsonConvert.SerializeObject(new
                 {
                     User = new { Id = _user },
-                    TrustedOrigins = new[] { OriginHeaderValue }
+                    TrustedOrigins = new[] { _originHeader.Value }
                 }), Encoding.UTF8,
                 "application/json");
 
@@ -85,16 +83,15 @@ namespace TranscriptTestRunner.TestClients
             {
                 // Extract token from response
                 var body = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-                _token = JsonConvert.DeserializeObject<DirectLineToken>(body).Token;
-                _conversationId = JsonConvert.DeserializeObject<DirectLineToken>(body).ConversationId;
+                _tokenInfo = JsonConvert.DeserializeObject<TokenInfo>(body);
 
                 // Create directLine client from token
-                _dlClient = new DirectLineClient(_token);
+                _dlClient = new DirectLineClient(_tokenInfo?.Token);
                 _dlClient.SetRetryPolicy(new RetryPolicy(new HttpStatusCodeErrorDetectionStrategy(), 0));
 
                 // From now on, we'll add an Origin header in directLine calls, with 
                 // the trusted origin we sent when acquiring the token as value.
-                _dlClient.HttpClient.DefaultRequestHeaders.Add(OriginHeaderKey, OriginHeaderValue);
+                _dlClient.HttpClient.DefaultRequestHeaders.Add(_originHeader.Key, _originHeader.Value);
             }
             else
             {
@@ -117,7 +114,7 @@ namespace TranscriptTestRunner.TestClients
                 Type = activity.Type
             };
 
-            await _dlClient.Conversations.PostActivityAsync(_conversationId, activityPost, cancellationToken).ConfigureAwait(false);
+            await _dlClient.Conversations.PostActivityAsync(_tokenInfo?.ConversationId, activityPost, cancellationToken).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
@@ -136,56 +133,11 @@ namespace TranscriptTestRunner.TestClients
         }
 
         /// <inheritdoc/>
-        public override async Task SignInAsync(string url)
+        public override async Task<bool> SignInAsync(string url)
         {
-            var directLineSession = await GetSessionInfoAsync().ConfigureAwait(false);
-            var cookieContainer = new CookieContainer();
-            using var handler = new HttpClientHandler
-            {
-                AllowAutoRedirect = false,
-                CookieContainer = cookieContainer
-            };
-
-            // We have a sign in url, which will produce multiple HTTP 302 for redirects
-            // This will path 
-            //      token service -> other services -> auth provider -> token service (post sign in)-> response with token
-            // When we receive the post sign in redirect, we add the cookie passed in the directLine session info
-            // to test enhanced authentication. This in the scenarios happens by itself since browsers do this for us.
-            using var client = new HttpClient(handler);
-            client.DefaultRequestHeaders.Add(OriginHeaderKey, OriginHeaderValue);
-
-            while (!string.IsNullOrEmpty(url))
-            {
-                using var response = await client.GetAsync(new Uri(url)).ConfigureAwait(false);
-                var text = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-
-                url = response.StatusCode == HttpStatusCode.Redirect
-                    ? response.Headers.Location.OriginalString
-                    : null;
-
-                // Once the redirects are done, there is no more url. This means we 
-                // did the entire loop
-                if (url == null)
-                {
-                    if (!response.IsSuccessStatusCode || !text.Contains("You are now signed in and can close this window."))
-                    {
-                        throw new Exception("An error occurred signing in");
-                    }
-
-                    return;
-                }
-
-                // If this is the post sign in callback, add the cookie and code challenge
-                // so that the token service gets the verification.
-                // Here we are simulating what WebChat does along with the browser cookies.
-                if (url.StartsWith("https://token.botframework.com/api/oauth/PostSignInCallback", StringComparison.Ordinal))
-                {
-                    url += $"&code_challenge={directLineSession.SessionId}";
-                    cookieContainer.Add(directLineSession.Cookie);
-                }
-            }
-
-            throw new Exception("Sign in did not succeed. Set a breakpoint in TestBotClient.SignInAsync() to debug the redirect sequence.");
+            const string sessionUrl = "https://directline.botframework.com/v3/directline/session/getsessionid";
+            var directLineSession = await TestClientAuthentication.GetSessionInfoAsync(sessionUrl, _tokenInfo?.Token, _originHeader).ConfigureAwait(false);
+            return await TestClientAuthentication.SignInAsync(url, _originHeader, directLineSession).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -226,7 +178,7 @@ namespace TranscriptTestRunner.TestClients
         private async Task PullActivitiesFromDirectLineAsync(CancellationToken cancellationToken)
         {
             // Pull all the available activities from direct line
-            var activitySet = await _dlClient.Conversations.GetActivitiesAsync(_conversationId, _watermark, cancellationToken).ConfigureAwait(false);
+            var activitySet = await _dlClient.Conversations.GetActivitiesAsync(_tokenInfo?.ConversationId, _watermark, cancellationToken).ConfigureAwait(false);
 
             if (activitySet != null)
             {
@@ -245,44 +197,6 @@ namespace TranscriptTestRunner.TestClients
                     }
                 }
             }
-        }
-
-        private async Task<DirectLineSessionInfo> GetSessionInfoAsync()
-        {
-            // Set up cookie container to obtain response cookie
-            var cookies = new CookieContainer();
-            using var handler = new HttpClientHandler { CookieContainer = cookies };
-
-            using var client = new HttpClient(handler);
-            
-            // Call the directLine session api, not supported by DirectLine client
-            const string getSessionUrl = "https://directline.botframework.com/v3/directline/session/getsessionid";
-            using var request = new HttpRequestMessage(HttpMethod.Get, getSessionUrl);
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _token);
-
-            // We want to add the Origins header to this client as well
-            client.DefaultRequestHeaders.Add(OriginHeaderKey, OriginHeaderValue);
-
-            using var response = await client.SendAsync(request).ConfigureAwait(false);
-            if (response.IsSuccessStatusCode)
-            {
-                // The directLine response that is relevant to us is the cookie and the session info.
-
-                // Extract cookie from cookies
-                var cookie = cookies.GetCookies(new Uri(getSessionUrl)).Cast<Cookie>().FirstOrDefault(c => c.Name == "webchat_session_v2");
-
-                // Extract session info from body
-                var body = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                var session = JsonConvert.DeserializeObject<DirectLineSession>(body);
-
-                return new DirectLineSessionInfo
-                {
-                    SessionId = session.SessionId,
-                    Cookie = cookie
-                };
-            }
-
-            throw new Exception("Failed to obtain session id");
         }
     }
 }

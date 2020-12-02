@@ -8,10 +8,10 @@ trigger: none
 pr: none
 
 variables:
-  BotGroup: '$(BotName)-RG'
   BuildConfiguration: 'Debug'
   BuildPlatform: 'any cpu'
   runCodesignValidationInjection: false
+  skipComponentGovernanceDetection: true
   # AzureSubscription: define in Azure
   # BotBuilderPackageVersionHost: (optional) define in Azure
   # BotBuilderPackageVersionSkill: (optional) define in Azure
@@ -22,8 +22,8 @@ variables:
   # JsJsSkillAppId: define in Azure
   # JsJsSkillAppSecret: define in Azure
   # JsJsSkillBotName: define in Azure
-  # RegistryUrlHost (Optional): define this in Azure
-  # RegistryUrlSkill (Optional): define this in Azure
+  # RegistryUrlHost: (optional) define in Azure
+  # RegistryUrlSkill: (optional) define in Azure
   # TestFilter: (optional) define in Azure. Example: '&TestCategory!=SkipForV3Bots'
 
 pool:
@@ -41,7 +41,9 @@ stages:
       - template: cleanResourcesStep.yml
 
 - stage: Deploy
-  dependsOn: Prepare  
+  dependsOn:
+  - Prepare
+  condition: in(dependencies.Prepare.result, 'Succeeded', 'Skipped')
   jobs:
     - job: Deploy_Host
       variables:
@@ -49,6 +51,7 @@ stages:
         SkillBotName: $(JsJsSkillBotName)
         SkillAppId: $(JsJsSkillAppId)
         BotName: $(JsJsHostBotName)
+        BotGroup: '$(BotName)-RG'
         DeployAppId: $(JsJsHostAppId)
         DeployAppSecret: $(JsJsHostAppSecret)
         Registry: $[variables.RegistryUrlHost]
@@ -62,6 +65,7 @@ stages:
     - job: Deploy_Skill
       variables:
         BotName: $(JsJsSkillBotName)
+        BotGroup: '$(BotName)-RG'
         DeployAppId: $(JsJsSkillAppId)
         DeployAppSecret: $(JsJsSkillAppSecret)
         Registry: $[variables.RegistryUrlSkill]
@@ -86,6 +90,7 @@ stages:
 
 - stage: Test
   dependsOn: Deploy
+  condition: succeeded('Deploy')
   jobs:
     - job: Run_Functional_Test
       variables:
@@ -105,12 +110,12 @@ stages:
   jobs:
     - job: Delete_RG
       steps:
+      - checkout: none  # Don't sync sources
       - task: AzureCLI@1
         displayName: 'Delete Resource Group'
         inputs:
           azureSubscription: $(AzureSubscription)
           scriptLocation: inlineScript
           inlineScript: |
-           call az group delete -n "$(JsJsHostBotName)-RG" --yes
-           call az group delete -n "$(JsJsSkillBotName)-RG" --yes
-        condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
+           call az group delete -n "$(JsJsHostBotName)-RG" --yes --no-wait
+           call az group delete -n "$(JsJsSkillBotName)-RG" --yes --no-wait
