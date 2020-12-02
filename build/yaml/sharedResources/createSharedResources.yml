@@ -18,11 +18,38 @@ pool:
   vmImage: 'windows-2019'
 
 stages:
+- stage: Create_Windows_RG
+  displayName: Create Windows Resource Group
+  jobs:
+    - job: Create_Windows_RG
+      steps:
+      - task: AzureCLI@2
+        displayName: 'Create $(ResourceGroupName)'
+        inputs:
+          azureSubscription: $(AzureSubscription)
+          scriptType: ps
+          scriptLocation: inlineScript
+          inlineScript: 'az group create --name "$(ResourceGroupName)" --location "westus"'
+
+- stage: Create_Linux_RG
+  displayName: Create Linux Resource Groups
+  dependsOn: []
+  jobs:
+    - job: Create_Linux_RG
+      steps:
+      - task: AzureCLI@2
+        displayName: 'Create $(ResourceGroupName)-linux'
+        inputs:
+          azureSubscription: $(AzureSubscription)
+          scriptType: ps
+          scriptLocation: inlineScript
+          inlineScript: 'az group create --name "$(ResourceGroupName)-linux" --location "westus"'
+
 - stage: Create_CosmosDB
   displayName: Create CosmosDB
-  dependsOn: [] # Makes this run in parallel
+  dependsOn: Create_Windows_RG
   jobs:
-    - job: Deploy 'bffnbotstatedb'
+    - job: Deploy_bffnbotstatedb
       steps:
       - task: AzureCLI@2
         displayName: 'Create CosmosDB'
@@ -34,9 +61,9 @@ stages:
 
 - stage: Create_Key_Vault
   displayName: Create Key Vault
-  dependsOn: [] # Makes this run in parallel
+  dependsOn: Create_Windows_RG
   jobs:
-    - job: Deploy 'bffnbotkeyvault'
+    - job: Deploy_bffnbotkeyvault
       steps:
       - task: AzureCLI@2
         displayName: 'Create Key Vault'
@@ -48,9 +75,9 @@ stages:
 
 - stage: Create_Service_Plan_windows
   displayName: Create Windows Service Plan
-  dependsOn: [] # Makes this run in parallel
+  dependsOn: Create_Windows_RG
   jobs:
-    - job: Deploy 'bffnbotsappservicewin'
+    - job: Deploy_bffnbotsappservicewin
       steps:
       - task: AzureCLI@2
         displayName: 'Create Windows Service Plan'
@@ -62,9 +89,9 @@ stages:
 
 - stage: Create_Service_Plan_Linux
   displayName: Create Linux Service Plan
-  dependsOn: [] # Makes this run in parallel
+  dependsOn: Create_Linux_RG
   jobs:
-    - job: Deploy 'bffnbotsappservicelinux'
+    - job: Deploy_bffnbotsappservicelinux
       steps:
       - task: AzureCLI@2
         displayName: 'Create Linux Service Plan'
@@ -72,13 +99,13 @@ stages:
           azureSubscription: $(AzureSubscription)
           scriptType: ps
           scriptLocation: inlineScript
-          inlineScript: 'az deployment group create --name "bffnbotsappservicelinux" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-service-plan-linux-resources.json --parameters newAppServicePlanName="bffnbotsappservicelinux"'
+          inlineScript: 'az deployment group create --name "bffnbotsappservicelinux" --resource-group "$(ResourceGroupName)-linux" --template-file build/templates/template-service-plan-linux-resources.json --parameters newAppServicePlanName="bffnbotsappservicelinux"'
 
 - stage: Create_App_Insights
   displayName: Create App Insights
-  dependsOn: Create_Service_Plan_windows
+  dependsOn: Create_Windows_RG
   jobs:
-    - job: Deploy 'bffnappinsights'
+    - job: Deploy_bffnappinsights
       steps:
       - task: AzureCLI@2
         displayName: 'Create App Insights'
@@ -86,4 +113,4 @@ stages:
           azureSubscription: $(AzureSubscription)
           scriptType: ps
           scriptLocation: inlineScript
-          inlineScript: 'az deployment group create --name "bffnappinsights" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-app-insights-resources.json --parameters appInsightsName="bffnappinsights" appInsightsApplicationId="bffnbotsappservicewin"'
+          inlineScript: 'az deployment group create --name "bffnappinsights" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-app-insights-resources.json --parameters appInsightsName="bffnappinsights"'
