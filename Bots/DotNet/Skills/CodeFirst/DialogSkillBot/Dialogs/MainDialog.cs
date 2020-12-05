@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,7 +15,6 @@ using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Bot.Schema;
 using Microsoft.BotFrameworkFunctionalTests.DialogSkillBot.Dialogs;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
 
 namespace Microsoft.BotFrameworkFunctionalTests.DialogSkillBot
 {
@@ -25,14 +23,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.DialogSkillBot
     /// </summary>
     public class MainDialog : ComponentDialog
     {
-        // State property key that stores the active skill (used in AdapterWithErrorHandler to terminate the skills on error).
-        public static readonly string ActiveSkillPropertyName = $"{typeof(MainDialog).FullName}.ActiveSkillProperty";
-
-        // Constants used for selecting actions on the skill.
-        private const string JustForwardTheActivity = "JustForwardTurnContext.Activity";
-
         private readonly IStatePropertyAccessor<BotFrameworkSkill> _activeSkillProperty;
-        private readonly string _selectedSkillKey = $"{typeof(MainDialog).FullName}.SelectedSkillKey";
 
         // Dependency injection uses this constructor to instantiate MainDialog.
         public MainDialog(ConversationState conversationState, IConfiguration configuration, IHttpClientFactory clientFactory)
@@ -56,7 +47,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.DialogSkillBot
             AddDialog(new CardDialog(configuration, clientFactory));
 
             // Add ChoicePrompt to render skill actions.
-            AddDialog(new ChoicePrompt("SkillActionPrompt", SkillActionPromptValidator));
+            AddDialog(new ChoicePrompt("SkillActionPrompt"));
 
             // Add main waterfall dialog for this bot.
             var waterfallSteps = new WaterfallStep[]
@@ -167,24 +158,6 @@ namespace Microsoft.BotFrameworkFunctionalTests.DialogSkillBot
 
             //await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(CardSampleHelper.CreateReceiptCard().ToAttachment()), cancellationToken);
             //await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(CardSampleHelper.CreateHeroCard().ToAttachment()), cancellationToken);
-        }
-
-        // This validator defaults to Message if the user doesn't select an existing option.
-        private async Task<bool> SkillActionPromptValidator(PromptValidatorContext<FoundChoice> promptContext, CancellationToken cancellationToken)
-        {
-            if (!promptContext.Recognized.Succeeded)
-            {
-                await promptContext.Context.SendActivityAsync(MessageFactory.Text("App sent a message with empty text"), cancellationToken).ConfigureAwait(false);
-                if (promptContext.Context.Activity.Value != null)
-                {
-                    await promptContext.Context.SendActivityAsync(MessageFactory.Text($"but with value {JsonConvert.SerializeObject(promptContext.Context.Activity.Value)}"), cancellationToken).ConfigureAwait(false);
-                }
-
-                // Assume the user wants to send a message if an item in the list is not selected.
-                promptContext.Recognized.Value = new FoundChoice { Value = JustForwardTheActivity };
-            }
-
-            return await Task.FromResult(true);
         }
 
         // Starts the SkillDialog based on the user's selections.
