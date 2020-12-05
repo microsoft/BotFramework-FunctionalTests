@@ -23,9 +23,6 @@ namespace Microsoft.BotFrameworkFunctionalTests.DialogSkillBot.Dialogs
         // for file upload
         private static readonly string TeamsLogoFileName = "teams-logo.png";
 
-        // for audio card
-        private static readonly string BellSound = "music.mp3";
-
         // for video card
         private static readonly string CorgiOnCarouselVideo = "https://www.youtube.com/watch?v=LvqzubPZjHE";
 
@@ -162,7 +159,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.DialogSkillBot.Dialogs
             }
 
             var messageText = "Do you want to select another card?";
-            var repromptMessageText = "That was not a valid choice. Do you want another card? Send \"Yes\" or \"No\".";
+            var repromptMessageText = "That was not a valid choice. Do you want another card?";
             var options = new PromptOptions
             {
                 Prompt = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput),
@@ -195,7 +192,11 @@ namespace Microsoft.BotFrameworkFunctionalTests.DialogSkillBot.Dialogs
                     await promptContext.Context.SendActivityAsync(MessageFactory.Text($"but with value {JsonConvert.SerializeObject(promptContext.Context.Activity.Value)}"), cancellationToken).ConfigureAwait(false);
                 }
 
-                await promptContext.Context.SendActivityAsync(promptContext.Options.RetryPrompt);
+                var choices = new List<Choice> { new Choice("Yes"), new Choice("No") };
+                var repromptActivity = ChoiceFactory.SuggestedAction(choices);
+
+                repromptActivity.Text = promptContext.Options.RetryPrompt.Text;
+                await promptContext.Context.SendActivityAsync(repromptActivity);
 
                 return await Task.FromResult(false);
             }
