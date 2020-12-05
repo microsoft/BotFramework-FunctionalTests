@@ -9,7 +9,6 @@ using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.BotFrameworkFunctionalTests.DialogSkillBot.Authentication;
 using Microsoft.BotFrameworkFunctionalTests.DialogSkillBot.Bots;
-using Microsoft.BotFrameworkFunctionalTests.DialogSkillBot.Dialogs;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -46,14 +45,14 @@ namespace Microsoft.BotFrameworkFunctionalTests.DialogSkillBot
             // Create the Conversation state. (Used by the Dialog system itself.)
             services.AddSingleton<ConversationState>();
 
-            // Register LUIS recognizer.
-            services.AddSingleton<DialogSkillBotRecognizer>();
-
             // The Dialog that will be run by the bot.
-            services.AddSingleton<ActivityRouterDialog>();
+            services.AddSingleton<MainDialog>();
+
+            // The Bot needs an HttpClient to download and upload files. 
+            services.AddHttpClient();
 
             // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
-            services.AddTransient<IBot, SkillBot<ActivityRouterDialog>>();
+            services.AddTransient<IBot, SkillBot<MainDialog>>();
 
             if (!string.IsNullOrEmpty(Configuration["ChannelService"]))
             {
