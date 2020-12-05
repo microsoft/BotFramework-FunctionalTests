@@ -34,7 +34,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.DialogSkillBot.Controllers
             await _adapter.ProcessAsync(Request, Response, _bot);
         }
 
-        [Route("api/bell")]
+        [Route("api/music")]
         [HttpGet]
         public ActionResult ReturnFile()
         {
