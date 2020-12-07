@@ -20,10 +20,11 @@ namespace Microsoft.BotFrameworkFunctionalTests.DialogSkillBot.Bots
         private readonly Dialog _mainDialog;
         private readonly IHttpClientFactory _clientFactory;
 
-        public SkillBot(ConversationState conversationState, T mainDialog)
+        public SkillBot(ConversationState conversationState, T mainDialog, IHttpClientFactory clientFactory)
         {
             _conversationState = conversationState;
             _mainDialog = mainDialog;
+            _clientFactory = clientFactory;
         }
 
         public IHttpClientFactory GetClientFactory()
