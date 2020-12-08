@@ -8,8 +8,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Bot.Builder;
+using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Schema;
+using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs;
 using Microsoft.Extensions.Configuration;
 
 namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Controllers
@@ -21,12 +23,16 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Controllers
         private readonly IBotFrameworkHttpAdapter _adapter;
         private readonly string _appId;
         private readonly ConcurrentDictionary<string, ConversationReference> _conversationReferences;
+        private readonly ConversationState _conversationState;
+        private readonly ActivityRouterDialog _mainDialog;
 
-        public NotifyController(IBotFrameworkHttpAdapter adapter, IConfiguration configuration, ConcurrentDictionary<string, ConversationReference> conversationReferences)
+        public NotifyController(ConversationState conversationState, ActivityRouterDialog mainDialog, IBotFrameworkHttpAdapter adapter, IConfiguration configuration, ConcurrentDictionary<string, ConversationReference> conversationReferences)
         {
+            _conversationState = conversationState;
             _adapter = adapter;
             _conversationReferences = conversationReferences;
             _appId = configuration["MicrosoftAppId"];
+            _mainDialog = mainDialog;
 
             // If the channel is the Emulator, and authentication is not in use,
             // the AppId will be null.  We generate a random AppId for this case only.
@@ -58,6 +64,9 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Controllers
             // If you encounter permission-related errors when sending this message, see
             // https://aka.ms/BotTrustServiceUrl
             await turnContext.SendActivityAsync("proactive hello", cancellationToken: cancellationToken);
+
+            // Run the Dialog with the Activity.
+            await _mainDialog.RunAsync(turnContext, _conversationState.CreateProperty<DialogState>("DialogState"), cancellationToken);
         }
     }
 }
