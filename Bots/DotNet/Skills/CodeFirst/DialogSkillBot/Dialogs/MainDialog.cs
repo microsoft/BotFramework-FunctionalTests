@@ -105,7 +105,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.DialogSkillBot
             {
                 Prompt = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput),
                 RetryPrompt = MessageFactory.Text(repromptMessageText, repromptMessageText, InputHints.ExpectingInput),
-                Choices = new List<Choice> { new Choice("Card") }
+                Choices = new List<Choice> { new Choice("Card"), new Choice("Proactive") }
             };
 
             // Prompt the user to select a skill.
@@ -122,6 +122,10 @@ namespace Microsoft.BotFrameworkFunctionalTests.DialogSkillBot
             {
                 case "Card":
                     return await stepContext.BeginDialogAsync(nameof(CardDialog), null, cancellationToken);
+
+                case "Proactive":
+                    await stepContext.Context.SendActivityAsync(MessageFactory.Text("Visit localhost:[PORT]/api/notify to receive a proactive message."), cancellationToken);
+                    break;
 
                 default:
                     await stepContext.Context.SendActivityAsync(MessageFactory.Text("command unrecognized."), cancellationToken);
