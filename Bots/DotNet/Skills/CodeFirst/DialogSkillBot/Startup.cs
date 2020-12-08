@@ -9,13 +9,14 @@ using Microsoft.Bot.Builder.BotFramework;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Bot.Schema;
-using Microsoft.BotFrameworkFunctionalTests.DialogSkillBot.Authentication;
-using Microsoft.BotFrameworkFunctionalTests.DialogSkillBot.Bots;
+using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Authentication;
+using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Bots;
+using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Microsoft.BotFrameworkFunctionalTests.DialogSkillBot
+namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot
 {
     public class Startup
     {
@@ -34,12 +35,19 @@ namespace Microsoft.BotFrameworkFunctionalTests.DialogSkillBot
 
             // Configure credentials.
             services.AddSingleton<ICredentialProvider, ConfigurationCredentialProvider>();
+            if (!string.IsNullOrEmpty(Configuration["ChannelService"]))
+            {
+                // Register a ConfigurationChannelProvider -- this is only for Azure Gov.
+                services.AddSingleton<IChannelProvider, ConfigurationChannelProvider>();
+            }
 
             // Register AuthConfiguration to enable custom claim validation.
             services.AddSingleton(sp => new AuthenticationConfiguration { ClaimsValidator = new AllowedCallersClaimsValidator(sp.GetService<IConfiguration>()) });
-            
-            // Create the Bot Framework Adapter with error handling enabled.
+
+            // Register the Bot Framework Adapter with error handling enabled.
+            // Note: some classes use the base BotAdapter so we add an extra registration that pulls the same instance.
             services.AddSingleton<IBotFrameworkHttpAdapter, SkillAdapterWithErrorHandler>();
+            services.AddSingleton<BotAdapter>(sp => sp.GetService<BotFrameworkHttpAdapter>());
 
             // Create the storage we'll be using for User and Conversation state. (Memory is great for testing purposes.)
             services.AddSingleton<IStorage, MemoryStorage>();
@@ -48,7 +56,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.DialogSkillBot
             services.AddSingleton<ConversationState>();
 
             // The Dialog that will be run by the bot.
-            services.AddSingleton<MainDialog>();
+            services.AddSingleton<ActivityRouterDialog>();
 
             // The Bot needs an HttpClient to download and upload files. 
             services.AddHttpClient();
@@ -57,13 +65,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.DialogSkillBot
             services.AddSingleton<ConcurrentDictionary<string, ConversationReference>>();
 
             // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
-            services.AddTransient<IBot, SkillBot<MainDialog>>();
-
-            if (!string.IsNullOrEmpty(Configuration["ChannelService"]))
-            {
-                // Register a ConfigurationChannelProvider -- this is only for Azure Gov.
-                services.AddSingleton<IChannelProvider, ConfigurationChannelProvider>();
-            }
+            services.AddTransient<IBot, SkillBot<ActivityRouterDialog>>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
