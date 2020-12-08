@@ -3,8 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <LangVersion>latest</LangVersion>
-    <AssemblyName>Microsoft.BotFrameworkFunctionalTests.DialogSkillBot</AssemblyName>
-    <RootNamespace>Microsoft.BotFrameworkFunctionalTests.DialogSkillBot</RootNamespace>
+    <AssemblyName>Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot</AssemblyName>
+    <RootNamespace>Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
