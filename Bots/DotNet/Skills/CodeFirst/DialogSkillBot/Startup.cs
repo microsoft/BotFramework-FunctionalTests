@@ -1,12 +1,14 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System.Collections.Concurrent;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.BotFramework;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Connector.Authentication;
+using Microsoft.Bot.Schema;
 using Microsoft.BotFrameworkFunctionalTests.DialogSkillBot.Authentication;
 using Microsoft.BotFrameworkFunctionalTests.DialogSkillBot.Bots;
 using Microsoft.Extensions.Configuration;
@@ -50,6 +52,9 @@ namespace Microsoft.BotFrameworkFunctionalTests.DialogSkillBot
 
             // The Bot needs an HttpClient to download and upload files. 
             services.AddHttpClient();
+
+            // Create a global hashset for our ConversationReferences
+            services.AddSingleton<ConcurrentDictionary<string, ConversationReference>>();
 
             // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
             services.AddTransient<IBot, SkillBot<MainDialog>>();

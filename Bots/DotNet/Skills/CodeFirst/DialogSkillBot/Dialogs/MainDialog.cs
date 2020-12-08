@@ -23,6 +23,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.DialogSkillBot
     /// </summary>
     public class MainDialog : ComponentDialog
     {
+        public const string ActiveSkillPropertyName = "activeSkillProperty";
         private readonly IStatePropertyAccessor<BotFrameworkSkill> _activeSkillProperty;
 
         // Dependency injection uses this constructor to instantiate MainDialog.

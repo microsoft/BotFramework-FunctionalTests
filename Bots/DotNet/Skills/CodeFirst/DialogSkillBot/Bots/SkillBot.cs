@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
@@ -19,12 +20,14 @@ namespace Microsoft.BotFrameworkFunctionalTests.DialogSkillBot.Bots
         private readonly ConversationState _conversationState;
         private readonly Dialog _mainDialog;
         private readonly IHttpClientFactory _clientFactory;
+        private readonly ConcurrentDictionary<string, ConversationReference> _conversationReferences;
 
-        public SkillBot(ConversationState conversationState, T mainDialog, IHttpClientFactory clientFactory)
+        public SkillBot(ConversationState conversationState, T mainDialog, IHttpClientFactory clientFactory, ConcurrentDictionary<string, ConversationReference> conversationReferences)
         {
             _conversationState = conversationState;
             _mainDialog = mainDialog;
             _clientFactory = clientFactory;
+            _conversationReferences = conversationReferences;
         }
 
         public IHttpClientFactory GetClientFactory()
@@ -49,6 +52,20 @@ namespace Microsoft.BotFrameworkFunctionalTests.DialogSkillBot.Bots
             await _conversationState.SaveChangesAsync(turnContext, false, cancellationToken);
         }
 
+        protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
+        {
+            AddConversationReference(turnContext.Activity as Activity);
+
+            await base.OnMessageActivityAsync(turnContext, cancellationToken);
+        }
+
+        protected override Task OnConversationUpdateActivityAsync(ITurnContext<IConversationUpdateActivity> turnContext, CancellationToken cancellationToken)
+        {
+            AddConversationReference(turnContext.Activity as Activity);
+
+            return base.OnConversationUpdateActivityAsync(turnContext, cancellationToken);
+        }
+
         protected override async Task OnMembersAddedAsync(IList<ChannelAccount> membersAdded, ITurnContext<IConversationUpdateActivity> turnContext, CancellationToken cancellationToken)
         {
             foreach (var member in membersAdded)
@@ -63,6 +80,12 @@ namespace Microsoft.BotFrameworkFunctionalTests.DialogSkillBot.Bots
                     await _mainDialog.RunAsync(turnContext, _conversationState.CreateProperty<DialogState>("DialogState"), cancellationToken);
                 }
             }
+        }
+
+        private void AddConversationReference(Activity activity)
+        {
+            var conversationReference = activity.GetConversationReference();
+            _conversationReferences.AddOrUpdate(conversationReference.User.Id, conversationReference, (key, newValue) => conversationReference);
         }
     }
 }
