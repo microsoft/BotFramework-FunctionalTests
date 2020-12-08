@@ -30,6 +30,8 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Bots
 
         public override async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default)
         {
+            AddConversationReference(turnContext.Activity);
+
             if (turnContext.Activity.Type != ActivityTypes.ConversationUpdate)
             {
                 // Run the Dialog with the Activity.

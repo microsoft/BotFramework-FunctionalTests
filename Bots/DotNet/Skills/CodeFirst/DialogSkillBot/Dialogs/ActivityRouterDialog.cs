@@ -9,6 +9,7 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.TraceExtensions;
 using Microsoft.Bot.Schema;
 using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards;
+using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Proactive;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
@@ -23,6 +24,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs
             : base(nameof(ActivityRouterDialog))
         {
             AddDialog(new CardDialog(configuration, clientFactory));
+            AddDialog(new WaitForProactiveDialog());
 
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[] { ProcessActivityAsync }));
 
@@ -57,25 +59,16 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs
             switch (activity.Name)
             {
                 case "Cards":
-                    return await BeginCards(stepContext, cancellationToken);
+                    return await stepContext.BeginDialogAsync(FindDialog(nameof(CardDialog)).Id, cancellationToken: cancellationToken);
 
                 case "Proactive":
-                    return await BeginCards(stepContext, cancellationToken);
+                    return await stepContext.BeginDialogAsync(FindDialog(nameof(WaitForProactiveDialog)).Id, cancellationToken: cancellationToken);
 
                 default:
                     // We didn't get an event name we can handle.
                     await stepContext.Context.SendActivityAsync(MessageFactory.Text($"Unrecognized EventName: \"{activity.Name}\".", inputHint: InputHints.IgnoringInput), cancellationToken);
                     return new DialogTurnResult(DialogTurnStatus.Complete);
             }
-        }
-
-        private async Task<DialogTurnResult> BeginCards(WaterfallStepContext stepContext, CancellationToken cancellationToken)
-        {
-            var activity = stepContext.Context.Activity;
-
-            // Start the booking dialog.
-            var bookingDialog = FindDialog(nameof(CardDialog));
-            return await stepContext.BeginDialogAsync(bookingDialog.Id, cancellationToken: cancellationToken);
         }
 
         private string GetObjectAsJsonString(object value) => value == null ? string.Empty : JsonConvert.SerializeObject(value);
