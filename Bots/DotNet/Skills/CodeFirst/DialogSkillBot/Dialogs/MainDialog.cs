@@ -24,7 +24,11 @@ namespace Microsoft.BotFrameworkFunctionalTests.DialogSkillBot
     public class MainDialog : ComponentDialog
     {
         public const string ActiveSkillPropertyName = "activeSkillProperty";
+        private const string JustForwardTheActivity = "JustForwardTurnContext.Activity";
+        
         private readonly IStatePropertyAccessor<BotFrameworkSkill> _activeSkillProperty;
+
+        private readonly string _selectedSkillKey = $"{typeof(MainDialog).FullName}.SelectedSkillKey";
 
         // Dependency injection uses this constructor to instantiate MainDialog.
         public MainDialog(ConversationState conversationState, IConfiguration configuration, IHttpClientFactory clientFactory)
@@ -156,11 +160,9 @@ namespace Microsoft.BotFrameworkFunctionalTests.DialogSkillBot
 
             // Prompt the user to select a skill.
             return await stepContext.PromptAsync("CardPrompt", options, cancellationToken);
-
-            //await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(CardSampleHelper.CreateReceiptCard().ToAttachment()), cancellationToken);
-            //await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(CardSampleHelper.CreateHeroCard().ToAttachment()), cancellationToken);
         }
 
+        /*
         // Starts the SkillDialog based on the user's selections.
         private async Task<DialogTurnResult> CallSkillActionStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
@@ -179,7 +181,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.DialogSkillBot
 
             // Start the skillDialog instance with the arguments. 
             return await stepContext.BeginDialogAsync(selectedSkill.Id, skillDialogArgs, cancellationToken);
-        }
+        }*/
 
         // The SkillDialog has ended, render the results (if any) and restart MainDialog.
         private async Task<DialogTurnResult> FinalStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
