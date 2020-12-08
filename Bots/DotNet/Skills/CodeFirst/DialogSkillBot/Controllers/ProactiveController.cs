@@ -16,13 +16,13 @@ namespace Microsoft.BotFrameworkFunctionalTests.DialogSkillBot.Controllers
 {
     [Route("api/notify")]
     [ApiController]
-    public class NotifyController : ControllerBase
+    public class ProactiveController : ControllerBase
     {
         private readonly IBotFrameworkHttpAdapter _adapter;
         private readonly string _appId;
         private readonly ConcurrentDictionary<string, ConversationReference> _conversationReferences;
 
-        public NotifyController(IBotFrameworkHttpAdapter adapter, IConfiguration configuration, ConcurrentDictionary<string, ConversationReference> conversationReferences)
+        public ProactiveController(IBotFrameworkHttpAdapter adapter, IConfiguration configuration, ConcurrentDictionary<string, ConversationReference> conversationReferences)
         {
             _adapter = adapter;
             _conversationReferences = conversationReferences;

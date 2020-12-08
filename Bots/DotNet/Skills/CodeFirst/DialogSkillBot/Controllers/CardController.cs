@@ -13,7 +13,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.DialogSkillBot.Controllers
     // implementation at runtime. Multiple different IBot implementations running at different endpoints can be
     // achieved by specifying a more specific type for the bot constructor argument.
     [ApiController]
-    public class MusicController : ControllerBase
+    public class CardController : ControllerBase
     {
         private static readonly string Music = "music.mp3";
 

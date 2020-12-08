@@ -51,6 +51,8 @@ namespace Microsoft.BotFrameworkFunctionalTests.DialogSkillBot
 
             AddDialog(new CardDialog(configuration, clientFactory));
 
+            AddDialog(new AttachmentDialog());
+
             // Add ChoicePrompt to render skill actions.
             AddDialog(new ChoicePrompt("SkillActionPrompt"));
 
@@ -105,7 +107,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.DialogSkillBot
             {
                 Prompt = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput),
                 RetryPrompt = MessageFactory.Text(repromptMessageText, repromptMessageText, InputHints.ExpectingInput),
-                Choices = new List<Choice> { new Choice("Card"), new Choice("Proactive") }
+                Choices = new List<Choice> { new Choice("Card"), new Choice("Proactive"), new Choice("Attachment") }
             };
 
             // Prompt the user to select a skill.
@@ -126,6 +128,9 @@ namespace Microsoft.BotFrameworkFunctionalTests.DialogSkillBot
                 case "Proactive":
                     await stepContext.Context.SendActivityAsync(MessageFactory.Text("Visit localhost:[PORT]/api/notify to receive a proactive message."), cancellationToken);
                     break;
+
+                case "Attachment":
+                    return await stepContext.BeginDialogAsync(nameof(AttachmentDialog), null, cancellationToken);
 
                 default:
                     await stepContext.Context.SendActivityAsync(MessageFactory.Text("command unrecognized."), cancellationToken);
