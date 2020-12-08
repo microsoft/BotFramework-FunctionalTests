@@ -72,7 +72,7 @@ namespace TranscriptTestRunner
 
             _logger.LogInformation($"======== Running script: {transcriptPath} ========");
 
-            if (transcriptPath.EndsWith(".transcript", StringComparison.Ordinal))
+            if (transcriptPath.EndsWith(".transcript", StringComparison.OrdinalIgnoreCase))
             {
                 ConvertTranscript(transcriptPath);
             }
@@ -133,7 +133,7 @@ namespace TranscriptTestRunner
                 while (activity != null);
 
                 // Wait a bit for the bot
-                await Task.Delay(TimeSpan.FromMilliseconds(50), cancellationToken).ConfigureAwait(false);
+                await Task.Delay(TimeSpan.FromMilliseconds(250), cancellationToken).ConfigureAwait(false);
 
                 if (timeoutCheck.ElapsedMilliseconds > _replyTimeout)
                 {
