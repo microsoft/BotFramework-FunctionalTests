@@ -12,6 +12,7 @@ using Microsoft.Bot.Schema;
 using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Authentication;
 using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Bots;
 using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs;
+using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Proactive;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -62,7 +63,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot
             services.AddHttpClient();
 
             // Create a global hashset for our ConversationReferences
-            services.AddSingleton<ConcurrentDictionary<string, ConversationReference>>();
+            services.AddSingleton<ConcurrentDictionary<string, ContinuationParameters>>();
 
             // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
             services.AddTransient<IBot, SkillBot<ActivityRouterDialog>>();

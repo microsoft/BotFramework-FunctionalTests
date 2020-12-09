@@ -4,11 +4,13 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
+using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Proactive;
 
 namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Bots
 {
@@ -16,21 +18,21 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Bots
         where T : Dialog
     {
         private readonly IHttpClientFactory _clientFactory;
-        private readonly ConcurrentDictionary<string, ConversationReference> _conversationReferences;
+        private readonly ConcurrentDictionary<string, ContinuationParameters> _continuationParameters;
         private readonly ConversationState _conversationState;
         private readonly Dialog _mainDialog;
 
-        public SkillBot(ConversationState conversationState, T mainDialog, IHttpClientFactory clientFactory, ConcurrentDictionary<string, ConversationReference> conversationReferences)
+        public SkillBot(ConversationState conversationState, T mainDialog, IHttpClientFactory clientFactory, ConcurrentDictionary<string, ContinuationParameters> continuationParameters)
         {
             _conversationState = conversationState;
             _mainDialog = mainDialog;
             _clientFactory = clientFactory;
-            _conversationReferences = conversationReferences;
+            _continuationParameters = continuationParameters;
         }
 
         public override async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default)
         {
-            AddConversationReference(turnContext.Activity);
+            AddOrUpdateContinuationParameters(turnContext);
 
             if (turnContext.Activity.Type != ActivityTypes.ConversationUpdate)
             {
@@ -45,20 +47,6 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Bots
 
             // Save any state changes that might have occurred during the turn.
             await _conversationState.SaveChangesAsync(turnContext, false, cancellationToken);
-        }
-
-        protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
-        {
-            AddConversationReference(turnContext.Activity as Activity);
-
-            await base.OnMessageActivityAsync(turnContext, cancellationToken);
-        }
-
-        protected override Task OnConversationUpdateActivityAsync(ITurnContext<IConversationUpdateActivity> turnContext, CancellationToken cancellationToken)
-        {
-            AddConversationReference(turnContext.Activity as Activity);
-
-            return base.OnConversationUpdateActivityAsync(turnContext, cancellationToken);
         }
 
         protected override async Task OnMembersAddedAsync(IList<ChannelAccount> membersAdded, ITurnContext<IConversationUpdateActivity> turnContext, CancellationToken cancellationToken)
@@ -77,10 +65,20 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Bots
             }
         }
 
-        private void AddConversationReference(Activity activity)
+        /// <summary>
+        /// Helper to extract and store parameters we need to continue a conversation from a proactive message.
+        /// </summary>
+        /// <param name="turnContext">A turnContext instance with the parameters we need.</param>
+        private void AddOrUpdateContinuationParameters(ITurnContext turnContext)
         {
-            var conversationReference = activity.GetConversationReference();
-            _conversationReferences.AddOrUpdate(conversationReference.User.Id, conversationReference, (key, newValue) => conversationReference);
+            var continuationParameters = new ContinuationParameters
+            {
+                ClaimsIdentity = turnContext.TurnState.Get<IIdentity>(BotAdapter.BotIdentityKey),
+                ConversationReference = turnContext.Activity.GetConversationReference(),
+                OAuthScope = turnContext.TurnState.Get<string>(BotAdapter.OAuthScopeKey)
+            };
+
+            _continuationParameters.AddOrUpdate(continuationParameters.ConversationReference.User.Id, continuationParameters, (key, newValue) => continuationParameters);
         }
     }
 }
