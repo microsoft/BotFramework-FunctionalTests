@@ -102,38 +102,15 @@ steps:
      az deployment group create --resource-group "$(BotGroup)" --name "$(BotName)$(Build.BuildId)" --template-file "$(System.DefaultWorkingDirectory)/$(TemplateLocation)" --parameters appId="$(DeployAppId)" appSecret="$(DeployAppSecret)" botId="$(BotName)" newWebAppName="$(BotName)-$(Build.BuildId)" newAppServicePlanName="$(BotName)" appServicePlanLocation="westus" --name "$(BotName)";
      Set-PSDebug -Trace 0;
 
-- script: |
-   git config --global user.name "GitPythonDeploymentUser"
-   git config --global user.email GitPythonDeploymentUser@Pipeline.com
-   git init
-   git add .
-   git commit -m "cibuildtest"
-   git remote add azure https://$(AzureDeploymentUser):$(AzureDeploymentPassword)@$(BotName)-$(Build.BuildId).scm.azurewebsites.net:443/$(BotName)-$(Build.BuildId).git
-   git push azure master
-  workingDirectory: '$(System.DefaultWorkingDirectory)/$(Parameters.sourceLocation)'
-  displayName: 'Git bot deployment'
+- powershell: |
+    7z a -tzip "$(System.DefaultWorkingDirectory)/$(Parameters.sourceLocation)/bot.zip"  "$(System.DefaultWorkingDirectory)/$(Parameters.sourceLocation)/*" -aoa
+  displayName: 'Zip Bot'
 
-- task: AzureCLI@2
-  displayName: 'Validate git deployment'
+- task: AzureCLI@1
+  displayName: 'Deploy bot'
   inputs:
     azureSubscription: $(AzureSubscription)
     scriptType: ps
     scriptLocation: inlineScript
     inlineScript: |
-     #Getting logs from Azure
-     az webapp log download --name $(BotName)-$(Build.BuildId) --resource-group $(BotName)-rg --log-file "$(System.DefaultWorkingDirectory)\logs.zip";
-     Expand-Archive "$(System.DefaultWorkingDirectory)\logs.zip" -DestinationPath "$(System.DefaultWorkingDirectory)\logs";
-     $file = "$(System.DefaultWorkingDirectory)/logs/deployments/*/log.log"
-     $content = Get-Content $file
-
-     #Validates if the log contains the Deployment successful line
-     Write-Host "Validating deployment log."
-     $containsWord = $content | %{$_ -match "Deployment successful"}
-     if ($containsWord -contains $true) {
-         Write-Host "Deployment successful, check the git deploy step for more information."
-     } else {
-         Write-Host "An error occurred during the deploy."
-         Write-Output $content
-         Write-Error "An error occurred during the deploy."
-     }
-  condition: succeededOrFailed()
+      az webapp deployment source config-zip --resource-group "$(BotGroup)" --name "$(BotName)-$(Build.BuildId)" --src "$(System.DefaultWorkingDirectory)/$(Parameters.sourceLocation)/bot.zip" --timeout 300
