@@ -3,7 +3,6 @@
 
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Net.Http;
 using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,16 +16,14 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Bots
     public class SkillBot<T> : ActivityHandler
         where T : Dialog
     {
-        private readonly IHttpClientFactory _clientFactory;
         private readonly ConcurrentDictionary<string, ContinuationParameters> _continuationParameters;
         private readonly ConversationState _conversationState;
         private readonly Dialog _mainDialog;
 
-        public SkillBot(ConversationState conversationState, T mainDialog, IHttpClientFactory clientFactory, ConcurrentDictionary<string, ContinuationParameters> continuationParameters)
+        public SkillBot(ConversationState conversationState, T mainDialog, ConcurrentDictionary<string, ContinuationParameters> continuationParameters)
         {
             _conversationState = conversationState;
             _mainDialog = mainDialog;
-            _clientFactory = clientFactory;
             _continuationParameters = continuationParameters;
         }
 
