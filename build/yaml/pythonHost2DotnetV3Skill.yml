@@ -12,8 +12,6 @@ variables:
   BuildPlatform: 'any cpu'
   runCodesignValidationInjection: false
   skipComponentGovernanceDetection: true
-  # AzureDeploymentPassword: define in Azure
-  # AzureDeploymentUser: define in Azure
   # AzureSubscription: define in Azure
   # BotBuilderPackageVersionHost: (optional) define in Azure
   # BotBuilderPackageVersionSkill: (optional) define in Azure
