@@ -161,7 +161,6 @@ The following steps will guide you trough the creation of a pipeline that runs o
    | **required** | These variables are required/mandatory.                 |
    | **optional** | These variables are optional/non mandatory.             |
    | **private**  | These variables are private.                            |
-   | **python**   | These variables are required when a python bot is used. |
    | **dotnet**   | These variables are required when a dotnet bot is used. |
 
 5. (Optional) Configure the triggers for the pipeline. By default, this pipelines have all the triggers from commits and PRs disabled.
