@@ -30,6 +30,17 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Controllers
             _logger = logger;
         }
 
+        /// <summary>
+        /// Gets the server URL where the bot is hosted.
+        /// </summary>
+        /// <remarks>
+        /// This is just for testing, it allows use to return a card with a clickable URL so we can invoke the notify. 
+        /// </remarks>
+        /// <value>
+        /// The server URL where the bot is hosted.
+        /// </value>
+        public static Uri ServerUrl { get; private set; }
+
         [Route("api/messages")]
         [HttpGet]
         [HttpPost]
@@ -37,6 +48,11 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Controllers
         {
             try
             {
+                if (ServerUrl == null)
+                {
+                    ServerUrl = new Uri($"{Request.Scheme}://{Request.Host.Value}");
+                }
+
                 // Delegate the processing of the HTTP POST to the adapter.
                 // The adapter will invoke the bot.
                 await _adapter.ProcessAsync(Request, Response, _bot);
