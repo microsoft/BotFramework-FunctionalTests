@@ -82,6 +82,12 @@ namespace Microsoft.BotFrameworkFunctionalTests.DialogSkillBot.Bots
             }
         }
 
+        protected override async Task OnTokenResponseEventAsync(ITurnContext<IEventActivity> turnContext, CancellationToken cancellationToken)
+        {
+            // Run the Dialog with the new Token Response Event Activity.
+            await _mainDialog.RunAsync(turnContext, _conversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
+        }
+
         private void AddConversationReference(Activity activity)
         {
             var conversationReference = activity.GetConversationReference();

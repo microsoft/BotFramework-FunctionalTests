@@ -13,6 +13,7 @@ using Microsoft.Bot.Builder.Integration.AspNet.Core.Skills;
 using Microsoft.Bot.Builder.Skills;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Bot.Schema;
+using Microsoft.BotFrameworkFunctionalTests.AuthSkillBot.Dialogs;
 using Microsoft.BotFrameworkFunctionalTests.DialogSkillBot.Dialogs;
 using Microsoft.Extensions.Configuration;
 
@@ -50,6 +51,8 @@ namespace Microsoft.BotFrameworkFunctionalTests.DialogSkillBot
             AddDialog(new ChoicePrompt("CardPrompt"));
 
             AddDialog(new CardDialog(configuration, clientFactory));
+
+            AddDialog(new AuthDialog(configuration));
 
             // Add ChoicePrompt to render skill actions.
             AddDialog(new ChoicePrompt("SkillActionPrompt"));
@@ -105,7 +108,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.DialogSkillBot
             {
                 Prompt = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput),
                 RetryPrompt = MessageFactory.Text(repromptMessageText, repromptMessageText, InputHints.ExpectingInput),
-                Choices = new List<Choice> { new Choice("Card"), new Choice("Proactive") }
+                Choices = new List<Choice> { new Choice("Card"), new Choice("Proactive"), new Choice("Auth") }
             };
 
             // Prompt the user to select a skill.
@@ -126,6 +129,9 @@ namespace Microsoft.BotFrameworkFunctionalTests.DialogSkillBot
                 case "Proactive":
                     await stepContext.Context.SendActivityAsync(MessageFactory.Text("Visit localhost:[PORT]/api/notify to receive a proactive message."), cancellationToken);
                     break;
+
+                case "Auth":
+                    return await stepContext.BeginDialogAsync(nameof(AuthDialog), null, cancellationToken);
 
                 default:
                     await stepContext.Context.SendActivityAsync(MessageFactory.Text("command unrecognized."), cancellationToken);
