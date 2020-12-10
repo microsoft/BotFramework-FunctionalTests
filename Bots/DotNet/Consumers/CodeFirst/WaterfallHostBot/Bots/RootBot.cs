@@ -1,36 +1,31 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Security.Principal;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
-using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Proactive;
+using Newtonsoft.Json;
 
-namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Bots
+namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Bots
 {
-    public class SkillBot<T> : ActivityHandler
+    public class RootBot<T> : ActivityHandler
         where T : Dialog
     {
-        private readonly ConcurrentDictionary<string, ContinuationParameters> _continuationParameters;
         private readonly ConversationState _conversationState;
         private readonly Dialog _mainDialog;
 
-        public SkillBot(ConversationState conversationState, T mainDialog, ConcurrentDictionary<string, ContinuationParameters> continuationParameters)
+        public RootBot(ConversationState conversationState, T mainDialog)
         {
             _conversationState = conversationState;
             _mainDialog = mainDialog;
-            _continuationParameters = continuationParameters;
         }
 
         public override async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default)
         {
-            AddOrUpdateContinuationParameters(turnContext);
-
             if (turnContext.Activity.Type != ActivityTypes.ConversationUpdate)
             {
                 // Run the Dialog with the Activity.
@@ -54,34 +49,32 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Bots
                 // To learn more about Adaptive Cards, see https://aka.ms/msbot-adaptivecards.
                 if (member.Id != turnContext.Activity.Recipient.Id)
                 {
-                    var activity = MessageFactory.Text("Welcome to the dialog skill bot");
-                    activity.Speak = "Welcome to the Dialog Skill Prototype!";
+                    var welcomeCard = CreateAdaptiveCardAttachment();
+                    var activity = MessageFactory.Attachment(welcomeCard);
+                    activity.Speak = "Welcome to the waterfall host bot";
                     await turnContext.SendActivityAsync(activity, cancellationToken);
                     await _mainDialog.RunAsync(turnContext, _conversationState.CreateProperty<DialogState>("DialogState"), cancellationToken);
                 }
             }
         }
 
-        protected override async Task OnTokenResponseEventAsync(ITurnContext<IEventActivity> turnContext, CancellationToken cancellationToken)
+        // Load attachment from embedded resource.
+        private Attachment CreateAdaptiveCardAttachment()
         {
-            // Run the Dialog with the new Token Response Event Activity.
-            await _mainDialog.RunAsync(turnContext, _conversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
-        }
+            var cardResourcePath = "Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Cards.welcomeCard.json";
 
-        /// <summary>
-        /// Helper to extract and store parameters we need to continue a conversation from a proactive message.
-        /// </summary>
-        /// <param name="turnContext">A turnContext instance with the parameters we need.</param>
-        private void AddOrUpdateContinuationParameters(ITurnContext turnContext)
-        {
-            var continuationParameters = new ContinuationParameters
+            using (var stream = GetType().Assembly.GetManifestResourceStream(cardResourcePath))
             {
-                ClaimsIdentity = turnContext.TurnState.Get<IIdentity>(BotAdapter.BotIdentityKey),
-                ConversationReference = turnContext.Activity.GetConversationReference(),
-                OAuthScope = turnContext.TurnState.Get<string>(BotAdapter.OAuthScopeKey)
-            };
-
-            _continuationParameters.AddOrUpdate(continuationParameters.ConversationReference.User.Id, continuationParameters, (key, newValue) => continuationParameters);
+                using (var reader = new StreamReader(stream))
+                {
+                    var adaptiveCard = reader.ReadToEnd();
+                    return new Attachment
+                    {
+                        ContentType = "application/vnd.microsoft.card.adaptive",
+                        Content = JsonConvert.DeserializeObject(adaptiveCard)
+                    };
+                }
+            }
         }
     }
 }
