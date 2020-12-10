@@ -4,13 +4,12 @@
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.TraceExtensions;
 using Microsoft.Bot.Schema;
-using Microsoft.BotFrameworkFunctionalTests.AuthSkillBot.Dialogs;
-using Microsoft.BotFrameworkFunctionalTests.DialogSkillBot.Dialogs;
+using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Attachments;
+using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Auth;
 using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards;
 using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Proactive;
 using Microsoft.Extensions.Configuration;

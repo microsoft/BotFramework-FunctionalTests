@@ -13,8 +13,6 @@ using Microsoft.Bot.Builder.Integration.AspNet.Core.Skills;
 using Microsoft.Bot.Builder.Skills;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Bot.Schema;
-using Microsoft.BotFrameworkFunctionalTests.AuthSkillBot.Dialogs;
-using Microsoft.BotFrameworkFunctionalTests.DialogSkillBot.Dialogs;
 using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards;
 using Microsoft.Extensions.Configuration;
 
@@ -52,10 +50,6 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs
             AddDialog(new ChoicePrompt("CardPrompt"));
 
             AddDialog(new CardDialog(configuration, clientFactory));
-
-            AddDialog(new AttachmentDialog());
-
-            AddDialog(new AuthDialog(configuration));
 
             // Add ChoicePrompt to render skill actions.
             AddDialog(new ChoicePrompt("SkillActionPrompt"));
