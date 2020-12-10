@@ -70,6 +70,28 @@
           "resultProperty": "dialog.result"
         }
       ]
+    },
+    {
+      "$kind": "Microsoft.OnEndOfConversationActivity",
+      "$designer": {
+        "id": "PGigli"
+      },
+      "actions": [
+        {
+          "$kind": "Microsoft.SendActivity",
+          "$designer": {
+            "id": "Zkprn3"
+          },
+          "activity": "${SendActivity_Zkprn3()}"
+        },
+        {
+          "$kind": "Microsoft.SendActivity",
+          "$designer": {
+            "id": "71moHf"
+          },
+          "activity": "${SendActivity_71moHf()}"
+        }
+      ]
     }
   ],
   "$schema": "https://raw.githubusercontent.com/microsoft/BotFramework-Composer/stable/Composer/packages/server/schemas/sdk.schema",

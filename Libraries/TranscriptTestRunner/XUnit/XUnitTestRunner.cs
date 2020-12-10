@@ -40,7 +40,7 @@ namespace TranscriptTestRunner.XUnit
             {
                 var (result, error) = Expression.Parse(assertion).TryEvaluate<bool>(actualActivity);
 
-                Assert.True(result, $"The bot's response was different than expected. The assertion: \"{assertion}\" was evaluated as false.\nActual Activity:\n{JsonConvert.SerializeObject(actualActivity, Formatting.Indented)}");
+                Assert.True(result, $"The bot's response was different than expected. The assertion: \"{assertion}\" was evaluated as false.\nExpected Activity:\n{JsonConvert.SerializeObject(expectedActivity, Formatting.Indented)}\nActual Activity:\n{JsonConvert.SerializeObject(actualActivity, Formatting.Indented)}");
             }
 
             return Task.CompletedTask;
