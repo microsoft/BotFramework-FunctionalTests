@@ -12,6 +12,8 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Skills
     {
         private const string SkillActionCards = "Cards";
         private const string SkillActionProactive = "Proactive";
+        private const string SkillActionAuth = "Auth";
+        private const string SkillActionAttachment = "Attachment";
         private const string SkillActionBookFlight = "BookFlight";
         private const string SkillActionBookFlightWithInputParameters = "BookFlight with input parameters";
         private const string SkillActionGetWeather = "GetWeather";
@@ -25,6 +27,8 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Skills
             {
                 SkillActionCards,
                 SkillActionProactive,
+                SkillActionAuth,
+                SkillActionAttachment,
                 SkillActionBookFlight,
                 SkillActionBookFlightWithInputParameters,
                 SkillActionGetWeather,
@@ -38,7 +42,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Skills
         {
             Activity activity;
 
-            // Send an event activity to the skill with "BookFlight" in the name.
+            // Send an event activity to the skill with "Cards" in the name.
             if (actionId.Equals(SkillActionCards, StringComparison.CurrentCultureIgnoreCase))
             {
                 activity = (Activity)Activity.CreateEventActivity();
@@ -46,11 +50,27 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Skills
                 return activity;
             }
 
-            // Send an event activity to the skill with "BookFlight" in the name.
+            // Send an event activity to the skill with "Proactive" in the name.
             if (actionId.Equals(SkillActionProactive, StringComparison.CurrentCultureIgnoreCase))
             {
                 activity = (Activity)Activity.CreateEventActivity();
                 activity.Name = SkillActionProactive;
+                return activity;
+            }
+
+            // Send an event activity to the skill with "Auth" in the name.
+            if (actionId.Equals(SkillActionAuth, StringComparison.CurrentCultureIgnoreCase))
+            {
+                activity = (Activity)Activity.CreateEventActivity();
+                activity.Name = SkillActionAuth;
+                return activity;
+            }
+
+            // Send an event activity to the skill with "Attachment" in the name.
+            if (actionId.Equals(SkillActionAttachment, StringComparison.CurrentCultureIgnoreCase))
+            {
+                activity = (Activity)Activity.CreateEventActivity();
+                activity.Name = SkillActionAttachment;
                 return activity;
             }
 

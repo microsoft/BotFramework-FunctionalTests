@@ -62,6 +62,12 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Bots
             }
         }
 
+        protected override async Task OnTokenResponseEventAsync(ITurnContext<IEventActivity> turnContext, CancellationToken cancellationToken)
+        {
+            // Run the Dialog with the new Token Response Event Activity.
+            await _mainDialog.RunAsync(turnContext, _conversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
+        }
+
         /// <summary>
         /// Helper to extract and store parameters we need to continue a conversation from a proactive message.
         /// </summary>
