@@ -13,11 +13,9 @@ using Microsoft.Bot.Builder.Integration.AspNet.Core.Skills;
 using Microsoft.Bot.Builder.Skills;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Bot.Schema;
-using Microsoft.BotFrameworkFunctionalTests.AuthSkillBot.Dialogs;
-using Microsoft.BotFrameworkFunctionalTests.DialogSkillBot.Dialogs;
 using Microsoft.Extensions.Configuration;
 
-namespace Microsoft.BotFrameworkFunctionalTests.DialogSkillBot
+namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs
 {
     /// <summary>
     /// The main dialog for this bot. It uses a <see cref="SkillDialog"/> to call skills.
@@ -52,6 +50,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.DialogSkillBot
 
             AddDialog(new CardDialog(configuration, clientFactory));
 
+            AddDialog(new AttachmentDialog());
             AddDialog(new AuthDialog(configuration));
 
             // Add ChoicePrompt to render skill actions.
@@ -108,7 +107,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.DialogSkillBot
             {
                 Prompt = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput),
                 RetryPrompt = MessageFactory.Text(repromptMessageText, repromptMessageText, InputHints.ExpectingInput),
-                Choices = new List<Choice> { new Choice("Card"), new Choice("Proactive"), new Choice("Auth") }
+                Choices = new List<Choice> { new Choice("Card"), new Choice("Proactive"), new Choice("Attachment"), new Choice("Auth") }
             };
 
             // Prompt the user to select a skill.
@@ -129,6 +128,9 @@ namespace Microsoft.BotFrameworkFunctionalTests.DialogSkillBot
                 case "Proactive":
                     await stepContext.Context.SendActivityAsync(MessageFactory.Text("Visit localhost:[PORT]/api/notify to receive a proactive message."), cancellationToken);
                     break;
+
+                case "Attachment":
+                    return await stepContext.BeginDialogAsync(nameof(AttachmentDialog), null, cancellationToken);
 
                 case "Auth":
                     return await stepContext.BeginDialogAsync(nameof(AuthDialog), null, cancellationToken);
