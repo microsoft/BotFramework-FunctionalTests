@@ -4,10 +4,13 @@
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.TraceExtensions;
 using Microsoft.Bot.Schema;
+using Microsoft.BotFrameworkFunctionalTests.AuthSkillBot.Dialogs;
+using Microsoft.BotFrameworkFunctionalTests.DialogSkillBot.Dialogs;
 using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards;
 using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Proactive;
 using Microsoft.Extensions.Configuration;
@@ -25,6 +28,8 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs
         {
             AddDialog(new CardDialog(configuration, clientFactory));
             AddDialog(new WaitForProactiveDialog());
+            AddDialog(new AttachmentDialog());
+            AddDialog(new AuthDialog(configuration));
 
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[] { ProcessActivityAsync }));
 
@@ -63,6 +68,12 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs
 
                 case "Proactive":
                     return await stepContext.BeginDialogAsync(FindDialog(nameof(WaitForProactiveDialog)).Id, cancellationToken: cancellationToken);
+
+                case "Attachment":
+                    return await stepContext.BeginDialogAsync(FindDialog(nameof(AttachmentDialog)).Id, cancellationToken: cancellationToken);
+
+                case "Auth":
+                    return await stepContext.BeginDialogAsync(FindDialog(nameof(AuthDialog)).Id, cancellationToken: cancellationToken);
 
                 default:
                     // We didn't get an event name we can handle.
