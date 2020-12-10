@@ -11,6 +11,7 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Choices;
 using Microsoft.Bot.Schema;
 using Microsoft.Bot.Schema.Teams;
+using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Controllers;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -48,13 +49,11 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
             "uploadfile"
         };
 
-        private readonly IConfiguration _config;
         private readonly IHttpClientFactory _clientFactory;
 
-        public CardDialog(IConfiguration config, IHttpClientFactory clientFactory)
+        public CardDialog(IHttpClientFactory clientFactory)
             : base(nameof(CardDialog))
         {
-            _config = config;
             _clientFactory = clientFactory;
 
             AddDialog(new ChoicePrompt("CardPrompt", SkillActionPromptValidator));
@@ -276,7 +275,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
 
         private AudioCard MakeAudiocard()
         {
-            var url = new MediaUrl(url: _config["AudioUrl"]);
+            var url = new MediaUrl(url: $"{BotController.ServerUrl}api/music");
             return new AudioCard(title: "Audio Card", media: new[] { url }, autoloop: true);
         }
 
