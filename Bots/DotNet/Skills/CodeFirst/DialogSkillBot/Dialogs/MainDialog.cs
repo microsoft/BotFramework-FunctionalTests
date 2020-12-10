@@ -51,6 +51,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs
             AddDialog(new CardDialog(configuration, clientFactory));
 
             AddDialog(new AttachmentDialog());
+            AddDialog(new AuthDialog(configuration));
 
             // Add ChoicePrompt to render skill actions.
             AddDialog(new ChoicePrompt("SkillActionPrompt"));
@@ -106,7 +107,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs
             {
                 Prompt = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput),
                 RetryPrompt = MessageFactory.Text(repromptMessageText, repromptMessageText, InputHints.ExpectingInput),
-                Choices = new List<Choice> { new Choice("Card"), new Choice("Proactive"), new Choice("Attachment") }
+                Choices = new List<Choice> { new Choice("Card"), new Choice("Proactive"), new Choice("Attachment"), new Choice("Auth") }
             };
 
             // Prompt the user to select a skill.
@@ -130,6 +131,9 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs
 
                 case "Attachment":
                     return await stepContext.BeginDialogAsync(nameof(AttachmentDialog), null, cancellationToken);
+
+                case "Auth":
+                    return await stepContext.BeginDialogAsync(nameof(AuthDialog), null, cancellationToken);
 
                 default:
                     await stepContext.Context.SendActivityAsync(MessageFactory.Text("command unrecognized."), cancellationToken);
