@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Bot.Schema;
-using Newtonsoft.Json.Linq;
 
 namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Skills
 {
