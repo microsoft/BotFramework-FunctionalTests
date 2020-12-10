@@ -16,6 +16,7 @@ using Microsoft.Rest.TransientFaultHandling;
 using Newtonsoft.Json;
 using TranscriptTestRunner.Authentication;
 using Activity = Microsoft.Bot.Connector.DirectLine.Activity;
+using ActivityTypes = Microsoft.Bot.Schema.ActivityTypes;
 using BotActivity = Microsoft.Bot.Schema.Activity;
 using BotChannelAccount = Microsoft.Bot.Schema.ChannelAccount;
 using ChannelAccount = Microsoft.Bot.Connector.DirectLine.ChannelAccount;
@@ -30,16 +31,16 @@ namespace TranscriptTestRunner.TestClients
         // DL client sample: https://github.com/microsoft/BotFramework-DirectLine-DotNet/tree/main/samples/core-DirectLine/DirectLineClient
         private const string DirectLineSecretKey = "DIRECTLINE";
         private const string BotIdKey = "BOTID";
-        private static string _botId;
         private readonly ConcurrentQueue<BotActivity> _activityQueue = new ConcurrentQueue<BotActivity>();
-        private readonly DirectLineClient _dlClient;
+        private readonly string _botId;
+        private readonly string _directLineSecret;
         private readonly KeyValuePair<string, string> _originHeader = new KeyValuePair<string, string>("Origin", "https://botframework.test.com");
-        private readonly TokenInfo _tokenInfo;
         private readonly string _user = $"TestUser-{Guid.NewGuid()}";
-        private bool _conversationStarted;
+        private Conversation _conversation;
 
         // To detect redundant calls to dispose
         private bool _disposed;
+        private DirectLineClient _dlClient;
         private string _watermark;
 
         /// <summary>
@@ -54,57 +55,28 @@ namespace TranscriptTestRunner.TestClients
                 throw new ArgumentException($"Configuration setting '{BotIdKey}' not set.");
             }
 
-            var directLineSecret = config[DirectLineSecretKey];
-            if (string.IsNullOrWhiteSpace(directLineSecret))
+            _directLineSecret = config[DirectLineSecretKey];
+            if (string.IsNullOrWhiteSpace(_directLineSecret))
             {
                 throw new ArgumentException($"Configuration setting '{DirectLineSecretKey}' not found.");
-            }
-
-            // Instead of generating a vanilla DirectLineClient with secret, 
-            // we obtain a directLine token with the secrets and then we use
-            // that token to create the directLine client.
-            // What this gives us is the ability to pass TrustedOrigins when obtaining the token,
-            // which tests the enhanced authentication.
-            // This endpoint is unfortunately not supported by the directLine client which is 
-            // why we add this custom code.
-            using var client = new HttpClient();
-            using var request = new HttpRequestMessage(HttpMethod.Post, "https://directline.botframework.com/v3/directline/tokens/generate");
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", directLineSecret);
-            request.Content = new StringContent(
-                JsonConvert.SerializeObject(new
-                {
-                    User = new { Id = _user },
-                    TrustedOrigins = new[] { _originHeader.Value }
-                }), Encoding.UTF8,
-                "application/json");
-
-            using var response = client.SendAsync(request).GetAwaiter().GetResult();
-            if (response.IsSuccessStatusCode)
-            {
-                // Extract token from response
-                var body = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-                _tokenInfo = JsonConvert.DeserializeObject<TokenInfo>(body);
-
-                // Create directLine client from token
-                _dlClient = new DirectLineClient(_tokenInfo?.Token);
-                _dlClient.SetRetryPolicy(new RetryPolicy(new HttpStatusCodeErrorDetectionStrategy(), 0));
-
-                // From now on, we'll add an Origin header in directLine calls, with 
-                // the trusted origin we sent when acquiring the token as value.
-                _dlClient.HttpClient.DefaultRequestHeaders.Add(_originHeader.Key, _originHeader.Value);
-            }
-            else
-            {
-                throw new Exception("Failed to acquire directLine token");
             }
         }
 
         /// <inheritdoc/>
         public override async Task SendActivityAsync(BotActivity activity, CancellationToken cancellationToken)
         {
-            if (!_conversationStarted)
+            if (_conversation == null)
             {
                 await CreateConversationAsync().ConfigureAwait(false);
+
+                if (activity.Type == ActivityTypes.ConversationUpdate)
+                {
+                    // CreateConversationAsync sends a ConversationUpdate automatically.
+                    // Ignore the activity sent if it is the first one we are sending to the bot and it is a ConversationUpdate.
+                    // This can happen with recorded scripts where we get a conversation update from the transcript that we don't
+                    // want to use.
+                    return;
+                }
             }
 
             var activityPost = new Activity
@@ -114,12 +86,17 @@ namespace TranscriptTestRunner.TestClients
                 Type = activity.Type
             };
 
-            await _dlClient.Conversations.PostActivityAsync(_tokenInfo?.ConversationId, activityPost, cancellationToken).ConfigureAwait(false);
+            await _dlClient.Conversations.PostActivityAsync(_conversation.ConversationId, activityPost, cancellationToken).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
         public override async Task<BotActivity> GetNextReplyAsync(CancellationToken cancellationToken)
         {
+            if (_conversation == null)
+            {
+                await CreateConversationAsync().ConfigureAwait(false);
+            }
+
             await PullActivitiesFromDirectLineAsync(cancellationToken).ConfigureAwait(false);
 
             // Return the first activity in the queue (if any)
@@ -136,7 +113,7 @@ namespace TranscriptTestRunner.TestClients
         public override async Task<bool> SignInAsync(string url)
         {
             const string sessionUrl = "https://directline.botframework.com/v3/directline/session/getsessionid";
-            var directLineSession = await TestClientAuthentication.GetSessionInfoAsync(sessionUrl, _tokenInfo?.Token, _originHeader).ConfigureAwait(false);
+            var directLineSession = await TestClientAuthentication.GetSessionInfoAsync(sessionUrl, _conversation.Token, _originHeader).ConfigureAwait(false);
             return await TestClientAuthentication.SignInAsync(url, _originHeader, directLineSession).ConfigureAwait(false);
         }
 
@@ -171,14 +148,64 @@ namespace TranscriptTestRunner.TestClients
 
         private async Task CreateConversationAsync()
         {
-            await _dlClient.Conversations.StartConversationAsync().ConfigureAwait(false);
-            _conversationStarted = true;
+            var tokenInfo = await GetDirectLineTokenAsync().ConfigureAwait(false);
+
+            // Create directLine client from token
+            _dlClient = new DirectLineClient(tokenInfo.Token);
+            _dlClient.SetRetryPolicy(new RetryPolicy(new HttpStatusCodeErrorDetectionStrategy(), 0));
+
+            // From now on, we'll add an Origin header in directLine calls, with 
+            // the trusted origin we sent when acquiring the token as value.
+            _dlClient.HttpClient.DefaultRequestHeaders.Add(_originHeader.Key, _originHeader.Value);
+
+            // Start the conversation now the the _dlClient has been initialized.
+            _conversation = await _dlClient.Conversations.StartConversationAsync().ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Exchanges the directline secret by an auth token.
+        /// </summary>
+        /// <remarks>
+        /// Instead of generating a vanilla DirectLineClient with secret, 
+        /// we obtain a directLine token with the secrets and then we use
+        /// that token to create the directLine client.
+        /// What this gives us is the ability to pass TrustedOrigins when obtaining the token,
+        /// which tests the enhanced authentication.
+        /// This endpoint is unfortunately not supported by the directLine client which is 
+        /// why we add this custom code.
+        /// </remarks>
+        /// <returns>A <see cref="TokenInfo"/> instance.</returns>
+        private async Task<TokenInfo> GetDirectLineTokenAsync()
+        {
+            using var client = new HttpClient();
+            using var request = new HttpRequestMessage(HttpMethod.Post, "https://directline.botframework.com/v3/directline/tokens/generate");
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _directLineSecret);
+            request.Content = new StringContent(
+                JsonConvert.SerializeObject(new
+                {
+                    User = new { Id = _user },
+                    TrustedOrigins = new[] { _originHeader.Value }
+                }), Encoding.UTF8,
+                "application/json");
+
+            using var response = await client.SendAsync(request).ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+
+            // Extract token from response
+            var body = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+            var tokenInfo = JsonConvert.DeserializeObject<TokenInfo>(body);
+            if (string.IsNullOrWhiteSpace(tokenInfo?.Token))
+            {
+                throw new InvalidOperationException("Failed to acquire directLine token");
+            }
+
+            return tokenInfo;
         }
 
         private async Task PullActivitiesFromDirectLineAsync(CancellationToken cancellationToken)
         {
             // Pull all the available activities from direct line
-            var activitySet = await _dlClient.Conversations.GetActivitiesAsync(_tokenInfo?.ConversationId, _watermark, cancellationToken).ConfigureAwait(false);
+            var activitySet = await _dlClient.Conversations.GetActivitiesAsync(_conversation.ConversationId, _watermark, cancellationToken).ConfigureAwait(false);
 
             if (activitySet != null)
             {

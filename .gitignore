@@ -360,3 +360,9 @@ virtualenv/
 
 # Local appsettings
 appsettings.Development.json
+
+# VS code settings
+.vscode/
+
+# PyCharm settings
+.idea/
