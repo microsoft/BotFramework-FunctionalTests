@@ -9,7 +9,7 @@ using Microsoft.Bot.Builder.Dialogs.Choices;
 using Microsoft.Bot.Connector;
 using Microsoft.Bot.Schema;
 
-namespace Microsoft.BotFrameworkFunctionalTests.DialogSkillBot.Dialogs
+namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs
 {
     public class AttachmentDialog : ComponentDialog
     {

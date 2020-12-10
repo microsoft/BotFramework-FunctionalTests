@@ -16,7 +16,7 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Microsoft.BotFrameworkFunctionalTests.DialogSkillBot.Dialogs
+namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs
 {
     public class CardDialog : ComponentDialog
     {
