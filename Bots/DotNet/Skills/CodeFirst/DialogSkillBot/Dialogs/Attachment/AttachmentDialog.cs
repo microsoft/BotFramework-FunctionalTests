@@ -122,12 +122,14 @@ namespace Microsoft.BotFrameworkFunctionalTests.DialogSkillBot.Dialogs
                     break;
 
                 case "Upload":
-                    reply.Text = "This is an uploaded attachment.";
-
-                    // Get the uploaded attachment.
-                    var uploadedAttachment = await GetUploadedAttachmentAsync(stepContext, stepContext.Context.Activity.ServiceUrl, stepContext.Context.Activity.Conversation.Id, cancellationToken);
-                    reply.Attachments = new List<Attachment>() { uploadedAttachment };
                     break;
+                    
+                    // Commenting this out since the Attachments endpoint isn't currently implemented in the ChannelService Handler
+                    //reply.Text = "This is an uploaded attachment.";
+
+                    //// Get the uploaded attachment.
+                    //var uploadedAttachment = await GetUploadedAttachmentAsync(stepContext, stepContext.Context.Activity.ServiceUrl, stepContext.Context.Activity.Conversation.Id, cancellationToken);
+                    //reply.Attachments = new List<Attachment>() { uploadedAttachment };
 
                 default:
                     reply.Text = "Invalid choice";
