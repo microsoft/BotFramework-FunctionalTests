@@ -10,8 +10,6 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
             MultiSelect = "true";
         }
 
-        public string SubmitLocation { get; set; }
-
         public string Question { get; set; }
 
         public string MultiSelect { get; set; }

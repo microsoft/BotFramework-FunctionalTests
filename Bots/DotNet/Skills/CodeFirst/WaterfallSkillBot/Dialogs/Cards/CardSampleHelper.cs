@@ -452,7 +452,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
                     }
                 });
 
-            O365ConnectorCard card = new O365ConnectorCard()
+            var card = new O365ConnectorCard()
             {
                 Summary = "O365 card summary",
                 ThemeColor = "#E67A9E",

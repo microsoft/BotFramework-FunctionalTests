@@ -7,14 +7,11 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 
 namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Auth
 {
     public class AuthDialog : AuthLogoutDialog
     {
-        private readonly ILogger _logger;
-
         public AuthDialog(IConfiguration configuration)
             : base(nameof(AuthDialog), configuration["ConnectionName"])
         {
@@ -29,8 +26,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Auth
                 }));
 
             AddDialog(new ConfirmPrompt(nameof(ConfirmPrompt)));
-
-            _ = AddDialog(new WaterfallDialog(nameof(WaterfallDialog), actions: new WaterfallStep[] { PromptStepAsync, LoginStepAsync, DisplayTokenPhase1Async, DisplayTokenPhase2Async }));
+            AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[] { PromptStepAsync, LoginStepAsync, DisplayTokenPhase1Async, DisplayTokenPhase2Async }));
 
             // The initial child Dialog to run.
             InitialDialogId = nameof(WaterfallDialog);

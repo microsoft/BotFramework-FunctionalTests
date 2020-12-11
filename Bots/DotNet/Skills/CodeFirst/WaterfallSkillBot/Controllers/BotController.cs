@@ -16,8 +16,6 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Controllers
     [ApiController]
     public class BotController : ControllerBase
     {
-        private static readonly string Music = "music.mp3";
-
         private readonly IBotFrameworkHttpAdapter _adapter;
         private readonly IBot _bot;
         private readonly ILogger _logger;

@@ -22,11 +22,8 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Attach
              : base(nameof(AttachmentDialog))
         {
             AddDialog(new ChoicePrompt("AttachmentTypePrompt"));
-
             AddDialog(new ChoicePrompt("EndPrompt"));
-
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[] { SelectAttachmentAsync, HandleAttachmentAsync, FinalStepAsync }));
-
             InitialDialogId = nameof(WaterfallDialog);
         }
 
@@ -75,7 +72,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Attach
                 new AttachmentData
                 {
                     Name = $@"Files\{Picture}",
-                    OriginalBase64 = File.ReadAllBytes(imagePath),
+                    OriginalBase64 = await File.ReadAllBytesAsync(imagePath, cancellationToken),
                     Type = "image/png",
                 },
                 cancellationToken);

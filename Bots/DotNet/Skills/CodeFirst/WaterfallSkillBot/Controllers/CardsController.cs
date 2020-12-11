@@ -20,7 +20,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Controllers
         {
             var filename = Music;
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files", filename);
-            byte[] fileData = System.IO.File.ReadAllBytes(filePath);
+            var fileData = System.IO.File.ReadAllBytes(filePath);
 
             return File(fileData, "audio/mp3");
         }

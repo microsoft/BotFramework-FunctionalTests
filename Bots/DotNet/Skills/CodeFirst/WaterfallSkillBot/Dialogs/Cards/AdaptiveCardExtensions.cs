@@ -63,7 +63,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
         /// <summary>
         /// Wrap BotBuilder action into AdaptiveCard submit action.
         /// </summary>
-        /// <param name="action"> Target bot builder aciton to be adapted.</param>
+        /// <param name="action"> Target bot builder action to be adapted.</param>
         /// <returns> The wrapped adaptive card submit action.</returns>
         public static AdaptiveSubmitAction ToAdaptiveCardAction(this CardAction action)
         {

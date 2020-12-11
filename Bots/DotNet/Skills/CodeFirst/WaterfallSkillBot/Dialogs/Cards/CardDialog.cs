@@ -59,17 +59,10 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
             _clientFactory = clientFactory;
 
             AddDialog(new ChoicePrompt("CardPrompt", SkillActionPromptValidator));
-
             AddDialog(new ChoicePrompt("EndPrompt", SkillActionPromptValidator));
-
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[] { SelectCardAsync, DisplayCardAsync, FinalStepAsync }));
 
             InitialDialogId = nameof(WaterfallDialog);
-        }
-
-        public IHttpClientFactory GetClientFactory()
-        {
-            return _clientFactory;
         }
 
         private async Task<DialogTurnResult> SelectCardAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
@@ -81,7 +74,8 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
             {
                 Prompt = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput),
                 RetryPrompt = MessageFactory.Text(repromptMessageText, repromptMessageText, InputHints.ExpectingInput),
-                Choices = _cardOptions.Select(card => new Choice(card)).ToList()
+                Choices = _cardOptions.Select(card => new Choice(card)).ToList(),
+                Style = ListStyle.List
             };
 
             // Ask the user to enter their name.
@@ -95,13 +89,13 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
             switch (card)
             {
                 case "botaction":
-                    await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeAdaptiveCard("botaction").ToAttachment()));
+                    await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeAdaptiveCard("botaction").ToAttachment()), cancellationToken);
                     break;
                 case "taskmodule":
-                    await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeAdaptiveCard("taskmodule").ToAttachment()));
+                    await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeAdaptiveCard("taskmodule").ToAttachment()), cancellationToken);
                     break;
                 case "submitaction":
-                    await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeAdaptiveCard("submitaction").ToAttachment()));
+                    await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeAdaptiveCard("submitaction").ToAttachment()), cancellationToken);
                     break;
                 case "hero":
                     await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(CardSampleHelper.CreateHeroCard().ToAttachment()), cancellationToken).ConfigureAwait(false);
@@ -142,16 +136,16 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
                     await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeO365CardAttachmentAsync()), cancellationToken).ConfigureAwait(false);
                     break;
                 case "file":
-                    await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeFileCard()));
+                    await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeFileCard()), cancellationToken);
                     break;
                 case "animation":
-                    await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeAnimationCard().ToAttachment()));
+                    await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeAnimationCard().ToAttachment()), cancellationToken);
                     break;
                 case "audio":
-                    await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeAudiocard().ToAttachment()));
+                    await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeAudioCard().ToAttachment()), cancellationToken);
                     break;
                 case "video":
-                    await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeVideoCard().ToAttachment()));
+                    await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeVideoCard().ToAttachment()), cancellationToken);
                     break;
                 case "uploadfile":
                     await ShowUploadFile(stepContext, cancellationToken).ConfigureAwait(false);
@@ -173,7 +167,6 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
         private async Task<DialogTurnResult> FinalStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             var selectedSkillId = ((FoundChoice)stepContext.Result).Value.ToLower();
-
             if (selectedSkillId == "yes")
             {
                 return await stepContext.ReplaceDialogAsync(InitialDialogId, "What card would you want?", cancellationToken);
@@ -196,7 +189,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
                 var repromptActivity = ChoiceFactory.SuggestedAction(choices);
 
                 repromptActivity.Text = promptContext.Options.RetryPrompt.Text;
-                await promptContext.Context.SendActivityAsync(repromptActivity);
+                await promptContext.Context.SendActivityAsync(repromptActivity, cancellationToken);
 
                 return await Task.FromResult(false);
             }
@@ -238,7 +231,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
             return MakeFileCardAttachment(filename, fileSize);
         }
 
-        private Attachment MakeFileCardAttachment(string filename, long filesize)
+        private Attachment MakeFileCardAttachment(string filename, long fileSize)
         {
             var consentContext = new Dictionary<string, string>
             {
@@ -248,7 +241,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
             var fileCard = new FileConsentCard
             {
                 Description = "This is the file I want to send you",
-                SizeInBytes = filesize,
+                SizeInBytes = fileSize,
                 AcceptContext = consentContext,
                 DeclineContext = consentContext,
             };
@@ -275,7 +268,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
             return new VideoCard(title: "Video Card", media: new[] { url });
         }
 
-        private AudioCard MakeAudiocard()
+        private AudioCard MakeAudioCard()
         {
             var url = new MediaUrl(url: $"{BotController.ServerUrl}api/music");
             return new AudioCard(title: "Audio Card", media: new[] { url }, autoloop: true);
@@ -291,8 +284,8 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
 
                 var filePath = Path.Combine("Files", file.Name);
 
-                using var client = GetClientFactory().CreateClient();
-                var response = await client.GetAsync(new Uri(fileDownload.DownloadUrl)).ConfigureAwait(false);
+                using var client = _clientFactory.CreateClient();
+                var response = await client.GetAsync(new Uri(fileDownload.DownloadUrl), cancellationToken).ConfigureAwait(false);
                 using var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None);
                 await response.Content.CopyToAsync(fileStream).ConfigureAwait(false);
 
@@ -305,17 +298,8 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
                 var filename = TeamsLogoFileName;
                 var filePath = Path.Combine("Files", filename);
                 var fileSize = new FileInfo(filePath).Length;
-                await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeFileCardAttachment(filename, fileSize))).ConfigureAwait(false);
+                await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeFileCardAttachment(filename, fileSize)), cancellationToken).ConfigureAwait(false);
             }
-        }
-
-        private struct CardData
-        {
-            public string Title { get; set; }
-
-            public string Subtitle { get; set; }
-
-            public string Text { get; set; }
         }
     }
 }
