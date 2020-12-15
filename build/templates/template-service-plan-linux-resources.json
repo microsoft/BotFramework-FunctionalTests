@@ -10,14 +10,8 @@
             }
         },
         "newAppServicePlanSku": {
-            "type": "object",
-            "defaultValue": {
-                "name": "S1",
-                "tier": "Standard",
-                "size": "S1",
-                "family": "S",
-                "capacity": 1
-            },
+            "type": "string",
+            "defaultValue": "F1",
             "metadata": {
                 "description": "The SKU of the App Service Plan. Defaults to Standard values."
             }
@@ -51,7 +45,9 @@
             "name": "[variables('servicePlanName')]",
             "apiVersion": "2018-02-01",
             "location": "[variables('resourcesLocation')]",
-            "sku": "[parameters('newAppServicePlanSku')]",
+            "sku": {
+                "name": "[parameters('newAppServicePlanSku')]"
+            },
             "kind": "linux",
             "properties": {
                 "name": "[variables('servicePlanName')]",
