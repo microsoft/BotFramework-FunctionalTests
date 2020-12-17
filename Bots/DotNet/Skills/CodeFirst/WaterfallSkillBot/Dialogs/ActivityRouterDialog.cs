@@ -12,6 +12,7 @@ using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Attachment
 using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Auth;
 using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards;
 using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Proactive;
+using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Sso;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
@@ -29,11 +30,17 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs
             AddDialog(new WaitForProactiveDialog());
             AddDialog(new AttachmentDialog());
             AddDialog(new AuthDialog(configuration));
+            AddDialog(new SsoDialog(configuration));
 
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[] { ProcessActivityAsync }));
 
             // The initial child Dialog to run.
             InitialDialogId = nameof(WaterfallDialog);
+        }
+
+        protected override async Task<DialogTurnResult> OnContinueDialogAsync(DialogContext innerDc, CancellationToken cancellationToken = default)
+        {
+            return await base.OnContinueDialogAsync(innerDc, cancellationToken);
         }
 
         private async Task<DialogTurnResult> ProcessActivityAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
@@ -46,12 +53,24 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs
                 case ActivityTypes.Event:
                     return await OnEventActivityAsync(stepContext, cancellationToken);
 
+                case ActivityTypes.Invoke:
+                    return new DialogTurnResult(DialogTurnStatus.Complete);
+                
+                    //return await HandleInvokeTokenExchangeAsync(stepContext, cancellationToken);
+
                 default:
                     // We didn't get an activity type we can handle.
                     await stepContext.Context.SendActivityAsync(MessageFactory.Text($"Unrecognized ActivityType: \"{stepContext.Context.Activity.Type}\".", inputHint: InputHints.IgnoringInput), cancellationToken);
                     return new DialogTurnResult(DialogTurnStatus.Complete);
             }
         }
+
+        /*
+        private async Task<DialogTurnResult> HandleInvokeTokenExchangeAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            // fix dialog/conversation state
+            return await _mainDialog.RunAsync(stepContext.Context, _conversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
+        }*/
 
         // This method performs different tasks based on the event name.
         private async Task<DialogTurnResult> OnEventActivityAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
@@ -73,6 +92,9 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs
 
                 case "Auth":
                     return await stepContext.BeginDialogAsync(FindDialog(nameof(AuthDialog)).Id, cancellationToken: cancellationToken);
+
+                case "Sso":
+                    return await stepContext.BeginDialogAsync(FindDialog(nameof(SsoDialog)).Id, cancellationToken: cancellationToken);
 
                 default:
                     // We didn't get an event name we can handle.

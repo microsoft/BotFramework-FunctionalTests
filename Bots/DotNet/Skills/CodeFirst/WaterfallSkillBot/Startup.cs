@@ -55,6 +55,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot
 
             // Create the Conversation state. (Used by the Dialog system itself.)
             services.AddSingleton<ConversationState>();
+            services.AddSingleton<UserState>();
 
             // The Dialog that will be run by the bot.
             services.AddSingleton<ActivityRouterDialog>();

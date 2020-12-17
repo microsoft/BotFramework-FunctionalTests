@@ -12,6 +12,7 @@ using Microsoft.Bot.Builder.Integration.AspNet.Core.Skills;
 using Microsoft.Bot.Builder.Skills;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Bot.Schema;
+using Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs.Sso;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
@@ -60,6 +61,8 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs
 
             // Add ChoicePrompt to render skill actions.
             AddDialog(new ChoicePrompt("SkillActionPrompt", SkillActionPromptValidator));
+
+            AddDialog(new SsoDialog(conversationState, _skillsConfig, skillClient, configuration, conversationIdFactory));
 
             // Add main waterfall dialog for this bot.
             var waterfallSteps = new WaterfallStep[]
@@ -176,6 +179,11 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs
 
             // Save active skill in state.
             await _activeSkillProperty.SetAsync(stepContext.Context, selectedSkill, cancellationToken);
+
+            if (skillActivity.Name == "Sso")
+            {
+                return await stepContext.BeginDialogAsync(nameof(SsoDialog), cancellationToken: cancellationToken);
+            }
 
             // Start the skillDialog instance with the arguments. 
             return await stepContext.BeginDialogAsync(selectedSkill.Id, skillDialogArgs, cancellationToken);
