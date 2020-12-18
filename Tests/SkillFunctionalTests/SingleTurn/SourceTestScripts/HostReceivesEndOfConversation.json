@@ -1,0 +1,120 @@
+{
+  "$schema": "../../../Libraries/TranscriptTestRunner/testscript.schema",
+  "items": [
+    {
+      "type": "conversationUpdate",
+      "role": "user"
+    },
+    {
+      "type": "message",
+      "role": "bot",
+      "text": "Hello and welcome!",
+      "assertions": [
+        "type == 'message'",
+        "from.role == 'bot'",
+        "recipient.role == 'user'",
+        "text == 'Hello and welcome!'",
+        "inputHint == 'acceptingInput'"
+      ]
+    },
+    {
+      "type": "message",
+      "role": "user",
+      "text": "Hi"
+    },
+    {
+      "type": "message",
+      "role": "bot",
+      "text": "Me no nothin'. Say \"skill\" and I'll patch you through",
+      "assertions": [
+        "type == 'message'",
+        "from.role == 'bot'",
+        "recipient.role == 'user'",
+        "text == 'Me no nothin\\'. Say \"skill\" and I\\'ll patch you through'",
+        "inputHint == 'acceptingInput'"
+      ]
+    },
+    {
+      "type": "message",
+      "role": "user",
+      "text": "skill"
+    },
+    {
+      "type": "message",
+      "role": "bot",
+      "text": "Got it, connecting you to the skill...",
+      "assertions": [
+        "type == 'message'",
+        "from.role == 'bot'",
+        "recipient.role == 'user'",
+        "text == 'Got it, connecting you to the skill...'",
+        "inputHint == 'acceptingInput'"
+      ]
+    },
+    {
+      "type": "message",
+      "role": "bot",
+      "text": "Echo: skill",
+      "assertions": [
+        "type == 'message'",
+        "from.role == 'bot'",
+        "recipient.role == 'user'",
+        "text == 'Echo: skill'",
+        "inputHint == 'acceptingInput'"
+      ]
+    },
+    {
+      "type": "message",
+      "role": "bot",
+      "text": "Say \"end\" or \"stop\" and I'll end the conversation and back to the parent.",
+      "assertions": [
+        "type == 'message'",
+        "from.role == 'bot'",
+        "recipient.role == 'user'",
+        "text == 'Say \"end\" or \"stop\" and I\\'ll end the conversation and back to the parent.'",
+        "inputHint == 'acceptingInput'"
+      ]
+    },
+    {
+      "type": "message",
+      "role": "user",
+      "text": "end"
+    },
+    {
+      "type": "message",
+      "role": "bot",
+      "text": "Ending conversation from the skill...",
+      "assertions": [
+        "type == 'message'",
+        "from.role == 'bot'",
+        "recipient.role == 'user'",
+        "text == 'Ending conversation from the skill...'",
+        "inputHint == 'acceptingInput'"
+      ]
+    },
+    {
+      "type": "message",
+      "role": "bot",
+      "text": "Received endOfConversation.\n\nCode: completedSuccessfully",
+      "assertions": [
+        "type == 'message'",
+        "from.role == 'bot'",
+        "recipient.role == 'user'",
+        "text == 'Received endOfConversation.\n\nCode: completedSuccessfully'",
+        "inputHint == 'acceptingInput'"
+      ]
+    },
+    {
+      "type": "message",
+      "role": "bot",
+      "text": "Back in the host bot. Say \"skill\" and I'll patch you through",
+      "assertions": [
+        "type == 'message'",
+        "from.role == 'bot'",
+        "recipient.role == 'user'",
+        "text == 'Back in the host bot. Say \"skill\" and I\\'ll patch you through'",
+        "inputHint == 'acceptingInput'"
+      ]
+    }
+  ]
+}
