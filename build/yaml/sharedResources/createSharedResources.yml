@@ -13,6 +13,7 @@ variables:
   # AzureSubscription: define in Azure
   # KeyVaultObjectId: define in Azure
   # ResourceGroupName: define in Azure
+  # AppServicePlanPricingTier: (optional) define in Azure ; Free-F1 (Default).
 
 pool:
   vmImage: 'windows-2019'
@@ -98,7 +99,10 @@ stages:
           azureSubscription: $(AzureSubscription)
           scriptType: ps
           scriptLocation: inlineScript
-          inlineScript: 'az deployment group create --name "bffnbotsappservicewin" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-service-plan-windows-resources.json --parameters  newAppServicePlanName="bffnbotsappservicewin"'
+          inlineScript: |
+            $appServicePlanPricingTier = if($env:AppServicePlanPricingTier) { "newAppServicePlanSku=$env:AppServicePlanPricingTier" };
+            
+            az deployment group create --name "bffnbotsappservicewin" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-service-plan-windows-resources.json --parameters $appServicePlanPricingTier newAppServicePlanName="bffnbotsappservicewin"
 
 - stage: Create_Service_Plan_Linux
   displayName: Create Linux Service Plan
@@ -112,7 +116,10 @@ stages:
           azureSubscription: $(AzureSubscription)
           scriptType: ps
           scriptLocation: inlineScript
-          inlineScript: 'az deployment group create --name "bffnbotsappservicelinux" --resource-group "$(ResourceGroupName)-linux" --template-file build/templates/template-service-plan-linux-resources.json --parameters newAppServicePlanName="bffnbotsappservicelinux"'
+          inlineScript: |
+            $appServicePlanPricingTier = if($env:AppServicePlanPricingTier) { "newAppServicePlanSku=$env:AppServicePlanPricingTier" };
+
+            az deployment group create --name "bffnbotsappservicelinux" --resource-group "$(ResourceGroupName)-linux" --template-file build/templates/template-service-plan-linux-resources.json --parameters $appServicePlanPricingTier newAppServicePlanName="bffnbotsappservicelinux"
 
 - stage: Create_App_Insights
   displayName: Create App Insights
