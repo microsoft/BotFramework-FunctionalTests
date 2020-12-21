@@ -23,6 +23,7 @@ stages:
   jobs:
     - job: Create_Windows_RG
       steps:
+      - checkout: none
       - task: AzureCLI@2
         displayName: 'Create $(ResourceGroupName)'
         inputs:
@@ -37,6 +38,7 @@ stages:
   jobs:
     - job: Create_Linux_RG
       steps:
+      - checkout: none
       - task: AzureCLI@2
         displayName: 'Create $(ResourceGroupName)-linux'
         inputs:
@@ -72,6 +74,17 @@ stages:
           scriptType: ps
           scriptLocation: inlineScript
           inlineScript: 'az deployment group create --name "bffnbotkeyvault" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-key-vault-resources.json --parameters keyVaultName="bffnbotkeyvault" objectId="$(KeyVaultObjectId)"'
+
+- stage: Create_Bots_App_Registrations
+  displayName: Create Bots App Registrations
+  dependsOn: Create_Key_Vault
+  jobs:
+    - job: Create_Bots_App_Registrations
+      steps:
+      - checkout: none
+      - template: createBotsAppRegistrations.yml
+        parameters: 
+          keyVault: 'bffnbotkeyvault'
 
 - stage: Create_Service_Plan_windows
   displayName: Create Windows Service Plan
