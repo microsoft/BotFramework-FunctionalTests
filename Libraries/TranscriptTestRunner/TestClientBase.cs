@@ -36,7 +36,7 @@ namespace TranscriptTestRunner
         /// Signs in to the bot.
         /// </summary>
         /// <param name="signInUrl">The sign in Url.</param>
-        /// <returns>A task that represents the work queued to execute.</returns>
-        public abstract Task SignInAsync(string signInUrl);
+        /// <returns>True, if SignIn is successful; otherwise false.</returns>
+        public abstract Task<bool> SignInAsync(string signInUrl);
     }
 }
