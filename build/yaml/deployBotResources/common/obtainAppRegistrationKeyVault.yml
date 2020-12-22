@@ -21,10 +21,12 @@ steps:
 
         if ([string]::IsNullOrEmpty($secret.AppId)) {
           Write-Host  "##vso[task.LogIssue type=error;]AppId is Null or Empty"
+          Write-Host "##vso[task.complete result=Failed;]DONE"
         }
 
         if ([string]::IsNullOrEmpty($secret.AppSecret)) {
           Write-Host  "##vso[task.LogIssue type=error;]AppSecret is Null or Empty"
+          Write-Host "##vso[task.complete result=Failed;]DONE"
         }
 
         Write-Host "##vso[task.setvariable variable=AppId]$($secret.AppId)"
