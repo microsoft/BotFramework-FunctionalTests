@@ -8,22 +8,22 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Files\music.mp3" />
-    <None Remove="Files\teams-logo.png" />
+    <None Remove="Dialogs\Cards\Files\music.mp3" />
+    <None Remove="Dialogs\Cards\Files\teams-logo.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Files\music.mp3">
+    <Content Include="Dialogs\Cards\Files\music.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Files\teams-logo.png">
+    <Content Include="Dialogs\Cards\Files\teams-logo.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AdaptiveCards" Version="2.3.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.2" />
     <PackageReference Include="Microsoft.Bot.Builder.AI.Luis" Version="4.11.1" />
     <PackageReference Include="Microsoft.Bot.Builder.Dialogs" Version="4.11.1" />
     <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="4.11.1" />

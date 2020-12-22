@@ -51,13 +51,16 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot
             // Register the skills conversation ID factory, the client and the request handler.
             services.AddSingleton<SkillConversationIdFactoryBase, SkillConversationIdFactory>();
             services.AddHttpClient<SkillHttpClient>();
-            services.AddSingleton<ChannelServiceHandler, SkillHandler>();
+            
+            //services.AddSingleton<ChannelServiceHandler, SkillHandler>();
+            services.AddSingleton<ChannelServiceHandler, TokenExchangeSkillHandler>();
 
             // Register the storage we'll be using for User and Conversation state. (Memory is great for testing purposes.)
             services.AddSingleton<IStorage, MemoryStorage>();
 
             // Register Conversation state (used by the Dialog system itself).
             services.AddSingleton<ConversationState>();
+            services.AddSingleton<UserState>();
 
             // Register the MainDialog that will be run by the bot.
             services.AddSingleton<MainDialog>();

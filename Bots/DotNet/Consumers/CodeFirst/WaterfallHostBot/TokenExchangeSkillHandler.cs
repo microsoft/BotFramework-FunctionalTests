@@ -15,10 +15,14 @@ using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Newtonsoft.Json.Linq;
 
-namespace Microsoft.BotFrameworkFunctionalTests.SsoRootBot
+namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot
 {
+    /// <summary>
+    /// A <see cref="SkillHandler"/> specialized to support SSO Token exchanges.
+    /// </summary>
     public class TokenExchangeSkillHandler : SkillHandler
     {
         private readonly BotAdapter _adapter;
@@ -27,7 +31,8 @@ namespace Microsoft.BotFrameworkFunctionalTests.SsoRootBot
         private readonly string _botId;
         private readonly string _connectionName;
         private readonly SkillConversationIdFactoryBase _conversationIdFactory;
-        private IExtendedUserTokenProvider _tokenExchangeProvider;
+        private readonly ILogger _logger;
+        private readonly IExtendedUserTokenProvider _tokenExchangeProvider;
 
         public TokenExchangeSkillHandler(
             BotAdapter adapter,
@@ -39,7 +44,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.SsoRootBot
             ICredentialProvider credentialProvider,
             AuthenticationConfiguration authConfig,
             IChannelProvider channelProvider = null,
-            ILogger logger = null)
+            ILogger<TokenExchangeSkillHandler> logger = null)
             : base(adapter, bot, conversationIdFactory, credentialProvider, authConfig, channelProvider, logger)
         {
             _adapter = adapter;
@@ -52,9 +57,10 @@ namespace Microsoft.BotFrameworkFunctionalTests.SsoRootBot
             _skillsConfig = skillsConfig;
             _skillClient = skillClient;
             _conversationIdFactory = conversationIdFactory;
+            _logger = logger ?? NullLogger<TokenExchangeSkillHandler>.Instance;
 
             _botId = configuration.GetSection(MicrosoftAppCredentials.MicrosoftAppIdKey)?.Value;
-            _connectionName = configuration.GetSection("ConnectionName")?.Value;
+            _connectionName = configuration.GetSection("SsoConnectionName")?.Value;
         }
 
         protected override async Task<ResourceResponse> OnSendToConversationAsync(ClaimsIdentity claimsIdentity, string conversationId, Activity activity, CancellationToken cancellationToken = default(CancellationToken))
@@ -118,12 +124,13 @@ namespace Microsoft.BotFrameworkFunctionalTests.SsoRootBot
                                 {
                                     // If token above is null, then SSO has failed and hence we return false.
                                     // If not, send an invoke to the skill with the token. 
-                                    return await SendTokenExchangeInvokeToSkill(activity, oauthCard.TokenExchangeResource.Id, result.Token, oauthCard.ConnectionName, targetSkill, default).ConfigureAwait(false);
+                                    return await SendTokenExchangeInvokeToSkillAsync(activity, oauthCard.TokenExchangeResource.Id, result.Token, oauthCard.ConnectionName, targetSkill, default).ConfigureAwait(false);
                                 }
                             }
-                            catch
+                            catch (Exception ex)
                             {
                                 // Show oauth card if token exchange fails.
+                                _logger.LogWarning("Unable to exchange token.", ex);
                                 return false;
                             }
 
@@ -136,9 +143,9 @@ namespace Microsoft.BotFrameworkFunctionalTests.SsoRootBot
             return false;
         }
 
-        private async Task<bool> SendTokenExchangeInvokeToSkill(Activity incomingActivity, string id, string token, string connectionName, BotFrameworkSkill targetSkill, CancellationToken cancellationToken)
+        private async Task<bool> SendTokenExchangeInvokeToSkillAsync(Activity incomingActivity, string id, string token, string connectionName, BotFrameworkSkill targetSkill, CancellationToken cancellationToken)
         {
-            var activity = incomingActivity.CreateReply() as Activity;
+            var activity = incomingActivity.CreateReply();
             activity.Type = ActivityTypes.Invoke;
             activity.Name = SignInConstants.TokenExchangeOperationName;
             activity.Value = new TokenExchangeInvokeRequest()
