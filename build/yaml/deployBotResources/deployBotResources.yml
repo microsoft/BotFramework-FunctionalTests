@@ -25,6 +25,12 @@ variables:
   # BffnEchoSkillBot21DotnetAppSecret: define in Azure
   # BffnEchoSkillBotV3DotnetAppId: define in Azure
   # BffnEchoSkillBotV3DotnetAppSecret: define in Azure
+  # BffnSimpleHostBotJsAppId: define in Azure
+  # BffnSimpleHostBotJsAppSecret: define in Azure
+  # BffnEchoSkillBotJsAppId: define in Azure
+  # BffnEchoSkillBotJsAppSecret: define in Azure
+  # BffnEchoSkillBotV3JsAppId: define in Azure
+  # BffnEchoSkillBotV3JsAppSecret: define in Azure
   # ResourceGroup: define in Azure
   # BotPricingTier: (optional) define in Azure ; Acceptable values are F0 (Default) and S1.
   # DependenciesRegistryHosts: (optional) define in Azure
@@ -41,6 +47,10 @@ stages:
         - id: 'Prepare_DotNetGroup'
           name: "$(ResourceGroup)-DotNet"
           displayName: "Prepare DotNet's Resource Group"
+
+        - id: 'Prepare_JsGroup'
+          name: "$(ResourceGroup)-Js"
+          displayName: "Prepare Js's Resource Group"
 
   - template: dotnet/deploy.yml
     parameters:
@@ -94,4 +104,34 @@ stages:
           appSecret: $(BffnEchoSkillBotV3DotnetAppSecret)
           project:
             directory: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3'
+            name: 'EchoSkillBot.sln'
+
+  - template: js/deploy.yml
+    parameters:
+      dependsOn: "Prepare_JsGroup"
+      resourceGroup: "$(ResourceGroup)-Js"
+      bots:
+        - name: bffnsimplehostbotjs
+          type: 'Host'
+          displayName: 'Js Simple Host Bot'
+          appId: $(BffnSimpleHostBotJsAppId)
+          appSecret: $(BffnSimpleHostBotJsAppSecret)
+          project:
+            directory: 'Bots/JavaScript/Consumers/CodeFirst/SimpleHostBot'
+
+        - name: bffnechoskillbotjs
+          type: 'Skill'
+          displayName: 'Js Echo Skill Bot'
+          appId: $(BffnEchoSkillBotJsAppId)
+          appSecret: $(BffnEchoSkillBotJsAppSecret)
+          project: 
+            directory: 'Bots/JavaScript/Skills/CodeFirst/EchoSkillBot'
+
+        - name: bffnechoskillbotv3js
+          type: 'SkillV3'
+          displayName: 'Js Echo Skill Bot v3'
+          appId: $(BffnEchoSkillBotV3JsAppId)
+          appSecret: $(BffnEchoSkillBotV3JsAppSecret)
+          project:
+            directory: 'Bots/JavaScript/Skills/CodeFirst/EchoSkillBot-v3/skill'
             name: 'EchoSkillBot.sln'
