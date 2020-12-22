@@ -84,7 +84,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
 
         private async Task<DialogTurnResult> DisplayCardAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            var card = stepContext.Context.Activity.Text;
+            var card = ((FoundChoice)stepContext.Result).Value.ToLowerInvariant();
 
             switch (card)
             {

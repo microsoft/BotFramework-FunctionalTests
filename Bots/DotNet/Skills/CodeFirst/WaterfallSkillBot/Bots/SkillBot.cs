@@ -55,8 +55,8 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Bots
                 // To learn more about Adaptive Cards, see https://aka.ms/msbot-adaptivecards.
                 if (member.Id != turnContext.Activity.Recipient.Id)
                 {
-                    var activity = MessageFactory.Text("Welcome to the dialog skill bot");
-                    activity.Speak = "Welcome to the Dialog Skill Prototype!";
+                    var activity = MessageFactory.Text("Welcome to the waterfall skill bot");
+                    activity.Speak = "Welcome to the waterfall skill bot";
                     await turnContext.SendActivityAsync(activity, cancellationToken);
                     await _mainDialog.RunAsync(turnContext, _conversationState.CreateProperty<DialogState>("DialogState"), cancellationToken);
                 }

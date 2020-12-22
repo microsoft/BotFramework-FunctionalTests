@@ -9,28 +9,23 @@ using Microsoft.Extensions.Configuration;
 
 namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Sso
 {
-    public class SignInDialog : ComponentDialog
+    public class SsoSkillSignInDialog : ComponentDialog
     {
-        public SignInDialog(IConfiguration configuration)
-            : base(nameof(SignInDialog))
+        public SsoSkillSignInDialog(string connectionName)
+            : base(nameof(SsoSkillSignInDialog))
         {
-            var connectionName = configuration.GetSection("SsoConnectionName")?.Value;
-
             AddDialog(new OAuthPrompt(nameof(OAuthPrompt), new OAuthPromptSettings
             {
                 ConnectionName = connectionName,
-                Text = "Sign In to AAD for the Skill",
+                Text = "Sign in to the Skill using AAD",
                 Title = "Sign In"
             }));
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[] { SignInStepAsync, DisplayTokenAsync }));
-
-            // The initial child Dialog to run.
             InitialDialogId = nameof(WaterfallDialog);
         }
 
         private async Task<DialogTurnResult> SignInStepAsync(WaterfallStepContext context, CancellationToken cancellationToken)
         {
-            var userid = context.Context.Activity.From.Id;
             return await context.BeginDialogAsync(nameof(OAuthPrompt), null, cancellationToken);
         }
 

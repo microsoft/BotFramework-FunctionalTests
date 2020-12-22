@@ -31,7 +31,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs
             AddDialog(new WaitForProactiveDialog(httpContextAccessor));
             AddDialog(new AttachmentDialog());
             AddDialog(new AuthDialog(configuration));
-            AddDialog(new SsoDialog(configuration));
+            AddDialog(new SsoSkillDialog(configuration));
 
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[] { ProcessActivityAsync }));
 
@@ -78,7 +78,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs
                     return await stepContext.BeginDialogAsync(FindDialog(nameof(AuthDialog)).Id, cancellationToken: cancellationToken);
 
                 case "Sso":
-                    return await stepContext.BeginDialogAsync(FindDialog(nameof(SsoDialog)).Id, cancellationToken: cancellationToken);
+                    return await stepContext.BeginDialogAsync(FindDialog(nameof(SsoSkillDialog)).Id, cancellationToken: cancellationToken);
 
                 default:
                     // We didn't get an event name we can handle.

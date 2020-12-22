@@ -15,6 +15,7 @@ using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot
@@ -43,7 +44,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot
             ICredentialProvider credentialProvider,
             AuthenticationConfiguration authConfig,
             IChannelProvider channelProvider = null,
-            ILogger logger = null)
+            ILogger<TokenExchangeSkillHandler> logger = null)
             : base(adapter, bot, conversationIdFactory, credentialProvider, authConfig, channelProvider, logger)
         {
             _adapter = adapter;
@@ -56,10 +57,10 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot
             _skillsConfig = skillsConfig;
             _skillClient = skillClient;
             _conversationIdFactory = conversationIdFactory;
-            _logger = logger;
+            _logger = logger ?? NullLogger<TokenExchangeSkillHandler>.Instance;
 
             _botId = configuration.GetSection(MicrosoftAppCredentials.MicrosoftAppIdKey)?.Value;
-            _connectionName = configuration.GetSection("ConnectionName")?.Value;
+            _connectionName = configuration.GetSection("SsoConnectionName")?.Value;
         }
 
         protected override async Task<ResourceResponse> OnSendToConversationAsync(ClaimsIdentity claimsIdentity, string conversationId, Activity activity, CancellationToken cancellationToken = default(CancellationToken))
@@ -128,9 +129,8 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot
                             }
                             catch (Exception ex)
                             {
-                                _logger.LogWarning("Unable to exchange token.", ex);
-                                
                                 // Show oauth card if token exchange fails.
+                                _logger.LogWarning("Unable to exchange token.", ex);
                                 return false;
                             }
 

@@ -11,31 +11,24 @@ using Microsoft.Bot.Builder.Dialogs.Choices;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Configuration;
 
-namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs.Sso
+namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Sso
 {
-    /// <summary>
-    /// Helps prepare the host for SSO operations and provides helpers to check the status and invoke the skill.
-    /// </summary>
-    public class SsoDialog : ComponentDialog
+    public class SsoSkillDialog : ComponentDialog
     {
         private readonly string _connectionName;
-        private readonly string _skillDialogId;
 
-        public SsoDialog(Dialog skillDialog, IConfiguration configuration)
-            : base(nameof(SsoDialog))
+        public SsoSkillDialog(IConfiguration configuration)
+            : base(nameof(SsoSkillDialog))
         {
             _connectionName = configuration.GetSection("SsoConnectionName")?.Value;
-            _skillDialogId = skillDialog.Id;
-
+            AddDialog(new SsoSkillSignInDialog(_connectionName));
             AddDialog(new ChoicePrompt("ActionStepPrompt"));
-            AddDialog(new SsoSignInDialog(_connectionName));
-            AddDialog(skillDialog);
 
             var waterfallSteps = new WaterfallStep[]
             {
                 PromptActionStepAsync,
                 HandleActionStepAsync,
-                PromptFinalStepAsync,
+                PromptFinalStepAsync
             };
 
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), waterfallSteps));
@@ -45,7 +38,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs.Sso
 
         private async Task<DialogTurnResult> PromptActionStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            var messageText = "What SSO action do you want to perform?";
+            var messageText = "What SSO action would you like to perform on the skill?";
             var repromptMessageText = "That was not a valid choice, please select a valid choice.";
             var options = new PromptOptions
             {
@@ -58,7 +51,6 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs.Sso
             return await stepContext.PromptAsync("ActionStepPrompt", options, cancellationToken);
         }
 
-        // Create the prompt choices based on the current sign in status
         private async Task<List<Choice>> GetPromptChoicesAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             var promptChoices = new List<Choice>();
@@ -68,19 +60,14 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs.Sso
             if (token == null)
             {
                 promptChoices.Add(new Choice("Login"));
-                
-                // Token exchange will fail when the host is not logged on and the skill should 
-                // show a regular OAuthPrompt
-                promptChoices.Add(new Choice("Call Skill (without SSO)"));
             }
             else
             {
                 promptChoices.Add(new Choice("Logout"));
                 promptChoices.Add(new Choice("Show token"));
-                promptChoices.Add(new Choice("Call Skill (with SSO)"));
             }
 
-            promptChoices.Add(new Choice("Back"));
+            promptChoices.Add(new Choice("End"));
 
             return promptChoices;
         }
@@ -92,7 +79,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs.Sso
             switch (action)
             {
                 case "login":
-                    return await stepContext.BeginDialogAsync(nameof(SsoSignInDialog), null, cancellationToken);
+                    return await stepContext.BeginDialogAsync(nameof(SsoSkillSignInDialog), null, cancellationToken);
 
                 case "logout":
                     var adapter = (IUserTokenProvider)stepContext.Context.Adapter;
@@ -114,17 +101,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs.Sso
 
                     return await stepContext.NextAsync(cancellationToken: cancellationToken);
 
-                case "call skill (with sso)":
-                case "call skill (without sso)":
-                    var beginSkillActivity = new Activity
-                    {
-                        Type = ActivityTypes.Event,
-                        Name = "Sso"
-                    };
-
-                    return await stepContext.BeginDialogAsync(_skillDialogId, new BeginSkillDialogOptions { Activity = beginSkillActivity }, cancellationToken);
-
-                case "back":
+                case "end":
                     return new DialogTurnResult(DialogTurnStatus.Complete);
 
                 default:
