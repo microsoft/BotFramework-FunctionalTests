@@ -12,6 +12,7 @@ using Microsoft.Bot.Builder.Integration.AspNet.Core.Skills;
 using Microsoft.Bot.Builder.Skills;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Bot.Schema;
+using Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs.Sso;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
@@ -49,6 +50,9 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs
                 throw new ArgumentNullException(nameof(conversationState));
             }
 
+            // Create state property to track the active skill.
+            _activeSkillProperty = conversationState.CreateProperty<BotFrameworkSkill>(ActiveSkillPropertyName);
+
             // Register the tangent dialog for testing tangents and resume
             AddDialog(new TangentDialog());
 
@@ -61,6 +65,11 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs
             // Add ChoicePrompt to render skill actions.
             AddDialog(new ChoicePrompt("SkillActionPrompt", SkillActionPromptValidator));
 
+            // Add dialog to prepare SSO on the host and test the SSO skill
+            // The waterfall skillDialog created in AddSkillDialogs contains the SSO skill action.
+            var waterfallDialog = Dialogs.Find("WaterfallSkillBot");
+            AddDialog(new SsoDialog(waterfallDialog, configuration));
+
             // Add main waterfall dialog for this bot.
             var waterfallSteps = new WaterfallStep[]
             {
@@ -70,10 +79,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs
                 FinalStepAsync
             };
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), waterfallSteps));
-
-            // Create state property to track the active skill.
-            _activeSkillProperty = conversationState.CreateProperty<BotFrameworkSkill>(ActiveSkillPropertyName);
-
+            
             // The initial child Dialog to run.
             InitialDialogId = nameof(WaterfallDialog);
         }
@@ -176,6 +182,12 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs
 
             // Save active skill in state.
             await _activeSkillProperty.SetAsync(stepContext.Context, selectedSkill, cancellationToken);
+
+            if (skillActivity.Name == "Sso")
+            {
+                // Special case, we start the SSO dialog to prepare the host to call the skill.
+                return await stepContext.BeginDialogAsync(nameof(SsoDialog), cancellationToken: cancellationToken);
+            }
 
             // Start the skillDialog instance with the arguments. 
             return await stepContext.BeginDialogAsync(selectedSkill.Id, skillDialogArgs, cancellationToken);

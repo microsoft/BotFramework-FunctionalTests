@@ -13,6 +13,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Skills
         private const string SkillActionProactive = "Proactive";
         private const string SkillActionAuth = "Auth";
         private const string SkillActionAttachment = "Attachment";
+        private const string SkillActionSso = "Sso";
 
         public override IList<string> GetActions()
         {
@@ -21,7 +22,8 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Skills
                 SkillActionCards,
                 SkillActionProactive,
                 SkillActionAuth,
-                SkillActionAttachment
+                SkillActionAttachment,
+                SkillActionSso
             };
         }
 
@@ -58,6 +60,14 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Skills
             {
                 activity = (Activity)Activity.CreateEventActivity();
                 activity.Name = SkillActionAttachment;
+                return activity;
+            }
+
+            // Send an event activity to the skill with "Sso" in the name.
+            if (actionId.Equals(SkillActionSso, StringComparison.CurrentCultureIgnoreCase))
+            {
+                activity = (Activity)Activity.CreateEventActivity();
+                activity.Name = SkillActionSso;
                 return activity;
             }
 
