@@ -26,6 +26,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Sso
 
         private async Task<DialogTurnResult> SignInStepAsync(WaterfallStepContext context, CancellationToken cancellationToken)
         {
+            // This prompt won't show if the user is signed in to the host using SSO.
             return await context.BeginDialogAsync(nameof(OAuthPrompt), null, cancellationToken);
         }
 
