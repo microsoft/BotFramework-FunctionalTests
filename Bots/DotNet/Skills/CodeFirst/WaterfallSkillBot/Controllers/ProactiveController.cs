@@ -67,7 +67,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Controllers
                         // ContinueDialogAsync in WaitForProactiveDialog will get a ContinueConversation event when this is called.
                         await _mainDialog.RunAsync(context, _conversationState.CreateProperty<DialogState>("DialogState"), cancellationToken);
 
-                        // Save any state changes that might have occurred during the turn.
+                        // Save any state changes so the dialog stack is persisted.
                         await _conversationState.SaveChangesAsync(context, false, cancellationToken);
                     }
 

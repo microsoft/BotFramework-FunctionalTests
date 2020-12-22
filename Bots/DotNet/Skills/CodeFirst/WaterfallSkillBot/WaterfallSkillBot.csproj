@@ -8,15 +8,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Files\music.mp3" />
-    <None Remove="Files\teams-logo.png" />
+    <None Remove="Dialogs\Cards\Files\music.mp3" />
+    <None Remove="Dialogs\Cards\Files\teams-logo.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Files\music.mp3">
+    <Content Include="Dialogs\Cards\Files\music.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Files\teams-logo.png">
+    <Content Include="Dialogs\Cards\Files\teams-logo.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
