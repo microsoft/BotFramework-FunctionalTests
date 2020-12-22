@@ -1,0 +1,123 @@
+parameters:
+  dependsOn: ''
+  resourceGroup: ''
+  bots: []
+
+stages:
+- ${{ each bot in parameters.bots }}:
+  - stage: 'Deploy_${{ bot.name }}'
+    ${{ if eq(bot.displayName, '') }}:
+      displayName: '${{ bot.name }}'
+    ${{ if ne(bot.displayName, '') }}:
+      displayName: '${{ bot.displayName }}'
+    dependsOn: '${{ parameters.dependsOn }}'
+    jobs:
+      - job: 'Deploy'
+        displayName: 'Deploy steps'
+        steps:
+          # Use Net Core version
+          - ${{ if ne(bot.project.netCoreVersion, '') }}:
+            - task: UseDotNet@2
+              displayName: 'Use NetCore v${{ bot.project.netCoreVersion }}'
+              inputs:
+                version: '${{ bot.project.netCoreVersion }}'
+
+          # Use NuGet
+          - task: NuGetToolInstaller@1
+            displayName: 'Use NuGet'
+
+          # Run NuGet restore SkillV3
+          - ${{ if eq(bot.type, 'SkillV3') }}:
+            - task: NuGetCommand@2
+              displayName: 'NuGet restore'
+              inputs:
+                restoreSolution: '${{ bot.project.directory }}/${{ bot.project.name }}'
+
+          # Evaluate dependencies source and version
+          - template: evaluateDependenciesVariables.yml
+            parameters:
+              ${{ if eq(bot.type, 'Host') }}:
+                registry: "$env:DependenciesRegistryHosts"
+                version: "$env:DependeciesVersionHosts"
+              ${{ if eq(bot.type, 'Skill') }}:
+                registry: "$env:DependenciesRegistrySkills"
+                version: "$env:DependeciesVersionSkills"
+              ${{ if eq(bot.type, 'SkillV3') }}:
+                registry: "$env:DependenciesRegistrySkillsV3"
+                version: "$env:DependeciesVersionSkillsV3"
+              botType: '${{ bot.type }}'
+
+          # Start of DotNet Install & Build
+          - ${{ if in(bot.type, 'Host', 'Skill') }}:
+            # Install dependencies
+            - template: installDependencies.yml
+              parameters:
+                source: "$(DependenciesSource)"
+                version: "$(DependenciesVersionNumber)"
+                project: '${{ bot.project }}'
+                packages:
+                  Microsoft.Bot.Builder.Dialogs 
+                  Microsoft.Bot.Builder.Integration.AspNet.Core
+
+            # Build Bot
+            - task: DotNetCoreCLI@2
+              displayName: 'Build'
+              inputs:
+                command: publish
+                publishWebProjects: false
+                projects: '${{ bot.project.directory }}/${{ bot.project.name }}'
+                arguments: '--output $(System.DefaultWorkingDirectory)/build/${{ bot.name }}'
+                modifyOutputPath: false
+          # End of DotNet Install & Build
+
+          # Start DotNet v3 Install, Build
+          - ${{ if eq(bot.type, 'SkillV3') }}:
+            # Install dependencies
+            - template: installDependenciesV3.yml
+              parameters:
+                source: "$(DependenciesSource)"
+                version: "$(DependenciesVersionNumber)"
+                project: '${{ bot.project }}'
+                packages:
+                  Microsoft.Bot.Builder
+                  Microsoft.Bot.Builder.Azure
+                  Microsoft.Bot.Builder.History
+
+            # Build bot
+            - task: VSBuild@1
+              displayName: 'Build'
+              inputs:
+                solution: '${{ bot.project.directory }}/${{ bot.project.name }}'
+                vsVersion: 16.0
+                platform: '$(BuildPlatform)'
+                configuration: '$(BuildConfiguration)'
+
+            # Zip bot
+            - powershell: |
+                7z.exe a -tzip "$(System.DefaultWorkingDirectory)/build/${{ bot.name }}/${{ bot.name }}.zip" "$(System.DefaultWorkingDirectory)/${{ bot.project.directory }}/*" -aoa
+              displayName: 'Zip bot'
+          # End of DotNet v3 Install, Build
+
+          # Create App Service and Bot Channel Registration
+          - template: ../common/createAppService.yml
+            parameters:
+              appId: '${{ bot.appId }}'
+              appSecret: '${{ bot.appSecret }}'
+              botName: '${{ bot.name }}'
+              botGroup: '${{ parameters.resourceGroup }}'
+
+          # Configure OAuth
+          - ${{ if eq(bot.type, 'Skill') }}:
+            - template: ../common/configureOAuth.yml
+              parameters:
+                appId: '${{ bot.appId }}'
+                appSecret: '${{ bot.appSecret }}'
+                botName: '${{ bot.name }}'
+                botGroup: '${{ parameters.resourceGroup }}'
+
+          # Deploy bot
+          - template: ../common/zipDeploy.yml
+            parameters:
+              botName: '${{ bot.name }}'
+              botGroup: '${{ parameters.resourceGroup }}'
+              source: "$(System.DefaultWorkingDirectory)/build/${{ bot.name }}/${{ bot.name }}.zip"
