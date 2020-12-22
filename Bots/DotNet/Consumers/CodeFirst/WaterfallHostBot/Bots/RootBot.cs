@@ -17,38 +17,28 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Bots
     {
         private readonly ConversationState _conversationState;
         private readonly Dialog _mainDialog;
-        private readonly UserState _userState;
 
-        public RootBot(ConversationState conversationState, T mainDialog, UserState userState)
+        public RootBot(ConversationState conversationState, T mainDialog)
         {
             _conversationState = conversationState;
             _mainDialog = mainDialog;
-            _userState = userState;
         }
 
         public override async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default)
         {
-            if (turnContext.Activity.Type != ActivityTypes.ConversationUpdate)
+            if (turnContext.Activity.Type == ActivityTypes.ConversationUpdate)
+            {
+                // Let the base class handle the activity (this will trigger OnMembersAdded).
+                await base.OnTurnAsync(turnContext, cancellationToken);
+            }
+            else
             {
                 // Run the Dialog with the Activity.
                 await _mainDialog.RunAsync(turnContext, _conversationState.CreateProperty<DialogState>("DialogState"), cancellationToken);
             }
-            else
-            {
-                // Let the base class handle the activity.
-                await base.OnTurnAsync(turnContext, cancellationToken);
-            }
 
             // Save any state changes that might have occurred during the turn.
             await _conversationState.SaveChangesAsync(turnContext, false, cancellationToken);
-            await _userState.SaveChangesAsync(turnContext, false, cancellationToken);
-        }
-
-        protected override async Task OnTokenResponseEventAsync(ITurnContext<IEventActivity> turnContext, CancellationToken cancellationToken)
-        {
-            await _conversationState.LoadAsync(turnContext, true, cancellationToken);
-            await _userState.LoadAsync(turnContext, true, cancellationToken);
-            await _mainDialog.RunAsync(turnContext, _conversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
         }
 
         protected override async Task OnMembersAddedAsync(IList<ChannelAccount> membersAdded, ITurnContext<IConversationUpdateActivity> turnContext, CancellationToken cancellationToken)
@@ -66,13 +56,6 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Bots
                     await _mainDialog.RunAsync(turnContext, _conversationState.CreateProperty<DialogState>("DialogState"), cancellationToken);
                 }
             }
-        }
-
-        protected override async Task OnEndOfConversationActivityAsync(ITurnContext<IEndOfConversationActivity> turnContext, CancellationToken cancellationToken)
-        {
-            await _conversationState.LoadAsync(turnContext, true, cancellationToken);
-            await _userState.LoadAsync(turnContext, true, cancellationToken);
-            await _mainDialog.RunAsync(turnContext, _conversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
         }
 
         // Load attachment from embedded resource.

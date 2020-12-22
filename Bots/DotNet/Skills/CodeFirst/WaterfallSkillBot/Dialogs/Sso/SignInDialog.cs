@@ -11,17 +11,21 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Sso
 {
     public class SignInDialog : ComponentDialog
     {
-        private readonly string _connectionName;
-
         public SignInDialog(IConfiguration configuration)
             : base(nameof(SignInDialog))
         {
-            _connectionName = configuration.GetSection("SsoConnectionName")?.Value;
+            var connectionName = configuration.GetSection("SsoConnectionName")?.Value;
 
-            var steps = new WaterfallStep[] { SignInStepAsync, DisplayTokenAsync };
+            AddDialog(new OAuthPrompt(nameof(OAuthPrompt), new OAuthPromptSettings
+            {
+                ConnectionName = connectionName,
+                Text = "Sign In to AAD for the Skill",
+                Title = "Sign In"
+            }));
+            AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[] { SignInStepAsync, DisplayTokenAsync }));
 
-            AddDialog(new WaterfallDialog(nameof(SignInDialog), steps));
-            AddDialog(new OAuthPrompt(nameof(OAuthPrompt), new OAuthPromptSettings() { ConnectionName = _connectionName, Text = "Sign In to AAD for the Skill", Title = "Sign In" }));
+            // The initial child Dialog to run.
+            InitialDialogId = nameof(WaterfallDialog);
         }
 
         private async Task<DialogTurnResult> SignInStepAsync(WaterfallStepContext context, CancellationToken cancellationToken)
@@ -32,15 +36,13 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Sso
 
         private async Task<DialogTurnResult> DisplayTokenAsync(WaterfallStepContext context, CancellationToken cancellationToken)
         {
-            var result = context.Result as TokenResponse;
-
-            if (result == null)
+            if (!(context.Result is TokenResponse result))
             {
-                await context.Context.SendActivityAsync("No token was provided for the skill.");
+                await context.Context.SendActivityAsync("No token was provided for the skill.", cancellationToken: cancellationToken);
             }
             else
             {
-                await context.Context.SendActivityAsync($"Here is your token for the skill: {result.Token}");
+                await context.Context.SendActivityAsync($"Here is your token for the skill: {result.Token}", cancellationToken: cancellationToken);
             }
 
             return await context.EndDialogAsync(null, cancellationToken);

@@ -4,6 +4,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
@@ -15,6 +16,13 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Proact
     {
         // Message to send to users when the bot receives a Conversation Update event
         private const string NotifyMessage = "Navigate to {0}api/notify?message={1} to proactively message everyone who has previously messaged this bot.";
+
+        private IHttpContextAccessor _httpContextAccessor;
+        
+        public WaitForProactiveDialog(IHttpContextAccessor httpContextAccessor)
+        {
+            _httpContextAccessor = httpContextAccessor;
+        }
 
         public override async Task<DialogTurnResult> BeginDialogAsync(DialogContext dc, object options = null, CancellationToken cancellationToken = new CancellationToken())
         {

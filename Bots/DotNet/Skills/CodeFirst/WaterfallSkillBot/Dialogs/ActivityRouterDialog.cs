@@ -4,6 +4,7 @@
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.TraceExtensions;
@@ -23,11 +24,11 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs
     /// </summary>
     public class ActivityRouterDialog : ComponentDialog
     {
-        public ActivityRouterDialog(IConfiguration configuration, IHttpClientFactory clientFactory)
+        public ActivityRouterDialog(IConfiguration configuration, IHttpClientFactory clientFactory, IHttpContextAccessor httpContextAccessor)
             : base(nameof(ActivityRouterDialog))
         {
             AddDialog(new CardDialog(clientFactory));
-            AddDialog(new WaitForProactiveDialog());
+            AddDialog(new WaitForProactiveDialog(httpContextAccessor));
             AddDialog(new AttachmentDialog());
             AddDialog(new AuthDialog(configuration));
             AddDialog(new SsoDialog(configuration));
@@ -37,12 +38,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs
             // The initial child Dialog to run.
             InitialDialogId = nameof(WaterfallDialog);
         }
-
-        protected override async Task<DialogTurnResult> OnContinueDialogAsync(DialogContext innerDc, CancellationToken cancellationToken = default)
-        {
-            return await base.OnContinueDialogAsync(innerDc, cancellationToken);
-        }
-
+        
         private async Task<DialogTurnResult> ProcessActivityAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             // A skill can send trace activities, if needed.
@@ -53,24 +49,12 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs
                 case ActivityTypes.Event:
                     return await OnEventActivityAsync(stepContext, cancellationToken);
 
-                case ActivityTypes.Invoke:
-                    return new DialogTurnResult(DialogTurnStatus.Complete);
-                
-                    //return await HandleInvokeTokenExchangeAsync(stepContext, cancellationToken);
-
                 default:
                     // We didn't get an activity type we can handle.
                     await stepContext.Context.SendActivityAsync(MessageFactory.Text($"Unrecognized ActivityType: \"{stepContext.Context.Activity.Type}\".", inputHint: InputHints.IgnoringInput), cancellationToken);
                     return new DialogTurnResult(DialogTurnStatus.Complete);
             }
         }
-
-        /*
-        private async Task<DialogTurnResult> HandleInvokeTokenExchangeAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
-        {
-            // fix dialog/conversation state
-            return await _mainDialog.RunAsync(stepContext.Context, _conversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
-        }*/
 
         // This method performs different tasks based on the event name.
         private async Task<DialogTurnResult> OnEventActivityAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)

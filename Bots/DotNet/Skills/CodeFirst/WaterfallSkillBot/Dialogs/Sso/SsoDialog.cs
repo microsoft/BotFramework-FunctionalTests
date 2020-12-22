@@ -42,7 +42,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Sso
 
         private async Task<DialogTurnResult> PromptActionStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            var messageText = "What do you want to do?";
+            var messageText = "In SSO skill, What do you want to do?";
             var repromptMessageText = "That was not a valid choice, please select a valid choice.";
             var options = new PromptOptions
             {

@@ -2,12 +2,15 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Builder.TraceExtensions;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Bot.Schema;
+using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Middleware;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
@@ -24,6 +27,9 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot
             _conversationState = conversationState ?? throw new ArgumentNullException(nameof(conversationState));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             OnTurnError = HandleTurnError;
+
+            // Add autosave middleware for SSO. 
+            Use(new SsoSaveStateMiddleware(_conversationState));
         }
 
         private async Task HandleTurnError(ITurnContext turnContext, Exception exception)
