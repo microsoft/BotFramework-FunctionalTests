@@ -27,7 +27,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs
         public ActivityRouterDialog(IConfiguration configuration, IHttpClientFactory clientFactory, IHttpContextAccessor httpContextAccessor)
             : base(nameof(ActivityRouterDialog))
         {
-            AddDialog(new CardDialog(clientFactory));
+            AddDialog(new CardDialog(httpContextAccessor, clientFactory));
             AddDialog(new WaitForProactiveDialog(httpContextAccessor));
             AddDialog(new AttachmentDialog());
             AddDialog(new AuthDialog(configuration));

@@ -67,6 +67,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot
             // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
             services.AddTransient<IBot, SkillBot<ActivityRouterDialog>>();
 
+            // Gives us access to HttpContext so we can create URLs with the host name.
             services.AddHttpContextAccessor();
         }
 

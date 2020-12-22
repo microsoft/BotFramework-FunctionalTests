@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using AdaptiveCards;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Choices;
@@ -52,11 +53,13 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
         };
 
         private readonly IHttpClientFactory _clientFactory;
+        private readonly Uri _serverUrl;
 
-        public CardDialog(IHttpClientFactory clientFactory)
+        public CardDialog(IHttpContextAccessor httpContextAccessor, IHttpClientFactory clientFactory)
             : base(nameof(CardDialog))
         {
             _clientFactory = clientFactory;
+            _serverUrl = new Uri($"{httpContextAccessor.HttpContext.Request.Scheme}://{httpContextAccessor.HttpContext.Request.Host.Value}");
 
             AddDialog(new ChoicePrompt("CardPrompt", SkillActionPromptValidator));
             AddDialog(new ChoicePrompt("EndPrompt", SkillActionPromptValidator));
@@ -270,7 +273,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
 
         private AudioCard MakeAudioCard()
         {
-            var url = new MediaUrl(url: $"{BotController.ServerUrl}api/music");
+            var url = new MediaUrl(url: $"{_serverUrl}api/music");
             return new AudioCard(title: "Audio Card", media: new[] { url }, autoloop: true);
         }
 

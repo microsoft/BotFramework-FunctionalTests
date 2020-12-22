@@ -66,12 +66,16 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Controllers
                         // Run the main dialog to continue WaitForProactiveDialog and send an EndOfConversation when that one is done.
                         // ContinueDialogAsync in WaitForProactiveDialog will get a ContinueConversation event when this is called.
                         await _mainDialog.RunAsync(context, _conversationState.CreateProperty<DialogState>("DialogState"), cancellationToken);
-                    }
 
-                    await ((BotFrameworkAdapter)_adapter).ContinueConversationAsync((ClaimsIdentity)continuationItem.ClaimsIdentity, continuationItem.ConversationReference, continuationItem.OAuthScope, BotCallback, default);
+                        // Save any state changes that might have occurred during the turn.
+                        await _conversationState.SaveChangesAsync(context, false, cancellationToken);
+                    }
 
                     // Forget the reference so we don't try to start the dialog again once is done.
                     _continuationParameters.TryRemove(continuationParameters.Key, out _);
+
+                    // Continue the conversation with the proactive message
+                    await ((BotFrameworkAdapter)_adapter).ContinueConversationAsync((ClaimsIdentity)continuationItem.ClaimsIdentity, continuationItem.ConversationReference, continuationItem.OAuthScope, BotCallback, default);
                 }
             }
             catch (Exception ex)
