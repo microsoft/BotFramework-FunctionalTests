@@ -5,17 +5,17 @@
         /// <summary>
         /// Adaptive card - Bot action
         /// </summary>
-        BotAction,
-        
+        AdaptiveCardBotAction,
+
         /// <summary>
         /// Adaptive card - Task module
         /// </summary>
-        TaskModule,
+        AdaptiveCardTaskModule,
 
         /// <summary>
         /// Adaptive card - Submit action
         /// </summary>
-        SumbitAction,
+        AdaptiveCardSumbitAction,
 
         /// <summary>
         /// Hero cards
@@ -55,7 +55,7 @@
         /// <summary>
         /// File cards
         /// </summary>
-        File,
+        TeamsFileConsent,
 
         /// <summary>
         /// Animation cards
@@ -71,11 +71,6 @@
         /// Video cards
         /// </summary>
         Video,
-
-        /// <summary>
-        /// UploadFile cards
-        /// </summary>
-        UploadFile,
 
         /// <summary>
         /// Ends the card selection dialog

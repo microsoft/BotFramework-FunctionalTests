@@ -5,36 +5,37 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
 {
     public static class ChannelSupportedCards
     {
-        private static readonly Dictionary<string, List<CardTypes>> Dict = new Dictionary<string, List<CardTypes>> 
+        private static readonly Dictionary<string, List<CardOptions>> UnsupportedCards = new Dictionary<string, List<CardOptions>> 
         {
             { 
-                Channels.Directline, new List<CardTypes> 
+                Channels.Directline, new List<CardOptions> 
                 { 
-                    CardTypes.Hero,
-                    CardTypes.Animation,
-                    CardTypes.Audio,
-                    CardTypes.BotAction
+                    CardOptions.Hero,
+                    CardOptions.Animation,
+                    CardOptions.Audio,
+                    CardOptions.AdaptiveCardBotAction
                 } 
             },
             {
-                Channels.Emulator, new List<CardTypes>
+                Channels.Emulator, new List<CardOptions>
                 {
-                    CardTypes.Hero
+                    CardOptions.TeamsFileConsent,
+                    CardOptions.O365
                 }
             }
         };
 
-        public static bool CardSupported(string channel, CardTypes type)
+        public static bool CardSupported(string channel, CardOptions type)
         {
-            if (Dict.ContainsKey(channel.ToString()))
+            if (UnsupportedCards.ContainsKey(channel.ToString()))
             {
-                if (Dict[channel.ToString()].Contains(type))
+                if (UnsupportedCards[channel.ToString()].Contains(type))
                 {
-                    return true;
+                    return false;
                 }
             }
 
-            return false;
+            return true;
         }
     }
 }

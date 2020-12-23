@@ -12,6 +12,7 @@ using Microsoft.Bot.Schema;
 using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Attachments;
 using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Auth;
 using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards;
+using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.FileUpload;
 using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Proactive;
 using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Sso;
 using Microsoft.Extensions.Configuration;
@@ -32,6 +33,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs
             AddDialog(new AttachmentDialog());
             AddDialog(new AuthDialog(configuration));
             AddDialog(new SsoSkillDialog(configuration));
+            AddDialog(new FileUploadDialog());
 
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[] { ProcessActivityAsync }));
 
@@ -80,6 +82,8 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs
                 case "Sso":
                     return await stepContext.BeginDialogAsync(FindDialog(nameof(SsoSkillDialog)).Id, cancellationToken: cancellationToken);
 
+                case "FileUpload":
+                    return await stepContext.BeginDialogAsync(FindDialog(nameof(FileUploadDialog)).Id, cancellationToken: cancellationToken);
                 default:
                     // We didn't get an event name we can handle.
                     await stepContext.Context.SendActivityAsync(MessageFactory.Text($"Unrecognized EventName: \"{activity.Name}\".", inputHint: InputHints.IgnoringInput), cancellationToken);

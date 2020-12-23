@@ -32,15 +32,13 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
         private static readonly string MindBlownGif = "https://media3.giphy.com/media/xT0xeJpnrWC4XWblEk/giphy.gif?cid=ecf05e47mye7k75sup6tcmadoom8p1q8u03a7g2p3f76upp9&rid=giphy.gif";
 
         // list of cards that exist
-        private static readonly List<CardTypes> _cardOptions = Enum.GetValues(typeof(CardTypes)).Cast<CardTypes>().ToList();
+        private static readonly List<CardOptions> _cardOptions = Enum.GetValues(typeof(CardOptions)).Cast<CardOptions>().ToList();
 
-        private readonly IHttpClientFactory _clientFactory;
         private readonly Uri _serverUrl;
 
-        public CardDialog(IHttpContextAccessor httpContextAccessor, IHttpClientFactory clientFactory)
+        public CardDialog(IHttpContextAccessor httpContextAccessor)
             : base(nameof(CardDialog))
         {
-            _clientFactory = clientFactory;
             _serverUrl = new Uri($"{httpContextAccessor.HttpContext.Request.Scheme}://{httpContextAccessor.HttpContext.Request.Host.Value}");
 
             AddDialog(new ChoicePrompt("CardPrompt", CardPromptValidatorAsync));
@@ -49,9 +47,9 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
             InitialDialogId = nameof(WaterfallDialog);
         }
 
-        private static CardTypes ParseEnum<T>(string card)
+        private static CardOptions ParseEnum<T>(string card)
         {
-            return (CardTypes)Enum.Parse(typeof(CardTypes), card, true);
+            return (CardOptions)Enum.Parse(typeof(CardOptions), card, true);
         }
 
         private async Task<DialogTurnResult> SelectCardAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
@@ -74,35 +72,34 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
         private async Task<DialogTurnResult> DisplayCardAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             var card = ((FoundChoice)stepContext.Result).Value.ToLowerInvariant();
-
-            var cardType = ParseEnum<CardTypes>(card);
+            var cardType = ParseEnum<CardOptions>(card);
 
             if (ChannelSupportedCards.CardSupported(stepContext.Context.Activity.ChannelId, cardType))
             {
                 switch (cardType)
                 {
-                    case CardTypes.BotAction:
+                    case CardOptions.AdaptiveCardBotAction:
                         await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeAdaptiveCard("botaction").ToAttachment()), cancellationToken);
                         break;
-                    case CardTypes.TaskModule:
+                    case CardOptions.AdaptiveCardTaskModule:
                         await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeAdaptiveCard("taskmodule").ToAttachment()), cancellationToken);
                         break;
-                    case CardTypes.SumbitAction:
+                    case CardOptions.AdaptiveCardSumbitAction:
                         await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeAdaptiveCard("submitaction").ToAttachment()), cancellationToken);
                         break;
-                    case CardTypes.Hero:
+                    case CardOptions.Hero:
                         await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(CardSampleHelper.CreateHeroCard().ToAttachment()), cancellationToken).ConfigureAwait(false);
                         break;
-                    case CardTypes.Thumbnail:
+                    case CardOptions.Thumbnail:
                         await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(CardSampleHelper.CreateThumbnailCard().ToAttachment()), cancellationToken).ConfigureAwait(false);
                         break;
-                    case CardTypes.Receipt:
+                    case CardOptions.Receipt:
                         await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(CardSampleHelper.CreateReceiptCard().ToAttachment()), cancellationToken).ConfigureAwait(false);
                         break;
-                    case CardTypes.Signin:
+                    case CardOptions.Signin:
                         await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(CardSampleHelper.CreateSigninCard().ToAttachment()), cancellationToken).ConfigureAwait(false);
                         break;
-                    case CardTypes.Carousel:
+                    case CardOptions.Carousel:
                         // NOTE: if cards are NOT the same height in a carousel, Teams will instead display as AttachmentLayoutTypes.List
                         await stepContext.Context.SendActivityAsync(
                             MessageFactory.Carousel(new[]
@@ -113,7 +110,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
                             }),
                             cancellationToken).ConfigureAwait(false);
                         break;
-                    case CardTypes.List:
+                    case CardOptions.List:
                         // NOTE: MessageFactory.Attachment with multiple attachments will default to AttachmentLayoutTypes.List
                         await stepContext.Context.SendActivityAsync(
                             MessageFactory.Attachment(new[]
@@ -124,26 +121,23 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
                             }),
                             cancellationToken).ConfigureAwait(false);
                         break;
-                    case CardTypes.O365:
+                    case CardOptions.O365:
 
                         await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeO365CardAttachmentAsync()), cancellationToken).ConfigureAwait(false);
                         break;
-                    case CardTypes.File:
-                        await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeFileCard()), cancellationToken);
+                    case CardOptions.TeamsFileConsent:
+                        await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeTeamsFileConsentCard()), cancellationToken);
                         break;
-                    case CardTypes.Animation:
+                    case CardOptions.Animation:
                         await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeAnimationCard().ToAttachment()), cancellationToken);
                         break;
-                    case CardTypes.Audio:
+                    case CardOptions.Audio:
                         await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeAudioCard().ToAttachment()), cancellationToken);
                         break;
-                    case CardTypes.Video:
+                    case CardOptions.Video:
                         await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeVideoCard().ToAttachment()), cancellationToken);
                         break;
-                    case CardTypes.UploadFile:
-                        await ShowUploadFile(stepContext, cancellationToken).ConfigureAwait(false);
-                        break;
-                    case CardTypes.End:
+                    case CardOptions.End:
                         return new DialogTurnResult(DialogTurnStatus.Complete);
                 }
             }
@@ -159,6 +153,11 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
         {
             if (!promptContext.Recognized.Succeeded)
             {
+                if (promptContext.Context.Activity.Attachments != null)
+                {
+                    return await Task.FromResult(true);
+                }
+
                 // Render the activity so we can assert in tests.
                 // We may need to simplify the json if it gets too complicated to test.
                 promptContext.Options.RetryPrompt.Text = $"Got {JsonConvert.SerializeObject(promptContext.Context.Activity, Formatting.Indented)}\n\n{promptContext.Options.Prompt.Text}";
@@ -193,16 +192,16 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
             return cardAttachment;
         }
 
-        private Attachment MakeFileCard()
+        private Attachment MakeTeamsFileConsentCard()
         {
             var filename = TeamsLogoFileName;
             var filePath = Path.Combine("Dialogs/Cards/Files", filename);
             var fileSize = new FileInfo(filePath).Length;
 
-            return MakeFileCardAttachment(filename, fileSize);
+            return MakeTeamsFileConsentCardAttachment(filename, fileSize);
         }
 
-        private Attachment MakeFileCardAttachment(string filename, long fileSize)
+        private Attachment MakeTeamsFileConsentCardAttachment(string filename, long fileSize)
         {
             var consentContext = new Dictionary<string, string>
             {
@@ -243,34 +242,6 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
         {
             var url = new MediaUrl(url: $"{_serverUrl}api/music");
             return new AudioCard(title: "Audio Card", media: new[] { url }, autoloop: true);
-        }
-
-        private async Task ShowUploadFile(WaterfallStepContext stepContext, CancellationToken cancellationToken)
-        {
-            var messageWithFileDownloadInfo = stepContext.Context.Activity.Attachments?[0].ContentType == FileDownloadInfo.ContentType;
-            if (messageWithFileDownloadInfo)
-            {
-                var file = stepContext.Context.Activity.Attachments[0];
-                var fileDownload = JObject.FromObject(file.Content).ToObject<FileDownloadInfo>();
-
-                var filePath = Path.Combine("Files", file.Name);
-
-                using var client = _clientFactory.CreateClient();
-                var response = await client.GetAsync(new Uri(fileDownload.DownloadUrl), cancellationToken).ConfigureAwait(false);
-                using var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None);
-                await response.Content.CopyToAsync(fileStream).ConfigureAwait(false);
-
-                var reply = MessageFactory.Text($"<b>{file.Name}</b> received and saved.");
-                reply.TextFormat = "xml";
-                await stepContext.Context.SendActivityAsync(reply, cancellationToken).ConfigureAwait(false);
-            }
-            else
-            {
-                var filename = TeamsLogoFileName;
-                var filePath = Path.Combine("Dialogs/Cards/Files", filename);
-                var fileSize = new FileInfo(filePath).Length;
-                await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeFileCardAttachment(filename, fileSize)), cancellationToken).ConfigureAwait(false);
-            }
         }
 
         private bool DoesChannelSupportCard()
