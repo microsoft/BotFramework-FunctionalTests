@@ -9,7 +9,7 @@ stages:
       jobs:
         - job: Configure
           steps:
-            - ${{ if eq(consumer.language, 'DotNet') }}:
+            - ${{ if eq(consumer.configType, 'DotNet') }}:
               - task: AzureCLI@2
                 displayName: 'Configure Host Bots Settings'
                 inputs:
@@ -18,6 +18,16 @@ stages:
                   scriptLocation: inlineScript
                   inlineScript: |
                     az webapp config appsettings set -g ${{ consumer.resourceGroup }} -n ${{ consumer.botName }} --settings BotFrameworkSkills:0:AppId=${{ skill.appId }} BotFrameworkSkills:0:SkillEndpoint=https://${{ skill.botName }}.azurewebsites.net/api/messages SkillHostEndpoint=https://${{ consumer.botName }}.azurewebsites.net/api/skills
+
+            - ${{ if eq(consumer.configType, 'Js') }}:
+              - task: AzureCLI@2
+                displayName: 'Configure Host Bots Settings'
+                inputs:
+                  azureSubscription: $(AzureSubscription)
+                  scriptType: ps
+                  scriptLocation: inlineScript
+                  inlineScript: |
+                    az webapp config appsettings set -g ${{ consumer.resourceGroup }} -n ${{ consumer.botName }} --settings SkillAppId=${{ skill.appId }} SkillEndpoint=https://${{ skill.botName }}.azurewebsites.net/api/messages SkillHostEndpoint=https://${{ consumer.botName }}.azurewebsites.net/api/skills
 
         - job: Test
           dependsOn: Configure
