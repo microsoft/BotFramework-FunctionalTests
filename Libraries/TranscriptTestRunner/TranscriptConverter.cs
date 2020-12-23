@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.Bot.Schema;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -135,10 +136,10 @@ namespace TranscriptTestRunner
             }
         }
 
-        private static List<TestScriptItem> CreateTestScript(string json)
+        private static TestScript CreateTestScript(string json)
         {
             var activities = JsonConvert.DeserializeObject<IEnumerable<Activity>>(json);
-            var testScript = new List<TestScriptItem>();
+            var testScript = new TestScript();
 
             foreach (var activity in activities)
             {
@@ -159,7 +160,7 @@ namespace TranscriptTestRunner
                     }
                 }
 
-                testScript.Add(scriptItem);
+                testScript.Items.Add(scriptItem);
             }
 
             return testScript;
@@ -287,7 +288,7 @@ namespace TranscriptTestRunner
         /// <summary>
         /// Writes the test script content to the path set in the TestScript property.
         /// </summary>
-        private void WriteTestScript(List<TestScriptItem> testScript)
+        private void WriteTestScript(TestScript testScript)
         {
             var json = JsonConvert.SerializeObject(
                 testScript,

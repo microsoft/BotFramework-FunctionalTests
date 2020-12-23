@@ -1,0 +1,46 @@
+parameters:
+  dependsOn: ''
+  resourceGroup: ''
+  bots: []
+
+stages:
+- ${{ each bot in parameters.bots }}:
+  - stage: 'Deploy_${{ bot.name }}'
+    ${{ if eq(bot.displayName, '') }}:
+      displayName: '${{ bot.name }}'
+    ${{ if ne(bot.displayName, '') }}:
+      displayName: '${{ bot.displayName }}'
+    dependsOn: '${{ parameters.dependsOn }}'
+    jobs:
+      - job: 'Deploy'
+        displayName: 'Deploy steps'
+        steps:
+          # Use Net Core version
+          - ${{ if ne(bot.project.netCoreVersion, '') }}:
+            - task: UseDotNet@2
+              displayName: 'Use NetCore v${{ bot.project.netCoreVersion }}'
+              inputs:
+                version: '${{ bot.project.netCoreVersion }}'
+
+          # Prepare composer runtime
+          - template: composerPrepare.yml
+            parameters:
+              project: '${{ bot.project }}'
+              output: 
+                path: 'build-composer'
+                zip: 'build'
+
+          # Create App Service and Bot Channel Registration
+          - template: ../common/createAppService.yml
+            parameters:
+              appId: '${{ bot.appId }}'
+              appSecret: '${{ bot.appSecret }}'
+              botName: '${{ bot.name }}'
+              botGroup: '${{ parameters.resourceGroup }}'
+
+          # Deploy bot
+          - template: ../common/zipDeploy.yml
+            parameters:
+              botName: '${{ bot.name }}'
+              botGroup: '${{ parameters.resourceGroup }}'
+              source: "build-composer/build.zip"

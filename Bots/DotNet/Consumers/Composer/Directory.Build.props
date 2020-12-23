@@ -1,0 +1,15 @@
+<!-- Contains common properties that apply to projects under the Composer folder -->
+<Project>
+  <PropertyGroup>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- ;SA1003;SA1009;SA1011;SA1012;SA1013;SA1025;SA1117;SA1121;SA1201;SA1202;SA1204;SA1208;SA1210;SA1300;SA1311;SA1412;SA1505;SA1507;SA1508;SA1513;SA1516;SA1518;SA1629;NU1701; we exclude these for new until the composer runtime fixes them -->
+    <NoWarn>$(NoWarn);SA1003;SA1009;SA1011;SA1012;SA1013;SA1025;SA1117;SA1121;SA1201;SA1202;SA1204;SA1208;SA1210;SA1300;SA1311;SA1412;SA1505;SA1507;SA1508;SA1513;SA1516;SA1518;SA1629;NU1701;</NoWarn>
+  </PropertyGroup>
+
+  <!-- This ensures that Directory.Build.props in parent folders are merged with this one -->
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+  
+</Project>

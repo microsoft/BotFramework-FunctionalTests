@@ -58,18 +58,38 @@
         {
           "$kind": "Microsoft.BeginSkill",
           "$designer": {
-            "id": "yU7oAp"
+            "id": "NKX4SL"
           },
-          "activityProcessed": false,
+          "activityProcessed": true,
           "botId": "=settings.MicrosoftAppId",
           "skillHostEndpoint": "=settings.skillHostEndpoint",
           "connectionName": "=settings.connectionName",
           "allowInterruptions": true,
-          "id": "https://ggechoskillbot.azurewebsites.net/manifest/echoskillbot-manifest-1.0.json",
-          "activity": "${BeginSkill_Activity_yU7oAp()}",
-          "resultProperty": "dialog.result",
-          "skillEndpoint": "https://ggechoskillbot.azurewebsites.net/api/messages",
-          "skillAppId": "0be01cfa-478e-4ec2-b2cc-9a4ec02f101b"
+          "skillEndpoint": "=settings.skill['EchoSkillBot'].endpointUrl",
+          "skillAppId": "=settings.skill['EchoSkillBot'].msAppId",
+          "resultProperty": "dialog.result"
+        }
+      ]
+    },
+    {
+      "$kind": "Microsoft.OnEndOfConversationActivity",
+      "$designer": {
+        "id": "PGigli"
+      },
+      "actions": [
+        {
+          "$kind": "Microsoft.SendActivity",
+          "$designer": {
+            "id": "Zkprn3"
+          },
+          "activity": "${SendActivity_Zkprn3()}"
+        },
+        {
+          "$kind": "Microsoft.SendActivity",
+          "$designer": {
+            "id": "71moHf"
+          },
+          "activity": "${SendActivity_71moHf()}"
         }
       ]
     }

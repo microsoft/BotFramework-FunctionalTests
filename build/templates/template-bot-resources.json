@@ -1,0 +1,103 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "appId": {
+      "type": "string",
+      "metadata": {
+        "description": "Active Directory App ID, set as MicrosoftAppId in the Web App's Application Settings."
+      }
+    },
+    "appSecret": {
+      "type": "string",
+      "metadata": {
+        "description": "Active Directory App Password, set as MicrosoftAppPassword in the Web App's Application Settings."
+      }
+    },
+    "botName": {
+      "type": "string"
+    },
+    "botLocation": {
+      "type": "string"
+    },
+    "appServicePlanName": {
+      "type": "string"
+    },
+    "appServicePlanResourceGroup": {
+      "type": "string"
+    },
+    "botSku": {
+      "type": "string",
+      "defaultValue": "F0",
+      "metadata": {
+        "description": "The pricing tier of the Bot Service Registration. Acceptable values are F0 and S1."
+      }
+    }
+  },
+  "variables": {
+    "siteHost": "[concat(parameters('botName'), '.azurewebsites.net')]",
+    "botEndpoint": "[concat('https://', variables('siteHost'), '/api/messages')]"
+  },
+  "resources": [
+    {
+      "apiVersion": "2018-11-01",
+      "name": "[parameters('botName')]",
+      "type": "Microsoft.Web/sites",
+      "location": "[parameters('botLocation')]",
+      "tags": {},
+      "dependsOn": [],
+      "kind": "app",
+      "properties": {
+        "name": "[parameters('botName')]",
+        "siteConfig": {
+          "appSettings": [
+            {
+                "name": "WEBSITE_NODE_DEFAULT_VERSION",
+                "value": "10.14.1"
+            },
+            {
+              "name": "MicrosoftAppId",
+              "value": "[parameters('appId')]"
+            },
+            {
+              "name": "MicrosoftAppPassword",
+              "value": "[parameters('appSecret')]"
+            }
+          ],
+          "cors": {
+            "allowedOrigins": [
+              "https://botservice.hosting.portal.azure.net",
+              "https://hosting.onecloud.azure-test.net/"
+            ]
+          },
+          "webSocketsEnabled": true
+        },
+        "serverFarmId": "[concat('/subscriptions/', subscription().id,'/resourcegroups/', parameters('appServicePlanResourceGroup'), '/providers/Microsoft.Web/serverfarms/', parameters('appServicePlanName'))]",
+        "clientAffinityEnabled": true
+      }
+    },
+    {
+      "apiVersion": "2017-12-01",
+      "type": "Microsoft.BotService/botServices",
+      "name": "[parameters('botName')]",
+      "location": "global",
+      "kind": "bot",
+      "sku": {
+        "name": "[parameters('botSku')]"
+      },
+      "properties": {
+        "name": "[parameters('botName')]",
+        "displayName": "[parameters('botName')]",
+        "endpoint": "[variables('botEndpoint')]",
+        "msaAppId": "[parameters('appId')]",
+        "developerAppInsightsApplicationId": null,
+        "developerAppInsightKey": null,
+        "publishingCredentials": null,
+        "storageResourceId": null
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites/', parameters('botName'))]"
+      ]
+    }
+  ]
+}

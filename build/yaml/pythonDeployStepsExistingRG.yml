@@ -91,7 +91,7 @@ steps:
 - task: AzureCLI@2
   displayName: 'create Azure resources - pre-existing RG template'
   inputs:
-    azureSubscription: 'FUSE Temporary (174c5021-8109-4087-a3e2-a1de20420569)'
+    azureSubscription: $(AzureSubscription)
     scriptType: ps
     scriptLocation: inlineScript
     inlineScript: |

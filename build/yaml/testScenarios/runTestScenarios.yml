@@ -1,0 +1,79 @@
+#
+# Executes the test scenarios.
+#
+
+# "name" here defines the build number format. Build number is accessed via $(Build.BuildNumber)
+name: $(Build.BuildId)
+trigger: none
+pr: none
+
+variables:
+  BuildConfiguration: 'Debug'
+  BuildPlatform: 'any cpu'
+  # AzureSubscription: define in Azure
+  # BffnEchoComposerSkillBotDotnetAppId: define in Azure
+  # BffnEchoSkillBotDotnetAppId: define in Azure
+  # BffnEchoSkillBot21DotnetAppId: define in Azure
+  # BffnEchoSkillBotV3DotnetAppId: define in Azure
+  # BffnEchoSkillBotJSAppId: define in Azure
+  # BffnEchoSkillBotV3JSAppId: define in Azure
+  # ResourceGroup: define in Azure
+
+pool:
+  vmImage: 'windows-2019'
+
+stages:
+- template: runScenario.yml
+  parameters:
+    Consumers:
+      - name: SimpleHostBotDotnet
+        botName: bffnsimplehostbotdotnet
+        resourceGroup: "$(ResourceGroup)-DotNet"
+        configType: "DotNet"
+
+      - name: SimpleHostBot21Dotnet
+        botName: bffnsimplehostbot21dotnet
+        resourceGroup: "$(ResourceGroup)-DotNet"
+        configType: "DotNet"
+
+      - name: SimpleHostBotJS
+        botName: bffnsimplehostbotjs
+        resourceGroup: "$(ResourceGroup)-Js"
+        configType: "Js"
+
+    Skills:
+      - name: EchoSkillBotDotnet
+        botName: bffnechoskillbotdotnet
+        appId: $(BffnEchoSkillBotDotnetAppId)
+
+      - name: EchoSkillBot21Dotnet
+        botName: bffnechoskillbot21dotnet
+        appId: $(BffnEchoSkillBot21DotnetAppId)
+
+      - name: EchoSkillBotV3Dotnet
+        botName: bffnechoskillbotv3dotnet
+        appId: $(BffnEchoSkillBotV3DotnetAppId)
+        testFilter: '&TestCategory!=SkipForV3Bots'
+
+      - name: EchoSkillBotJS
+        botName: bffnechoskillbotjs
+        appId: $(BffnEchoSkillBotJSAppId)
+
+      - name: EchoSkillBotV3JS
+        botName: bffnechoskillbotv3js
+        appId: $(BffnEchoSkillBotV3JSAppId)
+        testFilter: '&TestCategory!=SkipForV3Bots'
+
+- template: runScenario.yml
+  parameters:
+    Consumers:
+      - name: SimpleComposerHostBotDotnet
+        botName: bffnsimplecomposerhostbotdotnet
+        resourceGroup: "$(ResourceGroup)-DotNet"
+        configType: "Composer"
+
+    Skills:
+      - name: EchoComposerSkillBotDotnet
+        botName: bffnechocomposerskillbotdotnet
+        appId: $(BffnEchoComposerSkillBotDotnetAppId)
+        testFilter: '&TestCategory!=OAuth'

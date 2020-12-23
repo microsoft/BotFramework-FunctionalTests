@@ -8,10 +8,10 @@ trigger: none
 pr: none
 
 variables:
-  BotGroup: '$(BotName)-RG'
   BuildConfiguration: 'Debug'
   BuildPlatform: 'any cpu'
   runCodesignValidationInjection: false
+  skipComponentGovernanceDetection: true
   # AzureDeploymentPassword: define in Azure
   # AzureDeploymentUser: define in Azure
   # AzureSubscription: define in Azure
@@ -25,7 +25,7 @@ variables:
   # PyDotNetV3SkillAppSecret: define in Azure
   # PyDotNetV3SkillBotName: define in Azure
   # RegistryUrlHost: (optional) define in Azure
-  # RegistryUrlSkill (Optional): define this in Azure
+  # RegistryUrlSkill: (optional) define in Azure
   # TestFilter: (optional) define in Azure. Example: '&TestCategory!=SkipForV3Bots'
 
 pool:
@@ -66,6 +66,7 @@ stages:
         SkillBotName: $(PyDotNetV3SkillBotName)
         SkillAppId: $(PyDotNetV3SkillAppId)
         BotName: $(PyDotNetV3HostBotName)
+        BotGroup: '$(BotName)-RG'
         DeployAppId: $(PyDotNetV3HostAppId)
         DeployAppSecret: $(PyDotNetV3HostAppSecret)
         Registry: $[variables.RegistryUrlHost]
@@ -79,6 +80,7 @@ stages:
     - job: Deploy_Skill
       variables:
         BotName: $(PyDotNetV3SkillBotName)
+        BotGroup: '$(BotName)-RG'
         DeployAppId: $(PyDotNetV3SkillAppId)
         DeployAppSecret: $(PyDotNetV3SkillAppSecret)
         Registry: $[variables.RegistryUrlSkill]
@@ -91,6 +93,7 @@ stages:
 
 - stage: Test
   dependsOn: Deploy
+  condition: succeeded('Deploy')
   jobs:
     - job: Run_Functional_Test
       variables:
@@ -106,16 +109,16 @@ stages:
   dependsOn:
   - Deploy
   - Test
-  condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
+  condition: and(or(succeeded('Build'), failed('Prepare')), ne(variables['DeleteResourceGroup'], 'false'))
   jobs:
     - job: Delete_RG
       steps:
+      - checkout: none  # Don't sync sources
       - task: AzureCLI@1
         displayName: 'Delete Resource Group'
         inputs:
           azureSubscription: $(AzureSubscription)
           scriptLocation: inlineScript
           inlineScript: |
-           call az group delete -n "$(PyDotNetV3HostBotName)-RG" --yes
-           call az group delete -n "$(PyDotNetV3SkillBotName)-RG" --yes
-        condition: and(always(), ne(variables['DeleteResourceGroup'], 'false'))
+           call az group delete -n "$(PyDotNetV3HostBotName)-RG" --yes --no-wait
+           call az group delete -n "$(PyDotNetV3SkillBotName)-RG" --yes --no-wait

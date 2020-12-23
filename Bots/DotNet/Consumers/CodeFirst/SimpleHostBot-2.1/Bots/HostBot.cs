@@ -48,10 +48,6 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot21.Bots
             }
 
             _botId = configuration.GetSection(MicrosoftAppCredentials.MicrosoftAppIdKey)?.Value;
-            if (string.IsNullOrWhiteSpace(_botId))
-            {
-                throw new ArgumentException($"{MicrosoftAppCredentials.MicrosoftAppIdKey} is not set in configuration");
-            }
 
             if (!_skillsConfig.Skills.TryGetValue(TargetSkillId, out _targetSkill))
             {
