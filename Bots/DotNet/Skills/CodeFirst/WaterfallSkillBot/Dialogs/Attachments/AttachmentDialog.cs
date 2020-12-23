@@ -29,7 +29,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Attach
 
         private static Attachment GetInlineAttachment()
         {
-            var imagePath = Path.Combine(Environment.CurrentDirectory, @"Files", Picture);
+            var imagePath = Path.Combine(Environment.CurrentDirectory, @"Dialogs/Attachments/Files", Picture);
             var imageData = Convert.ToBase64String(File.ReadAllBytes(imagePath));
 
             return new Attachment

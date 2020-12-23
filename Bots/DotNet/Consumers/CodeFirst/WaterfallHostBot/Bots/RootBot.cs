@@ -26,15 +26,15 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Bots
 
         public override async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default)
         {
-            if (turnContext.Activity.Type != ActivityTypes.ConversationUpdate)
+            if (turnContext.Activity.Type == ActivityTypes.ConversationUpdate)
             {
-                // Run the Dialog with the Activity.
-                await _mainDialog.RunAsync(turnContext, _conversationState.CreateProperty<DialogState>("DialogState"), cancellationToken);
+                // Let the base class handle the activity (this will trigger OnMembersAdded).
+                await base.OnTurnAsync(turnContext, cancellationToken);
             }
             else
             {
-                // Let the base class handle the activity.
-                await base.OnTurnAsync(turnContext, cancellationToken);
+                // Run the Dialog with the Activity.
+                await _mainDialog.RunAsync(turnContext, _conversationState.CreateProperty<DialogState>("DialogState"), cancellationToken);
             }
 
             // Save any state changes that might have occurred during the turn.

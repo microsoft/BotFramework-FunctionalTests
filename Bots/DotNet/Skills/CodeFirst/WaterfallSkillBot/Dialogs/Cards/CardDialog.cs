@@ -9,12 +9,12 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using AdaptiveCards;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Choices;
 using Microsoft.Bot.Schema;
 using Microsoft.Bot.Schema.Teams;
-using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Controllers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -48,19 +48,21 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
             "animation",
             "audio",
             "video",
-            "uploadfile"
+            "uploadfile",
+            "end"
         };
 
         private readonly IHttpClientFactory _clientFactory;
+        private readonly Uri _serverUrl;
 
-        public CardDialog(IHttpClientFactory clientFactory)
+        public CardDialog(IHttpContextAccessor httpContextAccessor, IHttpClientFactory clientFactory)
             : base(nameof(CardDialog))
         {
             _clientFactory = clientFactory;
+            _serverUrl = new Uri($"{httpContextAccessor.HttpContext.Request.Scheme}://{httpContextAccessor.HttpContext.Request.Host.Value}");
 
-            AddDialog(new ChoicePrompt("CardPrompt", SkillActionPromptValidator));
-            AddDialog(new ChoicePrompt("EndPrompt", SkillActionPromptValidator));
-            AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[] { SelectCardAsync, DisplayCardAsync, FinalStepAsync }));
+            AddDialog(new ChoicePrompt("CardPrompt", CardPromptValidatorAsync));
+            AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[] { SelectCardAsync, DisplayCardAsync }));
 
             InitialDialogId = nameof(WaterfallDialog);
         }
@@ -69,7 +71,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
         {
             // Create the PromptOptions from the skill configuration which contain the list of configured skills.
             var messageText = "What card do you want?";
-            var repromptMessageText = "That was not a valid choice, please select a valid card type.";
+            var repromptMessageText = "This message will be created in the validation code";
             var options = new PromptOptions
             {
                 Prompt = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput),
@@ -84,7 +86,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
 
         private async Task<DialogTurnResult> DisplayCardAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            var card = stepContext.Context.Activity.Text;
+            var card = ((FoundChoice)stepContext.Result).Value.ToLowerInvariant();
 
             switch (card)
             {
@@ -150,47 +152,20 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
                 case "uploadfile":
                     await ShowUploadFile(stepContext, cancellationToken).ConfigureAwait(false);
                     break;
+                case "end":
+                    return new DialogTurnResult(DialogTurnStatus.Complete);
             }
 
-            var messageText = "Do you want to select another card?";
-            var repromptMessageText = "That was not a valid choice. Do you want another card?";
-            var options = new PromptOptions
-            {
-                Prompt = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput),
-                RetryPrompt = MessageFactory.Text(repromptMessageText, repromptMessageText, InputHints.ExpectingInput),
-                Choices = new List<Choice> { new Choice("Yes"), new Choice("No") }
-            };
-
-            return await stepContext.PromptAsync("EndPrompt", options, cancellationToken);
+            return await stepContext.ReplaceDialogAsync(InitialDialogId, "What card would you want?", cancellationToken);
         }
 
-        private async Task<DialogTurnResult> FinalStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
-        {
-            var selectedSkillId = ((FoundChoice)stepContext.Result).Value.ToLower();
-            if (selectedSkillId == "yes")
-            {
-                return await stepContext.ReplaceDialogAsync(InitialDialogId, "What card would you want?", cancellationToken);
-            }
-
-            return new DialogTurnResult(DialogTurnStatus.Complete);
-        }
-
-        private async Task<bool> SkillActionPromptValidator(PromptValidatorContext<FoundChoice> promptContext, CancellationToken cancellationToken)
+        private async Task<bool> CardPromptValidatorAsync(PromptValidatorContext<FoundChoice> promptContext, CancellationToken cancellationToken)
         {
             if (!promptContext.Recognized.Succeeded)
             {
-                await promptContext.Context.SendActivityAsync(MessageFactory.Text("App sent a message with empty text"), cancellationToken).ConfigureAwait(false);
-                if (promptContext.Context.Activity.Value != null)
-                {
-                    await promptContext.Context.SendActivityAsync(MessageFactory.Text($"but with value {JsonConvert.SerializeObject(promptContext.Context.Activity.Value)}"), cancellationToken).ConfigureAwait(false);
-                }
-
-                var choices = new List<Choice> { new Choice("Yes"), new Choice("No") };
-                var repromptActivity = ChoiceFactory.SuggestedAction(choices);
-
-                repromptActivity.Text = promptContext.Options.RetryPrompt.Text;
-                await promptContext.Context.SendActivityAsync(repromptActivity, cancellationToken);
-
+                // Render the activity so we can assert in tests.
+                // We may need to simplify the json if it gets too complicated to test.
+                promptContext.Options.RetryPrompt.Text = $"Got {JsonConvert.SerializeObject(promptContext.Context.Activity, Formatting.Indented)}\n\n{promptContext.Options.Prompt.Text}";
                 return await Task.FromResult(false);
             }
            
@@ -225,7 +200,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
         private Attachment MakeFileCard()
         {
             var filename = TeamsLogoFileName;
-            var filePath = Path.Combine("Files", filename);
+            var filePath = Path.Combine("Dialogs/Cards/Files", filename);
             var fileSize = new FileInfo(filePath).Length;
 
             return MakeFileCardAttachment(filename, fileSize);
@@ -270,7 +245,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
 
         private AudioCard MakeAudioCard()
         {
-            var url = new MediaUrl(url: $"{BotController.ServerUrl}api/music");
+            var url = new MediaUrl(url: $"{_serverUrl}api/music");
             return new AudioCard(title: "Audio Card", media: new[] { url }, autoloop: true);
         }
 
@@ -296,7 +271,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
             else
             {
                 var filename = TeamsLogoFileName;
-                var filePath = Path.Combine("Files", filename);
+                var filePath = Path.Combine("Dialogs/Cards/Files", filename);
                 var fileSize = new FileInfo(filePath).Length;
                 await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeFileCardAttachment(filename, fileSize)), cancellationToken).ConfigureAwait(false);
             }
