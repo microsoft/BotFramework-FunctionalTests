@@ -11,6 +11,7 @@ variables:
   BuildConfiguration: 'Debug'
   BuildPlatform: 'any cpu'
   # AzureSubscription: define in Azure
+  # BffnEchoComposerSkillBotDotnetAppId: define in Azure
   # BffnEchoSkillBotDotnetAppId: define in Azure
   # BffnEchoSkillBot21DotnetAppId: define in Azure
   # BffnEchoSkillBotV3DotnetAppId: define in Azure
@@ -46,3 +47,17 @@ stages:
         botName: bffnechoskillbotv3dotnet
         appId: $(BffnEchoSkillBotV3DotnetAppId)
         testFilter: '&TestCategory!=SkipForV3Bots'
+
+- template: runScenario.yml
+  parameters:
+    Consumers:
+      - name: SimpleComposerHostBotDotnet
+        botName: bffnsimplecomposerhostbotdotnet
+        resourceGroup: "$(ResourceGroup)-DotNet"
+        configType: "Composer"
+
+    Skills:
+      - name: EchoComposerSkillBotDotnet
+        botName: bffnechocomposerskillbotdotnet
+        appId: $(BffnEchoComposerSkillBotDotnetAppId)
+        testFilter: '&TestCategory!=OAuth'
