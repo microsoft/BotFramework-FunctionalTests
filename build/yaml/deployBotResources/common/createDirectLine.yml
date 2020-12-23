@@ -9,4 +9,4 @@ steps:
     azureSubscription: $(AzureSubscription)
     scriptLocation: inlineScript
     inlineScript: |
-      call az bot directline create -n "$(HostBotName)" -g "${{ parameters.resourceGroup }}"
+      call az bot directline create -n "${{ parameters.botName }}" -g "${{ parameters.botGroup }}"
