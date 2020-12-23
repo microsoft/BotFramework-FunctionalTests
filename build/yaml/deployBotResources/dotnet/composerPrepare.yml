@@ -27,7 +27,7 @@ steps:
     $composerDialogs = "${{ parameters.output.path }}/ComposerDialogs"
     Remove-Item $composerDialogs -Recurse -ErrorAction Ignore
 
-    Copy-Item -Path (Get-Item -Path ${{ parameters.project.directory }}/* -Exclude ('runtime', 'generated')).FullName -Destination $composerDialogs -Recurse -Force -Container
+    Copy-Item -Path (Get-Item -Path ${{ parameters.project.directory }}/* -Exclude ('runtime', 'scripts', '*.ps1', 'readme.md', '*.botproj', '.gitignore')).FullName -Destination $composerDialogs -Recurse -Force -Container
   displayName: 'Prepare Composer'
 
 # Zip bot
