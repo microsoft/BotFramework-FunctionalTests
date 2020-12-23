@@ -74,7 +74,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
             var card = ((FoundChoice)stepContext.Result).Value.ToLowerInvariant();
             var cardType = ParseEnum<CardOptions>(card);
 
-            if (ChannelSupportedCards.CardSupported(stepContext.Context.Activity.ChannelId, cardType))
+            if (ChannelSupportedCards.IsCardSupported(stepContext.Context.Activity.ChannelId, cardType))
             {
                 switch (cardType)
                 {
