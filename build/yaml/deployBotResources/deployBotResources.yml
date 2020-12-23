@@ -20,6 +20,10 @@ variables:
   # BffnSimpleHostBotDotnetAppSecret: (optional) define in Azure
   # BffnSimpleHostBot21DotnetAppId: (optional) define in Azure
   # BffnSimpleHostBot21DotnetAppSecret: (optional) define in Azure
+  # BffnSimpleComposerHostBotDotnetAppId: (optional) define in Azure
+  # BffnSimpleComposerHostBotDotnetAppSecret: (optional) define in Azure
+  # BffnEchoComposerSkillBotDotnetAppId: (optional) define in Azure
+  # BffnEchoComposerSkillBotDotnetAppSecret: (optional) define in Azure
   # BffnEchoSkillBotDotnetAppId: (optional) define in Azure
   # BffnEchoSkillBotDotnetAppSecret: (optional) define in Azure
   # BffnEchoSkillBot21DotnetAppId: (optional) define in Azure
@@ -128,6 +132,29 @@ stages:
           project: 
             directory: 'Bots/DotNet/Skills/CodeFirst/WaterfallSkillBot'
             name: 'WaterfallSkillBot.csproj'
+            netCoreVersion: '3.1.x'
+
+  - template: dotnet/deployComposer.yml
+    parameters:
+      dependsOn: "Prepare_DotNetGroup"
+      resourceGroup: "$(ResourceGroup)-DotNet"
+      bots:
+        - name: bffnsimplecomposerhostbotdotnet
+          type: 'Host'
+          displayName: 'DotNet Simple Composer Host Bot'
+          appId: $env:BffnSimpleComposerHostBotDotnetAppId
+          appSecret: $env:BffnSimpleComposerHostBotDotnetAppSecret
+          project: 
+            directory: 'Bots/DotNet/Consumers/Composer/SimpleComposerHostBot'
+            netCoreVersion: '3.1.x'
+
+        - name: bffnechocomposerskillbotdotnet
+          type: 'Skill'
+          displayName: 'DotNet Echo Composer Skill Bot'
+          appId: $env:BffnEchoComposerSkillBotDotnetAppId
+          appSecret: $env:BffnEchoComposerSkillBotDotnetAppSecret
+          project: 
+            directory: 'Bots/DotNet/Skills/Composer/EchoComposerSkillBot'
             netCoreVersion: '3.1.x'
 
   - template: js/deploy.yml
