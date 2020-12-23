@@ -7,15 +7,6 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
     {
         private static readonly Dictionary<string, List<CardOptions>> UnsupportedCards = new Dictionary<string, List<CardOptions>> 
         {
-            { 
-                Channels.Directline, new List<CardOptions> 
-                { 
-                    CardOptions.Hero,
-                    CardOptions.Animation,
-                    CardOptions.Audio,
-                    CardOptions.AdaptiveCardBotAction
-                } 
-            },
             {
                 Channels.Emulator, new List<CardOptions>
                 {
