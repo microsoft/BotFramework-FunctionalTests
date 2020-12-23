@@ -15,6 +15,8 @@ variables:
   # BffnEchoSkillBotDotnetAppId: define in Azure
   # BffnEchoSkillBot21DotnetAppId: define in Azure
   # BffnEchoSkillBotV3DotnetAppId: define in Azure
+  # BffnEchoSkillBotJSAppId: define in Azure
+  # BffnEchoSkillBotV3JSAppId: define in Azure
   # ResourceGroup: define in Azure
 
 pool:
@@ -34,6 +36,11 @@ stages:
         resourceGroup: "$(ResourceGroup)-DotNet"
         configType: "DotNet"
 
+      - name: SimpleHostBotJS
+        botName: bffnsimplehostbotjs
+        resourceGroup: "$(ResourceGroup)-Js"
+        configType: "Js"
+
     Skills:
       - name: EchoSkillBotDotnet
         botName: bffnechoskillbotdotnet
@@ -47,6 +54,10 @@ stages:
         botName: bffnechoskillbotv3dotnet
         appId: $(BffnEchoSkillBotV3DotnetAppId)
         testFilter: '&TestCategory!=SkipForV3Bots'
+
+      - name: EchoSkillBotJS
+        botName: bffnechoskillbotjs
+        appId: $(BffnEchoSkillBotJSAppId)
 
 - template: runScenario.yml
   parameters:
