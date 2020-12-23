@@ -4,8 +4,6 @@
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Bot.Schema;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using TranscriptTestRunner;
 using TranscriptTestRunner.XUnit;
 using Xunit;
@@ -15,31 +13,14 @@ using ActivityTypes = Microsoft.Bot.Connector.DirectLine.ActivityTypes;
 namespace SkillFunctionalTests
 {
     [Trait("TestCategory", "FunctionalTests")]
-    public class SimpleHostBotToEchoSkillTest
+    public class SimpleHostBotToEchoSkillTest : ScriptTestBase
     {
         private readonly string _transcriptsFolder = Directory.GetCurrentDirectory() + @"/SourceTranscripts";
         private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/SourceTestScripts";
-        private readonly ILogger<SimpleHostBotToEchoSkillTest> _logger;
 
         public SimpleHostBotToEchoSkillTest(ITestOutputHelper output)
+            : base(output)
         {
-            var configuration = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
-                .AddJsonFile("appsettings.Development.json", true, true)
-                .AddEnvironmentVariables()
-                .Build();
-
-            var loggerFactory = LoggerFactory.Create(builder =>
-            {
-                builder
-                    .AddConfiguration(configuration)
-                    .AddConsole()
-                    .AddDebug()
-                    .AddFile(Directory.GetCurrentDirectory() + @"/Logs/Log.json", isJson: true)
-                    .AddXunit(output);
-            });
-
-            _logger = loggerFactory.CreateLogger<SimpleHostBotToEchoSkillTest>();
         }
 
         [Theory]
@@ -47,14 +28,14 @@ namespace SkillFunctionalTests
         [InlineData("HostReceivesEndOfConversation.transcript")]
         public async Task RunScripts(string transcript)
         {
-            var runner = new XUnitTestRunner(new TestClientFactory(ClientType.DirectLine).GetTestClient(), _logger);
+            var runner = new XUnitTestRunner(new TestClientFactory(ClientType.DirectLine).GetTestClient(), Logger);
             await runner.RunTestAsync(Path.Combine(_transcriptsFolder, transcript));
         }
 
         [Fact]
         public async Task ManualTest()
         {
-            var runner = new XUnitTestRunner(new TestClientFactory(ClientType.DirectLine).GetTestClient(), _logger);
+            var runner = new XUnitTestRunner(new TestClientFactory(ClientType.DirectLine).GetTestClient(), Logger);
 
             await runner.SendActivityAsync(new Activity(ActivityTypes.ConversationUpdate));
 

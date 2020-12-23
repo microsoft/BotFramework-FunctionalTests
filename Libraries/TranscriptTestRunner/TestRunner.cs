@@ -171,7 +171,7 @@ namespace TranscriptTestRunner
 
             if (!signInUrl.StartsWith("https://", StringComparison.Ordinal))
             {
-                throw new Exception($"Sign in url is badly formatted. Url received: {signInUrl}");
+                throw new ArgumentException($"Sign in url is badly formatted. Url received: {signInUrl}");
             }
 
             await _testClient.SignInAsync(signInUrl).ConfigureAwait(false);
@@ -202,12 +202,12 @@ namespace TranscriptTestRunner
 
                 if (!result)
                 {
-                    throw new Exception($"Assertion failed: {assertion}.");
+                    throw new InvalidOperationException($"Assertion failed: {assertion}.");
                 }
 
                 if (error != null)
                 {
-                    throw new Exception(error);
+                    throw new InvalidOperationException(error);
                 }
             }
 
@@ -238,7 +238,7 @@ namespace TranscriptTestRunner
 
             if (resultExpression != expectedExpression)
             {
-                throw new Exception($"Assertion failed. The variable '{expectedExpression}' does not match with the value {dateValue}.");
+                throw new InvalidOperationException($"Assertion failed. The variable '{expectedExpression}' does not match with the value {dateValue}.");
             }
 
             actualActivity.Text = actualActivity.Text.Replace(dateMatch.Value, value);
@@ -253,14 +253,15 @@ namespace TranscriptTestRunner
 
             if (parsed == null)
             {
-                throw new Exception("Null parsed expression");
+                throw new InvalidOperationException("Null parsed expression");
             }
 
+            // String.Empty is used to get the result of the prebuilt function in the parsed expression.
             var (result, msg) = parsed.TryEvaluate(string.Empty);
 
             if (msg != null)
             {
-                throw new Exception("An error has occurred while evaluating the date");
+                throw new InvalidOperationException("An error has occurred while evaluating the date");
             }
 
             return result.ToString();
