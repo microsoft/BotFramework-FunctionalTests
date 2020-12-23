@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Linq;
 using System.Net;
 using System.Security.Claims;
 using System.Threading;
@@ -36,11 +37,26 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Controllers
         // Note: in production scenarios, this controller should be secured.
         public async Task<IActionResult> Get(string message)
         {
+            if (!_continuationParameters.Any())
+            {
+                // Let the caller know a proactive messages have been sent
+                return new ContentResult
+                {
+                    Content = "<html><body><h1>No messages sent</h1> <br/> There are no conversations registered to receive proactive messages.</body></html>",
+                    ContentType = "text/html",
+                    StatusCode = (int)HttpStatusCode.OK,
+                };
+            }
+
             Exception exception = null;
             try
             {
-                foreach (var continuationParameters in _continuationParameters.Values)
+                // Clone the dictionary so we can modify it as we respond.
+                var continuationClone = new ConcurrentDictionary<string, ContinuationParameters>(_continuationParameters);
+                foreach (var continuationParameters in continuationClone)
                 {
+                    var continuationItem = continuationParameters.Value;
+
                     async Task BotCallback(ITurnContext context, CancellationToken cancellationToken)
                     {
                         await context.SendActivityAsync($"Got proactive message with value: {message}", cancellationToken: cancellationToken);
@@ -50,9 +66,16 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Controllers
                         // Run the main dialog to continue WaitForProactiveDialog and send an EndOfConversation when that one is done.
                         // ContinueDialogAsync in WaitForProactiveDialog will get a ContinueConversation event when this is called.
                         await _mainDialog.RunAsync(context, _conversationState.CreateProperty<DialogState>("DialogState"), cancellationToken);
+
+                        // Save any state changes so the dialog stack is persisted.
+                        await _conversationState.SaveChangesAsync(context, false, cancellationToken);
                     }
 
-                    await ((BotFrameworkAdapter)_adapter).ContinueConversationAsync((ClaimsIdentity)continuationParameters.ClaimsIdentity, continuationParameters.ConversationReference, continuationParameters.OAuthScope, BotCallback, default);
+                    // Forget the reference so we don't try to start the dialog again once is done.
+                    _continuationParameters.TryRemove(continuationParameters.Key, out _);
+
+                    // Continue the conversation with the proactive message
+                    await ((BotFrameworkAdapter)_adapter).ContinueConversationAsync((ClaimsIdentity)continuationItem.ClaimsIdentity, continuationItem.ConversationReference, continuationItem.OAuthScope, BotCallback, default);
                 }
             }
             catch (Exception ex)
