@@ -15,9 +15,11 @@ stages:
       - job: 'Deploy'
         displayName: 'Deploy steps'
         steps:
-          # Obtain Bot App Registration credentials from KeyVault
-          - template: ../common/obtainAppRegistrationKeyVault.yml
+          # Gets Bot App Registration credentials from KeyVault or Pipeline Variables
+          - template: ../common/getAppRegistration.yml
             parameters:
+              appId: ${{ bot.appId }}
+              appSecret: ${{ bot.appSecret }}
               botName: '${{ bot.name }}'
 
           # Evaluate dependencies source and version
