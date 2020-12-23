@@ -9,7 +9,7 @@ stages:
       jobs:
         - job: Configure
           steps:
-            - ${{ if eq(consumer.language, 'DotNet') }}:
+            - ${{ if eq(consumer.configType, 'DotNet') }}:
               - task: AzureCLI@2
                 displayName: 'Configure Host Bots Settings'
                 inputs:

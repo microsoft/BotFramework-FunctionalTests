@@ -26,12 +26,12 @@ stages:
       - name: SimpleHostBotDotnet
         botName: bffnsimplehostbotdotnet
         resourceGroup: "$(ResourceGroup)-DotNet"
-        language: "DotNet"
+        configType: "DotNet"
 
       - name: SimpleHostBot21Dotnet
         botName: bffnsimplehostbot21dotnet
         resourceGroup: "$(ResourceGroup)-DotNet"
-        language: "DotNet"
+        configType: "DotNet"
 
     Skills:
       - name: EchoSkillBotDotnet
