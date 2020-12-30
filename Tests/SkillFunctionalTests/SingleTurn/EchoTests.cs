@@ -57,7 +57,7 @@ namespace SkillFunctionalTests.SingleTurn
 
             var scripts = new List<string>
             {
-                "EchoSelectingTargetSkill.transcript"
+                "EchoSelectingTargetSkill.json"
             };
 
             var testCaseBuilder = new TestCaseBuilder();
@@ -78,7 +78,13 @@ namespace SkillFunctionalTests.SingleTurn
 
             var options = TestClientOptions.FirstOrDefault(option => option.BotId == testCase.HostBot);
             var runner = new XUnitTestRunner(new TestClientFactory(testCase.ClientType, options).GetTestClient(), Logger);
-            await runner.RunTestAsync(Path.Combine(_transcriptsFolder, testCase.Script));
+
+            var testParams = new Dictionary<string, string>
+            {
+                { "TargetSkill", testCase.TargetSkill }
+            };
+
+            await runner.RunTestAsync(Path.Combine(_testScriptsFolder, testCase.Script), testParams);
         }
     }
 }

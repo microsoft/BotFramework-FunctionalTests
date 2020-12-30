@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -25,6 +26,7 @@ namespace TranscriptTestRunner
         private readonly ILogger _logger;
         private readonly int _replyTimeout;
         private readonly TestClientBase _testClient;
+        private Dictionary<string, string> _scriptParams;
         private Stopwatch _stopwatch;
         private TranscriptConverter _transcriptConverter;
         private string _testScriptPath;
@@ -62,13 +64,17 @@ namespace TranscriptTestRunner
         /// If the file is of type <i>.transcript</i> it will be converted to an intermediary <i>TestScript.json</i> file.
         /// </remarks>
         /// <param name="transcriptPath">Path to the file to use.</param>
+        /// <param name="scriptParams">Optional. Parameter dictionary, every key surrounded by brackets as such: <c>${key}</c> 
+        /// found in the script will be replaced by its value.</param>
         /// <param name="callerName">Optional. The name of the method caller.</param>
         /// <param name="cancellationToken">Optional. A <see cref="CancellationToken"/> that can be used by other objects
         /// or threads to receive notice of cancellation.</param>
         /// <returns>A task that represents the work queued to execute.</returns>
-        public async Task RunTestAsync(string transcriptPath, [CallerMemberName] string callerName = "", CancellationToken cancellationToken = default)
+        public async Task RunTestAsync(string transcriptPath, Dictionary<string, string> scriptParams = null, [CallerMemberName] string callerName = "", CancellationToken cancellationToken = default)
         {
             var testFileName = $"{callerName} - {Path.GetFileNameWithoutExtension(transcriptPath)}";
+
+            _scriptParams = scriptParams;
 
             _logger.LogInformation($"======== Running script: {transcriptPath} ========");
 
@@ -221,8 +227,17 @@ namespace TranscriptTestRunner
             _logger.LogInformation($"\n------ Starting test {callerName} ----------");
 
             using var reader = new StreamReader(_testScriptPath);
+            var plainTestScript = await reader.ReadToEndAsync().ConfigureAwait(false);
 
-            var testScript = JsonConvert.DeserializeObject<TestScript>(await reader.ReadToEndAsync().ConfigureAwait(false));
+            if (_scriptParams?.Count > 0)
+            {
+                foreach (var param in _scriptParams)
+                {
+                    plainTestScript = plainTestScript.Replace("${" + param.Key + "}", param.Value);
+                }
+            }
+
+            var testScript = JsonConvert.DeserializeObject<TestScript>(plainTestScript);
 
             foreach (var scriptActivity in testScript.Items)
             {
