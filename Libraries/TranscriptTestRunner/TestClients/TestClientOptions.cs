@@ -15,9 +15,9 @@ namespace TranscriptTestRunner.TestClients
         public string BotId { get; set; }
 
         /// <summary>
-        /// Gets or sets the secret of the DirectLine connection.
+        /// Gets or sets the secret for the connection with the test client.
         /// </summary>
-        /// <value>The secret of the DirectLine connection.</value>
-        public string DirectLineClientSecret { get; set; }
+        /// <value>The secret for the connection with the test client.</value>
+        public string TestClientSecret { get; set; }
     }
 }

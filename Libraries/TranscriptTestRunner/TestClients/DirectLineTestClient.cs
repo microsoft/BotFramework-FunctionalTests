@@ -53,12 +53,12 @@ namespace TranscriptTestRunner.TestClients
             
             _botId = options.BotId;
 
-            if (string.IsNullOrWhiteSpace(options.DirectLineClientSecret))
+            if (string.IsNullOrWhiteSpace(options.TestClientSecret))
             {
-                throw new ArgumentException($"DirectLineClientSecret not set.");
+                throw new ArgumentException($"TestClientSecret not set.");
             }
             
-            _directLineSecret = options.DirectLineClientSecret;
+            _directLineSecret = options.TestClientSecret;
         }
 
         /// <inheritdoc/>
