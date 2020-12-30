@@ -11,7 +11,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Connector.DirectLine;
 using Microsoft.Bot.Schema;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Rest.TransientFaultHandling;
 using Newtonsoft.Json;
 using TranscriptTestRunner.Authentication;
@@ -29,8 +28,6 @@ namespace TranscriptTestRunner.TestClients
     public class DirectLineTestClient : TestClientBase, IDisposable
     {
         // DL client sample: https://github.com/microsoft/BotFramework-DirectLine-DotNet/tree/main/samples/core-DirectLine/DirectLineClient
-        private const string DirectLineSecretKey = "DIRECTLINE";
-        private const string BotIdKey = "BOTID";
         private readonly ConcurrentQueue<BotActivity> _activityQueue = new ConcurrentQueue<BotActivity>();
         private readonly string _botId;
         private readonly string _directLineSecret;
@@ -46,20 +43,22 @@ namespace TranscriptTestRunner.TestClients
         /// <summary>
         /// Initializes a new instance of the <see cref="DirectLineTestClient"/> class.
         /// </summary>
-        /// <param name="config">Client configuration.</param>
-        public DirectLineTestClient(IConfiguration config)
+        /// <param name="options">Options for the client configuration.</param>
+        public DirectLineTestClient(TestClientOptions options)
         {
-            _botId = config[BotIdKey];
-            if (string.IsNullOrWhiteSpace(_botId))
+            if (string.IsNullOrWhiteSpace(options.BotId))
             {
-                throw new ArgumentException($"Configuration setting '{BotIdKey}' not set.");
+                throw new ArgumentException($"BotId not set.");
             }
+            
+            _botId = options.BotId;
 
-            _directLineSecret = config[DirectLineSecretKey];
-            if (string.IsNullOrWhiteSpace(_directLineSecret))
+            if (string.IsNullOrWhiteSpace(options.DirectLineClientSecret))
             {
-                throw new ArgumentException($"Configuration setting '{DirectLineSecretKey}' not found.");
+                throw new ArgumentException($"DirectLineClientSecret not set.");
             }
+            
+            _directLineSecret = options.DirectLineClientSecret;
         }
 
         /// <inheritdoc/>
@@ -163,7 +162,7 @@ namespace TranscriptTestRunner.TestClients
         }
 
         /// <summary>
-        /// Exchanges the directline secret by an auth token.
+        /// Exchanges the directLine secret by an auth token.
         /// </summary>
         /// <remarks>
         /// Instead of generating a vanilla DirectLineClient with secret, 
