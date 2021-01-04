@@ -1,0 +1,197 @@
+[
+  {
+    "channelData": {
+      "clientActivityID": "16097723226443c38b3tvxyc",
+      "clientTimestamp": "2021-01-04T14:58:42.644Z"
+    },
+    "text": "receipt",
+    "textFormat": "plain",
+    "type": "message",
+    "channelId": "emulator",
+    "from": {
+      "id": "71c04ac9-82a8-476a-8740-760cc5e76c09",
+      "name": "User",
+      "role": "user"
+    },
+    "locale": "",
+    "timestamp": "2021-01-04T14:58:42.669Z",
+    "conversation": {
+      "id": "3b836170-4e9d-11eb-9fc9-afbd749ec1ea|livechat"
+    },
+    "id": "561fd1d0-4e9d-11eb-8029-87a6e92fcaab",
+    "localTimestamp": "2021-01-04T11:58:42-03:00",
+    "recipient": {
+      "id": "fce93a20-4e9c-11eb-9fc9-afbd749ec1ea",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "serviceUrl": "https://0e141a8d6e98.ngrok.io"
+  },
+  {
+    "type": "message",
+    "serviceUrl": "https://0e141a8d6e98.ngrok.io",
+    "channelId": "emulator",
+    "from": {
+      "id": "fce93a20-4e9c-11eb-9fc9-afbd749ec1ea",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "conversation": {
+      "id": "3b836170-4e9d-11eb-9fc9-afbd749ec1ea|livechat"
+    },
+    "recipient": {
+      "id": "71c04ac9-82a8-476a-8740-760cc5e76c09",
+      "role": "user"
+    },
+    "attachmentLayout": "list",
+    "locale": "",
+    "inputHint": "acceptingInput",
+    "attachments": [
+      {
+        "contentType": "application/vnd.microsoft.card.receipt",
+        "content": {
+          "title": "John Doe",
+          "facts": [
+            {
+              "key": "Order Number",
+              "value": "1234"
+            },
+            {
+              "key": "Payment Method",
+              "value": "VISA 5555-****"
+            }
+          ],
+          "items": [
+            {
+              "title": "Data Transfer",
+              "image": {
+                "url": "https://github.com/amido/azure-vector-icons/raw/master/renders/traffic-manager.png"
+              },
+              "price": "$ 38.45",
+              "quantity": "368"
+            },
+            {
+              "title": "App Service",
+              "image": {
+                "url": "https://github.com/amido/azure-vector-icons/raw/master/renders/cloud-service.png"
+              },
+              "price": "$ 45.00",
+              "quantity": "720"
+            }
+          ],
+          "total": "$ 90.95",
+          "tax": "$ 7.50",
+          "buttons": [
+            {
+              "type": "openUrl",
+              "title": "More information",
+              "image": "https://account.windowsazure.com/content/6.10.1.38-.8225.160809-1618/aux-pre/images/offer-icon-freetrial.png",
+              "value": "https://azure.microsoft.com/en-us/pricing/"
+            }
+          ]
+        }
+      }
+    ],
+    "entities": [],
+    "replyToId": "561fd1d0-4e9d-11eb-8029-87a6e92fcaab",
+    "id": "56d454c0-4e9d-11eb-8029-87a6e92fcaab",
+    "localTimestamp": "2021-01-04T11:58:43-03:00",
+    "timestamp": "2021-01-04T14:58:43.852Z"
+  },
+  {
+    "type": "message",
+    "serviceUrl": "https://0e141a8d6e98.ngrok.io",
+    "channelId": "emulator",
+    "from": {
+      "id": "fce93a20-4e9c-11eb-9fc9-afbd749ec1ea",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "conversation": {
+      "id": "3b836170-4e9d-11eb-9fc9-afbd749ec1ea|livechat"
+    },
+    "recipient": {
+      "id": "71c04ac9-82a8-476a-8740-760cc5e76c09",
+      "role": "user"
+    },
+    "locale": "",
+    "text": "What card do you want?\n\n   1. botaction\n   2. taskmodule\n   3. submitaction\n   4. hero\n   5. thumbnail\n   6. receipt\n   7. signin\n   8. carousel\n   9. list\n   10. o365\n   11. file\n   12. animation\n   13. audio\n   14. video\n   15. uploadfile\n   16. end",
+    "speak": "What card do you want?",
+    "inputHint": "expectingInput",
+    "attachments": [],
+    "entities": [],
+    "replyToId": "561fd1d0-4e9d-11eb-8029-87a6e92fcaab",
+    "id": "57043e60-4e9d-11eb-8029-87a6e92fcaab",
+    "localTimestamp": "2021-01-04T11:58:44-03:00",
+    "timestamp": "2021-01-04T14:58:44.166Z"
+  },
+  {
+    "channelData": {
+      "clientActivityID": "1609772725291jw3tplizitj",
+      "clientTimestamp": "2021-01-04T15:05:25.291Z"
+    },
+    "text": "end",
+    "textFormat": "plain",
+    "type": "message",
+    "channelId": "emulator",
+    "from": {
+      "id": "c1204a32-db54-464e-9d59-e142adbfa1ad",
+      "name": "User",
+      "role": "user"
+    },
+    "locale": "",
+    "timestamp": "2021-01-04T15:05:25.316Z",
+    "conversation": {
+      "id": "3d905300-4e9e-11eb-9fc9-afbd749ec1ea|livechat"
+    },
+    "id": "461ee040-4e9e-11eb-8029-87a6e92fcaab",
+    "localTimestamp": "2021-01-04T12:05:25-03:00",
+    "recipient": {
+      "id": "fce93a20-4e9c-11eb-9fc9-afbd749ec1ea",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "serviceUrl": "https://0e141a8d6e98.ngrok.io"
+  },
+  {
+    "type": "message",
+    "serviceUrl": "https://0e141a8d6e98.ngrok.io",
+    "channelId": "emulator",
+    "from": {
+      "id": "fce93a20-4e9c-11eb-9fc9-afbd749ec1ea",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "conversation": {
+      "id": "3d905300-4e9e-11eb-9fc9-afbd749ec1ea|livechat"
+    },
+    "recipient": {
+      "id": "c1204a32-db54-464e-9d59-e142adbfa1ad",
+      "role": "user"
+    },
+    "locale": "",
+    "text": "Done with \"WaterfallSkillBot\". \n\n What skill would you like to call?",
+    "speak": "Done with \"WaterfallSkillBot\". \n\n What skill would you like to call?",
+    "inputHint": "expectingInput",
+    "suggestedActions": {
+      "actions": [
+        {
+          "type": "imBack",
+          "title": "EchoSkillBot",
+          "value": "EchoSkillBot"
+        },
+        {
+          "type": "imBack",
+          "title": "WaterfallSkillBot",
+          "value": "WaterfallSkillBot"
+        }
+      ]
+    },
+    "attachments": [],
+    "entities": [],
+    "replyToId": "461ee040-4e9e-11eb-8029-87a6e92fcaab",
+    "id": "46d007d0-4e9e-11eb-8029-87a6e92fcaab",
+    "localTimestamp": "2021-01-04T12:05:26-03:00",
+    "timestamp": "2021-01-04T15:05:26.477Z"
+  }
+]
