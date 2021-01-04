@@ -15,6 +15,24 @@ stages:
       - job: 'Deploy'
         displayName: 'Deploy steps'
         steps:
+          # Prepare .env file
+          - ${{ if eq(bot.type, 'Host') }}:
+            - task: AzureCLI@2
+              displayName: 'Prepare .env file'
+              inputs:
+                azureSubscription: $(AzureSubscription)
+                scriptType: ps
+                scriptLocation: inlineScript
+                inlineScript: |
+                  $file = "${{ bot.project.directory }}/.env"
+                  $content = Get-Content $file
+                  $content | ForEach-Object {
+                    $line = $_
+                    if ($line.Trim().Length -gt 0 -and -not $line.Trim().ToLower().StartsWith('skill_')) {
+                      $line
+                    }
+                  } | Set-Content $file;
+
           # Evaluate dependencies source and version
           - template: evaluateDependenciesVariables.yml
             parameters:
