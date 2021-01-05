@@ -1,15 +1,16 @@
 {
   "$schema": "https://schemas.botframework.com/schemas/skills/skill-manifest-2.0.0.json",
-  "$id": "EchoSkillBot",
-  "name": "Echo skill bot",
+  "$id": "TeamsSsoSkillBot",
+  "name": "Teams bot with sso authentication",
   "version": "1.0",
-  "description": "This is a skill for echoing what the user sent to the bot.",
+  "description": "This is a teams skill bot for authentication using sso.",
   "publisherName": "Microsoft",
   "privacyUrl": "https://microsoft.com/privacy",
   "copyright": "Copyright (c) Microsoft Corporation. All rights reserved.",
   "license": "https://github.com/microsoft/BotFramework-FunctionalTests/blob/main/LICENSE",
   "tags": [
-    "echo"
+    "teams",
+    "sso"
   ],
   "endpoints": [
     {
