@@ -42,7 +42,9 @@ namespace SkillFunctionalTests.SingleTurn
                 HostBotNames.SimpleHostBotDotNet21,
                 HostBotNames.SimpleHostBotJS,
                 HostBotNames.SimpleHostBotPython,
-                HostBotNames.SimpleComposerHostBotDotNet
+                
+                // TODO: Enable when composer bots support multiple skills.
+                // HostBotNames.SimpleComposerHostBotDotNet
             };
 
             var targetSkills = new List<string>
@@ -57,7 +59,7 @@ namespace SkillFunctionalTests.SingleTurn
 
             var scripts = new List<string>
             {
-                "EchoSelectingTargetSkill.json"
+                "EchoMultiSkill.json"
             };
 
             var testCaseBuilder = new TestCaseBuilder();
@@ -81,6 +83,7 @@ namespace SkillFunctionalTests.SingleTurn
 
             var testParams = new Dictionary<string, string>
             {
+                { "DeliveryMode", testCase.DeliveryMode },
                 { "TargetSkill", testCase.TargetSkill }
             };
 
