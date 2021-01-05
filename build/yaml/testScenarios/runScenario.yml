@@ -18,8 +18,16 @@ stages:
                 version: 3.1.x
 
             - task: DotNetCoreCLI@2
+              displayName: 'Build'
+              inputs:
+                command: build
+                publishWebProjects: false
+                projects: 'Tests/SkillFunctionalTests/SkillFunctionalTests.csproj'
+                arguments: '-v n --configuration $(BuildConfiguration)'
+
+            - task: DotNetCoreCLI@2
               displayName: 'Dotnet Test'
               inputs:
                 command: test
                 projects: 'Tests/SkillFunctionalTests/SkillFunctionalTests.csproj'
-                arguments: '-v n --configuration $(BuildConfiguration) --filter TestCategory!=IgnoreInAutomatedBuild&TestCategory=${{ scenario }}'
+                arguments: '-v n --configuration $(BuildConfiguration) --no-build --no-restore --filter TestCategory!=IgnoreInAutomatedBuild&TestCategory=${{ scenario }}'

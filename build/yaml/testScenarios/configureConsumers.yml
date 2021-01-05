@@ -96,8 +96,7 @@ steps:
               consumers = @(
                 'SimpleHostBotDotnet',
                 'SimpleHostBot21Dotnet',
-                'SimpleHostBotJS',
-                'SimpleComposerHostBotDotnet'
+                'SimpleHostBotJS'
               );
               skills    = @(
                 'EchoSkillBotDotnet',
@@ -128,17 +127,12 @@ steps:
           $directLine = (az bot directline show --name $botName --resource-group $resourceGroup --with-secrets true | ConvertFrom-Json).properties.properties.sites.key;
                 
           $directLineConsumer = @{
-              DirectLineClientSecret = $directLine
-              BotId                  = $botName
+              TestClientSecret = $directLine
+              BotId            = $botName
           }
 
           $content.TestClientOptions += $directLineConsumer
-
-          $output = $content | ConvertTo-Json;
-          $output | Set-Content $appsettingsPath;
-
-          Write-Host "`nTest Project AppSettings: $($consumerBot.name)";
-          $output
+          $content | ConvertTo-Json | Set-Content $appsettingsPath;
         }
 
         # Script to assign Skills variables into Consumers AppSettings
@@ -227,3 +221,7 @@ steps:
               $appsettings
           }
         }
+
+        Write-Host "`nTest Project AppSettings: $($consumerBot.name)";
+        $content.TestClientOptions | ForEach-Object { $_.TestClientSecret = "***" } 
+        $content.TestClientOptions | ForEach-Object {[PSCustomObject]$_}  | Format-Table -AutoSize
