@@ -9,7 +9,7 @@ const restify = require('restify');
 
 // Import required bot services.
 // See https://aka.ms/bot-services to learn more about the different parts of a bot.
-const { BotFrameworkAdapter, TurnContext, ActivityTypes, EndOfConversationCodes, ChannelServiceRoutes, ConversationState, InputHints, MemoryStorage, SkillHandler, SkillHttpClient } = require('botbuilder');
+const { BotFrameworkAdapter, TurnContext, ActivityTypes, ChannelServiceRoutes, ConversationState, InputHints, MemoryStorage, SkillHandler, SkillHttpClient } = require('botbuilder');
 const { AuthenticationConfiguration, SimpleCredentialProvider } = require('botframework-connector');
 
 // Import required bot configuration.
@@ -17,10 +17,11 @@ const ENV_FILE = path.join(__dirname, '.env');
 require('dotenv').config({ path: ENV_FILE });
 
 // This bot's main dialog.
-const { HostBot } = require('./hostBot');
+const { HostBot } = require('./bots/hostBot');
 const { SkillsConfiguration } = require('./skillsConfiguration');
 const { SkillConversationIdFactory } = require('./skillConversationIdFactory');
 const { allowedSkillsClaimsValidator } = require('./authentication/allowedSkillsClaimsValidator');
+const { SetupDialog } = require('./dialogs/setupDialog');
 
 // Create adapter.
 // See https://aka.ms/about-bot-adapter to learn more about adapters.
@@ -108,7 +109,8 @@ const credentialProvider = new SimpleCredentialProvider(process.env.MicrosoftApp
 const skillClient = new SkillHttpClient(credentialProvider, conversationIdFactory);
 
 // Create the main dialog.
-const bot = new HostBot(conversationState, skillsConfig, skillClient);
+const dialog = new SetupDialog(conversationState, skillsConfig);
+const bot = new HostBot(dialog, conversationState, skillsConfig, skillClient);
 
 // Create HTTP server
 const server = restify.createServer();

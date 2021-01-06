@@ -4,7 +4,7 @@
 const { ActivityHandler, ActivityTypes } = require('botbuilder');
 
 class HostBot extends ActivityHandler {
-    constructor(conversationState, skillsConfig, skillClient) {
+    constructor(dialog, conversationState, skillsConfig, skillClient) {
         super();
         if (!conversationState) throw new Error('[HostBot]: Missing parameter. conversationState is required');
         if (!skillsConfig) throw new Error('[HostBot]: Missing parameter. skillsConfig is required');
@@ -13,42 +13,28 @@ class HostBot extends ActivityHandler {
         this.conversationState = conversationState;
         this.skillsConfig = skillsConfig;
         this.skillClient = skillClient;
+        this.dialog = dialog;
+        this.dialogState = this.conversationState.createProperty('DialogState');
 
         this.botId = process.env.MicrosoftAppId;
         if (!this.botId) {
             throw new Error('[HostBot] MicrosoftAppId is not set in configuration');
         }
 
-        // We use a single skill in this example.
-        const targetSkillId = 'EchoSkillBot';
-        this.targetSkill = skillsConfig.skills[targetSkillId];
-        if (!this.targetSkill) {
-            throw new Error(`[HostBot] Skill with ID "${ targetSkillId }" not found in configuration`);
-        }
-
-        // Create state property to track the active skill
+        // Create state property to track the delivery mode and active skill.
+        this.deliveryModeProperty = this.conversationState.createProperty(HostBot.DeliveryModePropertyName);
         this.activeSkillProperty = this.conversationState.createProperty(HostBot.ActiveSkillPropertyName);
 
         // See https://aka.ms/about-bot-activity-message to learn more about the message and other activity types.
         this.onMessage(async (context, next) => {
-            // Try to get the active skill
+            // Try to get the active skill.
             const activeSkill = await this.activeSkillProperty.get(context);
 
             if (activeSkill) {
                 // Send the activity to the skill
                 await this.sendToSkill(context, activeSkill);
             } else {
-                if (context.activity.text.toLowerCase().includes('skill')) {
-                    await context.sendActivity('Got it, connecting you to the skill...');
-
-                    // Set active skill
-                    await this.activeSkillProperty.set(context, this.targetSkill);
-
-                    // Send the activity to the skill
-                    await this.sendToSkill(context, this.targetSkill);
-                } else {
-                    await context.sendActivity("Me no nothin'. Say \"skill\" and I'll patch you through");
-                }
+                await this.dialog.run(context, this.dialogState);
             }
 
             // By calling next() you ensure that the next BotHandler is run.
@@ -58,10 +44,11 @@ class HostBot extends ActivityHandler {
         this.onEndOfConversation(async (context, next) => {
             // Handle EndOfConversation returned by the skill.
             if (context.activity.type === ActivityTypes.EndOfConversation) {
-                // Stop forwarding activities to Skill.
+                // Forget delivery mode and skill invocation.
+                await this.deliveryModeProperty.set(context, undefined);
                 await this.activeSkillProperty.set(context, undefined);
 
-                // Show status message, text and value returned by the skill
+                // Show status message, text and value returned by the skill.
                 let eocActivityMessage = `Received ${ ActivityTypes.EndOfConversation }.\n\nCode: ${ context.activity.code }`;
                 if (context.activity.text) {
                     eocActivityMessage += `\n\nText: ${ context.activity.text }`;
@@ -73,11 +60,10 @@ class HostBot extends ActivityHandler {
 
                 await context.sendActivity(eocActivityMessage);
 
-                // We are back at the host
-                await context.sendActivity('Back in the host bot. Say "skill" and I\'ll patch you through');
+                // We are back at the host.
+                await context.sendActivity('Back in the host bot.');
 
-                // Save conversation state
-                await this.conversationState.saveChanges(context, true);
+                await this.dialog.run(context, this.dialogState);
             }
 
             // By calling next() you ensure that the next BotHandler is run.
@@ -89,16 +75,9 @@ class HostBot extends ActivityHandler {
             for (let cnt = 0; cnt < membersAdded.length; ++cnt) {
                 if (membersAdded[cnt].id !== context.activity.recipient.id) {
                     await context.sendActivity('Hello and welcome!');
+                    await this.dialog.run(context, this.dialogState);
                 }
             }
-
-            // By calling next() you ensure that the next BotHandler is run.
-            await next();
-        });
-
-        this.onDialog(async (context, next) => {
-            // Save any state changes. The load happened during the execution of the Dialog.
-            await this.conversationState.saveChanges(context);
 
             // By calling next() you ensure that the next BotHandler is run.
             await next();
@@ -110,7 +89,7 @@ class HostBot extends ActivityHandler {
         // will have access to current accurate state.
         await this.conversationState.saveChanges(context, true);
 
-        // route the activity to the skill
+        // Route the activity to the skill
         const response = await this.skillClient.postToSkill(this.botId, targetSkill, this.skillsConfig.skillHostEndpoint, context.activity);
 
         // Check response status
@@ -118,7 +97,18 @@ class HostBot extends ActivityHandler {
             throw new Error(`[HostBot]: Error invoking the skill id: "${ targetSkill.id }" at "${ targetSkill.skillEndpoint }" (status is ${ response.status }). \r\n ${ response.body }`);
         }
     }
+
+    /**
+     * Override the ActivityHandler.run() method to save state changes after the bot logic completes.
+     */
+    async run(context) {
+        await super.run(context);
+
+        // Save any state changes. The load happened during the execution of the Dialog.
+        await this.conversationState.saveChanges(context, false);
+    }
 }
 
 module.exports.HostBot = HostBot;
 HostBot.ActiveSkillPropertyName = 'activeSkillProperty';
+HostBot.DeliveryModePropertyName = 'deliveryModeProperty';
