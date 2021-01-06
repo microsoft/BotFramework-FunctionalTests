@@ -1,8 +1,6 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License.
-
 from typing import List
-
 from botbuilder.core import (
     ActivityHandler,
     ConversationState,
@@ -10,13 +8,14 @@ from botbuilder.core import (
     TurnContext,
 )
 from botbuilder.core.skills import BotFrameworkSkill
+from botbuilder.dialogs import Dialog
 from botbuilder.schema import ActivityTypes, ChannelAccount
 from botbuilder.integration.aiohttp.skills import SkillHttpClient
-
 from config import DefaultConfig, SkillConfiguration
+from helpers.dialog_helper import DialogHelper
 
+DELIVERY_MODE_PROPERTY_NAME = "deliveryModeProperty"
 ACTIVE_SKILL_PROPERTY_NAME = "activeSkillProperty"
-TARGET_SKILL_ID = "EchoSkillBot"
 
 
 class HostBot(ActivityHandler):
@@ -26,74 +25,61 @@ class HostBot(ActivityHandler):
         skills_config: SkillConfiguration,
         skill_client: SkillHttpClient,
         config: DefaultConfig,
+        dialog: Dialog,
     ):
         self._bot_id = config.APP_ID
         self._skill_client = skill_client
         self._skills_config = skills_config
         self._conversation_state = conversation_state
+        self._dialog = dialog
+        # Create state property to track the delivery mode, active skill and dialog state
+        self._delivery_mode_property = conversation_state.create_property(
+            DELIVERY_MODE_PROPERTY_NAME
+        )
         self._active_skill_property = conversation_state.create_property(
             ACTIVE_SKILL_PROPERTY_NAME
         )
+        self._dialog_state_property = conversation_state.create_property("DialogState")
 
     async def on_turn(self, turn_context):
+        await super().on_turn(turn_context)
+        # Save any state changes that might have occurred during the turn.
+        await self._conversation_state.save_changes(turn_context)
+
+    async def on_message_activity(self, turn_context: TurnContext):
         # Forward all activities except EndOfConversation to the active skill.
         if turn_context.activity.type != ActivityTypes.end_of_conversation:
             # If there is an active skill
-            active_skill: BotFrameworkSkill = await self._active_skill_property.get(turn_context)
-
+            active_skill: BotFrameworkSkill = await self._active_skill_property.get(
+                turn_context
+            )
             if active_skill:
                 # If there is an active skill, forward the Activity to it.
                 await self.__send_to_skill(turn_context, active_skill)
-                return
-
-        await super().on_turn(turn_context)
-
-    async def on_message_activity(self, turn_context: TurnContext):
-        if "skill" in turn_context.activity.text:
-            # Begin forwarding Activities to the skill
-            await turn_context.send_activity(
-                MessageFactory.text("Got it, connecting you to the skill...")
-            )
-
-            skill = self._skills_config.SKILLS[TARGET_SKILL_ID]
-            # Save active skill in state
-            await self._active_skill_property.set(turn_context, skill)
-
-            # Send the activity to the skill
-            await self.__send_to_skill(turn_context, skill)
-        else:
-            # just respond
-            await turn_context.send_activity(
-                MessageFactory.text(
-                    "Me no nothin'. Say \"skill\" and I'll patch you through"
+            else:
+                await DialogHelper.run_dialog(
+                    self._dialog, turn_context, self._dialog_state_property,
                 )
-            )
 
     async def on_end_of_conversation_activity(self, turn_context: TurnContext):
-        # forget skill invocation
+        # Forget delivery mode and skill invocation.
+        await self._delivery_mode_property.delete(turn_context)
         await self._active_skill_property.delete(turn_context)
-
         eoc_activity_message = f"Received {ActivityTypes.end_of_conversation}.\n\nCode: {turn_context.activity.code}"
         if turn_context.activity.text:
             eoc_activity_message = (
                 eoc_activity_message + f"\n\nText: {turn_context.activity.text}"
             )
-
         if turn_context.activity.value:
             eoc_activity_message = (
                 eoc_activity_message + f"\n\nValue: {turn_context.activity.value}"
             )
-
         await turn_context.send_activity(eoc_activity_message)
-
         # We are back
-        await turn_context.send_activity(
-            MessageFactory.text(
-                'Back in the host bot. Say "skill" and I\'ll patch you through'
-            )
+        await turn_context.send_activity(MessageFactory.text("Back in host bot."))
+        await DialogHelper.run_dialog(
+            self._dialog, turn_context, self._dialog_state_property,
         )
-
-        await self._conversation_state.save_changes(turn_context, force=True)
 
     async def on_members_added_activity(
         self, members_added: List[ChannelAccount], turn_context: TurnContext
@@ -103,6 +89,9 @@ class HostBot(ActivityHandler):
                 await turn_context.send_activity(
                     MessageFactory.text("Hello and welcome!")
                 )
+                await DialogHelper.run_dialog(
+                    self._dialog, turn_context, self._dialog_state_property,
+                )
 
     async def __send_to_skill(
         self, turn_context: TurnContext, target_skill: BotFrameworkSkill
@@ -110,7 +99,6 @@ class HostBot(ActivityHandler):
         # NOTE: Always SaveChanges() before calling a skill so that any activity generated by the skill
         # will have access to current accurate state.
         await self._conversation_state.save_changes(turn_context, force=True)
-
         # route the activity to the skill
         await self._skill_client.post_activity_to_skill(
             self._bot_id,
