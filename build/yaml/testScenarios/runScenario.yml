@@ -17,7 +17,7 @@ stages:
                   scriptType: ps
                   scriptLocation: inlineScript
                   inlineScript: |
-                    az webapp config appsettings set -g ${{ consumer.resourceGroup }} -n ${{ consumer.botName }} --settings BotFrameworkSkills:0:AppId=${{ skill.appId }} BotFrameworkSkills:0:SkillEndpoint=https://${{ skill.botName }}.azurewebsites.net/api/messages SkillHostEndpoint=https://${{ consumer.botName }}.azurewebsites.net/api/skills
+                    az webapp config appsettings set -g ${{ consumer.resourceGroup }} -n "${{ consumer.botName }}$($env:BotNamesSuffix)" --settings BotFrameworkSkills:0:AppId=${{ skill.appId }} BotFrameworkSkills:0:SkillEndpoint=https://${{ skill.botName }}$($env:BotNamesSuffix).azurewebsites.net/api/messages SkillHostEndpoint=https://${{ consumer.botName }}$($env:BotNamesSuffix).azurewebsites.net/api/skills
 
             - ${{ if eq(consumer.configType, 'Js') }}:
               - task: AzureCLI@2
@@ -27,7 +27,7 @@ stages:
                   scriptType: ps
                   scriptLocation: inlineScript
                   inlineScript: |
-                    az webapp config appsettings set -g ${{ consumer.resourceGroup }} -n ${{ consumer.botName }} --settings SkillAppId=${{ skill.appId }} SkillEndpoint=https://${{ skill.botName }}.azurewebsites.net/api/messages SkillHostEndpoint=https://${{ consumer.botName }}.azurewebsites.net/api/skills
+                    az webapp config appsettings set -g ${{ consumer.resourceGroup }} -n "${{ consumer.botName }}$($env:BotNamesSuffix)" --settings SkillAppId=${{ skill.appId }} SkillEndpoint=https://${{ skill.botName }}$($env:BotNamesSuffix).azurewebsites.net/api/messages SkillHostEndpoint=https://${{ consumer.botName }}$($env:BotNamesSuffix).azurewebsites.net/api/skills
 
             - ${{ if eq(consumer.configType, 'Composer') }}:
               - task: AzureCLI@2
@@ -37,7 +37,7 @@ stages:
                   scriptType: ps
                   scriptLocation: inlineScript
                   inlineScript: |
-                    az webapp config appsettings set -g ${{ consumer.resourceGroup }} -n ${{ consumer.botName }} --settings skill__EchoSkillBot__msAppId=${{ skill.appId }} skill__EchoSkillBot__endpointUrl=https://${{ skill.botName }}.azurewebsites.net/api/messages SkillHostEndpoint=https://${{ consumer.botName }}.azurewebsites.net/api/skills
+                    az webapp config appsettings set -g ${{ consumer.resourceGroup }} -n "${{ consumer.botName }}$($env:BotNamesSuffix)" --settings skill__EchoSkillBot__msAppId=${{ skill.appId }} skill__EchoSkillBot__endpointUrl=https://${{ skill.botName }}$($env:BotNamesSuffix).azurewebsites.net/api/messages SkillHostEndpoint=https://${{ consumer.botName }}$($env:BotNamesSuffix).azurewebsites.net/api/skills
 
         - job: Test
           dependsOn: Configure

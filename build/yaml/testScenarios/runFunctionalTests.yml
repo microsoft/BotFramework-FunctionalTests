@@ -2,13 +2,14 @@ parameters:
   resourceGroup: ''
 
 steps:
-- task: AzureCLI@1
+- task: AzureCLI@2
   displayName: 'Create DirectLine Channel'
   inputs:
     azureSubscription: $(AzureSubscription)
+    scriptType: ps
     scriptLocation: inlineScript
     inlineScript: |
-      call az bot directline create -n "$(HostBotName)" -g "${{ parameters.resourceGroup }}" > "$(System.DefaultWorkingDirectory)\DirectLineCreate.json"
+      az bot directline create -n "$(HostBotName)$($env:BotNamesSuffix)" -g "${{ parameters.resourceGroup }}" > "$(System.DefaultWorkingDirectory)\DirectLineCreate.json"
       
 - powershell: |
     $json = Get-Content '$(System.DefaultWorkingDirectory)\DirectLineCreate.json' | Out-String | ConvertFrom-Json;

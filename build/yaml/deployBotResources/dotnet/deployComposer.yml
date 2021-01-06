@@ -15,6 +15,11 @@ stages:
       - job: 'Deploy'
         displayName: 'Deploy steps'
         steps:
+          # Process pipeline variables for its use
+          - template: ../common/processVariables.yml
+            parameters:
+              BotSuffix: $env:BotNamesSuffix
+              
           # Use Net Core version
           - ${{ if ne(bot.project.netCoreVersion, '') }}:
             - task: UseDotNet@2
@@ -35,12 +40,12 @@ stages:
             parameters:
               appId: '${{ bot.appId }}'
               appSecret: '${{ bot.appSecret }}'
-              botName: '${{ bot.name }}'
+              botName: '${{ bot.name }}$(BotSuffix)'
               botGroup: '${{ parameters.resourceGroup }}'
 
           # Deploy bot
           - template: ../common/zipDeploy.yml
             parameters:
-              botName: '${{ bot.name }}'
+              botName: '${{ bot.name }}$(BotSuffix)'
               botGroup: '${{ parameters.resourceGroup }}'
               source: "build-composer/build.zip"

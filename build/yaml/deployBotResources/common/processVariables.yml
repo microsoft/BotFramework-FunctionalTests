@@ -1,0 +1,9 @@
+parameters:
+  BotSuffix: ''
+
+steps:
+  - powershell: |
+      # This process is necessary for reasons when the variable is empty it uses the variable name as value. more info at (https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&tabs=yaml%2Cbatch#runtime-expression-syntax)
+      
+      Write-Host "##vso[task.setvariable variable=BotSuffix]${{ parameters.BotSuffix }}"
+    displayName: 'Process pipeline variables'
