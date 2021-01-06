@@ -7,10 +7,12 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
+using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Integration.AspNet.Core.Skills;
 using Microsoft.Bot.Builder.Skills;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Bot.Schema;
+using Microsoft.BotFrameworkFunctionalTests.SimpleHostBot21.Dialogs;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
@@ -18,17 +20,17 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot21.Bots
 {
     public class HostBot : ActivityHandler
     {
+        public const string DeliveryModePropertyName = "deliveryModeProperty";
         public const string ActiveSkillPropertyName = "activeSkillProperty";
-        
-        // We use a single skill in this example.
-        public const string TargetSkillId = "EchoSkillBot";
-        
+
+        private readonly IStatePropertyAccessor<string> _deliveryModeProperty;
         private readonly IStatePropertyAccessor<BotFrameworkSkill> _activeSkillProperty;
+        private readonly IStatePropertyAccessor<DialogState> _dialogState;
         private readonly string _botId;
         private readonly ConversationState _conversationState;
         private readonly SkillHttpClient _skillClient;
         private readonly SkillsConfiguration _skillsConfig;
-        private readonly BotFrameworkSkill _targetSkill;
+        private readonly Dialog _dialog;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HostBot"/> class.
@@ -37,11 +39,14 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot21.Bots
         /// <param name="skillsConfig">The skills configuration.</param>
         /// <param name="skillClient">The HTTP client for the skills.</param>
         /// <param name="configuration">The configuration properties.</param>
-        public HostBot(ConversationState conversationState, SkillsConfiguration skillsConfig, SkillHttpClient skillClient, IConfiguration configuration)
+        /// <param name="dialog">The dialog to use.</param>
+        public HostBot(ConversationState conversationState, SkillsConfiguration skillsConfig, SkillHttpClient skillClient, IConfiguration configuration, SetupDialog dialog)
         {
             _conversationState = conversationState ?? throw new ArgumentNullException(nameof(conversationState));
             _skillsConfig = skillsConfig ?? throw new ArgumentNullException(nameof(skillsConfig));
             _skillClient = skillClient ?? throw new ArgumentNullException(nameof(skillClient));
+            _dialog = dialog ?? throw new ArgumentNullException(nameof(dialog));
+            _dialogState = _conversationState.CreateProperty<DialogState>("DialogState");
             if (configuration == null)
             {
                 throw new ArgumentNullException(nameof(configuration));
@@ -49,13 +54,18 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot21.Bots
 
             _botId = configuration.GetSection(MicrosoftAppCredentials.MicrosoftAppIdKey)?.Value;
 
-            if (!_skillsConfig.Skills.TryGetValue(TargetSkillId, out _targetSkill))
-            {
-                throw new ArgumentException($"Skill with ID \"{TargetSkillId}\" not found in configuration");
-            }
-
-            // Create state property to track the active skill
+            // Create state properties to track the delivery mode and active skill.
+            _deliveryModeProperty = conversationState.CreateProperty<string>(DeliveryModePropertyName);
             _activeSkillProperty = conversationState.CreateProperty<BotFrameworkSkill>(ActiveSkillPropertyName);
+        }
+
+        /// <inheritdoc/>
+        public override async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default)
+        {
+            await base.OnTurnAsync(turnContext, cancellationToken);
+
+            // Save any state changes that might have occurred during the turn.
+            await _conversationState.SaveChangesAsync(turnContext, false, cancellationToken);
         }
 
         /// <summary>
@@ -73,26 +83,13 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot21.Bots
             {
                 // Send the activity to the skill
                 await SendToSkillAsync(turnContext, activeSkill, cancellationToken);
-                return;
             }
-
-            if (turnContext.Activity.Text.ToLower().Contains("skill"))
+            else
             {
-                await turnContext.SendActivityAsync(MessageFactory.Text("Got it, connecting you to the skill..."), cancellationToken);
-
-                // Save active skill in state
-                await _activeSkillProperty.SetAsync(turnContext, _targetSkill, cancellationToken);
-
-                // Send the activity to the skill
-                await SendToSkillAsync(turnContext, _targetSkill, cancellationToken);
-                return;
+                await _dialog.RunAsync(turnContext, _dialogState, cancellationToken);
             }
 
-            // just respond
-            await turnContext.SendActivityAsync(MessageFactory.Text("Me no nothin'. Say \"skill\" and I'll patch you through"), cancellationToken);
-
-            // Save conversation state
-            await _conversationState.SaveChangesAsync(turnContext, force: true, cancellationToken: cancellationToken);
+            return;
         }
 
         /// <summary>
@@ -103,10 +100,11 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot21.Bots
         /// <returns>A <see cref="Task{TResult}"/> representing the result of the asynchronous operation.</returns>
         protected override async Task OnEndOfConversationActivityAsync(ITurnContext<IEndOfConversationActivity> turnContext, CancellationToken cancellationToken)
         {
-            // forget skill invocation
+            // Forget delivery mode and skill invocation.
+            await _deliveryModeProperty.DeleteAsync(turnContext, cancellationToken);
             await _activeSkillProperty.DeleteAsync(turnContext, cancellationToken);
-
-            // Show status message, text and value returned by the skill
+            
+            // Show status message, text and value returned by the skill.
             var eocActivityMessage = $"Received {ActivityTypes.EndOfConversation}.\n\nCode: {turnContext.Activity.Code}";
             if (!string.IsNullOrWhiteSpace(turnContext.Activity.Text))
             {
@@ -120,11 +118,10 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot21.Bots
 
             await turnContext.SendActivityAsync(MessageFactory.Text(eocActivityMessage), cancellationToken);
 
-            // We are back at the host
-            await turnContext.SendActivityAsync(MessageFactory.Text("Back in the host bot. Say \"skill\" and I'll patch you through"), cancellationToken);
+            // We are back at the host.
+            await turnContext.SendActivityAsync(MessageFactory.Text("Back in the host bot."), cancellationToken);
 
-            // Save conversation state
-            await _conversationState.SaveChangesAsync(turnContext, cancellationToken: cancellationToken);
+            await _dialog.RunAsync(turnContext, _dialogState, cancellationToken);
         }
 
         /// <summary>
@@ -141,6 +138,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot21.Bots
                 if (member.Id != turnContext.Activity.Recipient.Id)
                 {
                     await turnContext.SendActivityAsync(MessageFactory.Text("Hello and welcome!"), cancellationToken);
+                    await _dialog.RunAsync(turnContext, _dialogState, cancellationToken);
                 }
             }
         }
