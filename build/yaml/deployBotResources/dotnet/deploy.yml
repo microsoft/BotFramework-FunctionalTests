@@ -15,7 +15,7 @@ stages:
       - job: 'Deploy'
         displayName: 'Deploy steps'
         steps:
-          # Process pipeline variables for its use
+          # Process pipeline variables
           - template: ../common/processVariables.yml
             parameters:
               BotSuffix: $env:BotNamesSuffix
