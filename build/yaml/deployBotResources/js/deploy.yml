@@ -15,11 +15,6 @@ stages:
       - job: 'Deploy'
         displayName: 'Deploy steps'
         steps:
-          # Process pipeline variables
-          - template: ../common/processVariables.yml
-            parameters:
-              BotSuffix: $env:BotNamesSuffix
-
           # Evaluate dependencies source and version
           - template: evaluateDependenciesVariables.yml
             parameters:
@@ -62,7 +57,7 @@ stages:
             parameters:
               appId: '${{ bot.appId }}'
               appSecret: '${{ bot.appSecret }}'
-              botName: '${{ bot.name }}$(BotSuffix)'
+              botName: '${{ bot.name }}'
               botGroup: '${{ parameters.resourceGroup }}'
 
           # Configure OAuth
@@ -71,12 +66,12 @@ stages:
               parameters:
                 appId: '${{ bot.appId }}'
                 appSecret: '${{ bot.appSecret }}'
-                botName: '${{ bot.name }}$(BotSuffix)'
+                botName: '${{ bot.name }}'
                 botGroup: '${{ parameters.resourceGroup }}'
 
           # Deploy bot
           - template: ../common/zipDeploy.yml
             parameters:
-              botName: '${{ bot.name }}$(BotSuffix)'
+              botName: '${{ bot.name }}'
               botGroup: '${{ parameters.resourceGroup }}'
               source: '$(System.DefaultWorkingDirectory)/${{ bot.name }}.zip'
