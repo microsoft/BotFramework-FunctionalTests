@@ -19,7 +19,6 @@ class SetupDialog extends ComponentDialog {
         this.deliveryModeProperty = conversationState.createProperty(HostBot.DeliveryModePropertyName);
         this.activeSkillProperty = conversationState.createProperty(HostBot.ActiveSkillPropertyName);
         this.skillsConfig = skillsConfig;
-        this.conversationState = conversationState;
 
         // Define the setup dialog and its related components.
         // Add ChoicePrompt to render available skills.

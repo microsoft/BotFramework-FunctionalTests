@@ -32,14 +32,15 @@ class HostBot(ActivityHandler):
         self._skills_config = skills_config
         self._conversation_state = conversation_state
         self._dialog = dialog
-        # Create state property to track the delivery mode, active skill and dialog state
+        self._dialog_state_property = conversation_state.create_property("DialogState")
+
+        # Create state property to track the delivery mode and active skill.
         self._delivery_mode_property = conversation_state.create_property(
             DELIVERY_MODE_PROPERTY_NAME
         )
         self._active_skill_property = conversation_state.create_property(
             ACTIVE_SKILL_PROPERTY_NAME
         )
-        self._dialog_state_property = conversation_state.create_property("DialogState")
 
     async def on_turn(self, turn_context):
         await super().on_turn(turn_context)

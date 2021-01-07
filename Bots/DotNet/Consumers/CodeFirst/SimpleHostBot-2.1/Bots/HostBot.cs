@@ -25,7 +25,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot21.Bots
 
         private readonly IStatePropertyAccessor<string> _deliveryModeProperty;
         private readonly IStatePropertyAccessor<BotFrameworkSkill> _activeSkillProperty;
-        private readonly IStatePropertyAccessor<DialogState> _dialogState;
+        private readonly IStatePropertyAccessor<DialogState> _dialogStateProperty;
         private readonly string _botId;
         private readonly ConversationState _conversationState;
         private readonly SkillHttpClient _skillClient;
@@ -46,7 +46,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot21.Bots
             _skillsConfig = skillsConfig ?? throw new ArgumentNullException(nameof(skillsConfig));
             _skillClient = skillClient ?? throw new ArgumentNullException(nameof(skillClient));
             _dialog = dialog ?? throw new ArgumentNullException(nameof(dialog));
-            _dialogState = _conversationState.CreateProperty<DialogState>("DialogState");
+            _dialogStateProperty = _conversationState.CreateProperty<DialogState>("DialogState");
             if (configuration == null)
             {
                 throw new ArgumentNullException(nameof(configuration));
@@ -86,10 +86,8 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot21.Bots
             }
             else
             {
-                await _dialog.RunAsync(turnContext, _dialogState, cancellationToken);
+                await _dialog.RunAsync(turnContext, _dialogStateProperty, cancellationToken);
             }
-
-            return;
         }
 
         /// <summary>
@@ -121,7 +119,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot21.Bots
             // We are back at the host.
             await turnContext.SendActivityAsync(MessageFactory.Text("Back in the host bot."), cancellationToken);
 
-            await _dialog.RunAsync(turnContext, _dialogState, cancellationToken);
+            await _dialog.RunAsync(turnContext, _dialogStateProperty, cancellationToken);
         }
 
         /// <summary>
@@ -138,7 +136,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot21.Bots
                 if (member.Id != turnContext.Activity.Recipient.Id)
                 {
                     await turnContext.SendActivityAsync(MessageFactory.Text("Hello and welcome!"), cancellationToken);
-                    await _dialog.RunAsync(turnContext, _dialogState, cancellationToken);
+                    await _dialog.RunAsync(turnContext, _dialogStateProperty, cancellationToken);
                 }
             }
         }

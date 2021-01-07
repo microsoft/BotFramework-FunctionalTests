@@ -14,7 +14,7 @@ class HostBot extends ActivityHandler {
         this.skillsConfig = skillsConfig;
         this.skillClient = skillClient;
         this.dialog = dialog;
-        this.dialogState = this.conversationState.createProperty('DialogState');
+        this.dialogStateProperty = this.conversationState.createProperty('DialogState');
 
         this.botId = process.env.MicrosoftAppId;
         if (!this.botId) {
@@ -34,11 +34,8 @@ class HostBot extends ActivityHandler {
                 // Send the activity to the skill
                 await this.sendToSkill(context, activeSkill);
             } else {
-                await this.dialog.run(context, this.dialogState);
+                await this.dialog.run(context, this.dialogStateProperty);
             }
-
-            // By calling next() you ensure that the next BotHandler is run.
-            await next();
         });
 
         this.onEndOfConversation(async (context, next) => {
@@ -63,7 +60,7 @@ class HostBot extends ActivityHandler {
                 // We are back at the host.
                 await context.sendActivity('Back in the host bot.');
 
-                await this.dialog.run(context, this.dialogState);
+                await this.dialog.run(context, this.dialogStateProperty);
             }
 
             // By calling next() you ensure that the next BotHandler is run.
@@ -75,7 +72,7 @@ class HostBot extends ActivityHandler {
             for (let cnt = 0; cnt < membersAdded.length; ++cnt) {
                 if (membersAdded[cnt].id !== context.activity.recipient.id) {
                     await context.sendActivity('Hello and welcome!');
-                    await this.dialog.run(context, this.dialogState);
+                    await this.dialog.run(context, this.dialogStateProperty);
                 }
             }
 

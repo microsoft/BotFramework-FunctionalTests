@@ -33,7 +33,6 @@ class SetupDialog(ComponentDialog):
             ACTIVE_SKILL_PROPERTY_NAME
         )
 
-        self._conversation_state = conversation_state
         self._skills_config = skills_config
 
         # Define the setup dialog and its related components.

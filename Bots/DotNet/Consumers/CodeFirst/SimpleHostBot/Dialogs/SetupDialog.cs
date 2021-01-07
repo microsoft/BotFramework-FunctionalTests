@@ -22,13 +22,11 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Dialogs
     {
         private readonly IStatePropertyAccessor<string> _deliveryModeProperty;
         private readonly IStatePropertyAccessor<BotFrameworkSkill> _activeSkillProperty;
-        private readonly ConversationState _conversationState;
         private readonly SkillsConfiguration _skillsConfig;
 
         public SetupDialog(ConversationState conversationState, SkillsConfiguration skillsConfig)
             : base(nameof(SetupDialog))
         {
-            _conversationState = conversationState ?? throw new ArgumentNullException(nameof(conversationState));
             _skillsConfig = skillsConfig ?? throw new ArgumentNullException(nameof(skillsConfig));
 
             _deliveryModeProperty = conversationState.CreateProperty<string>(HostBot.DeliveryModePropertyName);
@@ -54,8 +52,8 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Dialogs
         private async Task<DialogTurnResult> SelectDeliveryModeStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             // Create the PromptOptions with the delivery modes supported.
-            var messageText = "What delivery mode would you like to use?";
-            var repromptMessageText = "That was not a valid choice, please select a valid delivery mode.";
+            const string messageText = "What delivery mode would you like to use?";
+            const string repromptMessageText = "That was not a valid choice, please select a valid delivery mode.";
             var choices = new List<Choice>();
             choices.Add(new Choice(DeliveryModes.Normal));
             choices.Add(new Choice(DeliveryModes.ExpectReplies));
@@ -77,8 +75,8 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Dialogs
             await _deliveryModeProperty.SetAsync(stepContext.Context, ((FoundChoice)stepContext.Result).Value, cancellationToken);
 
             // Create the PromptOptions from the skill configuration which contains the list of configured skills.
-            var messageText = stepContext.Options?.ToString() ?? "What skill would you like to call?";
-            var repromptMessageText = "That was not a valid choice, please select a valid skill.";
+            const string messageText = "What skill would you like to call?";
+            const string repromptMessageText = "That was not a valid choice, please select a valid skill.";
             var options = new PromptOptions
             {
                 Prompt = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput),
