@@ -7,12 +7,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Builder.Teams;
 using Microsoft.Bot.Schema;
 using Newtonsoft.Json;
 
 namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Bots
 {
-    public class RootBot<T> : ActivityHandler
+    public class RootBot<T> : TeamsActivityHandler
         where T : Dialog
     {
         private readonly ConversationState _conversationState;

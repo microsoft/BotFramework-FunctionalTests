@@ -29,7 +29,7 @@ namespace Microsoft.BotBuilderSamples
             {
                 if (member.Id != turnContext.Activity.Recipient.Id)
                 {
-                    await turnContext.SendActivityAsync(MessageFactory.Text("Welcome to AuthenticationBot. Type anything to get logged in. Type 'logout' to sign-out."), cancellationToken);
+                    await turnContext.SendActivityAsync(MessageFactory.Text("Welcome to the Teams Waterfall Skill bot."), cancellationToken);
                 }
             }
         }

@@ -81,7 +81,8 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot
 
             app.UseDefaultFiles()
                 .UseStaticFiles()
-                .UseWebSockets()
+
+                //.UseWebSockets()
                 .UseRouting()
                 .UseAuthorization()
                 .UseEndpoints(endpoints =>

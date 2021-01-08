@@ -2,8 +2,8 @@
   "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.7/MicrosoftTeams.schema.json",
   "manifestVersion": "1.7",
   "version": "1.0.0",
-  "id": "13eef122-799a-4857-b3a0-547b19b5c93b",
-  "packageName": "com.microsoft.botframeworkfunctionaltests.teamwaterfallparent",
+  "id": "bf45d61b-c82b-4a49-b7f9-63a04e7bedc6",
+  "packageName": "com.microsoft.botframeworkfunctionaltests.teamwaterfallskillbot",
   "developer": {
     "name": "Microsoft",
     "websiteUrl": "https://example.azurewebsites.net",
@@ -15,19 +15,21 @@
     "outline": "icon-outline.png"
   },
   "name": {
-    "short": "Teams SSO Auth",
-    "full": "Teams Single Sign On Sample"
+    "short": "Teams Waterfall Skill",
+    "full": "Teams Waterfall Skill"
   },
   "description": {
-    "short": "Test Teams SSO Auth",
-    "full": "This is a bot for testing Single Sign on for Teams"
+    "short": "Teams Waterfall Skill",
+    "full": "Teams Waterfall Skill"
   },
   "accentColor": "#FFFFFF",
   "bots": [
     {
-      "botId": "13eef122-799a-4857-b3a0-547b19b5c93b",
+      "botId": "bf45d61b-c82b-4a49-b7f9-63a04e7bedc6",
       "scopes": [
-        "personal"
+        "personal",
+        "groupchat",
+        "team"
       ],
       "supportsFiles": false,
       "isNotificationOnly": false
