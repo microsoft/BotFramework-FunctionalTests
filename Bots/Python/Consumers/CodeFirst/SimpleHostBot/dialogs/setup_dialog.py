@@ -65,7 +65,10 @@ class SetupDialog(ComponentDialog):
                 retry_prompt=MessageFactory.text(
                     "That was not a valid choice, please select a valid delivery mode."
                 ),
-                choices=[Choice("normal"), Choice("expectReplies"),],
+                choices=[
+                    Choice("normal"),
+                    Choice("expectReplies"),
+                ],
             ),
         )
 
