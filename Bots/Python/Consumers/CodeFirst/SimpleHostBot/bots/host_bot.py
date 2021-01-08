@@ -109,7 +109,7 @@ class HostBot(ActivityHandler):
         await turn_context.send_activity(eoc_activity_message)
 
         # We are back
-        await turn_context.send_activity(MessageFactory.text("Back in host bot."))
+        await turn_context.send_activity(MessageFactory.text("Back in the host bot."))
 
     async def __send_to_skill(
         self,

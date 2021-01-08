@@ -28,7 +28,7 @@ class DefaultConfig:
     @staticmethod
     def configure_skills():
         skills = list()
-        env_skills = [x for x in os.environ if x.startswith("SKILL_")]
+        env_skills = [x for x in os.environ if x.lower().startswith("skill_")]
 
         for envKey in env_skills:
             keys = envKey.split("_")
@@ -40,9 +40,9 @@ class DefaultConfig:
                 if newSkill["id"] == bot_id:
                     index = i
 
-            if key == "APPID":
+            if key.lower() == "appid":
                 attr = "app_id"
-            elif key == "ENDPOINT":
+            elif key.lower() == "endpoint":
                 attr = "skill_endpoint"
             else:
                 raise ValueError(
