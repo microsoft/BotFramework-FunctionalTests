@@ -11,7 +11,7 @@ using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace Microsoft.BotBuilderSamples.RootBot.Dialogs
+namespace Microsoft.BotBuilderSamples.TeamsSsoSampleCode.Dialogs
 {
     public class MainDialog : ComponentDialog
     {
@@ -46,7 +46,7 @@ namespace Microsoft.BotBuilderSamples.RootBot.Dialogs
         {
             if (innerDc.Context.Activity.Type == ActivityTypes.Message)
             {
-                var text = innerDc.Context.Activity.Text.ToLowerInvariant();
+                var text = innerDc.Context.Activity.Text.ToLowerInvariant().Replace("\r", string.Empty).Replace("\n", string.Empty);
 
                 // Top level commands
                 if (text == "signin" || text == "login" || text == "sign in" || text == "log in")

@@ -10,12 +10,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Builder.Teams;
 using Microsoft.Bot.Schema;
 using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Proactive;
 
 namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Bots
 {
-    public class SkillBot<T> : ActivityHandler
+    public class SkillBot<T> : TeamsActivityHandler
         where T : Dialog
     {
         private readonly ConcurrentDictionary<string, ContinuationParameters> _continuationParameters;

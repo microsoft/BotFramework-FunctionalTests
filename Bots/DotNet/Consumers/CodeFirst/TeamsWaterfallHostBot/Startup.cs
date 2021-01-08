@@ -85,7 +85,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot
 
             app.UseRouting();
 
-            app.UseWebSockets();
+            //app.UseWebSockets();
 
             app.UseAuthorization();
 
