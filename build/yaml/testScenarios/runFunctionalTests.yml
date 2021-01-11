@@ -2,20 +2,17 @@ parameters:
   resourceGroup: ''
 
 steps:
-- task: AzureCLI@1
-  displayName: 'Create DirectLine Channel'
+- task: AzureCLI@2
+  displayName: 'Set Bot Keys'
   inputs:
     azureSubscription: $(AzureSubscription)
+    scriptType: ps
     scriptLocation: inlineScript
     inlineScript: |
-      call az bot directline create -n "$(HostBotName)" -g "${{ parameters.resourceGroup }}" > "$(System.DefaultWorkingDirectory)\DirectLineCreate.json"
-      
-- powershell: |
-    $json = Get-Content '$(System.DefaultWorkingDirectory)\DirectLineCreate.json' | Out-String | ConvertFrom-Json;
-    $key = $json.properties.properties.sites.key;
-    echo "##vso[task.setvariable variable=DIRECTLINE;]$key";
-    echo "##vso[task.setvariable variable=BOTID;]$(HostBotName)";
-  displayName: 'Get Bot Keys'
+     $result = az bot directline show -n "$(HostBotName)" -g "${{ parameters.resourceGroup }}" --with-secrets true | ConvertFrom-Json;
+     $key = $result.properties.properties.sites.key;
+     echo "##vso[task.setvariable variable=DIRECTLINE;]$key";
+     echo "##vso[task.setvariable variable=BOTID;]$(HostBotName)";
 
 - template: build.yml
 

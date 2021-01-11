@@ -15,6 +15,13 @@ stages:
       - job: 'Deploy'
         displayName: 'Deploy steps'
         steps:
+          # Gets Bot App Registration credentials from KeyVault or Pipeline Variables
+          - template: ../common/getAppRegistration.yml
+            parameters:
+              appId: ${{ bot.appId }}
+              appSecret: ${{ bot.appSecret }}
+              botName: '${{ bot.name }}'
+
           # Evaluate dependencies source and version
           - template: evaluateDependenciesVariables.yml
             parameters:
@@ -55,8 +62,8 @@ stages:
           # Create App Service and Bot Channel Registration
           - template: ../common/createAppService.yml
             parameters:
-              appId: '${{ bot.appId }}'
-              appSecret: '${{ bot.appSecret }}'
+              appId: $(AppId)
+              appSecret:  $(AppSecret)
               botName: '${{ bot.name }}'
               botGroup: '${{ parameters.resourceGroup }}'
 
@@ -64,8 +71,8 @@ stages:
           - ${{ if eq(bot.type, 'Skill') }}:
             - template: ../common/configureOAuth.yml
               parameters:
-                appId: '${{ bot.appId }}'
-                appSecret: '${{ bot.appSecret }}'
+                appId: $(AppId)
+                appSecret:  $(AppSecret)
                 botName: '${{ bot.name }}'
                 botGroup: '${{ parameters.resourceGroup }}'
 
@@ -75,3 +82,10 @@ stages:
               botName: '${{ bot.name }}'
               botGroup: '${{ parameters.resourceGroup }}'
               source: '$(System.DefaultWorkingDirectory)/${{ bot.name }}.zip'
+
+          # Create DirectLine Channel Hosts
+          - ${{ if eq(bot.type, 'Host') }}:
+            - template: ../common/createDirectLine.yml
+              parameters:
+                botName: '${{ bot.name }}'
+                botGroup: '${{ parameters.resourceGroup }}'
