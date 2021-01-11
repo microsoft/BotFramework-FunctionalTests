@@ -15,7 +15,7 @@ class DefaultConfig:
 
     load_dotenv()
 
-    PORT = 3978
+    PORT = 37000
     APP_ID = os.environ.get("MicrosoftAppId", "")
     APP_PASSWORD = os.environ.get("MicrosoftAppPassword", "")
     SKILL_HOST_ENDPOINT = os.getenv("SkillHostEndpoint")

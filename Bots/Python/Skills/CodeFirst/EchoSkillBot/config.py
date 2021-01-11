@@ -9,7 +9,7 @@ import os
 class DefaultConfig:
     """ Bot Configuration """
 
-    PORT = 39783
+    PORT = 37400
     APP_ID = os.environ.get("MicrosoftAppId", "TODO: Add here the App ID for the skill bot")
     APP_PASSWORD = os.environ.get("MicrosoftAppPassword", "TODO: Add here the App Password for the skill bot")
     CONNECTION_NAME = os.environ.get("ConnectionName", "TestOAuthProvider")
