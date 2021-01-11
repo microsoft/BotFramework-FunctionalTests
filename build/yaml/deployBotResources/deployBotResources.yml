@@ -15,31 +15,31 @@ variables:
   # AzureSubscription: define in Azure
   # AppServicePlanName: define in Azure
   # AppServicePlanGroup: define in Azure
-  # BffnSimpleHostBotDotnetAppId: define in Azure
-  # BffnSimpleHostBotDotnetAppSecret: define in Azure
-  # BffnSimpleHostBot21DotnetAppId: define in Azure
-  # BffnSimpleHostBot21DotnetAppSecret: define in Azure
-  # BffnSimpleComposerHostBotDotnetAppId: define in Azure
-  # BffnSimpleComposerHostBotDotnetAppSecret: define in Azure
-  # BffnEchoComposerSkillBotDotnetAppId: define in Azure
-  # BffnEchoComposerSkillBotDotnetAppSecret: define in Azure
-  # BffnEchoSkillBotDotnetAppId: define in Azure
-  # BffnEchoSkillBotDotnetAppSecret: define in Azure
-  # BffnEchoSkillBot21DotnetAppId: define in Azure
-  # BffnEchoSkillBot21DotnetAppSecret: define in Azure
-  # BffnEchoSkillBotV3DotnetAppId: define in Azure
-  # BffnEchoSkillBotV3DotnetAppSecret: define in Azure
-  # BffnWaterfallHostBotDotnetAppId: define in Azure
-  # BffnWaterfallHostBotDotnetAppSecret: define in Azure
-  # BffnWaterfallSkillBotDotnetAppId: define in Azure
-  # BffnWaterfallSkillBotDotnetAppSecret: define in Azure
-  # BffnSimpleHostBotJsAppId: define in Azure
-  # BffnSimpleHostBotJsAppSecret: define in Azure
-  # BffnEchoSkillBotJsAppId: define in Azure
-  # BffnEchoSkillBotJsAppSecret: define in Azure
-  # BffnEchoSkillBotV3JsAppId: define in Azure
-  # BffnEchoSkillBotV3JsAppSecret: define in Azure
   # ResourceGroup: define in Azure
+  # BffnSimpleHostBotDotnetAppId: (optional) define in Azure
+  # BffnSimpleHostBotDotnetAppSecret: (optional) define in Azure
+  # BffnSimpleHostBot21DotnetAppId: (optional) define in Azure
+  # BffnSimpleHostBot21DotnetAppSecret: (optional) define in Azure
+  # BffnSimpleComposerHostBotDotnetAppId: (optional) define in Azure
+  # BffnSimpleComposerHostBotDotnetAppSecret: (optional) define in Azure
+  # BffnEchoComposerSkillBotDotnetAppId: (optional) define in Azure
+  # BffnEchoComposerSkillBotDotnetAppSecret: (optional) define in Azure
+  # BffnEchoSkillBotDotnetAppId: (optional) define in Azure
+  # BffnEchoSkillBotDotnetAppSecret: (optional) define in Azure
+  # BffnEchoSkillBot21DotnetAppId: (optional) define in Azure
+  # BffnEchoSkillBot21DotnetAppSecret: (optional) define in Azure
+  # BffnEchoSkillBotV3DotnetAppId: (optional) define in Azure
+  # BffnEchoSkillBotV3DotnetAppSecret: (optional) define in Azure
+  # BffnWaterfallHostBotDotnetAppId: (optional) define in Azure
+  # BffnWaterfallHostBotDotnetAppSecret: (optional) define in Azure
+  # BffnWaterfallSkillBotDotnetAppId: (optional) define in Azure
+  # BffnWaterfallSkillBotDotnetAppSecret: (optional) define in Azure
+  # BffnSimpleHostBotJsAppId: (optional) define in Azure
+  # BffnSimpleHostBotJsAppSecret: (optional) define in Azure
+  # BffnEchoSkillBotJsAppId: (optional) define in Azure
+  # BffnEchoSkillBotJsAppSecret: (optional) define in Azure
+  # BffnEchoSkillBotV3JsAppId: (optional) define in Azure
+  # BffnEchoSkillBotV3JsAppSecret: (optional) define in Azure
   # BotPricingTier: (optional) define in Azure ; Acceptable values are F0 (Default) and S1.
   # DependenciesRegistryHosts: (optional) define in Azure
   # DependenciesRegistrySkills: (optional) define in Azure
@@ -68,8 +68,8 @@ stages:
         - name: bffnsimplehostbotdotnet
           type: 'Host'
           displayName: 'DotNet Simple Host Bot'
-          appId: $(BffnSimpleHostBotDotnetAppId)
-          appSecret: $(BffnSimpleHostBotDotnetAppSecret)
+          appId: $env:BffnSimpleHostBotDotnetAppId
+          appSecret: $env:BffnSimpleHostBotDotnetAppSecret
           project:
             directory: 'Bots/DotNet/Consumers/CodeFirst/SimpleHostBot'
             name: 'SimpleHostBot.csproj'
@@ -78,8 +78,8 @@ stages:
         - name: bffnsimplehostbot21dotnet
           type: 'Host'
           displayName: 'DotNet Simple Host Bot 2.1'
-          appId: $(BffnSimpleHostBot21DotnetAppId)
-          appSecret: $(BffnSimpleHostBot21DotnetAppSecret)
+          appId: $env:BffnSimpleHostBot21DotnetAppId
+          appSecret: $env:BffnSimpleHostBot21DotnetAppSecret
           project: 
             directory: 'Bots/DotNet/Consumers/CodeFirst/SimpleHostBot-2.1'
             name: 'SimpleHostBot-2.1.csproj'
@@ -88,8 +88,8 @@ stages:
         - name: bffnechoskillbotdotnet
           type: 'Skill'
           displayName: 'DotNet Echo Skill Bot'
-          appId: $(BffnEchoSkillBotDotnetAppId)
-          appSecret: $(BffnEchoSkillBotDotnetAppSecret)
+          appId: $env:BffnEchoSkillBotDotnetAppId
+          appSecret: $env:BffnEchoSkillBotDotnetAppSecret
           project: 
             directory: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot'
             name: 'EchoSkillBot.csproj'
@@ -98,8 +98,8 @@ stages:
         - name: bffnechoskillbot21dotnet
           type: 'Skill'
           displayName: 'DotNet Echo Skill Bot 2.1'
-          appId: $(BffnEchoSkillBot21DotnetAppId)
-          appSecret: $(BffnEchoSkillBot21DotnetAppSecret)
+          appId: $env:BffnEchoSkillBot21DotnetAppId
+          appSecret: $env:BffnEchoSkillBot21DotnetAppSecret
           project: 
             directory: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot-2.1'
             name: 'EchoSkillBot-2.1.csproj'
@@ -108,8 +108,8 @@ stages:
         - name: bffnechoskillbotv3dotnet
           type: 'SkillV3'
           displayName: 'DotNet Echo Skill Bot v3'
-          appId: $(BffnEchoSkillBotV3DotnetAppId)
-          appSecret: $(BffnEchoSkillBotV3DotnetAppSecret)
+          appId: $env:BffnEchoSkillBotV3DotnetAppId
+          appSecret: $env:BffnEchoSkillBotV3DotnetAppSecret
           project:
             directory: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3'
             name: 'EchoSkillBot.sln'
@@ -117,8 +117,8 @@ stages:
         - name: bffnwaterfallhostbotdotnet
           type: 'Host'
           displayName: 'DotNet Waterfall Host Bot'
-          appId: $(BffnWaterfallHostBotDotnetAppId)
-          appSecret: $(BffnWaterfallHostBotDotnetAppSecret)
+          appId: $env:BffnWaterfallHostBotDotnetAppId
+          appSecret: $env:BffnWaterfallHostBotDotnetAppSecret
           project:
             directory: 'Bots/DotNet/Consumers/CodeFirst/WaterfallHostBot'
             name: 'WaterfallHostBot.csproj'
@@ -127,8 +127,8 @@ stages:
         - name: bffnwaterfallskillbotdotnet
           type: 'Skill'
           displayName: 'DotNet Waterfall Skill Bot'
-          appId: $(BffnWaterfallSkillBotDotnetAppId)
-          appSecret: $(BffnWaterfallSkillBotDotnetAppSecret)
+          appId: $env:BffnWaterfallSkillBotDotnetAppId
+          appSecret: $env:BffnWaterfallSkillBotDotnetAppSecret
           project: 
             directory: 'Bots/DotNet/Skills/CodeFirst/WaterfallSkillBot'
             name: 'WaterfallSkillBot.csproj'
@@ -142,8 +142,8 @@ stages:
         - name: bffnsimplecomposerhostbotdotnet
           type: 'Host'
           displayName: 'DotNet Simple Composer Host Bot'
-          appId: $(BffnSimpleComposerHostBotDotnetAppId)
-          appSecret: $(BffnSimpleComposerHostBotDotnetAppSecret)
+          appId: $env:BffnSimpleComposerHostBotDotnetAppId
+          appSecret: $env:BffnSimpleComposerHostBotDotnetAppSecret
           project: 
             directory: 'Bots/DotNet/Consumers/Composer/SimpleComposerHostBot'
             netCoreVersion: '3.1.x'
@@ -151,8 +151,8 @@ stages:
         - name: bffnechocomposerskillbotdotnet
           type: 'Skill'
           displayName: 'DotNet Echo Composer Skill Bot'
-          appId: $(BffnEchoComposerSkillBotDotnetAppId)
-          appSecret: $(BffnEchoComposerSkillBotDotnetAppSecret)
+          appId: $env:BffnEchoComposerSkillBotDotnetAppId
+          appSecret: $env:BffnEchoComposerSkillBotDotnetAppSecret
           project: 
             directory: 'Bots/DotNet/Skills/Composer/EchoComposerSkillBot'
             netCoreVersion: '3.1.x'
@@ -165,24 +165,24 @@ stages:
         - name: bffnsimplehostbotjs
           type: 'Host'
           displayName: 'Js Simple Host Bot'
-          appId: $(BffnSimpleHostBotJsAppId)
-          appSecret: $(BffnSimpleHostBotJsAppSecret)
+          appId: $env:BffnSimpleHostBotJsAppId
+          appSecret: $env:BffnSimpleHostBotJsAppSecret
           project:
             directory: 'Bots/JavaScript/Consumers/CodeFirst/SimpleHostBot'
 
         - name: bffnechoskillbotjs
           type: 'Skill'
           displayName: 'Js Echo Skill Bot'
-          appId: $(BffnEchoSkillBotJsAppId)
-          appSecret: $(BffnEchoSkillBotJsAppSecret)
+          appId: $env:BffnEchoSkillBotJsAppId
+          appSecret: $env:BffnEchoSkillBotJsAppSecret
           project: 
             directory: 'Bots/JavaScript/Skills/CodeFirst/EchoSkillBot'
 
         - name: bffnechoskillbotv3js
           type: 'SkillV3'
           displayName: 'Js Echo Skill Bot v3'
-          appId: $(BffnEchoSkillBotV3JsAppId)
-          appSecret: $(BffnEchoSkillBotV3JsAppSecret)
+          appId: $env:BffnEchoSkillBotV3JsAppId
+          appSecret: $env:BffnEchoSkillBotV3JsAppSecret
           project:
             directory: 'Bots/JavaScript/Skills/CodeFirst/EchoSkillBot-v3/skill'
             name: 'EchoSkillBot.sln'
