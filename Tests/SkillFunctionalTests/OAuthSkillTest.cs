@@ -5,8 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Bot.Connector.DirectLine;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using TranscriptTestRunner;
 using TranscriptTestRunner.XUnit;
@@ -19,36 +17,19 @@ namespace SkillFunctionalTests
     [Trait("TestCategory", "FunctionalTests")]
     [Trait("TestCategory", "OAuth")]
     [Trait("TestCategory", "SkipForV3Bots")]
-    public class OAuthSkillTest
+    public class OAuthSkillTest : ScriptTestBase
     {
         private readonly string _transcriptsFolder = Directory.GetCurrentDirectory() + @"/SourceTranscripts";
-        private readonly ILogger<OAuthSkillTest> _logger;
 
         public OAuthSkillTest(ITestOutputHelper output)
+            : base(output)
         {
-            var configuration = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
-                .AddJsonFile("appsettings.Development.json", true, true)
-                .AddEnvironmentVariables()
-                .Build();
-
-            var loggerFactory = LoggerFactory.Create(builder =>
-            {
-                builder
-                    .AddConfiguration(configuration)
-                    .AddConsole()
-                    .AddDebug()
-                    .AddFile(Directory.GetCurrentDirectory() + @"/Logs/Log.json", isJson: true)
-                    .AddXunit(output);
-            });
-
-            _logger = loggerFactory.CreateLogger<OAuthSkillTest>();
         }
 
         [Fact]
         public async Task ShouldSignIn()
         {
-            var runner = new XUnitTestRunner(new TestClientFactory(ClientType.DirectLine).GetTestClient(), _logger);
+            var runner = new XUnitTestRunner(new TestClientFactory(ClientType.DirectLine).GetTestClient(), Logger);
             var signInUrl = string.Empty;
             
             // Execute the first part of the conversation.
