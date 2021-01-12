@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
@@ -15,6 +16,7 @@ using Xunit.Abstractions;
 
 namespace SkillFunctionalTests.SingleTurn
 {
+    [Trait("TestCategory", "SingleTurn")]
     public class EchoTests : ScriptTestBase
     {
         private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/SingleTurn/SourceTestScripts";
@@ -31,7 +33,7 @@ namespace SkillFunctionalTests.SingleTurn
             var deliverModes = new List<string>
             {
                 DeliveryModes.Normal,
-                DeliveryModes.ExpectReplies,
+                DeliveryModes.ExpectReplies
             };
             
             var hostBots = new List<string>
@@ -40,7 +42,9 @@ namespace SkillFunctionalTests.SingleTurn
                 HostBotNames.SimpleHostBotDotNet21,
                 HostBotNames.SimpleHostBotJS,
                 HostBotNames.SimpleHostBotPython,
-                HostBotNames.SimpleComposerHostBotDotNet
+                
+                // TODO: Enable when composer bots support multiple skills.
+                // HostBotNames.SimpleComposerHostBotDotNet
             };
 
             var targetSkills = new List<string>
@@ -55,8 +59,7 @@ namespace SkillFunctionalTests.SingleTurn
 
             var scripts = new List<string>
             {
-                "ShouldRedirectToSkill.json",
-                "HostReceivesEndOfConversation.json"
+                "EchoMultiSkill.transcript"
             };
 
             var testCaseBuilder = new TestCaseBuilder();
@@ -75,8 +78,9 @@ namespace SkillFunctionalTests.SingleTurn
             var testCase = testData.GetObject<TestCase>();
             Logger.LogInformation(JsonConvert.SerializeObject(testCase, Formatting.Indented));
 
-            var runner = new XUnitTestRunner(new TestClientFactory(testCase.ClientType).GetTestClient(), Logger);
-            await runner.RunTestAsync(Path.Combine(_testScriptsFolder, testCase.Script));
+            var options = TestClientOptions.FirstOrDefault(option => option.BotId == testCase.HostBot);
+            var runner = new XUnitTestRunner(new TestClientFactory(testCase.ClientType, options).GetTestClient(), Logger);
+            await runner.RunTestAsync(Path.Combine(_transcriptsFolder, testCase.Script));
         }
     }
 }

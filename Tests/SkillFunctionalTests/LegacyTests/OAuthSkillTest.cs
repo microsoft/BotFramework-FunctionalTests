@@ -12,14 +12,14 @@ using Xunit;
 using Xunit.Abstractions;
 using ActivityTypes = Microsoft.Bot.Connector.DirectLine.ActivityTypes;
 
-namespace SkillFunctionalTests
+namespace SkillFunctionalTests.LegacyTests
 {
     [Trait("TestCategory", "FunctionalTests")]
     [Trait("TestCategory", "OAuth")]
     [Trait("TestCategory", "SkipForV3Bots")]
     public class OAuthSkillTest : ScriptTestBase
     {
-        private readonly string _transcriptsFolder = Directory.GetCurrentDirectory() + @"/SourceTranscripts";
+        private readonly string _transcriptsFolder = Directory.GetCurrentDirectory() + @"/LegacyTests/SourceTranscripts";
 
         public OAuthSkillTest(ITestOutputHelper output)
             : base(output)
@@ -29,7 +29,7 @@ namespace SkillFunctionalTests
         [Fact]
         public async Task ShouldSignIn()
         {
-            var runner = new XUnitTestRunner(new TestClientFactory(ClientType.DirectLine).GetTestClient(), Logger);
+            var runner = new XUnitTestRunner(new TestClientFactory(ClientType.DirectLine, TestClientOptions[0]).GetTestClient(), Logger);
             var signInUrl = string.Empty;
             
             // Execute the first part of the conversation.
