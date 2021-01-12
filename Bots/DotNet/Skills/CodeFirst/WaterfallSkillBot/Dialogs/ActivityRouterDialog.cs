@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -25,10 +24,10 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs
     /// </summary>
     public class ActivityRouterDialog : ComponentDialog
     {
-        public ActivityRouterDialog(IConfiguration configuration, IHttpClientFactory clientFactory, IHttpContextAccessor httpContextAccessor)
+        public ActivityRouterDialog(IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
             : base(nameof(ActivityRouterDialog))
         {
-            AddDialog(new CardDialog(httpContextAccessor, clientFactory));
+            AddDialog(new CardDialog(httpContextAccessor));
             AddDialog(new WaitForProactiveDialog(httpContextAccessor));
             AddDialog(new AttachmentDialog());
             AddDialog(new AuthDialog(configuration));
