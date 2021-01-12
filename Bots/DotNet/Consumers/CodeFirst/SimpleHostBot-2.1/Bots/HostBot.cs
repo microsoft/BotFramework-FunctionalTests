@@ -169,53 +169,49 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot21.Bots
             // will have access to current accurate state.
             await _conversationState.SaveChangesAsync(turnContext, force: true, cancellationToken: cancellationToken);
 
-            // Clone activity and update its delivery mode.
-            var activity = JsonConvert.DeserializeObject<Activity>(JsonConvert.SerializeObject(turnContext.Activity));
-            activity.DeliveryMode = deliveryMode;
-
-            switch (deliveryMode)
+            if (deliveryMode == DeliveryModes.ExpectReplies)
             {
-                case DeliveryModes.ExpectReplies:
-                    // Route the activity to the skill.
-                    var expectRepliesResponse = await _skillClient.PostActivityAsync<ExpectedReplies>(_botId, targetSkill, _skillsConfig.SkillHostEndpoint, activity, cancellationToken);
+                // Clone activity and update its delivery mode.
+                var activity = JsonConvert.DeserializeObject<Activity>(JsonConvert.SerializeObject(turnContext.Activity));
+                activity.DeliveryMode = deliveryMode;
 
-                    // Check response status.
-                    if (!(expectRepliesResponse.Status >= 200 && expectRepliesResponse.Status <= 299))
+                // Route the activity to the skill.
+                var expectRepliesResponse = await _skillClient.PostActivityAsync<ExpectedReplies>(_botId, targetSkill, _skillsConfig.SkillHostEndpoint, activity, cancellationToken);
+
+                // Check response status.
+                if (!expectRepliesResponse.IsSuccessStatusCode())
+                {
+                    throw new HttpRequestException($"Error invoking the skill id: \"{targetSkill.Id}\" at \"{targetSkill.SkillEndpoint}\" (status is {expectRepliesResponse.Status}). \r\n {expectRepliesResponse.Body}");
+                }
+
+                // Route response activities back to the channel.
+                var responseActivities = expectRepliesResponse.Body?.Activities;
+
+                foreach (var responseActivity in responseActivities)
+                {
+                    if (responseActivity.Type == ActivityTypes.EndOfConversation)
                     {
-                        throw new HttpRequestException($"Error invoking the skill id: \"{targetSkill.Id}\" at \"{targetSkill.SkillEndpoint}\" (status is {expectRepliesResponse.Status}). \r\n {expectRepliesResponse.Body}");
+                        await EndConversation(responseActivity, turnContext, cancellationToken);
+
+                        //Restart setup dialog.
+                        await _dialog.RunAsync(turnContext, _dialogStateProperty, cancellationToken);
                     }
-
-                    // Route response activities back to the channel.
-                    var responseActivities = expectRepliesResponse.Body?.Activities;
-
-                    foreach (var responseActivity in responseActivities)
+                    else
                     {
-                        if (responseActivity.Type == ActivityTypes.EndOfConversation)
-                        {
-                            await EndConversation(responseActivity, turnContext, cancellationToken);
-
-                            //Restart setup dialog.
-                            await _dialog.RunAsync(turnContext, _dialogStateProperty, cancellationToken);
-                        }
-                        else
-                        {
-                            await turnContext.SendActivityAsync(responseActivity, cancellationToken);
-                        }
+                        await turnContext.SendActivityAsync(responseActivity, cancellationToken);
                     }
+                }
+            }
+            else
+            {
+                // Route the activity to the skill.
+                var response = await _skillClient.PostActivityAsync(_botId, targetSkill, _skillsConfig.SkillHostEndpoint, (Activity)turnContext.Activity, cancellationToken);
 
-                    break;
-
-                default:
-                    // Route the activity to the skill.
-                    var response = await _skillClient.PostActivityAsync(_botId, targetSkill, _skillsConfig.SkillHostEndpoint, activity, cancellationToken);
-
-                    // Check response status
-                    if (!(response.Status >= 200 && response.Status <= 299))
-                    {
-                        throw new HttpRequestException($"Error invoking the skill id: \"{targetSkill.Id}\" at \"{targetSkill.SkillEndpoint}\" (status is {response.Status}). \r\n {response.Body}");
-                    }
-
-                    break;
+                // Check response status
+                if (!response.IsSuccessStatusCode())
+                {
+                    throw new HttpRequestException($"Error invoking the skill id: \"{targetSkill.Id}\" at \"{targetSkill.SkillEndpoint}\" (status is {response.Status}). \r\n {response.Body}");
+                }
             }
         }
     }

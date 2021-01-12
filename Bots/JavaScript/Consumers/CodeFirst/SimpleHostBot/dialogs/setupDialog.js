@@ -7,7 +7,7 @@ const { HostBot } = require('../bots/hostBot');
 
 const SETUP_DIALOG = 'SetupDialog';
 const CHOICE_PROMPT = 'ChoicePrompt';
-const WATERFALL_DIALOG = 'WaterfallDialog';
+const WATERFALL_STEPS = 'WaterfallSteps';
 
 /**
  * The setup dialog for this bot.
@@ -24,13 +24,13 @@ class SetupDialog extends ComponentDialog {
         // Add ChoicePrompt to render available skills.
         this.addDialog(new ChoicePrompt(CHOICE_PROMPT))
             // Add main waterfall dialog for this bot.
-            .addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
+            .addDialog(new WaterfallDialog(WATERFALL_STEPS, [
                 this.selectDeliveryModeStep.bind(this),
                 this.selectSkillStep.bind(this),
                 this.finalStep.bind(this)
             ]));
 
-        this.initialDialogId = WATERFALL_DIALOG;
+        this.initialDialogId = WATERFALL_STEPS;
     }
 
     /**

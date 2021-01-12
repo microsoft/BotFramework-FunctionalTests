@@ -121,10 +121,11 @@ class HostBot(ActivityHandler):
         # will have access to current accurate state.
         await self._conversation_state.save_changes(turn_context, force=True)
 
-        activity = copy.copy(turn_context.activity)
-        activity.delivery_mode = delivery_mode
-
         if delivery_mode == "expectReplies":
+            # Clone activity and update its delivery mode.
+            activity = copy.copy(turn_context.activity)
+            activity.delivery_mode = delivery_mode
+
             # Route the activity to the skill.
             expect_replies_response = await self._skill_client.post_activity_to_skill(
                 self._bot_id,
@@ -157,5 +158,5 @@ class HostBot(ActivityHandler):
                 self._bot_id,
                 target_skill,
                 self._skills_config.SKILL_HOST_ENDPOINT,
-                activity,
+                turn_context.activity,
             )

@@ -37,13 +37,13 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Dialogs
             AddDialog(new ChoicePrompt(nameof(ChoicePrompt)));
 
             // Add main waterfall dialog for this bot.
-            var waterfallDialog = new WaterfallStep[]
+            var waterfallSteps = new WaterfallStep[]
             {
                 SelectDeliveryModeStepAsync,
                 SelectSkillStepAsync,
                 FinalStepAsync
             };
-            AddDialog(new WaterfallDialog(nameof(WaterfallDialog), waterfallDialog));
+            AddDialog(new WaterfallDialog(nameof(WaterfallDialog), waterfallSteps));
 
             InitialDialogId = nameof(WaterfallDialog);
         }

@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 const { ActivityHandler, ActivityTypes, DeliveryModes } = require('botbuilder');
-const { ExpectedReplies } = require('botframework-connector/lib/connectorApi/models/mappers');
 
 class HostBot extends ActivityHandler {
     constructor(dialog, conversationState, skillsConfig, skillClient) {
@@ -73,13 +72,13 @@ class HostBot extends ActivityHandler {
             await this.activeSkillProperty.set(context, undefined);
 
             // Show status message, text and value returned by the skill.
-            let eocActivityMessage = `Received ${ActivityTypes.EndOfConversation}.\n\nCode: ${activity.code}`;
+            let eocActivityMessage = `Received ${ ActivityTypes.EndOfConversation }.\n\nCode: ${ activity.code }`;
             if (activity.text) {
-                eocActivityMessage += `\n\nText: ${activity.text}`;
+                eocActivityMessage += `\n\nText: ${ activity.text }`;
             }
 
             if (activity.value) {
-                eocActivityMessage += `\n\nValue: ${activity.value}`;
+                eocActivityMessage += `\n\nValue: ${ activity.value }`;
             }
 
             await context.sendActivity(eocActivityMessage);
@@ -94,49 +93,42 @@ class HostBot extends ActivityHandler {
         // will have access to current accurate state.
         await this.conversationState.saveChanges(context, true);
 
-        // Clone activity and update its delivery mode.
-        const activity = JSON.parse(JSON.stringify(context.activity));
-        activity.deliveryMode = deliveryMode;
+        if (deliveryMode === DeliveryModes.ExpectReplies) {
+            // Clone activity and update its delivery mode.
+            const activity = JSON.parse(JSON.stringify(context.activity));
+            activity.deliveryMode = deliveryMode;
 
-        switch (deliveryMode) {
-            case DeliveryModes.ExpectReplies:
-                // Route the activity to the skill.
-                const expectRepliesResponse = await this.skillClient.postToSkill(this.botId, targetSkill, this.skillsConfig.skillHostEndpoint, activity);
+            // Route the activity to the skill.
+            const expectRepliesResponse = await this.skillClient.postToSkill(this.botId, targetSkill, this.skillsConfig.skillHostEndpoint, activity);
 
-                // Check response status.
-                if (!(expectRepliesResponse.status >= 200 && expectRepliesResponse.status <= 299)) {
-                    throw new Error(`[HostBot]: Error invoking the skill id: "${ targetSkill.id }" at "${ targetSkill.skillEndpoint }" (status is ${ expectRepliesResponse.status }). \r\n ${ expectRepliesResponse.body }`);
-                }
-                
-                if (expectRepliesResponse.body && expectRepliesResponse.body.activities) {
-                    // Route response activities back to the channel.
-                    const responseActivities = expectRepliesResponse.body.activities;
+            // Check response status.
+            if (!(expectRepliesResponse.status >= 200 && expectRepliesResponse.status <= 299)) {
+                throw new Error(`[HostBot]: Error invoking the skill id: "${ targetSkill.id }" at "${ targetSkill.skillEndpoint }" (status is ${ expectRepliesResponse.status }). \r\n ${ expectRepliesResponse.body }`);
+            }
 
-                    for (let index = 0; index < responseActivities.length; index++) {
-                        if (responseActivities[index].type == ActivityTypes.EndOfConversation) {
-                            await this.EndConversation(responseActivities[index], context);
+            if (expectRepliesResponse.body && expectRepliesResponse.body.activities) {
+                // Route response activities back to the channel.
+                const responseActivities = expectRepliesResponse.body.activities;
 
-                            // Restart setup dialog
-                            await this.dialog.run(context, this.dialogStateProperty);
-                        }
-                        else {
-                            await context.sendActivity(responseActivities[index]);
-                        }
+                for (let index = 0; index < responseActivities.length; index++) {
+                    if (responseActivities[index].type === ActivityTypes.EndOfConversation) {
+                        await this.EndConversation(responseActivities[index], context);
+
+                        // Restart setup dialog
+                        await this.dialog.run(context, this.dialogStateProperty);
+                    } else {
+                        await context.sendActivity(responseActivities[index]);
                     }
                 }
+            }
+        } else {
+            // Route the activity to the skill.
+            const response = await this.skillClient.postToSkill(this.botId, targetSkill, this.skillsConfig.skillHostEndpoint, context.activity);
 
-                break;
-        
-            default:
-                // Route the activity to the skill.
-                const response = await this.skillClient.postToSkill(this.botId, targetSkill, this.skillsConfig.skillHostEndpoint, activity);
-
-                // Check response status.
-                if (!(response.status >= 200 && response.status <= 299)) {
-                    throw new Error(`[HostBot]: Error invoking the skill id: "${ targetSkill.id }" at "${ targetSkill.skillEndpoint }" (status is ${ response.status }). \r\n ${ response.body }`);
-                }
-                
-                break;
+            // Check response status.
+            if (!(response.status >= 200 && response.status <= 299)) {
+                throw new Error(`[HostBot]: Error invoking the skill id: "${ targetSkill.id }" at "${ targetSkill.skillEndpoint }" (status is ${ response.status }). \r\n ${ response.body }`);
+            }
         }
     }
 
