@@ -15,6 +15,10 @@ variables:
   # AzureSubscription: define in Azure
   # AppServicePlanName: define in Azure
   # AppServicePlanGroup: define in Azure
+  # AppServicePlanNameLinux: (python) define in Azure
+  # AppServicePlanGroupLinux: (python) define in Azure
+  # AzureDeploymentUser: (python) define in Azure
+  # AzureDeploymentPassword: (python) define in Azure
   # ResourceGroup: define in Azure
   # BffnSimpleHostBotDotnetAppId: (optional) define in Azure
   # BffnSimpleHostBotDotnetAppSecret: (optional) define in Azure
@@ -40,6 +44,10 @@ variables:
   # BffnEchoSkillBotJsAppSecret: (optional) define in Azure
   # BffnEchoSkillBotV3JsAppId: (optional) define in Azure
   # BffnEchoSkillBotV3JsAppSecret: (optional) define in Azure
+  # BffnSimpleHostBotPythonAppId: (optional) define in Azure
+  # BffnSimpleHostBotPythonAppSecret: (optional) define in Azure
+  # BffnEchoSkillBotPythonAppId: (optional) define in Azure
+  # BffnEchoSkillBotPythonAppSecret: (optional) define in Azure
   # BotPricingTier: (optional) define in Azure ; Acceptable values are F0 (Default) and S1.
   # DependenciesRegistryHosts: (optional) define in Azure
   # DependenciesRegistrySkills: (optional) define in Azure
@@ -60,6 +68,11 @@ stages:
           name: "$(ResourceGroup)-Js"
           displayName: "Prepare Js's Resource Group"
 
+        - id: 'Prepare_PythonGroup'
+          name: "$(ResourceGroup)-Python"
+          displayName: "Prepare Python's Resource Group"
+
+# DotNet
   - template: dotnet/deploy.yml
     parameters:
       dependsOn: "Prepare_DotNetGroup"
@@ -134,6 +147,7 @@ stages:
             name: 'WaterfallSkillBot.csproj'
             netCoreVersion: '3.1.x'
 
+# DotNet Composer
   - template: dotnet/deployComposer.yml
     parameters:
       dependsOn: "Prepare_DotNetGroup"
@@ -157,6 +171,7 @@ stages:
             directory: 'Bots/DotNet/Skills/Composer/EchoComposerSkillBot'
             netCoreVersion: '3.1.x'
 
+# Js
   - template: js/deploy.yml
     parameters:
       dependsOn: "Prepare_JsGroup"
@@ -186,3 +201,25 @@ stages:
           project:
             directory: 'Bots/JavaScript/Skills/CodeFirst/EchoSkillBot-v3/skill'
             name: 'EchoSkillBot.sln'
+
+# Python
+  - template: python/deploy.yml
+    parameters:
+      dependsOn: "Prepare_PythonGroup"
+      resourceGroup: "$(ResourceGroup)-Python"
+      bots:
+        - name: bffnsimplehostbotpython
+          type: 'Host'
+          displayName: 'Python Simple Host Bot'
+          appId: $env:BffnSimpleHostBotPythonAppId
+          appSecret: $env:BffnSimpleHostBotPythonAppSecret
+          project:
+            directory: 'Bots/Python/Consumers/CodeFirst/SimpleHostBot'
+
+        - name: bffnechoskillbotpython
+          type: 'Skill'
+          displayName: 'Python Echo Skill Bot'
+          appId: $env:BffnEchoSkillBotPythonAppId
+          appSecret: $env:BffnEchoSkillBotPythonAppSecret
+          project: 
+            directory: 'Bots/Python/Skills/CodeFirst/EchoSkillBot'
