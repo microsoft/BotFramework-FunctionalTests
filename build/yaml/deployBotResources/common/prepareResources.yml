@@ -10,33 +10,10 @@ stages:
       - job: 'Prepare'
         displayName: 'Prepare steps'
         steps:
-          - task: AzureCLI@2
-            displayName: 'Delete pre-existing Resource Group'
-            inputs:
-              azureSubscription: $(AzureSubscription)
-              scriptType: ps
-              scriptLocation: inlineScript
-              inlineScript: |
-                Write-Host "Looking for '${{ resourceGroup.name }}'...";
-                $resourcesFound = $false;
-
-                if ((az group exists -n "${{ resourceGroup.name }}") -eq 'true')
-                {
-                  Write-Host "Deleting ${{ resourceGroup.name }}...";
-                  az group delete -n "${{ resourceGroup.name }}" --yes --no-wait;
-                  $resourcesFound = $true;
-                }
-
-                if ($resourcesFound)
-                {
-                  # Wait for delete(s) to finish for cases where a Deploy step is next.
-                  az group wait --deleted --interval 15 --timeout 600 --resource-group "${{ resourceGroup.name }}";
-                }
-                else
-                {
-                  Write-Host "No pre-existing resource group found.";
-                } 
-
+          - template: ../../common/deleteResourceGroup.yml 
+            parameters:
+              name: '${{ resourceGroup.name }}'
+              
           - task: AzureCLI@1
             displayName: 'Create Resource Group'
             inputs:
