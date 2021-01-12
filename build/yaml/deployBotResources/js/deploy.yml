@@ -15,6 +15,26 @@ stages:
       - job: 'Deploy'
         displayName: 'Deploy steps'
         steps:
+          # Gets Bot App Registration credentials from KeyVault or Pipeline Variables
+          - template: ../common/getAppRegistration.yml
+            parameters:
+              appId: ${{ bot.appId }}
+              appSecret: ${{ bot.appSecret }}
+              botName: '${{ bot.name }}'
+
+          # Prepare .env file, deleting all the declared skills, so it uses only the settings define in Azure
+          - ${{ if eq(bot.type, 'Host') }}:
+            - powershell: |
+                $file = "${{ bot.project.directory }}/.env"
+                $content = Get-Content $file
+                $content | ForEach-Object {
+                  $line = $_
+                  if ($line.Trim().Length -gt 0 -and -not $line.Trim().ToLower().StartsWith('skill_')) {
+                    $line
+                  }
+                } | Set-Content $file;
+              displayName: 'Prepare .env file'
+
           # Evaluate dependencies source and version
           - template: evaluateDependenciesVariables.yml
             parameters:
@@ -64,8 +84,8 @@ stages:
           # Create App Service and Bot Channel Registration
           - template: ../common/createAppService.yml
             parameters:
-              appId: '${{ bot.appId }}'
-              appSecret: '${{ bot.appSecret }}'
+              appId: $(AppId)
+              appSecret:  $(AppSecret)
               botName: '${{ bot.name }}'
               botGroup: '${{ parameters.resourceGroup }}'
 
@@ -73,8 +93,8 @@ stages:
           - ${{ if eq(bot.type, 'Skill') }}:
             - template: ../common/configureOAuth.yml
               parameters:
-                appId: '${{ bot.appId }}'
-                appSecret: '${{ bot.appSecret }}'
+                appId: $(AppId)
+                appSecret:  $(AppSecret)
                 botName: '${{ bot.name }}'
                 botGroup: '${{ parameters.resourceGroup }}'
 
@@ -84,3 +104,10 @@ stages:
               botName: '${{ bot.name }}'
               botGroup: '${{ parameters.resourceGroup }}'
               source: '$(System.DefaultWorkingDirectory)/${{ bot.name }}.zip'
+
+          # Create DirectLine Channel Hosts
+          - ${{ if eq(bot.type, 'Host') }}:
+            - template: ../common/createDirectLine.yml
+              parameters:
+                botName: '${{ bot.name }}'
+                botGroup: '${{ parameters.resourceGroup }}'

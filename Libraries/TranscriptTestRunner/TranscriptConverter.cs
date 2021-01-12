@@ -249,17 +249,17 @@ namespace TranscriptTestRunner
         {
             if (string.IsNullOrWhiteSpace(EmulatorTranscript))
             {
-                throw new Exception($"{nameof(EmulatorTranscript)} property not set");
+                throw new ArgumentException($"{nameof(EmulatorTranscript)} property not set");
             }
 
             if (!File.Exists(EmulatorTranscript))
             {
-                throw new Exception($"{nameof(EmulatorTranscript)}: {EmulatorTranscript} path does not exist");
+                throw new ArgumentException($"{nameof(EmulatorTranscript)}: {EmulatorTranscript} path does not exist");
             }
 
             if (string.IsNullOrWhiteSpace(TestScript))
             {
-                throw new Exception($"{nameof(TestScript)} property not set");
+                throw new ArgumentException($"{nameof(TestScript)} property not set");
             }
 
             var testScriptFolder = Path.GetDirectoryName(TestScript);

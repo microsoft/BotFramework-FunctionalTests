@@ -1,0 +1,227 @@
+parameters:
+  scenario: ''
+
+steps:
+  - task: AzureCLI@2
+    displayName: Set Consumers AppSettings
+    inputs:
+      azureSubscription: $(AzureSubscription)
+      scriptType: ps
+      scriptLocation: inlineScript
+      inlineScript: |
+        # Type of setting to use for the AppSettings variables.
+        $types = @{
+          DotNet = 0
+          Js = 1
+          Composer = 2
+        }
+
+        # Bots Resource Groups
+        $groups = @{
+          DotNet = "$(ResourceGroup)-DotNet"
+          Js     = "$(ResourceGroup)-Js"
+        }
+
+        # Bots Settings
+        $consumers = @(
+          @{
+              name          = 'SimpleHostBotDotnet'
+              botName       = 'bffnsimplehostbotdotnet'
+              resourceGroup = $groups.DotNet
+              configType    = $types.DotNet
+          }
+          @{
+              name          = 'SimpleHostBot21Dotnet'
+              botName       = 'bffnsimplehostbot21dotnet'
+              resourceGroup = $groups.DotNet
+              configType    = $types.DotNet
+          }
+          @{
+              name          = 'SimpleComposerHostBotDotnet'
+              botName       = 'bffnsimplecomposerhostbotdotnet'
+              resourceGroup = $groups.DotNet
+              configType    = $types.Composer
+          }
+          @{
+              name          = 'SimpleHostBotJS'
+              botName       = 'bffnsimplehostbotjs'
+              resourceGroup = $groups.Js
+              configType    = $types.Js
+          }
+        )
+
+        $skills = @(
+          @{
+              name    = 'EchoSkillBotDotnet'
+              botName = 'bffnechoskillbotdotnet'
+              appId   = '$(BffnEchoSkillBotDotnetAppId)'
+              resourceGroup = $groups.DotNet
+          }
+          @{
+              name    = 'EchoSkillBot21Dotnet'
+              botName = 'bffnechoskillbot21dotnet'
+              appId   = '$(BffnEchoSkillBot21DotnetAppId)'
+              resourceGroup = $groups.DotNet
+          }
+          @{
+              name       = 'EchoSkillBotV3Dotnet'
+              botName    = 'bffnechoskillbotv3dotnet'
+              appId      = '$(BffnEchoSkillBotV3DotnetAppId)'
+              resourceGroup = $groups.DotNet
+          }
+          @{
+              name       = 'EchoComposerSkillBotDotnet'
+              botName    = 'bffnechocomposerskillbotdotnet'
+              appId      = '$(BffnEchoComposerSkillBotDotnetAppId)'
+              resourceGroup = $groups.DotNet
+          }
+          @{
+              name    = 'EchoSkillBotJS'
+              botName = 'bffnechoskillbotjs'
+              appId   = '$(BffnEchoSkillBotJSAppId)'
+              resourceGroup = $groups.Js
+          }
+          @{
+              name       = 'EchoSkillBotV3JS'
+              botName    = 'bffnechoskillbotv3js'
+              appId      = '$(BffnEchoSkillBotV3JSAppId)'
+              resourceGroup = $groups.Js
+          }
+        )
+
+        # Bots Test Scenarios
+        $scenarios = @(
+          @{ 
+              name      = 'SingleTurn'; 
+              consumers = @(
+                'SimpleHostBotDotnet',
+                'SimpleHostBot21Dotnet',
+                'SimpleHostBotJS'
+              );
+              skills    = @(
+                'EchoSkillBotDotnet',
+                'EchoSkillBot21Dotnet',
+                'EchoSkillBotV3Dotnet',
+                'EchoSkillBotJS',
+                'EchoSkillBotV3JS'
+              );
+          }
+          @{ 
+              name      = 'SingleTurn'; 
+              consumers = @(
+                'SimpleComposerHostBotDotnet'
+              );
+              skills    = @(
+                'EchoComposerSkillBotDotnet'
+              );
+          }
+        )
+
+        $appsettingsPath = "tests/SkillFunctionalTests/appsettings.json"
+
+        $content = Get-Content -Raw $appsettingsPath | ConvertFrom-Json;
+
+        # Set DirectLine into FunctionalTests project
+        function ConfigureAppSettings ($appSettingsPath, $botName, $resourceGroup) {
+          # Gets the Consumer DirectLine
+          $directLine = (az bot directline show --name $botName --resource-group $resourceGroup --with-secrets true | ConvertFrom-Json).properties.properties.sites.key;
+                
+          $directLineConsumer = @{
+              TestClientSecret = $directLine
+              BotId            = $botName
+          }
+
+          $content.TestClientOptions += $directLineConsumer
+          $content | ConvertTo-Json | Set-Content $appsettingsPath;
+        }
+
+        # Script to assign Skills variables into Consumers AppSettings
+        foreach ($scenario in $scenarios) {
+          if ($scenario.name -ne "${{ parameters.scenario }}") {
+            continue;
+          }
+
+          foreach ($consumer in $scenario.consumers) {
+              $consumerBot = $consumers | Where-Object name -eq $consumer
+
+              if (-not $consumerBot) {
+                continue;
+              }
+
+              # Check if the Consumer bot resource exists.
+              $resource = az webapp list --resource-group $consumerBot.resourceGroup --query "[?name=='$($consumerBot.botName)']" | ConvertFrom-Json
+
+              if (-not $resource) {
+                continue;
+              }
+              
+              ConfigureAppSettings $appsettingsPath $consumerBot.botName $consumerBot.resourceGroup
+
+              # Gets the previous settings to delete it
+              $json = (az webapp config appsettings list --name $consumerBot.botName --resource-group $consumerBot.resourceGroup) | ConvertFrom-Json
+              $botFrameworkSkillsNames = @($json | Where-Object { $_.name -match "BotFrameworkSkills*" -or $_.name -eq "SkillHostEndpoint" }) | Select-Object -ExpandProperty name
+              
+              if ($botFrameworkSkillsNames.Length -gt 0) {
+                $settings = $botFrameworkSkillsNames | ForEach-Object { $_ }
+                az webapp config appsettings delete --name $consumerBot.botName --resource-group $consumerBot.resourceGroup --setting-names $settings --output none
+              }
+              
+              # Create settings list
+              $properties = @(
+                "SkillHostEndpoint=https://$($consumerBot.botName).azurewebsites.net/api/skills"
+              )
+
+              $index = 0
+              
+              foreach ($skill in $scenario.skills) {
+                $skillBot = $skills | Where-Object name -eq $skill
+
+                if (-not $skillBot) {
+                    continue;
+                }
+
+                if ($skillBot.appId.Trim().Length -eq 0) {
+                    continue;
+                }
+
+                # Check if the Skill bot resource exists.
+                $resource = az webapp list --resource-group $skillBot.resourceGroup --query "[?name=='$($skillBot.botName)']" | ConvertFrom-Json
+
+                if (-not $resource) {
+                    continue;
+                }
+
+                switch ($consumerBot.configType) {
+                    $types.DotNet { 
+                      $properties += "BotFrameworkSkills:$($index):Id=$($skillBot.name)";
+                      $properties += "BotFrameworkSkills:$($index):AppId=$($skillBot.appId)";
+                      $properties += "BotFrameworkSkills:$($index):SkillEndpoint=https://$($skillBot.botName).azurewebsites.net/api/messages";
+                    }
+                    $types.Js { 
+                      $properties += "skill_$($skillBot.name)_appId=$($skillBot.appId)";
+                      $properties += "skill_$($skillBot.name)_endpoint=https://$($skillBot.botName).azurewebsites.net/api/messages";
+                    }
+                    $types.Composer { 
+                      # NOTE: Currently Composer Host bot only supports one Skill.
+                      $properties += "skill__EchoSkillBot__msAppId=$($skillBot.appId)";
+                      $properties += "skill__EchoSkillBot__endpointUrl=https://$($skillBot.botName).azurewebsites.net/api/messages";
+                    }
+                }
+
+                $index = $index + 1
+              }
+
+              $settings = $properties | ForEach-Object { $_ }
+
+              $appsettings = az webapp config appsettings set --name $consumerBot.botName --resource-group $consumerBot.resourceGroup --settings $settings | ConvertFrom-Json
+
+              Write-Host "`nConsumer AppSettings: $($consumerBot.name)";
+
+              $appsettings | Where-Object {$_.name -eq 'MicrosoftAppPassword'} | ForEach-Object {$_.value = "***"}
+              $appsettings
+          }
+        }
+
+        Write-Host "`nTest Project AppSettings: $($consumerBot.name)";
+        $content.TestClientOptions | ForEach-Object { $_.TestClientSecret = "***" } 
+        $content.TestClientOptions | ForEach-Object {[PSCustomObject]$_}  | Format-Table -AutoSize
