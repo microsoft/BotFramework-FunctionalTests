@@ -1,9 +1,12 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System.Collections.Generic;
 using System.IO;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using TranscriptTestRunner.TestClients;
 using Xunit.Abstractions;
 
 namespace SkillFunctionalTests
@@ -29,7 +32,20 @@ namespace SkillFunctionalTests
             });
 
             Logger = loggerFactory.CreateLogger<ScriptTestBase>();
+
+            var section = configuration.GetSection("TestClientOptions");
+            var testClientOptions = section.Get<TestClientOptions[]>();
+
+            if (testClientOptions != null)
+            {
+                foreach (var option in testClientOptions)
+                {
+                    TestClientOptions.Add(option);
+                }
+            }
         }
+
+        public static List<TestClientOptions> TestClientOptions { get; } = new List<TestClientOptions>();
 
         public ILogger Logger { get; }
     }

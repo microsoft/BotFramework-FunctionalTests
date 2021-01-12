@@ -12,6 +12,7 @@ using Microsoft.Bot.Builder.Skills;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.BotFrameworkFunctionalTests.SimpleHostBot21.Authentication;
 using Microsoft.BotFrameworkFunctionalTests.SimpleHostBot21.Bots;
+using Microsoft.BotFrameworkFunctionalTests.SimpleHostBot21.Dialogs;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -58,6 +59,9 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot21
 
             // Register Conversation state (used by the Dialog system itself).
             services.AddSingleton<ConversationState>();
+
+            // Create SetupDialog
+            services.AddSingleton<SetupDialog>();
 
             // Register the bot as a transient. In this case the ASP Controller is expecting an IBot.
             services.AddTransient<IBot, HostBot>();

@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using Microsoft.Extensions.Configuration;
 using TranscriptTestRunner.TestClients;
 
 namespace TranscriptTestRunner
@@ -17,18 +16,13 @@ namespace TranscriptTestRunner
         /// Initializes a new instance of the <see cref="TestClientFactory"/> class.
         /// </summary>
         /// <param name="client">The type of client to create.</param>
-        public TestClientFactory(ClientType client)
+        /// <param name="options">The options to create the client.</param>
+        public TestClientFactory(ClientType client, TestClientOptions options)
         {
-            var configuration = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
-                .AddJsonFile("appsettings.Development.json", true, true)
-                .AddEnvironmentVariables()
-                .Build();
-
             switch (client)
             {
                 case ClientType.DirectLine:
-                    _testClientBase = new DirectLineTestClient(configuration);
+                    _testClientBase = new DirectLineTestClient(options);
                     break;
                 case ClientType.Emulator:
                     break;
@@ -39,7 +33,7 @@ namespace TranscriptTestRunner
                 case ClientType.Slack:
                     break;
                 default:
-                    _testClientBase = new DirectLineTestClient(configuration);
+                    _testClientBase = new DirectLineTestClient(options);
                     break;
             }
         }

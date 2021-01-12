@@ -15,6 +15,13 @@ stages:
       - job: 'Deploy'
         displayName: 'Deploy steps'
         steps:
+          # Gets Bot App Registration credentials from KeyVault or Pipeline Variables
+          - template: ../common/getAppRegistration.yml
+            parameters:
+              appId: ${{ bot.appId }}
+              appSecret: ${{ bot.appSecret }}
+              botName: '${{ bot.name }}'
+
           # Use Net Core version
           - ${{ if ne(bot.project.netCoreVersion, '') }}:
             - task: UseDotNet@2
@@ -25,6 +32,15 @@ stages:
           # Use NuGet
           - task: NuGetToolInstaller@1
             displayName: 'Use NuGet'
+          
+          # Prepare appsettings.json file, deleting all the declared skills, so it uses only the settings define in Azure
+          - ${{ if eq(bot.type, 'Host') }}:
+            - powershell: |
+                $file = "${{ bot.project.directory }}/appsettings.json"
+                $content = Get-Content -Raw $file | ConvertFrom-Json;
+                $content.BotFrameworkSkills = @();
+                $content | ConvertTo-Json | Set-Content $file;
+              displayName: 'Prepare App Settings'
 
           # Run NuGet restore SkillV3
           - ${{ if eq(bot.type, 'SkillV3') }}:
@@ -101,8 +117,8 @@ stages:
           # Create App Service and Bot Channel Registration
           - template: ../common/createAppService.yml
             parameters:
-              appId: '${{ bot.appId }}'
-              appSecret: '${{ bot.appSecret }}'
+              appId: $(AppId)
+              appSecret:  $(AppSecret)
               botName: '${{ bot.name }}'
               botGroup: '${{ parameters.resourceGroup }}'
 
@@ -110,8 +126,8 @@ stages:
           - ${{ if eq(bot.type, 'Skill') }}:
             - template: ../common/configureOAuth.yml
               parameters:
-                appId: '${{ bot.appId }}'
-                appSecret: '${{ bot.appSecret }}'
+                appId: $(AppId)
+                appSecret:  $(AppSecret)
                 botName: '${{ bot.name }}'
                 botGroup: '${{ parameters.resourceGroup }}'
 
@@ -121,3 +137,10 @@ stages:
               botName: '${{ bot.name }}'
               botGroup: '${{ parameters.resourceGroup }}'
               source: "$(System.DefaultWorkingDirectory)/build/${{ bot.name }}/${{ bot.name }}.zip"
+
+          # Create DirectLine Channel Hosts
+          - ${{ if eq(bot.type, 'Host') }}:
+            - template: ../common/createDirectLine.yml
+              parameters:
+                botName: '${{ bot.name }}'
+                botGroup: '${{ parameters.resourceGroup }}'

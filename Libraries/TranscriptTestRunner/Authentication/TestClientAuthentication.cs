@@ -56,7 +56,7 @@ namespace TranscriptTestRunner.Authentication
                 {
                     if (!response.IsSuccessStatusCode || !text.Contains("You are now signed in and can close this window."))
                     {
-                        throw new Exception("An error occurred signing in");
+                        throw new InvalidOperationException("An error occurred signing in");
                     }
 
                     return true;
@@ -72,7 +72,7 @@ namespace TranscriptTestRunner.Authentication
                 }
             }
 
-            throw new Exception("Sign in did not succeed. Set a breakpoint in TestClientAuthentication.SignInAsync() to debug the redirect sequence.");
+            throw new InvalidOperationException("Sign in did not succeed. Set a breakpoint in TestClientAuthentication.SignInAsync() to debug the redirect sequence.");
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace TranscriptTestRunner.Authentication
                 };
             }
 
-            throw new Exception("Failed to obtain session id");
+            throw new InvalidOperationException("Failed to obtain session id");
         }
     }
 }
