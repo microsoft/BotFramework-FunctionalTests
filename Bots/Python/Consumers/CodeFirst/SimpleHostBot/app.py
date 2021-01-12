@@ -20,6 +20,7 @@ from botframework.connector.auth import (
     SimpleCredentialProvider,
 )
 
+from dialogs import SetupDialog
 from skill_conversation_id_factory import SkillConversationIdFactory
 from authentication import AllowedSkillsClaimsValidator
 from bots import HostBot
@@ -53,11 +54,11 @@ ADAPTER = AdapterWithErrorHandler(
 )
 
 # Create the Bot
-BOT = HostBot(CONVERSATION_STATE, SKILL_CONFIG, CLIENT, CONFIG)
+DIALOG = SetupDialog(CONVERSATION_STATE, SKILL_CONFIG)
+BOT = HostBot(CONVERSATION_STATE, SKILL_CONFIG, CLIENT, CONFIG, DIALOG)
 
-SKILL_HANDLER = SkillHandler(
-    ADAPTER, BOT, ID_FACTORY, CREDENTIAL_PROVIDER, AUTH_CONFIG
-)
+SKILL_HANDLER = SkillHandler(ADAPTER, BOT, ID_FACTORY, CREDENTIAL_PROVIDER, AUTH_CONFIG)
+
 
 # Listen for incoming requests on /api/messages
 async def messages(req: Request) -> Response:
