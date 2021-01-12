@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using System;
 using System.Collections.Generic;
 using TranscriptTestRunner;
 
@@ -33,6 +32,7 @@ namespace SkillFunctionalTests.Common
                                     TargetSkill = targetSkill,
                                     Script = script
                                 };
+
                                 testCases.Add(new object[] { new TestCaseDataObject(testCase.Id, testCase) });
                                 count++;
                             }
