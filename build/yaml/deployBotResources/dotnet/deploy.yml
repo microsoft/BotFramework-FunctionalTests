@@ -32,6 +32,15 @@ stages:
           # Use NuGet
           - task: NuGetToolInstaller@1
             displayName: 'Use NuGet'
+          
+          # Prepare appsettings.json file, deleting all the declared skills, so it uses only the settings define in Azure
+          - ${{ if eq(bot.type, 'Host') }}:
+            - powershell: |
+                $file = "${{ bot.project.directory }}/appsettings.json"
+                $content = Get-Content -Raw $file | ConvertFrom-Json;
+                $content.BotFrameworkSkills = @();
+                $content | ConvertTo-Json | Set-Content $file;
+              displayName: 'Prepare App Settings'
 
           # Run NuGet restore SkillV3
           - ${{ if eq(bot.type, 'SkillV3') }}:

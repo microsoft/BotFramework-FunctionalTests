@@ -22,6 +22,19 @@ stages:
               appSecret: ${{ bot.appSecret }}
               botName: '${{ bot.name }}'
 
+          # Prepare .env file, deleting all the declared skills, so it uses only the settings define in Azure
+          - ${{ if eq(bot.type, 'Host') }}:
+            - powershell: |
+                $file = "${{ bot.project.directory }}/.env"
+                $content = Get-Content $file
+                $content | ForEach-Object {
+                  $line = $_
+                  if ($line.Trim().Length -gt 0 -and -not $line.Trim().ToLower().StartsWith('skill_')) {
+                    $line
+                  }
+                } | Set-Content $file;
+              displayName: 'Prepare .env file'
+
           # Evaluate dependencies source and version
           - template: evaluateDependenciesVariables.yml
             parameters:
