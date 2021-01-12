@@ -1,54 +1,33 @@
 parameters:
-  consumers: []
-  skills: []
+  scenarios: []
 
 stages:
-- ${{ each consumer in parameters.consumers }}:
-  - ${{ each skill in parameters.skills }}:
-    - stage: ${{ consumer.name }}_${{ skill.name }}
+  - ${{ each scenario in parameters.scenarios }}:
+    - stage: 
+      displayName: Test ${{ scenario }} Scenario
       jobs:
-        - job: Configure
-          steps:
-            - ${{ if eq(consumer.configType, 'DotNet') }}:
-              - task: AzureCLI@2
-                displayName: 'Configure Host Bots Settings'
-                inputs:
-                  azureSubscription: $(AzureSubscription)
-                  scriptType: ps
-                  scriptLocation: inlineScript
-                  inlineScript: |
-                    az webapp config appsettings set -g ${{ consumer.resourceGroup }} -n "${{ consumer.botName }}$($env:BotNamesSuffix)" --settings BotFrameworkSkills:0:AppId=${{ skill.appId }} BotFrameworkSkills:0:SkillEndpoint=https://${{ skill.botName }}$($env:BotNamesSuffix).azurewebsites.net/api/messages SkillHostEndpoint=https://${{ consumer.botName }}$($env:BotNamesSuffix).azurewebsites.net/api/skills
-
-            - ${{ if eq(consumer.configType, 'Js') }}:
-              - task: AzureCLI@2
-                displayName: 'Configure Host Bots Settings'
-                inputs:
-                  azureSubscription: $(AzureSubscription)
-                  scriptType: ps
-                  scriptLocation: inlineScript
-                  inlineScript: |
-                    az webapp config appsettings set -g ${{ consumer.resourceGroup }} -n "${{ consumer.botName }}$($env:BotNamesSuffix)" --settings SkillAppId=${{ skill.appId }} SkillEndpoint=https://${{ skill.botName }}$($env:BotNamesSuffix).azurewebsites.net/api/messages SkillHostEndpoint=https://${{ consumer.botName }}$($env:BotNamesSuffix).azurewebsites.net/api/skills
-
-            - ${{ if eq(consumer.configType, 'Composer') }}:
-              - task: AzureCLI@2
-                displayName: 'Configure Host Bots Settings'
-                inputs:
-                  azureSubscription: $(AzureSubscription)
-                  scriptType: ps
-                  scriptLocation: inlineScript
-                  inlineScript: |
-                    az webapp config appsettings set -g ${{ consumer.resourceGroup }} -n "${{ consumer.botName }}$($env:BotNamesSuffix)" --settings skill__EchoSkillBot__msAppId=${{ skill.appId }} skill__EchoSkillBot__endpointUrl=https://${{ skill.botName }}$($env:BotNamesSuffix).azurewebsites.net/api/messages SkillHostEndpoint=https://${{ consumer.botName }}$($env:BotNamesSuffix).azurewebsites.net/api/skills
-
         - job: Test
-          dependsOn: Configure
-          variables:
-            HostBotName: ${{ consumer.botName }}
-            Parameters.project: 'Tests/SkillFunctionalTests/SkillFunctionalTests.csproj'
-            Parameters.solution: 'SkillFunctionalTests.sln'
-            DefaultTestFilter: ''
-            FilterParam: ${{ skill.testFilter }}
-            TestFilter: $[ coalesce( variables['FilterParam'], variables['DefaultTestFilter'] ) ]
           steps:
-          - template: runFunctionalTests.yml
-            parameters:
-              resourceGroup: ${{ consumer.resourceGroup }}
+            - template: configureConsumers.yml
+              parameters:
+                scenario: ${{ scenario }}
+
+            - task: UseDotNet@2
+              displayName: 'Use .Net Core sdk 3.1.x'
+              inputs:
+                version: 3.1.x
+
+            - task: DotNetCoreCLI@2
+              displayName: 'Build'
+              inputs:
+                command: build
+                publishWebProjects: false
+                projects: 'Tests/SkillFunctionalTests/SkillFunctionalTests.csproj'
+                arguments: '-v n --configuration $(BuildConfiguration)'
+
+            - task: DotNetCoreCLI@2
+              displayName: 'Dotnet Test'
+              inputs:
+                command: test
+                projects: 'Tests/SkillFunctionalTests/SkillFunctionalTests.csproj'
+                arguments: '-v n --configuration $(BuildConfiguration) --no-build --no-restore --filter TestCategory!=IgnoreInAutomatedBuild&TestCategory=${{ scenario }}'

@@ -44,6 +44,6 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot
         /// <summary>
         /// The key-value pairs with the skills bots.
         /// </summary>
-        public Dictionary<string, BotFrameworkSkill> Skills { get; } = new Dictionary<string, BotFrameworkSkill>();
+        public Dictionary<string, BotFrameworkSkill> Skills { get; } = new Dictionary<string, BotFrameworkSkill>(StringComparer.OrdinalIgnoreCase);
     }
 }
