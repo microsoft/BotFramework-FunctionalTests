@@ -28,7 +28,6 @@ namespace TranscriptTestRunner
         private readonly ILogger _logger;
         private readonly int _replyTimeout;
         private readonly TestClientBase _testClient;
-        private Dictionary<string, string> _scriptParams;
         private Stopwatch _stopwatch;
         private TranscriptConverter _transcriptConverter;
         private string _testScriptPath;
@@ -76,8 +75,6 @@ namespace TranscriptTestRunner
         {
             var testFileName = $"{callerName} - {Path.GetFileNameWithoutExtension(transcriptPath)}";
 
-            _scriptParams = scriptParams;
-
             _logger.LogInformation($"======== Running script: {transcriptPath} ========");
 
             if (transcriptPath.EndsWith(".transcript", StringComparison.OrdinalIgnoreCase))
@@ -89,7 +86,7 @@ namespace TranscriptTestRunner
                 _testScriptPath = transcriptPath;
             }
 
-            await ExecuteTestScriptAsync(testFileName, cancellationToken).ConfigureAwait(false);
+            await ExecuteTestScriptAsync(testFileName, cancellationToken, scriptParams).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -123,7 +120,7 @@ namespace TranscriptTestRunner
                     if (activity != null && activity.Type != ActivityTypes.Trace && activity.Type != ActivityTypes.Typing)
                     {
                         _logger.LogInformation("Elapsed Time: {Elapsed}, Bot Responds: {Text}", Stopwatch.Elapsed, activity.Text);
-                        
+
                         if (activity.Attachments != null && activity.Attachments.Any())
                         {
                             foreach (var attachment in activity.Attachments)
@@ -234,7 +231,7 @@ namespace TranscriptTestRunner
             var resultExpression = string.Empty;
             var expectedExpression = wordRegex.Match(value).Value;
             var dateValue = string.Empty;
-            
+
             if (dateMatch.Success)
             {
                 dateValue = dateMatch.Value;
@@ -286,19 +283,17 @@ namespace TranscriptTestRunner
             _testScriptPath = _transcriptConverter.TestScript;
         }
 
-        private async Task ExecuteTestScriptAsync(string callerName, CancellationToken cancellationToken)
+        private async Task ExecuteTestScriptAsync(string callerName, CancellationToken cancellationToken, Dictionary<string, string> scriptParams = null)
         {
             _logger.LogInformation($"\n------ Starting test {callerName} ----------");
 
             using var reader = new StreamReader(_testScriptPath);
             var plainTestScript = await reader.ReadToEndAsync().ConfigureAwait(false);
 
-            if (_scriptParams?.Count > 0)
+            if (scriptParams != null && scriptParams.Any())
             {
-                foreach (var param in _scriptParams)
-                {
-                    plainTestScript = plainTestScript.Replace("${" + param.Key + "}", param.Value);
-                }
+                var replacement = string.Join("|", scriptParams.Keys.Select(k => $@"\$\{{\s?{k}\s?\}}").ToArray());
+                plainTestScript = Regex.Replace(plainTestScript, replacement, m => scriptParams[m.Value.Trim(new char[] { '$', '{', '}' })]);
             }
 
             var testScript = JsonConvert.DeserializeObject<TestScript>(plainTestScript);
@@ -323,7 +318,7 @@ namespace TranscriptTestRunner
                         {
                             break;
                         }
-                        
+
                         var nextReply = await GetNextReplyAsync(cancellationToken).ConfigureAwait(false);
                         await AssertActivityAsync(scriptActivity, nextReply, cancellationToken).ConfigureAwait(false);
                         break;
