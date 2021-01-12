@@ -158,7 +158,7 @@ steps:
               ConfigureAppSettings $appsettingsPath $consumerBot.botName $consumerBot.resourceGroup
 
               # Gets the previous settings to delete it
-              $json = (az webapp config appsettings list --name "$(consumerBot.botName)$($env:BotNamesSuffix)" --resource-group $consumerBot.resourceGroup) | ConvertFrom-Json
+              $json = (az webapp config appsettings list --name "$($consumerBot.botName)$($env:BotNamesSuffix)" --resource-group $consumerBot.resourceGroup) | ConvertFrom-Json
               $botFrameworkSkillsNames = @($json | Where-Object { $_.name -match "BotFrameworkSkills*" -or $_.name -eq "SkillHostEndpoint" }) | Select-Object -ExpandProperty name
               
               if ($botFrameworkSkillsNames.Length -gt 0) {
