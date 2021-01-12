@@ -68,9 +68,21 @@ stages:
                   Write-Host "No pre-existing '${{ variables.AppServicePlan }}' resource found.";
                 }
 
+  - stage: 'Deploy_Python_ResourceGroup'
+    displayName: "[Deploy] Delete Python Bots Resource Group"
+    dependsOn: []
+    jobs:
+      - job: 'Delete'
+        displayName: 'Delete Python bots resource group'
+        steps:
+          - template: ../common/deleteResourceGroup.yml
+            parameters:
+              name: "$(DeployResourceGroup)-Python"
+
   - stage: 'Shared_Linux_AppServicePlan'
     displayName: '[Shared] Delete Linux App Service Plan'
-    dependsOn: []
+    dependsOn:
+    - Deploy_Python_ResourceGroup
     jobs:
       - job: 'Delete'
         displayName: 'Delete ${{ variables.AppServicePlanLinux }}'
@@ -201,6 +213,7 @@ stages:
   - stage: 'Shared_Linux_ResourceGroup'
     displayName: '[Shared] Delete Linux Resource Group'
     dependsOn: 
+      - Deploy_Python_ResourceGroup
       - Shared_Linux_AppServicePlan
     jobs:
       - job: 'Delete'

@@ -17,6 +17,7 @@ variables:
   # BffnEchoSkillBotV3DotnetAppId: define in Azure
   # BffnEchoSkillBotJSAppId: define in Azure
   # BffnEchoSkillBotV3JSAppId: define in Azure
+  # BffnEchoSkillBotPythonAppId: define in Azure
   # ResourceGroup: define in Azure
 
 pool:

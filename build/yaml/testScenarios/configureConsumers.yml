@@ -11,8 +11,8 @@ steps:
       inlineScript: |
         # Type of setting to use for the AppSettings variables.
         $types = @{
-          DotNet = 0
-          Js = 1
+          Appsettings = 0
+          Env = 1
           Composer = 2
         }
 
@@ -20,6 +20,7 @@ steps:
         $groups = @{
           DotNet = "$(ResourceGroup)-DotNet"
           Js     = "$(ResourceGroup)-Js"
+          Python = "$(ResourceGroup)-Python"
         }
 
         # Bots Settings
@@ -28,13 +29,13 @@ steps:
               name          = 'SimpleHostBotDotnet'
               botName       = 'bffnsimplehostbotdotnet'
               resourceGroup = $groups.DotNet
-              configType    = $types.DotNet
+              configType    = $types.Appsettings
           }
           @{
               name          = 'SimpleHostBot21Dotnet'
               botName       = 'bffnsimplehostbot21dotnet'
               resourceGroup = $groups.DotNet
-              configType    = $types.DotNet
+              configType    = $types.Appsettings
           }
           @{
               name          = 'SimpleComposerHostBotDotnet'
@@ -46,7 +47,13 @@ steps:
               name          = 'SimpleHostBotJS'
               botName       = 'bffnsimplehostbotjs'
               resourceGroup = $groups.Js
-              configType    = $types.Js
+              configType    = $types.Env
+          }
+          @{
+              name          = 'SimpleHostBotPython'
+              botName       = 'bffnsimplehostbotpython'
+              resourceGroup = $groups.Python
+              configType    = $types.Env
           }
         )
 
@@ -87,6 +94,12 @@ steps:
               appId      = '$(BffnEchoSkillBotV3JSAppId)'
               resourceGroup = $groups.Js
           }
+          @{
+              name       = 'EchoSkillBotPython'
+              botName    = 'bffnechoskillbotpython'
+              appId      = '$(BffnEchoSkillBotPythonAppId)'
+              resourceGroup = $groups.Python
+          }
         )
 
         # Bots Test Scenarios
@@ -96,14 +109,16 @@ steps:
               consumers = @(
                 'SimpleHostBotDotnet',
                 'SimpleHostBot21Dotnet',
-                'SimpleHostBotJS'
+                'SimpleHostBotJS',
+                'SimpleHostBotPython'
               );
               skills    = @(
                 'EchoSkillBotDotnet',
                 'EchoSkillBot21Dotnet',
                 'EchoSkillBotV3Dotnet',
                 'EchoSkillBotJS',
-                'EchoSkillBotV3JS'
+                'EchoSkillBotV3JS',
+                'EchoSkillBotPython'
               );
           }
           @{ 
@@ -149,6 +164,10 @@ steps:
               }
 
               # Check if the Consumer bot resource exists.
+              if ((az group exists -n "$($consumerBot.resourceGroup)") -eq 'false') {
+                continue;
+              }
+
               $resource = az webapp list --resource-group $consumerBot.resourceGroup --query "[?name=='$($consumerBot.botName)']" | ConvertFrom-Json
 
               if (-not $resource) {
@@ -184,6 +203,11 @@ steps:
                     continue;
                 }
 
+                # Check if the Consumer bot resource exists.
+                if ((az group exists -n "$($skillBot.resourceGroup)") -eq 'false') {
+                  continue;
+                }
+
                 # Check if the Skill bot resource exists.
                 $resource = az webapp list --resource-group $skillBot.resourceGroup --query "[?name=='$($skillBot.botName)']" | ConvertFrom-Json
 
@@ -192,16 +216,16 @@ steps:
                 }
 
                 switch ($consumerBot.configType) {
-                    $types.DotNet { 
+                    $types.Appsettings {
                       $properties += "BotFrameworkSkills:$($index):Id=$($skillBot.name)";
                       $properties += "BotFrameworkSkills:$($index):AppId=$($skillBot.appId)";
                       $properties += "BotFrameworkSkills:$($index):SkillEndpoint=https://$($skillBot.botName).azurewebsites.net/api/messages";
                     }
-                    $types.Js { 
+                    $types.Env {
                       $properties += "skill_$($skillBot.name)_appId=$($skillBot.appId)";
                       $properties += "skill_$($skillBot.name)_endpoint=https://$($skillBot.botName).azurewebsites.net/api/messages";
                     }
-                    $types.Composer { 
+                    $types.Composer {
                       # NOTE: Currently Composer Host bot only supports one Skill.
                       $properties += "skill__EchoSkillBot__msAppId=$($skillBot.appId)";
                       $properties += "skill__EchoSkillBot__endpointUrl=https://$($skillBot.botName).azurewebsites.net/api/messages";
