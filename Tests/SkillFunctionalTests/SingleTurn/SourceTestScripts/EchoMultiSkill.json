@@ -38,7 +38,7 @@
     {
       "type": "message",
       "role": "user",
-      "text": "expectReplies"
+      "text": "${DeliveryMode}"
     },
     {
       "type": "message",
@@ -50,31 +50,13 @@
         "recipient.role == 'user'",
         "text == 'What skill would you like to call?'",
         "speak == 'What skill would you like to call?'",
-        "inputHint == 'expectingInput'",
-        "suggestedActions.actions[0].type == 'imBack'",
-        "suggestedActions.actions[0].title == 'EchoSkillBotDotNet'",
-        "suggestedActions.actions[0].value == 'EchoSkillBotDotNet'",
-        "suggestedActions.actions[1].type == 'imBack'",
-        "suggestedActions.actions[1].title == 'EchoSkillBot21DotNet'",
-        "suggestedActions.actions[1].value == 'EchoSkillBot21DotNet'",
-        "suggestedActions.actions[2].type == 'imBack'",
-        "suggestedActions.actions[2].title == 'EchoSkillBotV3DotNet'",
-        "suggestedActions.actions[2].value == 'EchoSkillBotV3DotNet'",
-        "suggestedActions.actions[3].type == 'imBack'",
-        "suggestedActions.actions[3].title == 'EchoSkillBotJS'",
-        "suggestedActions.actions[3].value == 'EchoSkillBotJS'",
-        "suggestedActions.actions[4].type == 'imBack'",
-        "suggestedActions.actions[4].title == 'EchoSkillBotV3JS'",
-        "suggestedActions.actions[4].value == 'EchoSkillBotV3JS'",
-        "suggestedActions.actions[5].type == 'imBack'",
-        "suggestedActions.actions[5].title == 'EchoSkillBotPython'",
-        "suggestedActions.actions[5].value == 'EchoSkillBotPython'"
+        "inputHint == 'expectingInput'"
       ]
     },
     {
       "type": "message",
       "role": "user",
-      "text": "EchoSkillBotDotNet"
+      "text": "${TargetSkill}"
     },
     {
       "type": "message",

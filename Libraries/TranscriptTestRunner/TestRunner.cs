@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -64,11 +65,13 @@ namespace TranscriptTestRunner
         /// If the file is of type <i>.transcript</i> it will be converted to an intermediary <i>TestScript.json</i> file.
         /// </remarks>
         /// <param name="transcriptPath">Path to the file to use.</param>
+        /// <param name="scriptParams">Optional. Parameter dictionary, every key surrounded by brackets as such: <c>${key}</c> 
+        /// found in the script will be replaced by its value.</param>
         /// <param name="callerName">Optional. The name of the method caller.</param>
         /// <param name="cancellationToken">Optional. A <see cref="CancellationToken"/> that can be used by other objects
         /// or threads to receive notice of cancellation.</param>
         /// <returns>A task that represents the work queued to execute.</returns>
-        public async Task RunTestAsync(string transcriptPath, [CallerMemberName] string callerName = "", CancellationToken cancellationToken = default)
+        public async Task RunTestAsync(string transcriptPath, Dictionary<string, string> scriptParams = null, [CallerMemberName] string callerName = "", CancellationToken cancellationToken = default)
         {
             var testFileName = $"{callerName} - {Path.GetFileNameWithoutExtension(transcriptPath)}";
 
@@ -83,7 +86,7 @@ namespace TranscriptTestRunner
                 _testScriptPath = transcriptPath;
             }
 
-            await ExecuteTestScriptAsync(testFileName, cancellationToken).ConfigureAwait(false);
+            await ExecuteTestScriptAsync(testFileName, cancellationToken, scriptParams).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -117,7 +120,7 @@ namespace TranscriptTestRunner
                     if (activity != null && activity.Type != ActivityTypes.Trace && activity.Type != ActivityTypes.Typing)
                     {
                         _logger.LogInformation("Elapsed Time: {Elapsed}, Bot Responds: {Text}", Stopwatch.Elapsed, activity.Text);
-                        
+
                         if (activity.Attachments != null && activity.Attachments.Any())
                         {
                             foreach (var attachment in activity.Attachments)
@@ -228,7 +231,7 @@ namespace TranscriptTestRunner
             var resultExpression = string.Empty;
             var expectedExpression = wordRegex.Match(value).Value;
             var dateValue = string.Empty;
-            
+
             if (dateMatch.Success)
             {
                 dateValue = dateMatch.Value;
@@ -280,13 +283,20 @@ namespace TranscriptTestRunner
             _testScriptPath = _transcriptConverter.TestScript;
         }
 
-        private async Task ExecuteTestScriptAsync(string callerName, CancellationToken cancellationToken)
+        private async Task ExecuteTestScriptAsync(string callerName, CancellationToken cancellationToken, Dictionary<string, string> scriptParams = null)
         {
             _logger.LogInformation($"\n------ Starting test {callerName} ----------");
 
             using var reader = new StreamReader(_testScriptPath);
+            var plainTestScript = await reader.ReadToEndAsync().ConfigureAwait(false);
 
-            var testScript = JsonConvert.DeserializeObject<TestScript>(await reader.ReadToEndAsync().ConfigureAwait(false));
+            if (scriptParams != null && scriptParams.Any())
+            {
+                var replacement = string.Join("|", scriptParams.Keys.Select(k => $@"\$\{{\s?{k}\s?\}}").ToArray());
+                plainTestScript = Regex.Replace(plainTestScript, replacement, m => scriptParams[m.Value.Trim(new char[] { '$', '{', '}' })]);
+            }
+
+            var testScript = JsonConvert.DeserializeObject<TestScript>(plainTestScript);
 
             foreach (var scriptActivity in testScript.Items)
             {
@@ -308,7 +318,7 @@ namespace TranscriptTestRunner
                         {
                             break;
                         }
-                        
+
                         var nextReply = await GetNextReplyAsync(cancellationToken).ConfigureAwait(false);
                         await AssertActivityAsync(scriptActivity, nextReply, cancellationToken).ConfigureAwait(false);
                         break;
