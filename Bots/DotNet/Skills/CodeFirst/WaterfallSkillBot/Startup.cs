@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.BotFramework;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
+using Microsoft.Bot.Builder.Integration.AspNet.Core.Skills;
+using Microsoft.Bot.Builder.Skills;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Authentication;
 using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Bots;
@@ -46,8 +48,13 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot
 
             // Register the Bot Framework Adapter with error handling enabled.
             // Note: some classes use the base BotAdapter so we add an extra registration that pulls the same instance.
-            services.AddSingleton<IBotFrameworkHttpAdapter, SkillAdapterWithErrorHandler>();
+            services.AddSingleton<BotFrameworkHttpAdapter, SkillAdapterWithErrorHandler>();
             services.AddSingleton<BotAdapter>(sp => sp.GetService<BotFrameworkHttpAdapter>());
+
+            // Register the skills conversation ID factory, the client and the request handler.
+            services.AddSingleton<SkillConversationIdFactoryBase, SkillConversationIdFactory>();
+            services.AddHttpClient<SkillHttpClient>();
+            services.AddSingleton<ChannelServiceHandler, SkillHandler>();
 
             // Create the storage we'll be using for User and Conversation state. (Memory is great for testing purposes.)
             services.AddSingleton<IStorage, MemoryStorage>();
