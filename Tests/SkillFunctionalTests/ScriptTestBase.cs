@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
+using SkillFunctionalTests.Common;
 using TranscriptTestRunner.TestClients;
 using Xunit.Abstractions;
 
@@ -33,19 +33,10 @@ namespace SkillFunctionalTests
 
             Logger = loggerFactory.CreateLogger<ScriptTestBase>();
 
-            var section = configuration.GetSection("TestClientOptions");
-            var testClientOptions = section.Get<TestClientOptions[]>();
-
-            if (testClientOptions != null)
-            {
-                foreach (var option in testClientOptions)
-                {
-                    TestClientOptions.Add(option);
-                }
-            }
+            TestClientOptions = configuration.GetSection("HostBotClientOptions").Get<Dictionary<HostBot, TestClientOptions>>();
         }
 
-        public static List<TestClientOptions> TestClientOptions { get; } = new List<TestClientOptions>();
+        public static Dictionary<HostBot, TestClientOptions> TestClientOptions { get; private set; }
 
         public ILogger Logger { get; }
     }

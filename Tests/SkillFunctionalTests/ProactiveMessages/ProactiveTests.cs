@@ -34,12 +34,12 @@ namespace SkillFunctionalTests.ProactiveMessages
                 DeliveryModes.ExpectReplies,
             };
 
-            var hostBots = new List<string>
+            var hostBots = new List<HostBot>
             {
-                HostBotNames.WaterfallHostBotDotNet,
-                HostBotNames.WaterfallHostBotJS,
-                HostBotNames.WaterfallHostBotPython,
-                HostBotNames.ComposerHostBotDotNet
+                HostBot.WaterfallHostBotDotNet,
+                HostBot.WaterfallHostBotJS,
+                HostBot.WaterfallHostBotPython,
+                HostBot.ComposerHostBotDotNet
             };
 
             var targetSkills = new List<string>

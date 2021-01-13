@@ -18,6 +18,6 @@ namespace TranscriptTestRunner.TestClients
         /// Gets or sets the secret for the connection with the test client.
         /// </summary>
         /// <value>The secret for the connection with the test client.</value>
-        public string TestClientSecret { get; set; }
+        public string DirectLineSecret { get; set; }
     }
 }

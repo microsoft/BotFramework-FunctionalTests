@@ -15,7 +15,7 @@ namespace SkillFunctionalTests.Common
 
         public string DeliveryMode { get; set; }
 
-        public string HostBot { get; set; }
+        public HostBot HostBot { get; set; }
 
         public string TargetSkill { get; set; }
 
