@@ -41,8 +41,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs
             AddDialog(new SsoSkillDialog(configuration));
             AddDialog(new FileUploadDialog());
 
-            var echoskillDialog = CreateEchoSkillDialog(conversationState, conversationIdFactory, skillClient, configuration);
-            AddDialog(echoskillDialog);
+            AddDialog(CreateEchoSkillDialog(conversationState, conversationIdFactory, skillClient, configuration));
 
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[] { ProcessActivityAsync }));
 
