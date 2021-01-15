@@ -76,13 +76,33 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot21.Bots
         /// <returns>A <see cref="Task{TResult}"/> representing the result of the asynchronous operation.</returns>
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
+            var deliveryMode = await _deliveryModeProperty.GetAsync(turnContext, () => null, cancellationToken);
+
+            if (_skillsConfig.Skills.ContainsKey(turnContext.Activity.Text))
+            {
+                var selectedSkill = _skillsConfig.Skills[turnContext.Activity.Text];
+                var v3Bots = new List<string> { "EchoSkillBotV3Dotnet", "EchoSkillBotV3JS" };
+                if (selectedSkill != null && deliveryMode == DeliveryModes.ExpectReplies && v3Bots.Contains(selectedSkill.Id))
+                {
+                    var message = MessageFactory.Text("V3 Bots do not support 'expectReplies' delivery mode.");
+                    await turnContext.SendActivityAsync(message, cancellationToken);
+
+                    // Forget delivery mode and skill invocation.
+                    await _deliveryModeProperty.DeleteAsync(turnContext, cancellationToken);
+                    await _activeSkillProperty.DeleteAsync(turnContext, cancellationToken);
+
+                    // Restart setup dialog
+                    await _conversationState.DeleteAsync(turnContext, cancellationToken);
+                    await _dialog.RunAsync(turnContext, _dialogStateProperty, cancellationToken);
+                    return;
+                }
+            }
+
             // Try to get the active skill
             var activeSkill = await _activeSkillProperty.GetAsync(turnContext, () => null, cancellationToken);
 
             if (activeSkill != null)
             {
-                var deliveryMode = await _deliveryModeProperty.GetAsync(turnContext, () => null, cancellationToken);
-
                 // Send the activity to the skill
                 await SendToSkillAsync(turnContext, deliveryMode, activeSkill, cancellationToken);
             }
