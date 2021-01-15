@@ -52,25 +52,25 @@ steps:
 
         $skills = @(
           @{
-              key     = 'EchoSkillBotDotnet'
+              key     = 'EchoSkillBotDotNet'
               botName = 'bffnechoskillbotdotnet'
               appId   = '$(BffnEchoSkillBotDotnetAppId)'
               resourceGroup = $groups.DotNet
           }
           @{
-              key     = 'EchoSkillBot21Dotnet'
+              key     = 'EchoSkillBot21DotNet'
               botName = 'bffnechoskillbot21dotnet'
               appId   = '$(BffnEchoSkillBot21DotnetAppId)'
               resourceGroup = $groups.DotNet
           }
           @{
-              key        = 'EchoSkillBotV3Dotnet'
+              key        = 'EchoSkillBotV3DotNet'
               botName    = 'bffnechoskillbotv3dotnet'
               appId      = '$(BffnEchoSkillBotV3DotnetAppId)'
               resourceGroup = $groups.DotNet
           }
           @{
-              key        = 'EchoComposerSkillBotDotnet'
+              key        = 'EchoComposerSkillBotDotNet'
               botName    = 'bffnechocomposerskillbotdotnet'
               appId      = '$(BffnEchoComposerSkillBotDotnetAppId)'
               resourceGroup = $groups.DotNet
@@ -99,9 +99,9 @@ steps:
                 'SimpleHostBotJS'
               );
               skills    = @(
-                'EchoSkillBotDotnet',
-                'EchoSkillBot21Dotnet',
-                'EchoSkillBotV3Dotnet',
+                'EchoSkillBotDotNet',
+                'EchoSkillBot21DotNet',
+                'EchoSkillBotV3DotNet',
                 'EchoSkillBotJS',
                 'EchoSkillBotV3JS'
               );
