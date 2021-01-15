@@ -1,6 +1,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License.
 
+import json
 import sys
 import traceback
 from datetime import datetime
@@ -98,8 +99,9 @@ async def messages(req: Request) -> Response:
     auth_header = req.headers["Authorization"] if "Authorization" in req.headers else ""
 
     try:
-        await ADAPTER.process_activity(activity, auth_header, BOT.on_turn)
-        return Response(status=HTTPStatus.CREATED)
+        response = await ADAPTER.process_activity(activity, auth_header, BOT.on_turn)
+        body = json.dumps(response.body)
+        return Response(status=response.status, body=body)
     except Exception as exception:
         raise exception
 
