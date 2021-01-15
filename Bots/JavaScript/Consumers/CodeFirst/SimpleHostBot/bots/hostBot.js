@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-const { ActivityHandler, ActivityTypes, DeliveryModes } = require('botbuilder');
+const { ActivityHandler, ActivityTypes, DeliveryModes, MessageFactory } = require('botbuilder');
 
 class HostBot extends ActivityHandler {
     constructor(dialog, conversationState, skillsConfig, skillClient) {
@@ -27,12 +27,26 @@ class HostBot extends ActivityHandler {
 
         // See https://aka.ms/about-bot-activity-message to learn more about the message and other activity types.
         this.onMessage(async (context, next) => {
+            const selectedSkill = this.skillsConfig.skills[context.activity.text];
+            const deliveryMode = await this.deliveryModeProperty.get(context);
+
+            const v3Bots = ['EchoSkillBotV3Dotnet', 'EchoSkillBotV3JS'];
+            if (selectedSkill && deliveryMode === DeliveryModes.ExpectReplies && v3Bots.includes(selectedSkill.id)) {
+                const message = MessageFactory.text("V3 Bots do not support 'expectReplies' delivery mode.");
+                await context.sendActivity(message);
+                // Forget delivery mode and skill invocation.
+                await this.deliveryModeProperty.delete(context);
+                await this.activeSkillProperty.delete(context);
+                // Restart setup dialog
+                await this.conversationState.delete(context);
+                await this.dialog.run(context, this.dialogStateProperty);
+                return;
+            }
+
             // Try to get the active skill.
             const activeSkill = await this.activeSkillProperty.get(context);
 
             if (activeSkill) {
-                const deliveryMode = await this.deliveryModeProperty.get(context);
-
                 // Send the activity to the skill
                 await this.sendToSkill(context, deliveryMode, activeSkill);
             } else {
@@ -68,8 +82,8 @@ class HostBot extends ActivityHandler {
     async EndConversation(activity, context) {
         if (activity.type === ActivityTypes.EndOfConversation) {
             // Forget delivery mode and skill invocation.
-            await this.deliveryModeProperty.set(context, undefined);
-            await this.activeSkillProperty.set(context, undefined);
+            await this.deliveryModeProperty.delete(context);
+            await this.activeSkillProperty.delete(context);
 
             // Show status message, text and value returned by the skill.
             let eocActivityMessage = `Received ${ ActivityTypes.EndOfConversation }.\n\nCode: ${ activity.code }`;
