@@ -33,10 +33,10 @@ namespace SkillFunctionalTests
 
             Logger = loggerFactory.CreateLogger<ScriptTestBase>();
 
-            TestClientOptions = configuration.GetSection("HostBotClientOptions").Get<Dictionary<HostBot, DirectLinetTestClientOptions>>();
+            TestClientOptions = configuration.GetSection("HostBotClientOptions").Get<Dictionary<HostBot, DirectLineTestClientOptions>>();
         }
 
-        public static Dictionary<HostBot, DirectLinetTestClientOptions> TestClientOptions { get; private set; }
+        public static Dictionary<HostBot, DirectLineTestClientOptions> TestClientOptions { get; private set; }
 
         public ILogger Logger { get; }
     }

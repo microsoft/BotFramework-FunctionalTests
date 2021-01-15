@@ -17,7 +17,7 @@ namespace TranscriptTestRunner
         /// </summary>
         /// <param name="client">The type of client to create.</param>
         /// <param name="options">The options to create the client.</param>
-        public TestClientFactory(ClientType client, DirectLinetTestClientOptions options)
+        public TestClientFactory(ClientType client, DirectLineTestClientOptions options)
         {
             switch (client)
             {

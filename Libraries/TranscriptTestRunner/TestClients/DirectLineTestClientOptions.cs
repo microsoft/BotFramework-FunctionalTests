@@ -6,7 +6,7 @@ namespace TranscriptTestRunner.TestClients
     /// <summary>
     /// Class with the options needed to run a test against a TesClient.
     /// </summary>
-    public class DirectLinetTestClientOptions
+    public class DirectLineTestClientOptions
     {
         /// <summary>
         /// Gets or sets the Id of the host bot.

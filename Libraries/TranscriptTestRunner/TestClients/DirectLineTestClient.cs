@@ -44,7 +44,7 @@ namespace TranscriptTestRunner.TestClients
         /// Initializes a new instance of the <see cref="DirectLineTestClient"/> class.
         /// </summary>
         /// <param name="options">Options for the client configuration.</param>
-        public DirectLineTestClient(DirectLinetTestClientOptions options)
+        public DirectLineTestClient(DirectLineTestClientOptions options)
         {
             if (string.IsNullOrWhiteSpace(options.BotId))
             {
