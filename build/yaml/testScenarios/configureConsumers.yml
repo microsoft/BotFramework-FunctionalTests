@@ -214,12 +214,12 @@ steps:
                 }
 
                 switch ($consumerBot.configType) {
-                    $types.DotNet { 
+                    $types.Appsettings { 
                       $properties += "BotFrameworkSkills:$($index):Id=$($skillBot.key)";
                       $properties += "BotFrameworkSkills:$($index):AppId=$($skillBot.appId)";
                       $properties += "BotFrameworkSkills:$($index):SkillEndpoint=https://$($skillBot.botName).azurewebsites.net/api/messages";
                     }
-                    $types.Js { 
+                    $types.Env { 
                       $properties += "skill_$($skillBot.key)_appId=$($skillBot.appId)";
                       $properties += "skill_$($skillBot.key)_endpoint=https://$($skillBot.botName).azurewebsites.net/api/messages";
                     }
