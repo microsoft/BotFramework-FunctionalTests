@@ -11,13 +11,6 @@ variables:
   BuildConfiguration: 'Debug'
   BuildPlatform: 'any cpu'
   # AzureSubscription: define in Azure
-  # BffnEchoComposerSkillBotDotnetAppId: define in Azure
-  # BffnEchoSkillBotDotnetAppId: define in Azure
-  # BffnEchoSkillBot21DotnetAppId: define in Azure
-  # BffnEchoSkillBotV3DotnetAppId: define in Azure
-  # BffnEchoSkillBotJSAppId: define in Azure
-  # BffnEchoSkillBotV3JSAppId: define in Azure
-  # BffnEchoSkillBotPythonAppId: define in Azure
   # ResourceGroup: define in Azure
   # BffnEchoComposerSkillBotDotnetAppId: (optional) define in Azure
   # BffnEchoSkillBotDotnetAppId: (optional) define in Azure
@@ -25,6 +18,7 @@ variables:
   # BffnEchoSkillBotV3DotnetAppId: (optional) define in Azure
   # BffnEchoSkillBotJSAppId: (optional) define in Azure
   # BffnEchoSkillBotV3JSAppId: (optional) define in Azure
+  # BffnEchoSkillBotPythonAppId: (optional) define in Azure
 
 pool:
   vmImage: 'windows-2019'
