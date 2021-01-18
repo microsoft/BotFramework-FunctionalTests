@@ -122,7 +122,7 @@ steps:
           if(-not [string]::IsNullOrEmpty($skill.appId)){
             continue;
           }
-          $entry = az keyvault secret list --vault-name "bffnbotkeyvault" --query "[?name == 'Bffn$($skill.name)AppId']" | ConvertFrom-Json;
+          $entry = az keyvault secret list --vault-name "bffnbotkeyvault" --query "[?name == 'Bffn$($skill.key)AppId']" | ConvertFrom-Json;
           $secretVault = az keyvault secret show --id $entry.id | ConvertFrom-Json;
           $skill.appId = $secretVault.value;
         }
