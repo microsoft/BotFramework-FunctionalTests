@@ -9,15 +9,15 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.TraceExtensions;
 using Microsoft.Bot.Schema;
-using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Attachments;
-using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Auth;
-using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards;
-using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Proactive;
-using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Sso;
+using Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Attachments;
+using Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Auth;
+using Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Cards;
+using Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Proactive;
+using Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Sso;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
-namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs
+namespace Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs
 {
     /// <summary>
     /// A root dialog that can route activities sent to the skill to different sub-dialogs.

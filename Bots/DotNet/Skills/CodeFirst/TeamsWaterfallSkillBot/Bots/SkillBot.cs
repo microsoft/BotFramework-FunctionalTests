@@ -12,9 +12,9 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Teams;
 using Microsoft.Bot.Schema;
-using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Proactive;
+using Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Proactive;
 
-namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Bots
+namespace Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Bots
 {
     public class SkillBot<T> : TeamsActivityHandler
         where T : Dialog

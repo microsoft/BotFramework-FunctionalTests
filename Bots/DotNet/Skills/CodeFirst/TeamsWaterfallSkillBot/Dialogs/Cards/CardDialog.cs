@@ -18,7 +18,7 @@ using Microsoft.Bot.Schema.Teams;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
+namespace Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Cards
 {
     public class CardDialog : ComponentDialog
     {

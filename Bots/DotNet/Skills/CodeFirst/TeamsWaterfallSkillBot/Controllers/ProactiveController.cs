@@ -12,10 +12,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
-using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs;
-using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Proactive;
+using Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs;
+using Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Proactive;
 
-namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Controllers
+namespace Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Controllers
 {
     [Route("api/notify")]
     [ApiController]

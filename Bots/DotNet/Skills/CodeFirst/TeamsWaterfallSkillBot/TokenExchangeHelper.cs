@@ -11,7 +11,7 @@ using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 
-namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot
+namespace Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot
 {
     /// <summary>
     /// Provides the ability to exchange a token for SSO, without the OAuthPrompt.

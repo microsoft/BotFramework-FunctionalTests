@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
 
-namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Middleware
+namespace Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Middleware
 {
     /// <summary>
     /// A middleware that ensures conversation state is saved when an OAuthCard is returned by the skill.
