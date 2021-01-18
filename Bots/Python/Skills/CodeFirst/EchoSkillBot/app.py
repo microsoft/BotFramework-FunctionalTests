@@ -100,8 +100,13 @@ async def messages(req: Request) -> Response:
 
     try:
         response = await ADAPTER.process_activity(activity, auth_header, BOT.on_turn)
-        body = json.dumps(response.body)
-        return Response(status=response.status, body=body)
+        # DeliveryMode => Expected Replies
+        if (response):
+            body = json.dumps(response.body)
+            return Response(status=response.status, body=body)
+        
+        # DeliveryMode => Normal
+        return Response(status=HTTPStatus.CREATED)
     except Exception as exception:
         raise exception
 
