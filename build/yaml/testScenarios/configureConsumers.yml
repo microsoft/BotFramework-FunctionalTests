@@ -97,7 +97,7 @@ steps:
           @{
               name       = 'EchoSkillBotPython'
               botName    = 'bffnechoskillbotpython'
-              appId      = '$(BffnEchoSkillBotPythonAppId)'
+              appId      = "$env:BffnEchoSkillBotPythonAppId"
               resourceGroup = $groups.Python
           }
         )
