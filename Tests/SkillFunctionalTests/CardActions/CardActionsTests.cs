@@ -36,9 +36,9 @@ namespace SkillFunctionalTests.CardActions
                 DeliveryModes.Normal
             };
 
-            var hostBots = new List<string>
+            var hostBots = new List<HostBot>
             {
-                HostBotNames.WaterfallHostBotDotNet,
+                HostBot.WaterfallHostBotDotNet,
 
                 // TODO: Enable these when the ports to JS, Python and composer are ready
                 //HostBotNames.WaterfallHostBotJS,

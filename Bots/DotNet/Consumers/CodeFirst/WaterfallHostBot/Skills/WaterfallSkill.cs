@@ -14,6 +14,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Skills
         private const string SkillActionAuth = "Auth";
         private const string SkillActionAttachment = "Attachment";
         private const string SkillActionSso = "Sso";
+        private const string SkillActionFileUpload = "FileUpload";
 
         public override IList<string> GetActions()
         {
@@ -23,7 +24,8 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Skills
                 SkillActionProactive,
                 SkillActionAuth,
                 SkillActionAttachment,
-                SkillActionSso
+                SkillActionSso,
+                SkillActionFileUpload
             };
         }
 
@@ -68,6 +70,14 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Skills
             {
                 activity = (Activity)Activity.CreateEventActivity();
                 activity.Name = SkillActionSso;
+                return activity;
+            }
+
+            // Send an event activity to the skill with "FileUpload" in the name.
+            if (actionId.Equals(SkillActionFileUpload, StringComparison.CurrentCultureIgnoreCase))
+            {
+                activity = (Activity)Activity.CreateEventActivity();
+                activity.Name = SkillActionFileUpload;
                 return activity;
             }
 
