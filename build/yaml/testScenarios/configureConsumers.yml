@@ -26,31 +26,31 @@ steps:
         # Bots Settings
         $consumers = @(
           @{
-              name          = 'SimpleHostBotDotnet'
+              key           = 'SimpleHostBotDotNet'
               botName       = 'bffnsimplehostbotdotnet'
               resourceGroup = $groups.DotNet
               configType    = $types.Appsettings
           }
           @{
-              name          = 'SimpleHostBot21Dotnet'
+              key           = 'SimpleHostBotDotNet21'
               botName       = 'bffnsimplehostbot21dotnet'
               resourceGroup = $groups.DotNet
               configType    = $types.Appsettings
           }
           @{
-              name          = 'SimpleComposerHostBotDotnet'
+              key           = 'SimpleComposerHostBotDotNet'
               botName       = 'bffnsimplecomposerhostbotdotnet'
               resourceGroup = $groups.DotNet
               configType    = $types.Composer
           }
           @{
-              name          = 'SimpleHostBotJS'
+              key           = 'SimpleHostBotJS'
               botName       = 'bffnsimplehostbotjs'
               resourceGroup = $groups.Js
               configType    = $types.Env
           }
           @{
-              name          = 'SimpleHostBotPython'
+              key           = 'SimpleHostBotPython'
               botName       = 'bffnsimplehostbotpython'
               resourceGroup = $groups.Python
               configType    = $types.Env
@@ -59,43 +59,43 @@ steps:
 
         $skills = @(
           @{
-              name    = 'EchoSkillBotDotnet'
+              key     = 'EchoSkillBotDotNet'
               botName = 'bffnechoskillbotdotnet'
               appId   = '$(BffnEchoSkillBotDotnetAppId)'
               resourceGroup = $groups.DotNet
           }
           @{
-              name    = 'EchoSkillBot21Dotnet'
+              key     = 'EchoSkillBot21DotNet'
               botName = 'bffnechoskillbot21dotnet'
               appId   = '$(BffnEchoSkillBot21DotnetAppId)'
               resourceGroup = $groups.DotNet
           }
           @{
-              name       = 'EchoSkillBotV3Dotnet'
+              key        = 'EchoSkillBotV3DotNet'
               botName    = 'bffnechoskillbotv3dotnet'
               appId      = '$(BffnEchoSkillBotV3DotnetAppId)'
               resourceGroup = $groups.DotNet
           }
           @{
-              name       = 'EchoComposerSkillBotDotnet'
+              key        = 'EchoComposerSkillBotDotNet'
               botName    = 'bffnechocomposerskillbotdotnet'
               appId      = '$(BffnEchoComposerSkillBotDotnetAppId)'
               resourceGroup = $groups.DotNet
           }
           @{
-              name    = 'EchoSkillBotJS'
+              key     = 'EchoSkillBotJS'
               botName = 'bffnechoskillbotjs'
               appId   = '$(BffnEchoSkillBotJSAppId)'
               resourceGroup = $groups.Js
           }
           @{
-              name       = 'EchoSkillBotV3JS'
+              key        = 'EchoSkillBotV3JS'
               botName    = 'bffnechoskillbotv3js'
               appId      = '$(BffnEchoSkillBotV3JSAppId)'
               resourceGroup = $groups.Js
           }
           @{
-              name       = 'EchoSkillBotPython'
+              key        = 'EchoSkillBotPython'
               botName    = 'bffnechoskillbotpython'
               appId      = "$env:BffnEchoSkillBotPythonAppId"
               resourceGroup = $groups.Python
@@ -107,15 +107,15 @@ steps:
           @{ 
               name      = 'SingleTurn'; 
               consumers = @(
-                'SimpleHostBotDotnet',
-                'SimpleHostBot21Dotnet',
+                'SimpleHostBotDotNet',
+                'SimpleHostBotDotNet21',
                 'SimpleHostBotJS',
                 'SimpleHostBotPython'
               );
               skills    = @(
-                'EchoSkillBotDotnet',
-                'EchoSkillBot21Dotnet',
-                'EchoSkillBotV3Dotnet',
+                'EchoSkillBotDotNet',
+                'EchoSkillBot21DotNet',
+                'EchoSkillBotV3DotNet',
                 'EchoSkillBotJS',
                 'EchoSkillBotV3JS',
                 'EchoSkillBotPython'
@@ -124,30 +124,28 @@ steps:
           @{ 
               name      = 'SingleTurn'; 
               consumers = @(
-                'SimpleComposerHostBotDotnet'
+                'SimpleComposerHostBotDotNet'
               );
               skills    = @(
-                'EchoComposerSkillBotDotnet'
+                'EchoComposerSkillBotDotNet'
               );
           }
         )
 
         $appsettingsPath = "tests/SkillFunctionalTests/appsettings.json"
 
-        $content = Get-Content -Raw $appsettingsPath | ConvertFrom-Json;
+        $appsettingsTestProject = Get-Content -Raw $appsettingsPath | ConvertFrom-Json;
+        $appsettingsTestProject.HostBotClientOptions = @{}
 
         # Set DirectLine into FunctionalTests project
-        function ConfigureAppSettings ($appSettingsPath, $botName, $resourceGroup) {
+        function ConfigureAppSettings ($key, $botName, $resourceGroup) {
           # Gets the Consumer DirectLine
           $directLine = (az bot directline show --name $botName --resource-group $resourceGroup --with-secrets true | ConvertFrom-Json).properties.properties.sites.key;
-                
-          $directLineConsumer = @{
-              TestClientSecret = $directLine
-              BotId            = $botName
-          }
 
-          $content.TestClientOptions += $directLineConsumer
-          $content | ConvertTo-Json | Set-Content $appsettingsPath;
+          $appsettingsTestProject.HostBotClientOptions[$key] = @{
+            DirectLineSecret = $directLine
+            BotId            = $botName
+          }
         }
 
         # Script to assign Skills variables into Consumers AppSettings
@@ -157,7 +155,7 @@ steps:
           }
 
           foreach ($consumer in $scenario.consumers) {
-              $consumerBot = $consumers | Where-Object name -eq $consumer
+              $consumerBot = $consumers | Where-Object key -eq $consumer
 
               if (-not $consumerBot) {
                 continue;
@@ -173,27 +171,27 @@ steps:
               if (-not $resource) {
                 continue;
               }
-              
-              ConfigureAppSettings $appsettingsPath $consumerBot.botName $consumerBot.resourceGroup
+
+              ConfigureAppSettings $consumerBot.key $consumerBot.botName $consumerBot.resourceGroup
 
               # Gets the previous settings to delete it
               $json = (az webapp config appsettings list --name $consumerBot.botName --resource-group $consumerBot.resourceGroup) | ConvertFrom-Json
               $botFrameworkSkillsNames = @($json | Where-Object { $_.name -match "BotFrameworkSkills*" -or $_.name -eq "SkillHostEndpoint" }) | Select-Object -ExpandProperty name
-              
+
               if ($botFrameworkSkillsNames.Length -gt 0) {
                 $settings = $botFrameworkSkillsNames | ForEach-Object { $_ }
                 az webapp config appsettings delete --name $consumerBot.botName --resource-group $consumerBot.resourceGroup --setting-names $settings --output none
               }
-              
+
               # Create settings list
               $properties = @(
                 "SkillHostEndpoint=https://$($consumerBot.botName).azurewebsites.net/api/skills"
               )
 
               $index = 0
-              
+
               foreach ($skill in $scenario.skills) {
-                $skillBot = $skills | Where-Object name -eq $skill
+                $skillBot = $skills | Where-Object key -eq $skill
 
                 if (-not $skillBot) {
                     continue;
@@ -216,14 +214,14 @@ steps:
                 }
 
                 switch ($consumerBot.configType) {
-                    $types.Appsettings {
-                      $properties += "BotFrameworkSkills:$($index):Id=$($skillBot.name)";
+                    $types.DotNet { 
+                      $properties += "BotFrameworkSkills:$($index):Id=$($skillBot.key)";
                       $properties += "BotFrameworkSkills:$($index):AppId=$($skillBot.appId)";
                       $properties += "BotFrameworkSkills:$($index):SkillEndpoint=https://$($skillBot.botName).azurewebsites.net/api/messages";
                     }
-                    $types.Env {
-                      $properties += "skill_$($skillBot.name)_appId=$($skillBot.appId)";
-                      $properties += "skill_$($skillBot.name)_endpoint=https://$($skillBot.botName).azurewebsites.net/api/messages";
+                    $types.Js { 
+                      $properties += "skill_$($skillBot.key)_appId=$($skillBot.appId)";
+                      $properties += "skill_$($skillBot.key)_endpoint=https://$($skillBot.botName).azurewebsites.net/api/messages";
                     }
                     $types.Composer {
                       # NOTE: Currently Composer Host bot only supports one Skill.
@@ -239,13 +237,14 @@ steps:
 
               $appsettings = az webapp config appsettings set --name $consumerBot.botName --resource-group $consumerBot.resourceGroup --settings $settings | ConvertFrom-Json
 
-              Write-Host "`nConsumer AppSettings: $($consumerBot.name)";
+              Write-Host "`nConsumer AppSettings: $($consumerBot.key)";
 
               $appsettings | Where-Object {$_.name -eq 'MicrosoftAppPassword'} | ForEach-Object {$_.value = "***"}
               $appsettings
           }
         }
 
-        Write-Host "`nTest Project AppSettings: $($consumerBot.name)";
-        $content.TestClientOptions | ForEach-Object { $_.TestClientSecret = "***" } 
-        $content.TestClientOptions | ForEach-Object {[PSCustomObject]$_}  | Format-Table -AutoSize
+        $appsettingsTestProject | ConvertTo-Json | Set-Content $appsettingsPath;
+
+        Write-Host "`nTest Project AppSettings: $($consumerBot.key)";
+        $appsettingsTestProject.HostBotClientOptions
