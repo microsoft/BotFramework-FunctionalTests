@@ -26,7 +26,7 @@ stages:
                 arguments: '-v n --configuration $(BuildConfiguration)'
 
             - task: DotNetCoreCLI@2
-              displayName: 'Dotnet Test'
+              displayName: 'DotNet Test'
               inputs:
                 command: test
                 projects: 'Tests/SkillFunctionalTests/SkillFunctionalTests.csproj'

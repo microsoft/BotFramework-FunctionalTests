@@ -94,7 +94,7 @@ class SetupDialog extends ComponentDialog {
      */
     async finalStep(stepContext) {
         const selectedSkill = this.skillsConfig.skills[stepContext.result.value];
-        const v3Bots = ['EchoSkillBotV3Dotnet', 'EchoSkillBotV3JS'];
+        const v3Bots = ['EchoSkillBotV3DotNet', 'EchoSkillBotV3JS'];
 
         // Set active skill
         await this.activeSkillProperty.set(stepContext.context, selectedSkill);

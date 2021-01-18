@@ -30,7 +30,7 @@ class HostBot extends ActivityHandler {
             const selectedSkill = this.skillsConfig.skills[context.activity.text];
             const deliveryMode = await this.deliveryModeProperty.get(context);
 
-            const v3Bots = ['EchoSkillBotV3Dotnet', 'EchoSkillBotV3JS'];
+            const v3Bots = ['EchoSkillBotV3DotNet', 'EchoSkillBotV3JS'];
             if (selectedSkill && deliveryMode === DeliveryModes.ExpectReplies && v3Bots.includes(selectedSkill.id)) {
                 const message = MessageFactory.text("V3 Bots do not support 'expectReplies' delivery mode.");
                 await context.sendActivity(message);

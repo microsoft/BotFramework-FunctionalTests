@@ -19,7 +19,7 @@ steps:
         # Bots Resource Groups
         $groups = @{
           DotNet = "$(ResourceGroup)-DotNet"
-          Js     = "$(ResourceGroup)-Js"
+          JS     = "$(ResourceGroup)-JS"
           Python = "$(ResourceGroup)-Python"
         }
 
@@ -46,7 +46,7 @@ steps:
           @{
               key           = 'SimpleHostBotJS'
               botName       = 'bffnsimplehostbotjs'
-              resourceGroup = $groups.Js
+              resourceGroup = $groups.JS
               configType    = $types.Env
           }
           @{
@@ -61,38 +61,38 @@ steps:
           @{
               key     = 'EchoSkillBotDotNet'
               botName = 'bffnechoskillbotdotnet'
-              appId   = "$env:BffnEchoSkillBotDotnetAppId"
+              appId   = "$env:BffnEchoSkillBotDotNetAppId"
               resourceGroup = $groups.DotNet
           }
           @{
               key     = 'EchoSkillBot21DotNet'
               botName = 'bffnechoskillbot21dotnet'
-              appId   = "$env:BffnEchoSkillBot21DotnetAppId"
+              appId   = "$env:BffnEchoSkillBot21DotNetAppId"
               resourceGroup = $groups.DotNet
           }
           @{
               key        = 'EchoSkillBotV3DotNet'
               botName    = 'bffnechoskillbotv3dotnet'
-              appId      = "$env:BffnEchoSkillBotV3DotnetAppId"
+              appId      = "$env:BffnEchoSkillBotV3DotNetAppId"
               resourceGroup = $groups.DotNet
           }
           @{
               key        = 'EchoComposerSkillBotDotNet'
               botName    = 'bffnechocomposerskillbotdotnet'
-              appId      = "$env:BffnEchoComposerSkillBotDotnetAppId"
+              appId      = "$env:BffnEchoComposerSkillBotDotNetAppId"
               resourceGroup = $groups.DotNet
           }
           @{
               key     = 'EchoSkillBotJS'
               botName = 'bffnechoskillbotjs'
               appId   = "$env:BffnEchoSkillBotJSAppId"
-              resourceGroup = $groups.Js
+              resourceGroup = $groups.JS
           }
           @{
               key        = 'EchoSkillBotV3JS'
               botName    = 'bffnechoskillbotv3js'
               appId      = "$env:BffnEchoSkillBotV3JSAppId"
-              resourceGroup = $groups.Js
+              resourceGroup = $groups.JS
           }
           @{
               key        = 'EchoSkillBotPython'
@@ -229,7 +229,7 @@ steps:
                       $properties += "BotFrameworkSkills:$($index):AppId=$($skillBot.appId)";
                       $properties += "BotFrameworkSkills:$($index):SkillEndpoint=https://$($skillBot.botName).azurewebsites.net/api/messages";
                     }
-                    $types.Js { 
+                    $types.JS { 
                       $properties += "skill_$($skillBot.key)_appId=$($skillBot.appId)";
                       $properties += "skill_$($skillBot.key)_endpoint=https://$($skillBot.botName).azurewebsites.net/api/messages";
                     }
