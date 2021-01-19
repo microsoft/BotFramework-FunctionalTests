@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System;
 using Newtonsoft.Json;
 using Xunit.Abstractions;
 
@@ -8,7 +9,6 @@ namespace SkillFunctionalTests.Common
 {
     public class TestCaseDataObject : IXunitSerializable
     {
-        private const string TestIdKey = "TestIdKey";
         private const string TestObjectKey = "TestObjectKey";
         private string _testObject;
 
@@ -25,9 +25,8 @@ namespace SkillFunctionalTests.Common
         /// </summary>
         /// <param name="id">An identifier for the test case.</param>
         /// <param name="testData">An object with the data to be used in the test.</param>
-        public TestCaseDataObject(string id, object testData)
+        public TestCaseDataObject(object testData)
         {
-            Id = id;
             _testObject = JsonConvert.SerializeObject(testData);
         }
 
@@ -43,7 +42,6 @@ namespace SkillFunctionalTests.Common
         /// <param name="serializationInfo">A parameter used by XUnit.net.</param>
         public void Deserialize(IXunitSerializationInfo serializationInfo)
         {
-            Id = serializationInfo.GetValue<string>(TestIdKey);
             _testObject = serializationInfo.GetValue<string>(TestObjectKey);
         }
 
@@ -53,7 +51,6 @@ namespace SkillFunctionalTests.Common
         /// <param name="serializationInfo">A parameter used by XUnit.net.</param>
         public void Serialize(IXunitSerializationInfo serializationInfo)
         {
-            serializationInfo.AddValue(TestIdKey, Id);
             serializationInfo.AddValue(TestObjectKey, _testObject);
         }
 
@@ -65,6 +62,19 @@ namespace SkillFunctionalTests.Common
         public T GetObject<T>()
         {
             return JsonConvert.DeserializeObject<T>(_testObject);
+        }
+
+        public override string ToString()
+        {
+            try
+            {
+                var testCase = GetObject<TestCase>();
+                return testCase.Description;
+            }
+            catch (Exception)
+            {
+                return base.ToString();
+            }
         }
     }
 }
