@@ -106,7 +106,8 @@ namespace Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.C
                     await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(CardSampleHelper.CreateThumbnailCard().ToAttachment()), cancellationToken).ConfigureAwait(false);
                     break;
                 case "receipt":
-                    await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(CardSampleHelper.CreateReceiptCard().ToAttachment()), cancellationToken).ConfigureAwait(false);
+                    var r = MessageFactory.Attachment(CardSampleHelper.CreateReceiptCard().ToAttachment());
+                    await stepContext.Context.SendActivityAsync(r, cancellationToken).ConfigureAwait(false);
                     break;
                 case "signin":
                     await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(CardSampleHelper.CreateSigninCard().ToAttachment()), cancellationToken).ConfigureAwait(false);

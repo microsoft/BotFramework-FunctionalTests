@@ -67,6 +67,14 @@ namespace Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Bots
             }
         }
 
+        protected override async Task OnTeamsSigninVerifyStateAsync(ITurnContext<IInvokeActivity> turnContext, CancellationToken cancellationToken)
+        {
+            // The OAuth Prompt needs to see the Invoke Activity in order to complete the login process.
+
+            // Run the Dialog with the new Invoke Activity.
+            await _mainDialog.RunAsync(turnContext, _conversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
+        }
+
         /// <summary>
         /// Helper to extract and store parameters we need to continue a conversation from a proactive message.
         /// </summary>
