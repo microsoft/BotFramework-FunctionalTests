@@ -3,7 +3,7 @@
     {
       "type": "message",
       "role": "user",
-      "text": "signin"
+      "text": "Signin"
     },
     {
       "type": "message",
@@ -24,17 +24,15 @@
     {
       "type": "message",
       "role": "bot",
-      "text": "What card do you want?\n\n   1. botaction\n   2. taskmodule\n   3. submitaction\n   4. hero\n   5. thumbnail\n   6. receipt\n   7. signin\n   8. carousel\n   9. list\n   10. o365\n   11. file\n   12. animation\n   13. audio\n   14. video\n   15. uploadfile\n   16. end",
       "assertions": [
         "type == 'message'",
         "from.role == 'bot'",
         "recipient.role == 'user'",
-        "text == 'What card do you want?\n\n   1. botaction\n   2. taskmodule\n   3. submitaction\n   4. hero\n   5. thumbnail\n   6. receipt\n   7. signin\n   8. carousel\n   9. list\n   10. o365\n   11. file\n   12. animation\n   13. audio\n   14. video\n   15. uploadfile\n   16. end'",
         "speak == 'What card do you want?'",
         "inputHint == 'expectingInput'"
       ]
     },
-	{
+    {
       "type": "message",
       "role": "user",
       "text": "end"

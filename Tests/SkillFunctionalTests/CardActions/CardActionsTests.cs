@@ -3,7 +3,6 @@
 
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
@@ -68,11 +67,9 @@ namespace SkillFunctionalTests.CardActions
                 "Carousel.json",
                 "List.json",
                 "O365.json",
-                "File.json",
                 "Animation.json",
                 "Audio.json",
-                "Video.json",
-                "UploadFile.json"
+                "Video.json"
             };
 
             var testCaseBuilder = new TestCaseBuilder();
@@ -90,7 +87,7 @@ namespace SkillFunctionalTests.CardActions
             var testCase = testData.GetObject<TestCase>();
             Logger.LogInformation(JsonConvert.SerializeObject(testCase, Formatting.Indented));
 
-            var options = TestClientOptions.FirstOrDefault(option => option.BotId == testCase.HostBot);
+            var options = TestClientOptions[testCase.HostBot];
             var runner = new XUnitTestRunner(new TestClientFactory(testCase.ClientType, options).GetTestClient(), Logger);
 
             await runner.RunTestAsync(Path.Combine(_testScriptsFolder, "WaterfallGreeting.json"));
