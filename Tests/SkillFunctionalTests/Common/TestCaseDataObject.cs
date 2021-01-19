@@ -23,18 +23,11 @@ namespace SkillFunctionalTests.Common
         /// <summary>
         /// Initializes a new instance of the <see cref="TestCaseDataObject"/> class.
         /// </summary>
-        /// <param name="id">An identifier for the test case.</param>
         /// <param name="testData">An object with the data to be used in the test.</param>
         public TestCaseDataObject(object testData)
         {
             _testObject = JsonConvert.SerializeObject(testData);
         }
-
-        /// <summary>
-        /// Gets a json string with the test data object.
-        /// </summary>
-        /// <value>The test data object as a json string.</value>
-        public string Id { get; private set; }
 
         /// <summary>
         /// Used by XUnit.net for deserialization.
