@@ -62,7 +62,7 @@ steps:
           )
 
           foreach ($secret in $secrets) {
-            az keyvault secret set --vault-name $vaultName --name $secret.name --value $secret.value --output none
+            az keyvault secret set --vault-name $vaultName --name $secret.name --value="$($secret.value)" --output none
           }
         }
 
