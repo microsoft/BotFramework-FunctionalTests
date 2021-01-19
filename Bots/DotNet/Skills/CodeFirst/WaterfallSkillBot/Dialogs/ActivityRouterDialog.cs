@@ -1,12 +1,17 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Builder.Integration.AspNet.Core.Skills;
+using Microsoft.Bot.Builder.Skills;
 using Microsoft.Bot.Builder.TraceExtensions;
+using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Bot.Schema;
 using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Attachments;
 using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Auth;
@@ -24,7 +29,9 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs
     /// </summary>
     public class ActivityRouterDialog : ComponentDialog
     {
-        public ActivityRouterDialog(IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
+        private static readonly string _echoSkill = "EchoSkill";
+
+        public ActivityRouterDialog(IConfiguration configuration, IHttpClientFactory clientFactory, IHttpContextAccessor httpContextAccessor, ConversationState conversationState, SkillConversationIdFactoryBase conversationIdFactory, SkillHttpClient skillClient)
             : base(nameof(ActivityRouterDialog))
         {
             AddDialog(new CardDialog(httpContextAccessor));
@@ -34,12 +41,45 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs
             AddDialog(new SsoSkillDialog(configuration));
             AddDialog(new FileUploadDialog());
 
+            AddDialog(CreateEchoSkillDialog(conversationState, conversationIdFactory, skillClient, configuration));
+
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[] { ProcessActivityAsync }));
 
             // The initial child Dialog to run.
             InitialDialogId = nameof(WaterfallDialog);
         }
-        
+
+        private static SkillDialog CreateEchoSkillDialog(ConversationState conversationState, SkillConversationIdFactoryBase conversationIdFactory, SkillHttpClient skillClient, IConfiguration configuration)
+        {
+            var botId = configuration.GetSection(MicrosoftAppCredentials.MicrosoftAppIdKey)?.Value;
+            if (string.IsNullOrWhiteSpace(botId))
+            {
+                throw new ArgumentException($"{MicrosoftAppCredentials.MicrosoftAppIdKey} is not in configuration");
+            }
+
+            var skillHostEndpoint = configuration.GetSection("SkillHostEndpoint")?.Value;
+            if (string.IsNullOrWhiteSpace(botId))
+            {
+                throw new ArgumentException("SkillHostEndpoint is not in configuration");
+            }
+
+            var skillInfo = configuration.GetSection("EchoSkillInfo").Get<BotFrameworkSkill>() ?? throw new ArgumentException("EchoSkillInfo is not set in configuration");
+
+            var skillDialogOptions = new SkillDialogOptions
+            {
+                BotId = botId,
+                ConversationIdFactory = conversationIdFactory,
+                SkillClient = skillClient,
+                SkillHostEndpoint = new Uri(skillHostEndpoint),
+                ConversationState = conversationState,
+                Skill = skillInfo
+            };
+            var echoSkillDialog = new SkillDialog(skillDialogOptions);
+
+            echoSkillDialog.Id = _echoSkill;
+            return echoSkillDialog;
+        }
+
         private async Task<DialogTurnResult> ProcessActivityAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             // A skill can send trace activities, if needed.
@@ -83,6 +123,12 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs
 
                 case "FileUpload":
                     return await stepContext.BeginDialogAsync(FindDialog(nameof(FileUploadDialog)).Id, cancellationToken: cancellationToken);
+                
+                case "Echo":
+                    // Start the EchoSkillBot
+                    var messageActivity = MessageFactory.Text("I'm the echo skill bot");
+                    return await stepContext.BeginDialogAsync(FindDialog(_echoSkill).Id, new BeginSkillDialogOptions { Activity = messageActivity }, cancellationToken);
+
                 default:
                     // We didn't get an event name we can handle.
                     await stepContext.Context.SendActivityAsync(MessageFactory.Text($"Unrecognized EventName: \"{activity.Name}\".", inputHint: InputHints.IgnoringInput), cancellationToken);
