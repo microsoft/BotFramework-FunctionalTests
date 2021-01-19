@@ -79,3 +79,10 @@ stages:
               botName: '${{ bot.name }}'
               resourceGroup: '${{ parameters.resourceGroup }}'
               project: '${{ bot.project }}'
+
+          # Create DirectLine Channel Hosts
+          - ${{ if eq(bot.type, 'Host') }}:
+            - template: ../common/createDirectLine.yml
+              parameters:
+                botName: '${{ bot.name }}'
+                botGroup: '${{ parameters.resourceGroup }}'
