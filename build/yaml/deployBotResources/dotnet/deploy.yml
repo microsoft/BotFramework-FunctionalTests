@@ -15,6 +15,12 @@ stages:
       - job: 'Deploy'
         displayName: 'Deploy steps'
         steps:
+          # Delete Bot Resources
+          - template: ../common/deleteResources.yml
+            parameters:
+              resourceGroup: '${{ parameters.resourceGroup }}'
+              resourceName: '${{ bot.name }}'
+
           # Gets Bot App Registration credentials from KeyVault or Pipeline Variables
           - template: ../common/getAppRegistration.yml
             parameters:
