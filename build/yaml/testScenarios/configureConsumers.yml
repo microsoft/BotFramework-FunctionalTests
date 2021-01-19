@@ -33,7 +33,7 @@ steps:
           }
           @{
               key           = 'SimpleHostBotDotNet21'
-              botName       = 'bffnsimplehostbot21dotnet'
+              botName       = 'bffnsimplehostbotdotnet21'
               resourceGroup = $groups.DotNet
               configType    = $types.Appsettings
           }
@@ -65,9 +65,9 @@ steps:
               resourceGroup = $groups.DotNet
           }
           @{
-              key     = 'EchoSkillBot21DotNet'
-              botName = 'bffnechoskillbot21dotnet'
-              appId   = "$env:BffnEchoSkillBot21DotNetAppId"
+              key     = 'EchoSkillBotDotNet21'
+              botName = 'bffnechoskillbotdotnet21'
+              appId   = "$env:BffnEchoSkillBotDotNet21AppId"
               resourceGroup = $groups.DotNet
           }
           @{
@@ -114,7 +114,7 @@ steps:
               );
               skills    = @(
                 'EchoSkillBotDotNet',
-                'EchoSkillBot21DotNet',
+                'EchoSkillBotDotNet21',
                 'EchoSkillBotV3DotNet',
                 'EchoSkillBotJS',
                 'EchoSkillBotV3JS',

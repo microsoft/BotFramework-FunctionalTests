@@ -14,7 +14,7 @@ variables:
   # ResourceGroup: define in Azure
   # BffnEchoComposerSkillBotDotNetAppId: (optional) define in Azure
   # BffnEchoSkillBotDotNetAppId: (optional) define in Azure
-  # BffnEchoSkillBot21DotNetAppId: (optional) define in Azure
+  # BffnEchoSkillBotDotNet21AppId: (optional) define in Azure
   # BffnEchoSkillBotV3DotNetAppId: (optional) define in Azure
   # BffnEchoSkillBotJSAppId: (optional) define in Azure
   # BffnEchoSkillBotV3JSAppId: (optional) define in Azure

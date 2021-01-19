@@ -50,7 +50,7 @@ namespace SkillFunctionalTests.SingleTurn
             var targetSkills = new List<string>
             {
                 SkillBotNames.EchoSkillBotDotNet,
-                SkillBotNames.EchoSkillBot21DotNet,
+                SkillBotNames.EchoSkillBotDotNet21,
                 SkillBotNames.EchoSkillBotV3DotNet,
                 SkillBotNames.EchoSkillBotJS,
                 SkillBotNames.EchoSkillBotV3JS,

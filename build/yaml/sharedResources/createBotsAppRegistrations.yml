@@ -68,9 +68,9 @@ steps:
 
         $bots = @(
           @{ appName = "bffnsimplehostbotdotnet"; variables = @{ appId = "BffnSimpleHostBotDotNetAppId"; appSecret = "BffnSimpleHostBotDotNetAppSecret"; objectId = "BffnSimpleHostBotDotNetAppObjectId" }},
-          @{ appName = "bffnsimplehostbot21dotnet"; variables = @{ appId = "BffnSimpleHostBot21DotNetAppId"; appSecret = "BffnSimpleHostBot21DotNetAppSecret"; objectId = "BffnSimpleHostBot21DotNetAppObjectId" }},
+          @{ appName = "bffnsimplehostbotdotnet21"; variables = @{ appId = "BffnSimpleHostBotDotNet21AppId"; appSecret = "BffnSimpleHostBotDotNet21AppSecret"; objectId = "BffnSimpleHostBotDotNet21AppObjectId" }},
           @{ appName = "bffnechoskillbotdotnet"; variables = @{ appId = "BffnEchoSkillBotDotNetAppId"; appSecret = "BffnEchoSkillBotDotNetAppSecret"; objectId = "BffnEchoSkillBotDotNetAppObjectId" }},
-          @{ appName = "bffnechoskillbot21dotnet"; variables = @{ appId = "BffnEchoSkillBot21DotNetAppId"; appSecret = "BffnEchoSkillBot21DotNetAppSecret"; objectId = "BffnEchoSkillBot21DotNetAppObjectId" }},
+          @{ appName = "bffnechoskillbotdotnet21"; variables = @{ appId = "BffnEchoSkillBotDotNet21AppId"; appSecret = "BffnEchoSkillBotDotNet21AppSecret"; objectId = "BffnEchoSkillBotDotNet21AppObjectId" }},
           @{ appName = "bffnechoskillbotv3dotnet"; variables = @{ appId = "BffnEchoSkillBotV3DotNetAppId"; appSecret = "BffnEchoSkillBotV3DotNetAppSecret"; objectId = "BffnEchoSkillBotV3DotNetAppObjectId" }},
           @{ appName = "bffnsimplecomposerhostbotdotnet"; variables = @{ appId = "BffnSimpleComposerHostBotDotNetAppId"; appSecret = "BffnSimpleComposerHostBotDotNetAppSecret"; objectId = "BffnSimpleComposerHostBotDotNetAppObjectId" }}
           @{ appName = "bffnechocomposerskillbotdotnet"; variables = @{ appId = "BffnEchoComposerSkillBotDotNetAppId"; appSecret = "BffnEchoComposerSkillBotDotNetAppSecret"; objectId = "BffnEchoComposerSkillBotDotNetAppObjectId" }}

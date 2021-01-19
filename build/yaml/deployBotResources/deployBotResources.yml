@@ -22,16 +22,16 @@ variables:
   # ResourceGroup: define in Azure
   # BffnSimpleHostBotDotNetAppId: (optional) define in Azure
   # BffnSimpleHostBotDotNetAppSecret: (optional) define in Azure
-  # BffnSimpleHostBot21DotNetAppId: (optional) define in Azure
-  # BffnSimpleHostBot21DotNetAppSecret: (optional) define in Azure
+  # BffnSimpleHostBotDotNet21AppId: (optional) define in Azure
+  # BffnSimpleHostBotDotNet21AppSecret: (optional) define in Azure
   # BffnSimpleComposerHostBotDotNetAppId: (optional) define in Azure
   # BffnSimpleComposerHostBotDotNetAppSecret: (optional) define in Azure
   # BffnEchoComposerSkillBotDotNetAppId: (optional) define in Azure
   # BffnEchoComposerSkillBotDotNetAppSecret: (optional) define in Azure
   # BffnEchoSkillBotDotNetAppId: (optional) define in Azure
   # BffnEchoSkillBotDotNetAppSecret: (optional) define in Azure
-  # BffnEchoSkillBot21DotNetAppId: (optional) define in Azure
-  # BffnEchoSkillBot21DotNetAppSecret: (optional) define in Azure
+  # BffnEchoSkillBotDotNet21AppId: (optional) define in Azure
+  # BffnEchoSkillBotDotNet21AppSecret: (optional) define in Azure
   # BffnEchoSkillBotV3DotNetAppId: (optional) define in Azure
   # BffnEchoSkillBotV3DotNetAppSecret: (optional) define in Azure
   # BffnWaterfallHostBotDotNetAppId: (optional) define in Azure
@@ -88,11 +88,11 @@ stages:
             name: 'SimpleHostBot.csproj'
             netCoreVersion: '3.1.x'
 
-        - name: bffnsimplehostbot21dotnet
+        - name: bffnsimplehostbotDotNet21
           type: 'Host'
           displayName: 'DotNet Simple Host Bot 2.1'
-          appId: $env:BffnSimpleHostBot21DotNetAppId
-          appSecret: $env:BffnSimpleHostBot21DotNetAppSecret
+          appId: $env:BffnSimpleHostBotDotNet21AppId
+          appSecret: $env:BffnSimpleHostBotDotNet21AppSecret
           project: 
             directory: 'Bots/DotNet/Consumers/CodeFirst/SimpleHostBot-2.1'
             name: 'SimpleHostBot-2.1.csproj'
@@ -108,11 +108,11 @@ stages:
             name: 'EchoSkillBot.csproj'
             netCoreVersion: '3.1.x'
 
-        - name: bffnechoskillbot21dotnet
+        - name: bffnechoskillbotDotNet21
           type: 'Skill'
           displayName: 'DotNet Echo Skill Bot 2.1'
-          appId: $env:BffnEchoSkillBot21DotNetAppId
-          appSecret: $env:BffnEchoSkillBot21DotNetAppSecret
+          appId: $env:BffnEchoSkillBotDotNet21AppId
+          appSecret: $env:BffnEchoSkillBotDotNet21AppSecret
           project: 
             directory: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot-2.1'
             name: 'EchoSkillBot-2.1.csproj'

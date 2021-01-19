@@ -6,7 +6,7 @@ namespace SkillFunctionalTests.Common
     public static class SkillBotNames
     {
         public const string EchoSkillBotDotNet = "EchoSkillBotDotNet";
-        public const string EchoSkillBot21DotNet = "EchoSkillBot21DotNet";
+        public const string EchoSkillBotDotNet21 = "EchoSkillBotDotNet21";
         public const string EchoSkillBotV3DotNet = "EchoSkillBotV3DotNet";
         public const string EchoSkillBotJS = "EchoSkillBotJS";
         public const string EchoSkillBotV3JS = "EchoSkillBotV3JS";
