@@ -36,7 +36,7 @@ namespace SkillFunctionalTests.CardActions
                 DeliveryModes.Normal
             };
 
-            var hostBots = new List<string>
+            var hostBots = new List<HostBot>
             {
                 HostBotNames.WaterfallHostBotDotNet,
 

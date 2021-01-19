@@ -4,9 +4,11 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using AdaptiveExpressions;
@@ -26,7 +28,6 @@ namespace TranscriptTestRunner
         private readonly ILogger _logger;
         private readonly int _replyTimeout;
         private readonly TestClientBase _testClient;
-        private Dictionary<string, string> _scriptParams;
         private Stopwatch _stopwatch;
         private TranscriptConverter _transcriptConverter;
         private string _testScriptPath;
@@ -74,8 +75,6 @@ namespace TranscriptTestRunner
         {
             var testFileName = $"{callerName} - {Path.GetFileNameWithoutExtension(transcriptPath)}";
 
-            _scriptParams = scriptParams;
-
             _logger.LogInformation($"======== Running script: {transcriptPath} ========");
 
             if (transcriptPath.EndsWith(".transcript", StringComparison.OrdinalIgnoreCase))
@@ -87,7 +86,7 @@ namespace TranscriptTestRunner
                 _testScriptPath = transcriptPath;
             }
 
-            await ExecuteTestScriptAsync(testFileName, cancellationToken).ConfigureAwait(false);
+            await ExecuteTestScriptAsync(testFileName, cancellationToken, scriptParams).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -121,7 +120,7 @@ namespace TranscriptTestRunner
                     if (activity != null && activity.Type != ActivityTypes.Trace && activity.Type != ActivityTypes.Typing)
                     {
                         _logger.LogInformation("Elapsed Time: {Elapsed}, Bot Responds: {Text}", Stopwatch.Elapsed, activity.Text);
-                        
+
                         if (activity.Attachments != null && activity.Attachments.Any())
                         {
                             foreach (var attachment in activity.Attachments)
@@ -175,7 +174,7 @@ namespace TranscriptTestRunner
 
             if (!signInUrl.StartsWith("https://", StringComparison.Ordinal))
             {
-                throw new Exception($"Sign in url is badly formatted. Url received: {signInUrl}");
+                throw new ArgumentException($"Sign in url is badly formatted. Url received: {signInUrl}");
             }
 
             await _testClient.SignInAsync(signInUrl).ConfigureAwait(false);
@@ -191,22 +190,84 @@ namespace TranscriptTestRunner
         /// <returns>A task that represents the work queued to execute.</returns>
         protected virtual Task AssertActivityAsync(TestScriptItem expectedActivity, Activity actualActivity, CancellationToken cancellationToken = default)
         {
+            var templateRegex = new Regex(@"\{\{[\w\s]*\}\}");
+
             foreach (var assertion in expectedActivity.Assertions)
             {
+                var template = templateRegex.Match(assertion);
+
+                if (template.Success)
+                {
+                    ValidateVariable(template.Value, actualActivity);
+                }
+
                 var (result, error) = Expression.Parse(assertion).TryEvaluate<bool>(actualActivity);
 
                 if (!result)
                 {
-                    throw new Exception($"Assertion failed: {assertion}.");
+                    throw new InvalidOperationException($"Assertion failed: {assertion}.");
                 }
 
                 if (error != null)
                 {
-                    throw new Exception(error);
+                    throw new InvalidOperationException(error);
                 }
             }
 
             return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Validates the variable date in the bots message with the value between double curly braces.
+        /// </summary>
+        /// <param name="value">The assertion containing the variable.</param>
+        /// <param name="actualActivity">The activity with the message containing the date.</param>
+        protected void ValidateVariable(string value, Activity actualActivity)
+        {
+            var dateRegex = new Regex(@"(\d{1,4}([.\-/])\d{1,2}([.\-/])\d{1,4})");
+            var wordRegex = new Regex(@"[\w]+");
+
+            var dateMatch = dateRegex.Match(actualActivity.Text);
+            var resultExpression = string.Empty;
+            var expectedExpression = wordRegex.Match(value).Value;
+            var dateValue = string.Empty;
+
+            if (dateMatch.Success)
+            {
+                dateValue = dateMatch.Value;
+                var date = Convert.ToDateTime(dateMatch.Value, CultureInfo.InvariantCulture);
+                resultExpression = EvaluateDate(date);
+            }
+
+            if (resultExpression != expectedExpression)
+            {
+                throw new InvalidOperationException($"Assertion failed. The variable '{expectedExpression}' does not match with the value {dateValue}.");
+            }
+
+            actualActivity.Text = actualActivity.Text.Replace(dateMatch.Value, value);
+        }
+
+        private static string EvaluateDate(DateTime date)
+        {
+            var currentDate = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss.fffZ", CultureInfo.InvariantCulture);
+            var inputDate = date.ToString("yyyy-MM-ddTHH:mm:ss.fffZ", CultureInfo.InvariantCulture);
+            var expression = $"dateReadBack('{currentDate}', '{inputDate}')";
+            var parsed = Expression.Parse(expression);
+
+            if (parsed == null)
+            {
+                throw new InvalidOperationException("Null parsed expression");
+            }
+
+            // String.Empty is used to get the result of the prebuilt function in the parsed expression.
+            var (result, msg) = parsed.TryEvaluate(string.Empty);
+
+            if (msg != null)
+            {
+                throw new InvalidOperationException("An error has occurred while evaluating the date");
+            }
+
+            return result.ToString();
         }
 
         private void ConvertTranscript(string transcriptPath)
@@ -222,19 +283,17 @@ namespace TranscriptTestRunner
             _testScriptPath = _transcriptConverter.TestScript;
         }
 
-        private async Task ExecuteTestScriptAsync(string callerName, CancellationToken cancellationToken)
+        private async Task ExecuteTestScriptAsync(string callerName, CancellationToken cancellationToken, Dictionary<string, string> scriptParams = null)
         {
             _logger.LogInformation($"\n------ Starting test {callerName} ----------");
 
             using var reader = new StreamReader(_testScriptPath);
             var plainTestScript = await reader.ReadToEndAsync().ConfigureAwait(false);
 
-            if (_scriptParams?.Count > 0)
+            if (scriptParams != null && scriptParams.Any())
             {
-                foreach (var param in _scriptParams)
-                {
-                    plainTestScript = plainTestScript.Replace("${" + param.Key + "}", param.Value);
-                }
+                var replacement = string.Join("|", scriptParams.Keys.Select(k => $@"\$\{{\s?{k}\s?\}}").ToArray());
+                plainTestScript = Regex.Replace(plainTestScript, replacement, m => scriptParams[m.Value.Trim(new char[] { '$', '{', '}' })]);
             }
 
             var testScript = JsonConvert.DeserializeObject<TestScript>(plainTestScript);
@@ -259,7 +318,7 @@ namespace TranscriptTestRunner
                         {
                             break;
                         }
-                        
+
                         var nextReply = await GetNextReplyAsync(cancellationToken).ConfigureAwait(false);
                         await AssertActivityAsync(scriptActivity, nextReply, cancellationToken).ConfigureAwait(false);
                         break;

@@ -19,30 +19,38 @@
     {
       "type": "message",
       "role": "bot",
-      "text": "Select a skill to connect:\r\nEchoSkillBotDotnet\r\nEchoSkillBot21Dotnet\r\nEchoSkillBotV3Dotnet\r\nEchoSkillBotJS\r\nEchoSkillBotV3JS\r\nEchoSkillBotPython",
+      "text": "What delivery mode would you like to use?",
       "assertions": [
         "type == 'message'",
         "from.role == 'bot'",
         "recipient.role == 'user'",
-        "text == 'Select a skill to connect:\r\nEchoSkillBotDotnet\r\nEchoSkillBot21Dotnet\r\nEchoSkillBotV3Dotnet\r\nEchoSkillBotJS\r\nEchoSkillBotV3JS\r\nEchoSkillBotPython'",
-        "inputHint == 'acceptingInput'"
+        "text == 'What delivery mode would you like to use?'",
+        "speak == 'What delivery mode would you like to use?'",
+        "inputHint == 'expectingInput'",
+        "suggestedActions.actions[0].type == 'imBack'",
+        "suggestedActions.actions[0].title == 'normal'",
+        "suggestedActions.actions[0].value == 'normal'",
+        "suggestedActions.actions[1].type == 'imBack'",
+        "suggestedActions.actions[1].title == 'expectReplies'",
+        "suggestedActions.actions[1].value == 'expectReplies'"
       ]
     },
     {
       "type": "message",
       "role": "user",
-      "text": "Hi"
+      "text": "${DeliveryMode}"
     },
     {
       "type": "message",
       "role": "bot",
-      "text": "Me no nothin'. Select a \"skill\" and I'll patch you through",
+      "text": "What skill would you like to call?",
       "assertions": [
         "type == 'message'",
         "from.role == 'bot'",
         "recipient.role == 'user'",
-        "text == 'Me no nothin\\'. Select a \"skill\" and I\\'ll patch you through'",
-        "inputHint == 'acceptingInput'"
+        "text == 'What skill would you like to call?'",
+        "speak == 'What skill would you like to call?'",
+        "inputHint == 'expectingInput'"
       ]
     },
     {
@@ -53,36 +61,12 @@
     {
       "type": "message",
       "role": "bot",
-      "text": "Got it, connecting you to the skill...",
+      "text": "Type anything to send to the skill.",
       "assertions": [
         "type == 'message'",
         "from.role == 'bot'",
         "recipient.role == 'user'",
-        "text == 'Got it, connecting you to the skill...'",
-        "inputHint == 'acceptingInput'"
-      ]
-    },
-    {
-      "type": "message",
-      "role": "bot",
-      "text": "Echo: ${TargetSkill}",
-      "assertions": [
-        "type == 'message'",
-        "from.role == 'bot'",
-        "recipient.role == 'user'",
-        "text == 'Echo: ${TargetSkill}'",
-        "inputHint == 'acceptingInput'"
-      ]
-    },
-    {
-      "type": "message",
-      "role": "bot",
-      "text": "Say \"end\" or \"stop\" and I'll end the conversation and back to the parent.",
-      "assertions": [
-        "type == 'message'",
-        "from.role == 'bot'",
-        "recipient.role == 'user'",
-        "text == 'Say \"end\" or \"stop\" and I\\'ll end the conversation and back to the parent.'",
+        "text == 'Type anything to send to the skill.'",
         "inputHint == 'acceptingInput'"
       ]
     },
@@ -147,25 +131,32 @@
     {
       "type": "message",
       "role": "bot",
-      "text": "Back in the host bot. Select a \"skill\" and I'll patch you through",
+      "text": "Back in the host bot.",
       "assertions": [
         "type == 'message'",
         "from.role == 'bot'",
         "recipient.role == 'user'",
-        "text == 'Back in the host bot. Select a \"skill\" and I\\'ll patch you through'",
+        "text == 'Back in the host bot.'",
         "inputHint == 'acceptingInput'"
       ]
     },
     {
       "type": "message",
       "role": "bot",
-      "text": "Select a skill to connect:\r\nEchoSkillBotDotnet\r\nEchoSkillBot21Dotnet\r\nEchoSkillBotV3Dotnet\r\nEchoSkillBotJS\r\nEchoSkillBotV3JS\r\nEchoSkillBotPython",
+      "text": "What delivery mode would you like to use?",
       "assertions": [
         "type == 'message'",
         "from.role == 'bot'",
         "recipient.role == 'user'",
-        "text == 'Select a skill to connect:\r\nEchoSkillBotDotnet\r\nEchoSkillBot21Dotnet\r\nEchoSkillBotV3Dotnet\r\nEchoSkillBotJS\r\nEchoSkillBotV3JS\r\nEchoSkillBotPython'",
-        "inputHint == 'acceptingInput'"
+        "text == 'What delivery mode would you like to use?'",
+        "speak == 'What delivery mode would you like to use?'",
+        "inputHint == 'expectingInput'",
+        "suggestedActions.actions[0].type == 'imBack'",
+        "suggestedActions.actions[0].title == 'normal'",
+        "suggestedActions.actions[0].value == 'normal'",
+        "suggestedActions.actions[1].type == 'imBack'",
+        "suggestedActions.actions[1].title == 'expectReplies'",
+        "suggestedActions.actions[1].value == 'expectReplies'"
       ]
     }
   ]

@@ -44,7 +44,7 @@ namespace TranscriptTestRunner.TestClients
         /// Initializes a new instance of the <see cref="DirectLineTestClient"/> class.
         /// </summary>
         /// <param name="options">Options for the client configuration.</param>
-        public DirectLineTestClient(TestClientOptions options)
+        public DirectLineTestClient(DirectLineTestClientOptions options)
         {
             if (string.IsNullOrWhiteSpace(options.BotId))
             {
@@ -53,12 +53,12 @@ namespace TranscriptTestRunner.TestClients
             
             _botId = options.BotId;
 
-            if (string.IsNullOrWhiteSpace(options.TestClientSecret))
+            if (string.IsNullOrWhiteSpace(options.DirectLineSecret))
             {
-                throw new ArgumentException($"TestClientSecret not set.");
+                throw new ArgumentException($"DirectLineSecret not set.");
             }
             
-            _directLineSecret = options.TestClientSecret;
+            _directLineSecret = options.DirectLineSecret;
         }
 
         /// <inheritdoc/>

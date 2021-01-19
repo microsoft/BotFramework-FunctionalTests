@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Bot.Connector.DirectLine;
 using Newtonsoft.Json;
+using SkillFunctionalTests.Common;
 using TranscriptTestRunner;
 using TranscriptTestRunner.XUnit;
 using Xunit;
@@ -29,7 +30,7 @@ namespace SkillFunctionalTests.LegacyTests
         [Fact]
         public async Task ShouldSignIn()
         {
-            var runner = new XUnitTestRunner(new TestClientFactory(ClientType.DirectLine, TestClientOptions[0]).GetTestClient(), Logger);
+            var runner = new XUnitTestRunner(new TestClientFactory(ClientType.DirectLine, TestClientOptions[HostBot.SimpleHostBotDotNet]).GetTestClient(), Logger);
             var signInUrl = string.Empty;
             
             // Execute the first part of the conversation.

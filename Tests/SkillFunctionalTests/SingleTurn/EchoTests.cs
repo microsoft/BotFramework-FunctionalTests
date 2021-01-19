@@ -36,13 +36,15 @@ namespace SkillFunctionalTests.SingleTurn
                 DeliveryModes.ExpectReplies
             };
             
-            var hostBots = new List<string>
+            var hostBots = new List<HostBot>
             {
-                HostBotNames.SimpleHostBotDotNet,
-                HostBotNames.SimpleHostBotDotNet21,
-                HostBotNames.SimpleHostBotJS,
-                HostBotNames.SimpleHostBotPython,
-                HostBotNames.SimpleComposerHostBotDotNet
+                HostBot.SimpleHostBotDotNet,
+                HostBot.SimpleHostBotDotNet21,
+                HostBot.SimpleHostBotJS,
+                HostBot.SimpleHostBotPython,
+                
+                // TODO: Enable when composer bots support multiple skills.
+                // HostBot.SimpleComposerHostBotDotNet
             };
 
             var targetSkills = new List<string>
@@ -57,7 +59,7 @@ namespace SkillFunctionalTests.SingleTurn
 
             var scripts = new List<string>
             {
-                "EchoSelectingTargetSkill.json"
+                "EchoMultiSkill.json"
             };
 
             var testCaseBuilder = new TestCaseBuilder();
@@ -76,11 +78,12 @@ namespace SkillFunctionalTests.SingleTurn
             var testCase = testData.GetObject<TestCase>();
             Logger.LogInformation(JsonConvert.SerializeObject(testCase, Formatting.Indented));
 
-            var options = TestClientOptions.FirstOrDefault(option => option.BotId == testCase.HostBot);
+            var options = TestClientOptions[testCase.HostBot];
             var runner = new XUnitTestRunner(new TestClientFactory(testCase.ClientType, options).GetTestClient(), Logger);
 
             var testParams = new Dictionary<string, string>
             {
+                { "DeliveryMode", testCase.DeliveryMode },
                 { "TargetSkill", testCase.TargetSkill }
             };
 
