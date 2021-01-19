@@ -3,7 +3,6 @@
 
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
@@ -35,9 +34,9 @@ namespace SkillFunctionalTests.Attachments
                 DeliveryModes.Normal,
             };
 
-            var hostBots = new List<string>
+            var hostBots = new List<HostBot>
             {
-                HostBotNames.WaterfallHostBotDotNet,
+                HostBot.WaterfallHostBotDotNet,
 
                 // TODO: Enable these when the ports to JS, Python and composer are ready
                 //HostBotNames.WaterfallHostBotJS,
@@ -76,7 +75,7 @@ namespace SkillFunctionalTests.Attachments
             var testCase = testData.GetObject<TestCase>();
             Logger.LogInformation(JsonConvert.SerializeObject(testCase, Formatting.Indented));
 
-            var options = TestClientOptions.FirstOrDefault(option => option.BotId == testCase.HostBot);
+            var options = TestClientOptions[testCase.HostBot];
             var runner = new XUnitTestRunner(new TestClientFactory(testCase.ClientType, options).GetTestClient(), Logger);
 
             await runner.RunTestAsync(Path.Combine(_testScriptsFolder, testCase.Script));

@@ -3,49 +3,49 @@
     "type": "conversationUpdate",
     "membersAdded": [
       {
-        "id": "3be11c50-4f62-11eb-b5ff-fdb5df7a03a3",
+        "id": "a91391f0-59ca-11eb-a3cd-ff1c06adc1ad",
         "name": "Bot"
       },
       {
-        "id": "d380b153-6044-48e7-bd28-f63747480069",
+        "id": "31481648-dc7e-42e8-aee0-a10863642fab",
         "name": "User"
       }
     ],
     "membersRemoved": [],
     "channelId": "emulator",
     "conversation": {
-      "id": "3be33f30-4f62-11eb-9aff-410b1b0e908c|livechat"
+      "id": "fc6140f0-59ca-11eb-a3cd-ff1c06adc1ad|livechat"
     },
-    "id": "3c093dc0-4f62-11eb-9aff-410b1b0e908c",
-    "localTimestamp": "2021-01-05T11:28:09-03:00",
+    "id": "fc6a41a0-59ca-11eb-a724-357ab5108c73",
+    "localTimestamp": "2021-01-18T17:23:11-03:00",
     "recipient": {
-      "id": "3be11c50-4f62-11eb-b5ff-fdb5df7a03a3",
+      "id": "a91391f0-59ca-11eb-a3cd-ff1c06adc1ad",
       "name": "Bot",
       "role": "bot"
     },
-    "timestamp": "2021-01-05T14:28:09.755Z",
+    "timestamp": "2021-01-18T20:23:11.802Z",
     "from": {
-      "id": "d380b153-6044-48e7-bd28-f63747480069",
+      "id": "31481648-dc7e-42e8-aee0-a10863642fab",
       "name": "User",
       "role": "user"
     },
     "locale": "",
-    "serviceUrl": "https://a07ed5717626.ngrok.io"
+    "serviceUrl": "https://17db7c5bbe71.ngrok.io"
   },
   {
     "type": "message",
-    "serviceUrl": "https://a07ed5717626.ngrok.io",
+    "serviceUrl": "https://17db7c5bbe71.ngrok.io",
     "channelId": "emulator",
     "from": {
-      "id": "3be11c50-4f62-11eb-b5ff-fdb5df7a03a3",
+      "id": "a91391f0-59ca-11eb-a3cd-ff1c06adc1ad",
       "name": "Bot",
       "role": "bot"
     },
     "conversation": {
-      "id": "3be33f30-4f62-11eb-9aff-410b1b0e908c|livechat"
+      "id": "fc6140f0-59ca-11eb-a3cd-ff1c06adc1ad|livechat"
     },
     "recipient": {
-      "id": "d380b153-6044-48e7-bd28-f63747480069",
+      "id": "31481648-dc7e-42e8-aee0-a10863642fab",
       "role": "user"
     },
     "attachmentLayout": "list",
@@ -87,25 +87,25 @@
       }
     ],
     "entities": [],
-    "replyToId": "3c093dc0-4f62-11eb-9aff-410b1b0e908c",
-    "id": "407411f0-4f62-11eb-9aff-410b1b0e908c",
-    "localTimestamp": "2021-01-05T11:28:17-03:00",
-    "timestamp": "2021-01-05T14:28:17.167Z"
+    "replyToId": "fc6a41a0-59ca-11eb-a724-357ab5108c73",
+    "id": "040bfde0-59cb-11eb-a724-357ab5108c73",
+    "localTimestamp": "2021-01-18T17:23:24-03:00",
+    "timestamp": "2021-01-18T20:23:24.606Z"
   },
   {
     "type": "message",
-    "serviceUrl": "https://a07ed5717626.ngrok.io",
+    "serviceUrl": "https://17db7c5bbe71.ngrok.io",
     "channelId": "emulator",
     "from": {
-      "id": "3be11c50-4f62-11eb-b5ff-fdb5df7a03a3",
+      "id": "a91391f0-59ca-11eb-a3cd-ff1c06adc1ad",
       "name": "Bot",
       "role": "bot"
     },
     "conversation": {
-      "id": "3be33f30-4f62-11eb-9aff-410b1b0e908c|livechat"
+      "id": "fc6140f0-59ca-11eb-a3cd-ff1c06adc1ad|livechat"
     },
     "recipient": {
-      "id": "d380b153-6044-48e7-bd28-f63747480069",
+      "id": "31481648-dc7e-42e8-aee0-a10863642fab",
       "role": "user"
     },
     "locale": "",
@@ -128,27 +128,27 @@
     },
     "attachments": [],
     "entities": [],
-    "replyToId": "3c093dc0-4f62-11eb-9aff-410b1b0e908c",
-    "id": "409ea460-4f62-11eb-9aff-410b1b0e908c",
-    "localTimestamp": "2021-01-05T11:28:17-03:00",
-    "timestamp": "2021-01-05T14:28:17.446Z"
+    "replyToId": "fc6a41a0-59ca-11eb-a724-357ab5108c73",
+    "id": "048ec270-59cb-11eb-a724-357ab5108c73",
+    "localTimestamp": "2021-01-18T17:23:25-03:00",
+    "timestamp": "2021-01-18T20:23:25.463Z"
   },
   {
     "channelData": {
-      "clientActivityID": "1609856973012f96uylougl",
-      "clientTimestamp": "2021-01-05T14:29:33.012Z"
+      "clientActivityID": "1611001549928kns28ix8c6c",
+      "clientTimestamp": "2021-01-18T20:25:49.928Z"
     },
     "text": "WaterfallSkillBot",
     "textFormat": "plain",
     "type": "message",
     "channelId": "emulator",
     "from": {
-      "id": "d380b153-6044-48e7-bd28-f63747480069",
+      "id": "31481648-dc7e-42e8-aee0-a10863642fab",
       "name": "User",
       "role": "user"
     },
     "locale": "",
-    "timestamp": "2021-01-05T14:29:33.034Z",
+    "timestamp": "2021-01-18T20:25:49.946Z",
     "entities": [
       {
         "requiresBotState": true,
@@ -158,31 +158,31 @@
       }
     ],
     "conversation": {
-      "id": "3be33f30-4f62-11eb-9aff-410b1b0e908c|livechat"
+      "id": "fc6140f0-59ca-11eb-a3cd-ff1c06adc1ad|livechat"
     },
-    "id": "6dac74a0-4f62-11eb-9aff-410b1b0e908c",
-    "localTimestamp": "2021-01-05T11:29:33-03:00",
+    "id": "5aad1da0-59cb-11eb-a724-357ab5108c73",
+    "localTimestamp": "2021-01-18T17:25:49-03:00",
     "recipient": {
-      "id": "3be11c50-4f62-11eb-b5ff-fdb5df7a03a3",
+      "id": "a91391f0-59ca-11eb-a3cd-ff1c06adc1ad",
       "name": "Bot",
       "role": "bot"
     },
-    "serviceUrl": "https://a07ed5717626.ngrok.io"
+    "serviceUrl": "https://17db7c5bbe71.ngrok.io"
   },
   {
     "type": "message",
-    "serviceUrl": "https://a07ed5717626.ngrok.io",
+    "serviceUrl": "https://17db7c5bbe71.ngrok.io",
     "channelId": "emulator",
     "from": {
-      "id": "3be11c50-4f62-11eb-b5ff-fdb5df7a03a3",
+      "id": "a91391f0-59ca-11eb-a3cd-ff1c06adc1ad",
       "name": "Bot",
       "role": "bot"
     },
     "conversation": {
-      "id": "3be33f30-4f62-11eb-9aff-410b1b0e908c|livechat"
+      "id": "fc6140f0-59ca-11eb-a3cd-ff1c06adc1ad|livechat"
     },
     "recipient": {
-      "id": "d380b153-6044-48e7-bd28-f63747480069",
+      "id": "31481648-dc7e-42e8-aee0-a10863642fab",
       "role": "user"
     },
     "locale": "",
@@ -215,15 +215,20 @@
           "type": "imBack",
           "title": "Sso",
           "value": "Sso"
+        },
+        {
+          "type": "imBack",
+          "title": "FileUpload",
+          "value": "FileUpload"
         }
       ]
     },
     "attachments": [],
     "entities": [],
-    "replyToId": "6dac74a0-4f62-11eb-9aff-410b1b0e908c",
-    "id": "6e6bcd00-4f62-11eb-9aff-410b1b0e908c",
-    "localTimestamp": "2021-01-05T11:29:34-03:00",
-    "timestamp": "2021-01-05T14:29:34.288Z"
+    "replyToId": "5aad1da0-59cb-11eb-a724-357ab5108c73",
+    "id": "5b6cc420-59cb-11eb-a724-357ab5108c73",
+    "localTimestamp": "2021-01-18T17:25:51-03:00",
+    "timestamp": "2021-01-18T20:25:51.201Z"
   },
   {
     "channelData": {

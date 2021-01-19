@@ -3,7 +3,6 @@
 
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Bot.Schema;
@@ -38,7 +37,7 @@ namespace SkillFunctionalTests.ProactiveMessages
 
             var hostBots = new List<HostBot>
             {
-                HostBotNames.WaterfallHostBotDotNet,
+                HostBot.WaterfallHostBotDotNet,
 
                 // TODO: Enable these when the ports to JS, Python and composer are ready
                 //HostBotNames.WaterfallHostBotJS,
@@ -80,7 +79,7 @@ namespace SkillFunctionalTests.ProactiveMessages
             var testCase = testData.GetObject<TestCase>();
             Logger.LogInformation(JsonConvert.SerializeObject(testCase, Formatting.Indented));
 
-            var options = TestClientOptions.FirstOrDefault(option => option.BotId == testCase.HostBot);
+            var options = TestClientOptions[testCase.HostBot];
             var runner = new XUnitTestRunner(new TestClientFactory(testCase.ClientType, options).GetTestClient(), Logger);
             
             // Execute the first part of the conversation.

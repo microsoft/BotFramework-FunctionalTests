@@ -79,7 +79,10 @@
         "suggestedActions.actions[3].value == 'Attachment'",
         "suggestedActions.actions[4].type == 'imBack'",
         "suggestedActions.actions[4].title == 'Sso'",
-        "suggestedActions.actions[4].value == 'Sso'"
+        "suggestedActions.actions[4].value == 'Sso'",
+        "suggestedActions.actions[5].type == 'imBack'",
+        "suggestedActions.actions[5].title == 'FileUpload'",
+        "suggestedActions.actions[5].value == 'FileUpload'"
       ]
     },
     {
