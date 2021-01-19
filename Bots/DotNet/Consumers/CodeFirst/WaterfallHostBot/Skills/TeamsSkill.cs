@@ -12,6 +12,13 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Skills
         private const string SkillActionTeamsTaskModule = "TeamsTaskModule";
         private const string SkillActionTeamsCardAction = "TeamsCardAction";
         private const string SkillActionTeamsConversation = "TeamsConversation";
+        private const string SkillActionTeamsCards = "Cards";
+        private const string SkillActionTeamsProactive = "Proactive";
+        private const string SkillActionTeamsAttachment = "Attachment";
+        private const string SkillActionTeamsAuth = "Auth";
+        private const string SkillActionTeamsSso = "Sso";
+        private const string SkillActionTeamsEcho = "Echo";
+        private const string SkillActionTeamsFileUpload = "FileUpload";
 
         public override IList<string> GetActions()
         {
@@ -19,7 +26,14 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Skills
             {
                 SkillActionTeamsTaskModule,
                 SkillActionTeamsCardAction,
-                SkillActionTeamsConversation
+                SkillActionTeamsConversation,
+                SkillActionTeamsCards,
+                SkillActionTeamsProactive,
+                SkillActionTeamsAttachment,
+                SkillActionTeamsAuth,
+                SkillActionTeamsSso,
+                SkillActionTeamsEcho,
+                SkillActionTeamsFileUpload,
             };
         }
 
@@ -45,6 +59,55 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Skills
             {
                 activity = (Activity)Activity.CreateEventActivity();
                 activity.Name = SkillActionTeamsConversation;
+                return activity;
+            }
+
+            if (actionId.Equals(SkillActionTeamsCards, StringComparison.CurrentCultureIgnoreCase))
+            {
+                activity = (Activity)Activity.CreateEventActivity();
+                activity.Name = SkillActionTeamsCards;
+                return activity;
+            }
+
+            if (actionId.Equals(SkillActionTeamsProactive, StringComparison.CurrentCultureIgnoreCase))
+            {
+                activity = (Activity)Activity.CreateEventActivity();
+                activity.Name = SkillActionTeamsProactive;
+                return activity;
+            }
+
+            if (actionId.Equals(SkillActionTeamsAttachment, StringComparison.CurrentCultureIgnoreCase))
+            {
+                activity = (Activity)Activity.CreateEventActivity();
+                activity.Name = SkillActionTeamsAttachment;
+                return activity;
+            }
+
+            if (actionId.Equals(SkillActionTeamsAuth, StringComparison.CurrentCultureIgnoreCase))
+            {
+                activity = (Activity)Activity.CreateEventActivity();
+                activity.Name = SkillActionTeamsAuth;
+                return activity;
+            }
+
+            if (actionId.Equals(SkillActionTeamsSso, StringComparison.CurrentCultureIgnoreCase))
+            {
+                activity = (Activity)Activity.CreateEventActivity();
+                activity.Name = SkillActionTeamsSso;
+                return activity;
+            }
+
+            if (actionId.Equals(SkillActionTeamsEcho, StringComparison.CurrentCultureIgnoreCase))
+            {
+                activity = (Activity)Activity.CreateEventActivity();
+                activity.Name = SkillActionTeamsEcho;
+                return activity;
+            }
+
+            if (actionId.Equals(SkillActionTeamsFileUpload, StringComparison.CurrentCultureIgnoreCase))
+            {
+                activity = (Activity)Activity.CreateEventActivity();
+                activity.Name = SkillActionTeamsFileUpload;
                 return activity;
             }
 

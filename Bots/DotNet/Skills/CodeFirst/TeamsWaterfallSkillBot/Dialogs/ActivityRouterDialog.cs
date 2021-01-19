@@ -1,21 +1,27 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using AdaptiveCards;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.TraceExtensions;
 using Microsoft.Bot.Schema;
+using Microsoft.Bot.Schema.Teams;
 using Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Attachments;
 using Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Auth;
 using Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Cards;
+using Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Echo;
 using Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Proactive;
 using Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Sso;
+using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.FileUpload;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs
 {
@@ -32,13 +38,15 @@ namespace Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs
             AddDialog(new AttachmentDialog());
             AddDialog(new AuthDialog(configuration));
             AddDialog(new SsoSkillDialog(configuration));
+            AddDialog(new EchoDialog());
+            AddDialog(new FileUploadDialog());
 
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[] { ProcessActivityAsync }));
 
             // The initial child Dialog to run.
             InitialDialogId = nameof(WaterfallDialog);
         }
-        
+
         private async Task<DialogTurnResult> ProcessActivityAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             // A skill can send trace activities, if needed.
@@ -79,6 +87,12 @@ namespace Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs
 
                 case "Sso":
                     return await stepContext.BeginDialogAsync(FindDialog(nameof(SsoSkillDialog)).Id, cancellationToken: cancellationToken);
+
+                case "Echo":
+                    return await stepContext.BeginDialogAsync(FindDialog(nameof(EchoDialog)).Id, cancellationToken: cancellationToken);
+
+                case "FileUpload":
+                    return await stepContext.BeginDialogAsync(FindDialog(nameof(FileUploadDialog)).Id, cancellationToken: cancellationToken);
 
                 default:
                     // We didn't get an event name we can handle.
