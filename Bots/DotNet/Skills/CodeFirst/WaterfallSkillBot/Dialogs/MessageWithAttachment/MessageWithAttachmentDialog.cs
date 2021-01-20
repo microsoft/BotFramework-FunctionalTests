@@ -14,12 +14,12 @@ using Microsoft.Bot.Schema;
 
 namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Attachments
 {
-    public class AttachmentDialog : ComponentDialog
+    public class MessageWithAttachmentDialog : ComponentDialog
     {
         private const string Picture = "architecture-resize.png";
 
-        public AttachmentDialog()
-             : base(nameof(AttachmentDialog))
+        public MessageWithAttachmentDialog()
+             : base(nameof(MessageWithAttachmentDialog))
         {
             AddDialog(new ChoicePrompt("AttachmentTypePrompt"));
             AddDialog(new ChoicePrompt("EndPrompt"));
