@@ -16,6 +16,7 @@ variables:
   # AppServicePlanName: define in Azure
   # AppServicePlanGroup: define in Azure
   # ResourceGroup: define in Azure
+  # AppInsightsName : (optional) define in Azure
   # BffnSimpleHostBotDotnetAppId: (optional) define in Azure
   # BffnSimpleHostBotDotnetAppSecret: (optional) define in Azure
   # BffnSimpleHostBot21DotnetAppId: (optional) define in Azure
