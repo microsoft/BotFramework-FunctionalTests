@@ -12,7 +12,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Skills
         private const string SkillActionCards = "Cards";
         private const string SkillActionProactive = "Proactive";
         private const string SkillActionAuth = "Auth";
-        private const string SkillActionAttachment = "Attachment";
+        private const string SkillActionMessageWithAttachment = "MessageWithAttachment";
         private const string SkillActionSso = "Sso";
         private const string SkillActionFileUpload = "FileUpload";
         private const string SkillActionCallEchoSkill = "Echo";
@@ -24,7 +24,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Skills
                 SkillActionCards,
                 SkillActionProactive,
                 SkillActionAuth,
-                SkillActionAttachment,
+                SkillActionMessageWithAttachment,
                 SkillActionSso,
                 SkillActionFileUpload,
                 SkillActionCallEchoSkill
@@ -60,10 +60,10 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Skills
             }
 
             // Send an event activity to the skill with "Attachment" in the name.
-            if (actionId.Equals(SkillActionAttachment, StringComparison.CurrentCultureIgnoreCase))
+            if (actionId.Equals(SkillActionMessageWithAttachment, StringComparison.CurrentCultureIgnoreCase))
             {
                 activity = (Activity)Activity.CreateEventActivity();
-                activity.Name = SkillActionAttachment;
+                activity.Name = SkillActionMessageWithAttachment;
                 return activity;
             }
 
