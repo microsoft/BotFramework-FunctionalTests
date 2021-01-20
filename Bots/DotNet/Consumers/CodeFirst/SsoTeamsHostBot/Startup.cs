@@ -10,12 +10,12 @@ using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Builder.Integration.AspNet.Core.Skills;
 using Microsoft.Bot.Builder.Skills;
 using Microsoft.Bot.Connector.Authentication;
-using Microsoft.BotBuilderSamples.TeamsSsoSampleCode.Authentication;
-using Microsoft.BotBuilderSamples.TeamsSsoSampleCode.Dialogs;
+using Microsoft.BotFrameworkFunctionalTests.TeamsSsoHostBot.Authentication;
+using Microsoft.BotFrameworkFunctionalTests.TeamsSsoHostBot.Dialogs;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Microsoft.BotBuilderSamples.TeamsSsoSampleCode
+namespace Microsoft.BotFrameworkFunctionalTests.TeamsSsoHostBot
 {
     public class Startup
     {

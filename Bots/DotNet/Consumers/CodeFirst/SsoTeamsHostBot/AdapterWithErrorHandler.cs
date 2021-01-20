@@ -14,7 +14,7 @@ using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace Microsoft.BotBuilderSamples.TeamsSsoSampleCode
+namespace Microsoft.BotFrameworkFunctionalTests.TeamsSsoHostBot
 {
     public class AdapterWithErrorHandler : BotFrameworkHttpAdapter
     {

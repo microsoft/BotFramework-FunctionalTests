@@ -17,7 +17,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 
-namespace Microsoft.BotBuilderSamples.TeamsSsoSampleCode
+namespace Microsoft.BotFrameworkFunctionalTests.TeamsSsoHostBot
 {
     public class TokenExchangeSkillHandler : SkillHandler
     {

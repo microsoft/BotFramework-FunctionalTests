@@ -15,7 +15,7 @@ using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
-namespace Microsoft.BotBuilderSamples.TeamsSsoSampleCode.Bots
+namespace Microsoft.BotFrameworkFunctionalTests.TeamsSsoHostBot.Bots
 {
     public class RootBot : ActivityHandler
     {
