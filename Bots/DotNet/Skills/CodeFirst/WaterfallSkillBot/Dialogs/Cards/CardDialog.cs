@@ -184,11 +184,6 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
                 Buttons = new List<CardAction>()
             };
 
-            /*var data = activity.Value as JObject;
-            data = JObject.FromObject(data);
-            data["count"] = data["count"].Value<int>() + 1;
-            heroCard.Text = $"Update count - {data["count"].Value<int>()}";*/
-
             var action = new CardAction
             {
                 Type = ActionTypes.MessageBack,
