@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Bot.Connector;
 
-namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
+namespace Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Cards
 {
     public static class ChannelSupportedCards
     {
@@ -15,6 +15,14 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
                 {
                     CardOptions.TeamsFileConsent,
                     CardOptions.O365
+                }
+            },
+            { 
+                Channels.Msteams, new List<CardOptions>
+                {
+                    CardOptions.Video,
+                    CardOptions.Audio,
+                    CardOptions.Animation
                 }
             },
             {

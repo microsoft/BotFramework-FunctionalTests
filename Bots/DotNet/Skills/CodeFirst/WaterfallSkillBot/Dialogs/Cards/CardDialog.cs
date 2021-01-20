@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using AdaptiveCards;
@@ -137,6 +136,9 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
                     case CardOptions.Video:
                         await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeVideoCard().ToAttachment()), cancellationToken);
                         break;
+                    case CardOptions.AdaptiveUpdate:
+                        await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeUpdateAdaptiveCard().ToAttachment()), cancellationToken);
+                        break;
                     case CardOptions.End:
                         return new DialogTurnResult(DialogTurnStatus.Complete);
                 }
@@ -153,6 +155,12 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
         {
             if (!promptContext.Recognized.Succeeded)
             {
+                // This checks to see if this response is the user clicking the update button on the card
+                if (promptContext.Context.Activity.Value != null)
+                {
+                    return await Task.FromResult(true);
+                }
+
                 if (promptContext.Context.Activity.Attachments != null)
                 {
                     return await Task.FromResult(true);
@@ -165,6 +173,33 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
             }
            
             return await Task.FromResult(true);   
+        }
+
+        private HeroCard MakeUpdateAdaptiveCard()
+        {
+            var heroCard = new HeroCard
+            {
+                Title = "Update card",
+                Text = "Update Card Action",
+                Buttons = new List<CardAction>()
+            };
+
+            /*var data = activity.Value as JObject;
+            data = JObject.FromObject(data);
+            data["count"] = data["count"].Value<int>() + 1;
+            heroCard.Text = $"Update count - {data["count"].Value<int>()}";*/
+
+            var action = new CardAction
+            {
+                Type = ActionTypes.MessageBack,
+                Title = "Update card title",
+                Text = "Update card text",
+                Value = new JObject { { "count", 0 } }
+            };
+
+            heroCard.Buttons.Add(action);
+
+            return heroCard;
         }
 
         private AdaptiveCard MakeAdaptiveCard(string cardType)
