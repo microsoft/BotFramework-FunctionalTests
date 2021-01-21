@@ -22,6 +22,6 @@ steps:
 
         $message = "Deleting App Service and Bot Channel Registration ..."
         Write-Host "[Starting] $message"
-        az webapp delete --name "$resource" --resource-group "$group"
+        az webapp delete --name "$resource" --resource-group "$group" --keep-empty-plan
         az bot delete --name "$resource" --resource-group "$group"
         Write-Host "[Finished] $message"

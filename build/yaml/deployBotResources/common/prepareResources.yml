@@ -18,24 +18,28 @@ stages:
               scriptLocation: inlineScript
               inlineScript: |
                 Write-Host "Looking for '${{ resourceGroup.name }}'...";
-                $resourcesFound = $false;
-
                 if ((az group exists -n "${{ resourceGroup.name }}") -eq 'true')
                 {
-                  Write-Host "Deleting ${{ resourceGroup.name }}...";
-                  az group delete -n "${{ resourceGroup.name }}" --yes --no-wait;
-                  $resourcesFound = $true;
-                }
+                    Write-Host "Found pre-existing resource group '${{ resourceGroup.name }}'.";
+                    Write-Host "Starting resource cleanup...";
 
-                if ($resourcesFound)
-                {
-                  # Wait for delete(s) to finish for cases where a Deploy step is next.
-                  az group wait --deleted --interval 15 --timeout 600 --resource-group "${{ resourceGroup.name }}";
+                    $webapps = az webapp list --resource-group "${{ resourceGroup.name }}" | ConvertFrom-Json
+
+                    foreach ($webapp in $webapps) {
+                        Write-Host ("Deleting '" + $webapp.name + "'...")
+                        az webapp delete --name $webapp.name --resource-group "${{ resourceGroup.name }}" --keep-empty-plan
+                        az bot delete --name $webapp.name --resource-group "${{ resourceGroup.name }}"
+                    };
+
+                    Write-Host "Deleting '${{ resourceGroup.name }}'..."
+                    az group delete -n "${{ resourceGroup.name }}" --yes --no-wait;
+                    az group wait --deleted --interval 15 --timeout 600 --resource-group "${{ resourceGroup.name }}";
+
+                    Write-Host "Pre-existing resource group '${{ resourceGroup.name }}' deleted."
                 }
-                else
-                {
-                  Write-Host "No pre-existing resource group found.";
-                } 
+                else {
+                    Write-Host "No pre-existing resource group found."
+                }
 
           - task: AzureCLI@1
             displayName: 'Create Resource Group'
@@ -43,4 +47,3 @@ stages:
               azureSubscription: $(AzureSubscription)
               scriptLocation: inlineScript
               inlineScript: az group create --location westus --name "${{ resourceGroup.name }}"
-            
