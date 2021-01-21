@@ -16,7 +16,7 @@ steps:
             Write-Host "Found pre-existing resource group '${{ parameters.resourceGroup }}'.";
             Write-Host "Starting resource cleanup...";
 
-            Write-Host ("Deleting '" + $webapp.name + "'...")
+            Write-Host ("Deleting '" + "${{ parameters.resourceName }}$($env:BotNamesSuffix)" + "'...")
             az webapp delete --name "${{ parameters.resourceName }}$($env:BotNamesSuffix)" --resource-group ${{ parameters.resourceGroup }} --keep-empty-plan
             az bot delete --name "${{ parameters.resourceName }}$($env:BotNamesSuffix)" --resource-group ${{ parameters.resourceGroup }}
 
