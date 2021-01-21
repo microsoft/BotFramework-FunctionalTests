@@ -1,0 +1,33 @@
+parameters:
+  name: ''
+
+steps:
+  - task: AzureCLI@2
+    displayName: 'Delete pre-existing Resource Group'
+    inputs:
+      azureSubscription: $(AzureSubscription)
+      scriptType: ps
+      scriptLocation: inlineScript
+      inlineScript: |
+        Write-Host "Looking for '${{ resourceGroup.name }}'...";
+        if ((az group exists -n "${{ resourceGroup.name }}") -eq 'true')
+        {
+            Write-Host "Found pre-existing resource group '${{ resourceGroup.name }}'.";
+            Write-Host "Starting resource cleanup...";
+
+            $webapps = az webapp list --resource-group "${{ resourceGroup.name }}" | ConvertFrom-Json
+
+            foreach ($webapp in $webapps) {
+                Write-Host ("Deleting '" + $webapp.name + "'...")
+                az webapp delete --name $webapp.name --resource-group "${{ resourceGroup.name }}" --keep-empty-plan
+            };
+
+            Write-Host "Deleting '${{ resourceGroup.name }}'..."
+            az group delete -n "${{ resourceGroup.name }}" --yes --no-wait;
+            az group wait --deleted --interval 15 --timeout 600 --resource-group "${{ resourceGroup.name }}";
+
+            Write-Host "Pre-existing resource group '${{ resourceGroup.name }}' deleted."
+        }
+        else {
+            Write-Host "No pre-existing resource group found."
+        }
