@@ -10,15 +10,15 @@ steps:
       scriptType: ps
       scriptLocation: inlineScript
       inlineScript: |
-        Write-Host "Looking for '${{ resourceGroup.name }}'...";
-        if ((az group exists -n "${{ resourceGroup.name }}") -eq 'true')
+        Write-Host "Looking for '${{ parameters.resourceGroup }}'...";
+        if ((az group exists -n "${{ parameters.resourceGroup }}") -eq 'true')
         {
-            Write-Host "Found pre-existing resource group '${{ resourceGroup.name }}'.";
+            Write-Host "Found pre-existing resource group '${{ parameters.resourceGroup }}'.";
             Write-Host "Starting resource cleanup...";
 
             Write-Host ("Deleting '" + $webapp.name + "'...")
-            az webapp delete --name "${{ parameters.resourceName }}$($env:BotNamesSuffix)" --resource-group ${{ resourceGroup.name }} --keep-empty-plan
-            az bot delete --name "${{ parameters.resourceName }}$($env:BotNamesSuffix)" --resource-group ${{ resourceGroup.name }}
+            az webapp delete --name "${{ parameters.resourceName }}$($env:BotNamesSuffix)" --resource-group ${{ parameters.resourceGroup }} --keep-empty-plan
+            az bot delete --name "${{ parameters.resourceName }}$($env:BotNamesSuffix)" --resource-group ${{ parameters.resourceGroup }}
 
             Write-Host "Pre-existing bot resources for '${{ parameters.resourceName }}$($env:BotNamesSuffix)' deleted."
         }
