@@ -88,7 +88,7 @@ stages:
             name: 'SimpleHostBot.csproj'
             netCoreVersion: '3.1.x'
 
-        - name: bffnsimplehostbotDotNet21
+        - name: bffnsimplehostbotdotnet21
           type: 'Host'
           displayName: 'DotNet Simple Host Bot 2.1'
           appId: $env:BffnSimpleHostBotDotNet21AppId
@@ -108,7 +108,7 @@ stages:
             name: 'EchoSkillBot.csproj'
             netCoreVersion: '3.1.x'
 
-        - name: bffnechoskillbotDotNet21
+        - name: bffnechoskillbotdotnet21
           type: 'Skill'
           displayName: 'DotNet Echo Skill Bot 2.1'
           appId: $env:BffnEchoSkillBotDotNet21AppId
