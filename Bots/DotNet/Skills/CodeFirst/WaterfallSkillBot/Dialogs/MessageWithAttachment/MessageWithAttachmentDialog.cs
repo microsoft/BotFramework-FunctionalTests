@@ -29,12 +29,12 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Attach
 
         private static Attachment GetInlineAttachment()
         {
-            var imagePath = Path.Combine(Environment.CurrentDirectory, @"Dialogs/Attachments/Files", Picture);
+            var imagePath = Path.Combine(Environment.CurrentDirectory, "Dialogs", "MessageWithAttachment", "Files", Picture);
             var imageData = Convert.ToBase64String(File.ReadAllBytes(imagePath));
 
             return new Attachment
             {
-                Name = $@"Files\{Picture}",
+                Name = @$"Files\{Picture}",
                 ContentType = "image/png",
                 ContentUrl = $"data:image/png;base64,{imageData}",
             };
@@ -45,7 +45,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Attach
             // ContentUrl must be HTTPS.
             return new Attachment
             {
-                Name = $@"Files\{Picture}",
+                Name = @$"Files\{Picture}",
                 ContentType = "image/png",
                 ContentUrl = "https://docs.microsoft.com/en-us/bot-framework/media/how-it-works/architecture-resize.png",
             };
@@ -63,7 +63,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Attach
                 throw new ArgumentNullException(nameof(conversationId));
             }
 
-            var imagePath = Path.Combine(Environment.CurrentDirectory, @"Files", Picture);
+            var imagePath = Path.Combine(Environment.CurrentDirectory, "Files", Picture);
             
             var connector = stepContext.Context.TurnState.Get<IConnectorClient>() as ConnectorClient;
             var attachments = new Bot.Connector.Attachments(connector);
