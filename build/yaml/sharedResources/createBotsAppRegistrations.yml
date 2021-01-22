@@ -85,13 +85,14 @@ steps:
         $token = GetToken;
 
         foreach ($bot in $bots) {
-          Write-Host "`n[$($bot.appName)] Starting";
+          $botName = "$($bot.appName)$($env:BotNamesSuffix)";
+          Write-Host "`n[$botName] Starting";
           Write-Host "Creating App Registration ...";
-          $app = CreateAppRegistration $token $bot.appName;
           
+          $app = CreateAppRegistration $token $botName;
           Write-Host "
             App Registration:
-              Name: $($bot.appName);
+              Name: $botName;
               Variables:
                 $($bot.variables.objectId): $($app.id);
                 $($bot.variables.appId): $($app.appId);
@@ -99,5 +100,5 @@ steps:
 
           Write-Host "Storing App Registration into the KeyVault (${{ parameters.keyVault }}) ...";
           SaveAppRegistrationIntoKeyVault "${{ parameters.keyVault }}" $bot.variables $app;
-          Write-Host "[$($bot.appName)] Ending";
+          Write-Host "[$botName] Ending";
         }

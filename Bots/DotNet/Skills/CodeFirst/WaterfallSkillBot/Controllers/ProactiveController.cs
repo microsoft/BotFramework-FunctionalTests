@@ -26,7 +26,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Controllers
         private readonly ConversationState _conversationState;
         private readonly ActivityRouterDialog _mainDialog;
 
-        public ProactiveController(ConversationState conversationState, ActivityRouterDialog mainDialog, IBotFrameworkHttpAdapter adapter, ConcurrentDictionary<string, ContinuationParameters> continuationParameters)
+        public ProactiveController(ConversationState conversationState, ActivityRouterDialog mainDialog, BotFrameworkHttpAdapter adapter, ConcurrentDictionary<string, ContinuationParameters> continuationParameters)
         {
             _conversationState = conversationState;
             _adapter = adapter;
