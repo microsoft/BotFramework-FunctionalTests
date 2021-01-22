@@ -15,6 +15,7 @@ using Xunit.Abstractions;
 
 namespace SkillFunctionalTests.CardActions
 {
+    [Trait("TestCategory", "CardActions")]
     public class CardActionsTests : ScriptTestBase
     {
         private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/CardActions/SourceTestScripts";
@@ -28,45 +29,47 @@ namespace SkillFunctionalTests.CardActions
         public static IEnumerable<object[]> TestCases()
         {
             var clientTypes = new List<ClientType> { ClientType.DirectLine };
+            
             var deliverModes = new List<string>
             {
-                DeliveryModes.Normal,
-                DeliveryModes.ExpectReplies,
+                DeliveryModes.Normal
             };
 
             var hostBots = new List<HostBot>
             {
                 HostBot.WaterfallHostBotDotNet,
-                HostBot.WaterfallHostBotJS,
-                HostBot.WaterfallHostBotPython,
-                HostBot.ComposerHostBotDotNet
+
+                // TODO: Enable these when the ports to JS, Python and composer are ready
+                //HostBotNames.WaterfallHostBotJS,
+                //HostBotNames.WaterfallHostBotPython,
+                //HostBotNames.ComposerHostBotDotNet
             };
 
             var targetSkills = new List<string>
             {
                 SkillBotNames.WaterfallSkillBotDotNet,
-                SkillBotNames.WaterfallSkillBotJS,
-                SkillBotNames.WaterfallSkillBotPython,
-                SkillBotNames.ComposerSkillBotDotNet
+
+                // TODO: Enable these when the ports to JS, Python and composer are ready
+                //SkillBotNames.WaterfallSkillBotJS,
+                //SkillBotNames.WaterfallSkillBotPython,
+                //SkillBotNames.ComposerSkillBotDotNet
             };
 
             var scripts = new List<string>
             {
-                "botaction.json",
-                "taskmodule.json",
-                "submitaction.json",
-                "hero.json",
-                "thumbnail.json",
-                "receipt.json",
-                "signin.json",
-                "carousel.json",
-                "list.json",
-                "o365.json",
-                "file.json",
-                "animation.json",
-                "audio.json",
-                "video.json",
-                "uploadfile.json",
+                "BotAction.json",
+                "TaskModule.json",
+                "SubmitAction.json",
+                "Hero.json",
+                "Thumbnail.json",
+                "Receipt.json",
+                "SignIn.json",
+                "Carousel.json",
+                "List.json",
+                "O365.json",
+                "Animation.json",
+                "Audio.json",
+                "Video.json"
             };
 
             var testCaseBuilder = new TestCaseBuilder();
@@ -79,17 +82,16 @@ namespace SkillFunctionalTests.CardActions
 
         [Theory]
         [MemberData(nameof(TestCases))]
-        public Task RunTestCases(TestCaseDataObject testData)
+        public async Task RunTestCases(TestCaseDataObject testData)
         {
             var testCase = testData.GetObject<TestCase>();
             Logger.LogInformation(JsonConvert.SerializeObject(testCase, Formatting.Indented));
 
-            // TODO: Implement tests and scripts
-            //var runner = new XUnitTestRunner(new TestClientFactory(testCase.ClientType).GetTestClient(), Logger);
-            //await runner.RunTestAsync(Path.Combine(_testScriptsFolder, testCase.Script));
+            var options = TestClientOptions[testCase.HostBot];
+            var runner = new XUnitTestRunner(new TestClientFactory(testCase.ClientType, options).GetTestClient(), Logger);
 
-            // TODO: remove this line once we implement the test and we change the method to public async task
-            return Task.CompletedTask;
+            await runner.RunTestAsync(Path.Combine(_testScriptsFolder, "WaterfallGreeting.json"));
+            await runner.RunTestAsync(Path.Combine(_testScriptsFolder, testCase.Script));
         }
     }
 }
