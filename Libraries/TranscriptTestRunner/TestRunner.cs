@@ -36,11 +36,12 @@ namespace TranscriptTestRunner
         /// Initializes a new instance of the <see cref="TestRunner"/> class.
         /// </summary>
         /// <param name="client">Test client to use.</param>
+        /// <param name="replyTimeout">The timeout for waiting for replies (in seconds). Default is 180.</param>
         /// <param name="logger">Optional. Instance of <see cref="ILogger"/> to use.</param>
-        public TestRunner(TestClientBase client, ILogger logger = null)
+        public TestRunner(TestClientBase client, int replyTimeout = 180, ILogger logger = null)
         {
             _testClient = client;
-            _replyTimeout = 45000;
+            _replyTimeout = replyTimeout;
             _logger = logger ?? NullLogger.Instance;
         }
 
@@ -132,15 +133,15 @@ namespace TranscriptTestRunner
                         return activity;
                     }
 
-                    // Pop the next activity un the queue.
+                    // Pop the next activity from the queue.
                     activity = await _testClient.GetNextReplyAsync(cancellationToken).ConfigureAwait(false);
                 }
                 while (activity != null);
 
                 // Wait a bit for the bot
-                await Task.Delay(TimeSpan.FromMilliseconds(250), cancellationToken).ConfigureAwait(false);
+                await Task.Delay(TimeSpan.FromMilliseconds(100), cancellationToken).ConfigureAwait(false);
 
-                if (timeoutCheck.ElapsedMilliseconds > _replyTimeout)
+                if (timeoutCheck.ElapsedMilliseconds > _replyTimeout * 1000)
                 {
                     throw new TimeoutException("operation timed out while waiting for a response from the bot");
                 }

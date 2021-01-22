@@ -2,15 +2,19 @@
 // Licensed under the MIT License.
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Connector.DirectLine;
 using Microsoft.Bot.Schema;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Rest.TransientFaultHandling;
 using Newtonsoft.Json;
 using TranscriptTestRunner.Authentication;
@@ -28,37 +32,53 @@ namespace TranscriptTestRunner.TestClients
     public class DirectLineTestClient : TestClientBase, IDisposable
     {
         // DL client sample: https://github.com/microsoft/BotFramework-DirectLine-DotNet/tree/main/samples/core-DirectLine/DirectLineClient
-        private readonly ConcurrentQueue<BotActivity> _activityQueue = new ConcurrentQueue<BotActivity>();
+        // Stores the activities received from the bot
+        private readonly SortedDictionary<int, BotActivity> _activityQueue = new SortedDictionary<int, BotActivity>();
+
+        // Stores the activities received from the bot that don't immediately correlate with the last activity we received (an activity was skipped)
+        private readonly SortedDictionary<int, BotActivity> _futureQueue = new SortedDictionary<int, BotActivity>();
+
+        // Used to lock access to the internal lists
+        private readonly object _listLock = new object();
+
+        // Tracks the index of the last activity received
+        private int _lastActivityIndex = -1;
+
         private readonly string _botId;
         private readonly string _directLineSecret;
-        private readonly KeyValuePair<string, string> _originHeader = new KeyValuePair<string, string>("Origin", "https://botframework.test.com");
+        private readonly KeyValuePair<string, string> _originHeader = new KeyValuePair<string, string>("Origin", $"https://botframework.test.com/{Guid.NewGuid()}");
         private readonly string _user = $"TestUser-{Guid.NewGuid()}";
         private Conversation _conversation;
+        private CancellationTokenSource _webSocketClientCts;
 
         // To detect redundant calls to dispose
         private bool _disposed;
         private DirectLineClient _dlClient;
-        private string _watermark;
+        private ClientWebSocket _webSocketClient;
+        private readonly ILogger _logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DirectLineTestClient"/> class.
         /// </summary>
         /// <param name="options">Options for the client configuration.</param>
-        public DirectLineTestClient(DirectLineTestClientOptions options)
+        /// <param name="logger">The logger.</param>
+        public DirectLineTestClient(DirectLineTestClientOptions options, ILogger logger = null)
         {
             if (string.IsNullOrWhiteSpace(options.BotId))
             {
-                throw new ArgumentException($"BotId not set.");
+                throw new ArgumentException("BotId not set.");
             }
-            
+
             _botId = options.BotId;
 
             if (string.IsNullOrWhiteSpace(options.DirectLineSecret))
             {
-                throw new ArgumentException($"DirectLineSecret not set.");
+                throw new ArgumentException("DirectLineSecret not set.");
             }
-            
+
             _directLineSecret = options.DirectLineSecret;
+
+            _logger = logger ?? NullLogger.Instance;
         }
 
         /// <inheritdoc/>
@@ -96,12 +116,17 @@ namespace TranscriptTestRunner.TestClients
                 await CreateConversationAsync().ConfigureAwait(false);
             }
 
-            await PullActivitiesFromDirectLineAsync(cancellationToken).ConfigureAwait(false);
-
-            // Return the first activity in the queue (if any)
-            if (_activityQueue.TryDequeue(out var activity))
+            // lock the list while work with it.
+            lock (_listLock)
             {
-                return activity;
+                if (_activityQueue.Any())
+                {
+                    // Return the first activity in the queue (if any)
+                    var keyValuePair = _activityQueue.First();
+                    _activityQueue.Remove(keyValuePair.Key);
+
+                    return keyValuePair.Value;
+                }
             }
 
             // No activities in the queue
@@ -140,6 +165,10 @@ namespace TranscriptTestRunner.TestClients
             {
                 // Dispose managed objects owned by the class here.
                 _dlClient?.Dispose();
+
+                _webSocketClientCts?.Cancel();
+                _webSocketClientCts?.Dispose();
+                _webSocketClient?.Dispose();
             }
 
             _disposed = true;
@@ -147,9 +176,10 @@ namespace TranscriptTestRunner.TestClients
 
         private async Task CreateConversationAsync()
         {
+            // Obtain a token using the Direct Line secret
             var tokenInfo = await GetDirectLineTokenAsync().ConfigureAwait(false);
 
-            // Create directLine client from token
+            // Create directLine client from token and initialize settings.
             _dlClient = new DirectLineClient(tokenInfo.Token);
             _dlClient.SetRetryPolicy(new RetryPolicy(new HttpStatusCodeErrorDetectionStrategy(), 0));
 
@@ -157,8 +187,108 @@ namespace TranscriptTestRunner.TestClients
             // the trusted origin we sent when acquiring the token as value.
             _dlClient.HttpClient.DefaultRequestHeaders.Add(_originHeader.Key, _originHeader.Value);
 
+            _webSocketClientCts = new CancellationTokenSource();
+
             // Start the conversation now the the _dlClient has been initialized.
-            _conversation = await _dlClient.Conversations.StartConversationAsync().ConfigureAwait(false);
+            _conversation = await _dlClient.Conversations.StartConversationAsync(_webSocketClientCts.Token).ConfigureAwait(false);
+
+            // Initialize web socket client and listener
+            _webSocketClient = new ClientWebSocket();
+            await _webSocketClient.ConnectAsync(new Uri(_conversation.StreamUrl), _webSocketClientCts.Token).ConfigureAwait(false);
+            _ = Task.Factory.StartNew(ListenAsync, _webSocketClientCts.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+        }
+
+        /// <summary>
+        /// This method is invoked as a background task and lists to directline websocket.
+        /// </summary>
+        private async Task ListenAsync()
+        {
+            try
+            {
+                var rcvBytes = new byte[16384];
+                var rcvBuffer = new ArraySegment<byte>(rcvBytes);
+                while (!_webSocketClientCts.IsCancellationRequested)
+                {
+                    // Read messages from the socket.
+                    string rcvMsg = null;
+                    WebSocketReceiveResult rcvResult;
+                    do
+                    {
+                        _logger.LogDebug("Listening to web socket....");
+                        rcvResult = await _webSocketClient.ReceiveAsync(rcvBuffer, _webSocketClientCts.Token).ConfigureAwait(false);
+                        var msgBytes = rcvBuffer.Skip(rcvBuffer.Offset).Take(rcvResult.Count).ToArray();
+                        rcvMsg += Encoding.UTF8.GetString(msgBytes);
+                    } 
+                    while (!rcvResult.EndOfMessage);
+
+                    _logger.LogDebug("Activity received");
+                    _logger.LogDebug(rcvMsg);
+
+                    var activitySet = JsonConvert.DeserializeObject<ActivitySet>(rcvMsg);
+                    if (activitySet != null)
+                    {
+                        // lock the list while work with it.
+                        lock (_listLock)
+                        {
+                            foreach (var dlActivity in activitySet.Activities)
+                            {
+                                // Convert the DL Activity object to a BF activity object.
+                                var botActivity = JsonConvert.DeserializeObject<BotActivity>(JsonConvert.SerializeObject(dlActivity));
+                                var activityIndex = int.Parse(botActivity.Id.Split('|')[1], CultureInfo.InvariantCulture);
+                                if (activityIndex == _lastActivityIndex + 1)
+                                {
+                                    ProcessActivity(botActivity, activityIndex);
+                                    _lastActivityIndex = activityIndex;
+                                }
+                                else
+                                {
+                                    // Activities come out of sequence in some situations. 
+                                    // put the activity in the future queue so we can process it once we fill in the gaps.
+                                    _futureQueue.Add(activityIndex, botActivity);
+                                }
+                            }
+
+                            // Process the future queue and append the activities if we filled in the gaps.
+                            var queueCopy = new KeyValuePair<int, BotActivity>[_futureQueue.Count];
+                            _futureQueue.CopyTo(queueCopy, 0);
+                            foreach (var kvp in queueCopy)
+                            {
+                                if (kvp.Key == _lastActivityIndex + 1)
+                                {
+                                    ProcessActivity(kvp.Value, kvp.Key);
+                                    _futureQueue.Remove(kvp.Key);
+                                    _lastActivityIndex = kvp.Key;
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("got null set or watermark");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in ListenAsync");
+                throw;
+            }
+        }
+
+        private void ProcessActivity(BotActivity botActivity, int activitySeq)
+        {
+            if (botActivity.From.Id.StartsWith(_botId, StringComparison.CurrentCultureIgnoreCase))
+            {
+                botActivity.From.Role = RoleTypes.Bot;
+                botActivity.Recipient = new BotChannelAccount(role: RoleTypes.User);
+
+                _activityQueue.Add(activitySeq, botActivity);
+                _logger.LogDebug($"Added activity to queue. Length: {_activityQueue.Count} - Future activities queue length: {_futureQueue.Count}");
+            }
         }
 
         /// <summary>
@@ -199,30 +329,6 @@ namespace TranscriptTestRunner.TestClients
             }
 
             return tokenInfo;
-        }
-
-        private async Task PullActivitiesFromDirectLineAsync(CancellationToken cancellationToken)
-        {
-            // Pull all the available activities from direct line
-            var activitySet = await _dlClient.Conversations.GetActivitiesAsync(_conversation.ConversationId, _watermark, cancellationToken).ConfigureAwait(false);
-
-            if (activitySet != null)
-            {
-                _watermark = activitySet.Watermark;
-
-                // Add activities to the queue
-                foreach (var dlActivity in activitySet.Activities)
-                {
-                    if (dlActivity.From.Id.StartsWith(_botId, StringComparison.CurrentCultureIgnoreCase))
-                    {
-                        // Convert the DL Activity object to a BF activity object.
-                        var botActivity = JsonConvert.DeserializeObject<BotActivity>(JsonConvert.SerializeObject(dlActivity));
-                        botActivity.From.Role = RoleTypes.Bot;
-                        botActivity.Recipient = new BotChannelAccount(role: RoleTypes.User);
-                        _activityQueue.Enqueue(botActivity);
-                    }
-                }
-            }
         }
     }
 }

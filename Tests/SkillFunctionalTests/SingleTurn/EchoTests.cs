@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SkillFunctionalTests.Common;
 using TranscriptTestRunner;
+using TranscriptTestRunner.TestClients;
 using TranscriptTestRunner.XUnit;
 using Xunit;
 using Xunit.Abstractions;
@@ -66,7 +67,7 @@ namespace SkillFunctionalTests.SingleTurn
             {
                 if (testCase.DeliveryMode == DeliveryModes.ExpectReplies)
                 {
-                    if (testCase.TargetSkill == SkillBotNames.EchoSkillBotV3DotNet || testCase.TargetSkill == SkillBotNames.EchoSkillBotV3JS)
+                    if (testCase.TargetSkill == SkillBotNames.EchoSkillBotV3DotNet || testCase.TargetSkill == SkillBotNames.EchoSkillBotV3JS || testCase.TargetSkill == SkillBotNames.EchoSkillBotPython)
                     {
                         return true;
                     }
@@ -90,7 +91,8 @@ namespace SkillFunctionalTests.SingleTurn
             Logger.LogInformation(JsonConvert.SerializeObject(testCase, Formatting.Indented));
 
             var options = TestClientOptions[testCase.HostBot];
-            var runner = new XUnitTestRunner(new TestClientFactory(testCase.ClientType, options).GetTestClient(), Logger);
+            
+            var runner = new XUnitTestRunner(new TestClientFactory(testCase.ClientType, options, Logger).GetTestClient(), TestRequestTimeout, Logger);
 
             var testParams = new Dictionary<string, string>
             {
