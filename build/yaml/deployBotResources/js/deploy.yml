@@ -49,6 +49,15 @@ stages:
                 version: "$env:DependeciesVersionSkillsV3"
               botType: '${{ bot.type }}'
 
+          # Tag BotBuilder version
+          - template: ../common/tagBotBuilderVersion.yml
+            parameters:
+              ${{ if eq(bot.displayName, '') }}:
+                botName: '${{ bot.name }}'
+              ${{ if ne(bot.displayName, '') }}:
+                botName: '${{ bot.displayName }}'
+              version: "$(DependenciesVersionNumber)"
+
           # Set dependencies source and version
           - powershell: |
               Add-Content '${{ bot.project.directory }}/deployment-scripts/.deployment' "`nREGISTRY_SOURCE = $(DependenciesSource)"
