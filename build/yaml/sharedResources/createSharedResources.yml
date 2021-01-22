@@ -14,6 +14,7 @@ variables:
   # KeyVaultObjectId: define in Azure
   # ResourceGroupName: define in Azure
   # AppServicePlanPricingTier: (optional) define in Azure ; Free-F1 (Default).
+  # BotNamesSuffix: (optional) define in Azure
 
 pool:
   vmImage: 'windows-2019'

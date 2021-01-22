@@ -19,6 +19,7 @@ variables:
   # BffnEchoSkillBotJSAppId: (optional) define in Azure
   # BffnEchoSkillBotV3JSAppId: (optional) define in Azure
   # BffnEchoSkillBotPythonAppId: (optional) define in Azure
+  # BotNamesSuffix: (optional) define in Azure
 
 pool:
   vmImage: 'windows-2019'
