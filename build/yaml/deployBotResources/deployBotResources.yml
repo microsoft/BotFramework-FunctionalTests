@@ -48,6 +48,7 @@ variables:
   # DependeciesVersionHosts: (optional) define in Azure
   # DependeciesVersionSkills: (optional) define in Azure
   # DependeciesVersionSkillsV3: (optional) define in Azure
+  # BotNamesSuffix: (optional) define in Azure
 
 stages:
   - template: common/prepareResources.yml
