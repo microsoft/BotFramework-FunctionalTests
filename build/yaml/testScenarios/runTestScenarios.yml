@@ -18,6 +18,7 @@ variables:
   # BffnEchoSkillBotJSAppId: define in Azure
   # BffnEchoSkillBotV3JSAppId: define in Azure
   # ResourceGroup: define in Azure
+  # BotNamesSuffix: (optional) define in Azure
 
 pool:
   vmImage: 'windows-2019'
