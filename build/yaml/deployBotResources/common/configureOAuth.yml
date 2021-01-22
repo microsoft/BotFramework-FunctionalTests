@@ -5,11 +5,12 @@ parameters:
   botGroup: ''
 
 steps:
-  - task: AzureCLI@1
+  - task: AzureCLI@2
     displayName: 'Configure OAuth connection'
     inputs:
       azureSubscription: $(AzureSubscription)
+      scriptType: ps
       scriptLocation: inlineScript
       inlineScript: |
-        call az bot show -g "${{ parameters.botGroup }}" -n "${{ parameters.botName }}"
-        call az bot authsetting create -g "${{ parameters.botGroup }}" -n "${{ parameters.botName }}" -c TestOAuthProvider --client-id "${{ parameters.appId }}" --client-secret "${{ parameters.appSecret }}" --service "oauth2" --provider-scope-string '""' --parameters authorizationUrl=https://webjobs.botframework.com/api/testauthprovider/authorize tokenUrl=https://webjobs.botframework.com/api/testauthprovider/token refreshUrl=https://webjobs.botframework.com/api/testauthprovider/refresh clientId="${{ parameters.appId }}" clientSecret="${{ parameters.appSecret }}"
+        az bot show -g "${{ parameters.botGroup }}" -n "${{ parameters.botName }}$($env:BotNamesSuffix)"
+        az bot authsetting create -g "${{ parameters.botGroup }}" -n "${{ parameters.botName }}$($env:BotNamesSuffix)" -c TestOAuthProvider --client-id "${{ parameters.appId }}" --client-secret "${{ parameters.appSecret }}" --service "oauth2" --provider-scope-string '""' --parameters authorizationUrl=https://webjobs.botframework.com/api/testauthprovider/authorize tokenUrl=https://webjobs.botframework.com/api/testauthprovider/token refreshUrl=https://webjobs.botframework.com/api/testauthprovider/refresh clientId="${{ parameters.appId }}" clientSecret="${{ parameters.appSecret }}"

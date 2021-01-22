@@ -44,7 +44,7 @@ namespace TranscriptTestRunner.TestClients
         /// Initializes a new instance of the <see cref="DirectLineTestClient"/> class.
         /// </summary>
         /// <param name="options">Options for the client configuration.</param>
-        public DirectLineTestClient(TestClientOptions options)
+        public DirectLineTestClient(DirectLineTestClientOptions options)
         {
             if (string.IsNullOrWhiteSpace(options.BotId))
             {
@@ -53,12 +53,12 @@ namespace TranscriptTestRunner.TestClients
             
             _botId = options.BotId;
 
-            if (string.IsNullOrWhiteSpace(options.TestClientSecret))
+            if (string.IsNullOrWhiteSpace(options.DirectLineSecret))
             {
-                throw new ArgumentException($"TestClientSecret not set.");
+                throw new ArgumentException($"DirectLineSecret not set.");
             }
             
-            _directLineSecret = options.TestClientSecret;
+            _directLineSecret = options.DirectLineSecret;
         }
 
         /// <inheritdoc/>
@@ -213,7 +213,7 @@ namespace TranscriptTestRunner.TestClients
                 // Add activities to the queue
                 foreach (var dlActivity in activitySet.Activities)
                 {
-                    if (dlActivity.From.Id == _botId)
+                    if (dlActivity.From.Id.StartsWith(_botId, StringComparison.CurrentCultureIgnoreCase))
                     {
                         // Convert the DL Activity object to a BF activity object.
                         var botActivity = JsonConvert.DeserializeObject<BotActivity>(JsonConvert.SerializeObject(dlActivity));
