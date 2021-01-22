@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
@@ -35,14 +35,14 @@ namespace SkillFunctionalTests.SingleTurn
                 DeliveryModes.Normal,
                 DeliveryModes.ExpectReplies
             };
-            
+
             var hostBots = new List<HostBot>
             {
                 HostBot.SimpleHostBotDotNet,
                 HostBot.SimpleHostBotDotNet21,
                 HostBot.SimpleHostBotJS,
                 HostBot.SimpleHostBotPython,
-                
+
                 // TODO: Enable when composer bots support multiple skills.
                 // HostBot.SimpleComposerHostBotDotNet
             };
@@ -57,14 +57,25 @@ namespace SkillFunctionalTests.SingleTurn
                 SkillBotNames.EchoSkillBotPython
             };
 
-            var scripts = new List<string>
-            {
-                "EchoMultiSkill.json"
-            };
+            var scripts = new List<string> { "EchoMultiSkill.json" };
 
             var testCaseBuilder = new TestCaseBuilder();
 
-            var testCases = testCaseBuilder.BuildTestCases(clientTypes, deliverModes, hostBots, targetSkills, scripts);
+            // This local function is used to exclude ExpectReplies test cases for v3 bots
+            static bool ShouldExclude(TestCase testCase)
+            {
+                if (testCase.DeliveryMode == DeliveryModes.ExpectReplies)
+                {
+                    if (testCase.TargetSkill == SkillBotNames.EchoSkillBotV3DotNet || testCase.TargetSkill == SkillBotNames.EchoSkillBotV3JS)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            var testCases = testCaseBuilder.BuildTestCases(clientTypes, deliverModes, hostBots, targetSkills, scripts, ShouldExclude);
             foreach (var testCase in testCases)
             {
                 yield return testCase;

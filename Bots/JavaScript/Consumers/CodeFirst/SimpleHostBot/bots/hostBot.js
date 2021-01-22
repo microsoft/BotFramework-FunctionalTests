@@ -17,9 +17,6 @@ class HostBot extends ActivityHandler {
         this.dialogStateProperty = this.conversationState.createProperty('DialogState');
 
         this.botId = process.env.MicrosoftAppId;
-        if (!this.botId) {
-            throw new Error('[HostBot] MicrosoftAppId is not set in configuration');
-        }
 
         // Create state property to track the delivery mode and active skill.
         this.deliveryModeProperty = this.conversationState.createProperty(HostBot.DeliveryModePropertyName);

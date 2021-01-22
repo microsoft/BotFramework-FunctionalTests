@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System;
 using System.Collections.Generic;
 using TranscriptTestRunner;
 
@@ -8,7 +9,7 @@ namespace SkillFunctionalTests.Common
 {
     public class TestCaseBuilder
     {
-        public IEnumerable<object[]> BuildTestCases(List<ClientType> clientTypes, List<string> deliveryModes, List<HostBot> hostBots, List<string> targetSkills, List<string> scripts)
+        public IEnumerable<object[]> BuildTestCases(List<ClientType> clientTypes, List<string> deliveryModes, List<HostBot> hostBots, List<string> targetSkills, List<string> scripts, Func<TestCase, bool> shouldExclude = null)
         {
             var testCases = new List<object[]>();
             var count = 1;
@@ -32,8 +33,11 @@ namespace SkillFunctionalTests.Common
                                     Script = script
                                 };
 
-                                testCases.Add(new object[] { new TestCaseDataObject(testCase) });
-                                count++;
+                                if (!ExcludeTestCase(shouldExclude, testCase))
+                                {
+                                    testCases.Add(new object[] { new TestCaseDataObject(testCase.Id, testCase) });
+                                    count++;
+                                }
                             }
                         }
                     }
@@ -41,6 +45,16 @@ namespace SkillFunctionalTests.Common
             }
 
             return testCases;
+        }
+
+        private bool ExcludeTestCase(Func<TestCase, bool> shouldExclude, TestCase testCase)
+        {
+            if (shouldExclude == null)
+            {
+                return false;
+            }
+
+            return shouldExclude(testCase);
         }
     }
 }
