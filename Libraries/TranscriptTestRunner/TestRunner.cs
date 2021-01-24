@@ -115,36 +115,31 @@ namespace TranscriptTestRunner
             timeoutCheck.Start();
             while (true)
             {
+                // Try to get the next activity.
                 var activity = await _testClient.GetNextReplyAsync(cancellationToken).ConfigureAwait(false);
-                do
+                if (activity != null && activity.Type != ActivityTypes.Trace && activity.Type != ActivityTypes.Typing)
                 {
-                    if (activity != null && activity.Type != ActivityTypes.Trace && activity.Type != ActivityTypes.Typing)
+                    _logger.LogInformation("Elapsed Time: {Elapsed}, Bot Responds: {Text}", Stopwatch.Elapsed, activity.Text);
+
+                    if (activity.Attachments != null && activity.Attachments.Any())
                     {
-                        _logger.LogInformation("Elapsed Time: {Elapsed}, Bot Responds: {Text}", Stopwatch.Elapsed, activity.Text);
-
-                        if (activity.Attachments != null && activity.Attachments.Any())
+                        foreach (var attachment in activity.Attachments)
                         {
-                            foreach (var attachment in activity.Attachments)
-                            {
-                                _logger.LogInformation("Elapsed Time: {Elapsed}, Attachment included: {Type} - {Attachment}", Stopwatch.Elapsed, attachment.ContentType, attachment.Content);
-                            }
+                            _logger.LogInformation("Elapsed Time: {Elapsed}, Attachment included: {Type} - {Attachment}", Stopwatch.Elapsed, attachment.ContentType, attachment.Content);
                         }
-
-                        return activity;
                     }
 
-                    // Pop the next activity from the queue.
-                    activity = await _testClient.GetNextReplyAsync(cancellationToken).ConfigureAwait(false);
+                    return activity;
                 }
-                while (activity != null);
+
+                // Check timeout.
+                if (timeoutCheck.ElapsedMilliseconds > _replyTimeout * 1000)
+                {
+                    throw new TimeoutException($"Operation timed out while waiting for a response from the bot after {timeoutCheck.ElapsedMilliseconds} milliseconds (current timeout is set to {_replyTimeout * 1000} milliseconds).");
+                }
 
                 // Wait a bit for the bot
                 await Task.Delay(TimeSpan.FromMilliseconds(100), cancellationToken).ConfigureAwait(false);
-
-                if (timeoutCheck.ElapsedMilliseconds > _replyTimeout * 1000)
-                {
-                    throw new TimeoutException("operation timed out while waiting for a response from the bot");
-                }
             }
         }
 
