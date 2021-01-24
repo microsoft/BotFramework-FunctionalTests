@@ -51,6 +51,11 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Bots
             await _conversationState.SaveChangesAsync(turnContext, false, cancellationToken);
         }
 
+        protected override Task<InvokeResponse> OnInvokeActivityAsync(ITurnContext<IInvokeActivity> turnContext, CancellationToken cancellationToken)
+        {
+            return Task.FromResult<InvokeResponse>(new InvokeResponse { Status = 200 });
+        }
+
         protected override async Task OnMembersAddedAsync(IList<ChannelAccount> membersAdded, ITurnContext<IConversationUpdateActivity> turnContext, CancellationToken cancellationToken)
         {
             foreach (var member in membersAdded)

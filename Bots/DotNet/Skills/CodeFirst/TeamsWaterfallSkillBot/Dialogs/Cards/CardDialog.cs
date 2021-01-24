@@ -54,6 +54,31 @@ namespace Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.C
             return (CardOptions)Enum.Parse(typeof(CardOptions), card, true);
         }
 
+        private static HeroCard MakeUpdatedHeroCard(WaterfallStepContext stepContext)
+        {
+            var heroCard = new HeroCard
+            {
+                Title = "Newly updated card.",
+                Buttons = new List<CardAction>()
+            };
+
+            var data = stepContext.Context.Activity.Value as JObject;
+            data = JObject.FromObject(data);
+            data["count"] = data["count"].Value<int>() + 1;
+            heroCard.Text = $"Update count - {data["count"].Value<int>()}";
+            heroCard.Title = "Newly updated card";
+
+            heroCard.Buttons.Add(new CardAction
+            {
+                Type = ActionTypes.MessageBack,
+                Title = "Update Card",
+                Text = "UpdateCardAction",
+                Value = data
+            });
+
+            return heroCard;
+        }
+
         private async Task<DialogTurnResult> SelectCardAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             // Create the PromptOptions from the skill configuration which contain the list of configured skills.
@@ -73,9 +98,10 @@ namespace Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.C
 
         private async Task<DialogTurnResult> DisplayCardAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            if (IsCardUpdateActivity(stepContext.Context.Activity))
+            // Checks to see if this is a card update or bot action response
+            if (stepContext.Context.Activity.Value != null)
             {
-                await HandleCardUpdate(stepContext, cancellationToken);
+                await HandleSpecialActivity(stepContext, cancellationToken);
             }
             else
             {
@@ -161,36 +187,34 @@ namespace Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.C
             return await stepContext.ReplaceDialogAsync(InitialDialogId, "What card would you want?", cancellationToken);
         }
 
-        private bool IsCardUpdateActivity(Activity activity)
+        private async Task HandleSpecialActivity(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            return activity.Value != null;
-        }
-
-        private async Task HandleCardUpdate(WaterfallStepContext stepContext, CancellationToken cancellationToken)
-        {
-            var heroCard = new HeroCard
+            if (stepContext.Context.Activity.Text == null)
             {
-                Title = "Newly updated card.",
-                Buttons = new List<CardAction>()
-            };
-
-            var data = stepContext.Context.Activity.Value as JObject;
-            data = JObject.FromObject(data);
-            data["count"] = data["count"].Value<int>() + 1;
-            heroCard.Text = $"Update count - {data["count"].Value<int>()}";
-            heroCard.Title = "Newly updated card";
-
-            heroCard.Buttons.Add(new CardAction
+                await stepContext.Context.SendActivityAsync(MessageFactory.Text($"I received an activity with this data in the value field {stepContext.Context.Activity.Value}"), cancellationToken);
+            }
+            else
             {
-                Type = ActionTypes.MessageBack,
-                Title = "Update Card",
-                Text = "UpdateCardAction",
-                Value = data
-            });
+                if (stepContext.Context.Activity.Text.ToLowerInvariant().Contains("update"))
+                {
+                    if (stepContext.Context.Activity.ReplyToId == null)
+                    {
+                        await stepContext.Context.SendActivityAsync(MessageFactory.Text($"Update activity is not supported in the {stepContext.Context.Activity.ChannelId} channel."), cancellationToken);
+                    }
+                    else
+                    {
+                        var heroCard = MakeUpdatedHeroCard(stepContext);
 
-            var activity = MessageFactory.Attachment(heroCard.ToAttachment());
-            activity.Id = stepContext.Context.Activity.ReplyToId;
-            await stepContext.Context.UpdateActivityAsync(activity, cancellationToken);
+                        var activity = MessageFactory.Attachment(heroCard.ToAttachment());
+                        activity.Id = stepContext.Context.Activity.ReplyToId;
+                        await stepContext.Context.UpdateActivityAsync(activity, cancellationToken);
+                    }
+                }
+                else
+                {
+                    await stepContext.Context.SendActivityAsync(MessageFactory.Text($"I received an activity with this data in the text field {stepContext.Context.Activity.Text} and this data in the value field {stepContext.Context.Activity.Value}"), cancellationToken);
+                }
+            }
         }
 
         private async Task<bool> CardPromptValidatorAsync(PromptValidatorContext<FoundChoice> promptContext, CancellationToken cancellationToken)

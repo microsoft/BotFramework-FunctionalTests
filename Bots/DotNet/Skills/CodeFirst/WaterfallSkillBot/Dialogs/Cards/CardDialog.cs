@@ -51,6 +51,31 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
             return (CardOptions)Enum.Parse(typeof(CardOptions), card, true);
         }
 
+        private static HeroCard MakeUpdatedHeroCard(WaterfallStepContext stepContext)
+        {
+            var heroCard = new HeroCard
+            {
+                Title = "Newly updated card.",
+                Buttons = new List<CardAction>()
+            };
+
+            var data = stepContext.Context.Activity.Value as JObject;
+            data = JObject.FromObject(data);
+            data["count"] = data["count"].Value<int>() + 1;
+            heroCard.Text = $"Update count - {data["count"].Value<int>()}";
+            heroCard.Title = "Newly updated card";
+
+            heroCard.Buttons.Add(new CardAction
+            {
+                Type = ActionTypes.MessageBack,
+                Title = "Update Card",
+                Text = "UpdateCardAction",
+                Value = data
+            });
+
+            return heroCard;
+        }
+
         private async Task<DialogTurnResult> SelectCardAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             // Create the PromptOptions from the skill configuration which contain the list of configured skills.
@@ -70,85 +95,123 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
 
         private async Task<DialogTurnResult> DisplayCardAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            var card = ((FoundChoice)stepContext.Result).Value.ToLowerInvariant();
-            var cardType = ParseEnum<CardOptions>(card);
-
-            if (ChannelSupportedCards.IsCardSupported(stepContext.Context.Activity.ChannelId, cardType))
+            if (stepContext.Context.Activity.Value != null)
             {
-                switch (cardType)
-                {
-                    case CardOptions.AdaptiveCardBotAction:
-                        await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeAdaptiveCard("botaction").ToAttachment()), cancellationToken);
-                        break;
-                    case CardOptions.AdaptiveCardTaskModule:
-                        await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeAdaptiveCard("taskmodule").ToAttachment()), cancellationToken);
-                        break;
-                    case CardOptions.AdaptiveCardSumbitAction:
-                        await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeAdaptiveCard("submitaction").ToAttachment()), cancellationToken);
-                        break;
-                    case CardOptions.Hero:
-                        await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(CardSampleHelper.CreateHeroCard().ToAttachment()), cancellationToken).ConfigureAwait(false);
-                        break;
-                    case CardOptions.Thumbnail:
-                        await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(CardSampleHelper.CreateThumbnailCard().ToAttachment()), cancellationToken).ConfigureAwait(false);
-                        break;
-                    case CardOptions.Receipt:
-                        await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(CardSampleHelper.CreateReceiptCard().ToAttachment()), cancellationToken).ConfigureAwait(false);
-                        break;
-                    case CardOptions.Signin:
-                        await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(CardSampleHelper.CreateSigninCard().ToAttachment()), cancellationToken).ConfigureAwait(false);
-                        break;
-                    case CardOptions.Carousel:
-                        // NOTE: if cards are NOT the same height in a carousel, Teams will instead display as AttachmentLayoutTypes.List
-                        await stepContext.Context.SendActivityAsync(
-                            MessageFactory.Carousel(new[]
-                            {
-                                    CardSampleHelper.CreateHeroCard().ToAttachment(),
-                                    CardSampleHelper.CreateHeroCard().ToAttachment(),
-                                    CardSampleHelper.CreateHeroCard().ToAttachment()
-                            }),
-                            cancellationToken).ConfigureAwait(false);
-                        break;
-                    case CardOptions.List:
-                        // NOTE: MessageFactory.Attachment with multiple attachments will default to AttachmentLayoutTypes.List
-                        await stepContext.Context.SendActivityAsync(
-                            MessageFactory.Attachment(new[]
-                            {
-                                    CardSampleHelper.CreateHeroCard().ToAttachment(),
-                                    CardSampleHelper.CreateHeroCard().ToAttachment(),
-                                    CardSampleHelper.CreateHeroCard().ToAttachment()
-                            }),
-                            cancellationToken).ConfigureAwait(false);
-                        break;
-                    case CardOptions.O365:
-
-                        await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeO365CardAttachmentAsync()), cancellationToken).ConfigureAwait(false);
-                        break;
-                    case CardOptions.TeamsFileConsent:
-                        await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeTeamsFileConsentCard()), cancellationToken);
-                        break;
-                    case CardOptions.Animation:
-                        await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeAnimationCard().ToAttachment()), cancellationToken);
-                        break;
-                    case CardOptions.Audio:
-                        await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeAudioCard().ToAttachment()), cancellationToken);
-                        break;
-                    case CardOptions.Video:
-                        await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeVideoCard().ToAttachment()), cancellationToken);
-                        break;
-                    case CardOptions.AdaptiveUpdate:
-                        await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeUpdateAdaptiveCard().ToAttachment()), cancellationToken);
-                        break;
-                    case CardOptions.End:
-                        return new DialogTurnResult(DialogTurnStatus.Complete);
-                }
+                await HandleSpecialActivity(stepContext, cancellationToken);
             }
             else
             {
-                await stepContext.Context.SendActivityAsync(MessageFactory.Text($"{cardType} cards are not supported in the {stepContext.Context.Activity.ChannelId} channel."), cancellationToken);
-            }    
+                // Checks to see if the activity is an adaptive card update or a bot action respose
+                var card = ((FoundChoice)stepContext.Result).Value.ToLowerInvariant();
+                var cardType = ParseEnum<CardOptions>(card);
+
+                if (ChannelSupportedCards.IsCardSupported(stepContext.Context.Activity.ChannelId, cardType))
+                {
+                    switch (cardType)
+                    {
+                        case CardOptions.AdaptiveCardBotAction:
+                            await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeAdaptiveCard("botaction").ToAttachment()), cancellationToken);
+                            break;
+                        case CardOptions.AdaptiveCardTaskModule:
+                            await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeAdaptiveCard("taskmodule").ToAttachment()), cancellationToken);
+                            break;
+                        case CardOptions.AdaptiveCardSumbitAction:
+                            await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeAdaptiveCard("submitaction").ToAttachment()), cancellationToken);
+                            break;
+                        case CardOptions.Hero:
+                            await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(CardSampleHelper.CreateHeroCard().ToAttachment()), cancellationToken).ConfigureAwait(false);
+                            break;
+                        case CardOptions.Thumbnail:
+                            await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(CardSampleHelper.CreateThumbnailCard().ToAttachment()), cancellationToken).ConfigureAwait(false);
+                            break;
+                        case CardOptions.Receipt:
+                            await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(CardSampleHelper.CreateReceiptCard().ToAttachment()), cancellationToken).ConfigureAwait(false);
+                            break;
+                        case CardOptions.Signin:
+                            await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(CardSampleHelper.CreateSigninCard().ToAttachment()), cancellationToken).ConfigureAwait(false);
+                            break;
+                        case CardOptions.Carousel:
+                            // NOTE: if cards are NOT the same height in a carousel, Teams will instead display as AttachmentLayoutTypes.List
+                            await stepContext.Context.SendActivityAsync(
+                                MessageFactory.Carousel(new[]
+                                {
+                                        CardSampleHelper.CreateHeroCard().ToAttachment(),
+                                        CardSampleHelper.CreateHeroCard().ToAttachment(),
+                                        CardSampleHelper.CreateHeroCard().ToAttachment()
+                                }),
+                                cancellationToken).ConfigureAwait(false);
+                            break;
+                        case CardOptions.List:
+                            // NOTE: MessageFactory.Attachment with multiple attachments will default to AttachmentLayoutTypes.List
+                            await stepContext.Context.SendActivityAsync(
+                                MessageFactory.Attachment(new[]
+                                {
+                                        CardSampleHelper.CreateHeroCard().ToAttachment(),
+                                        CardSampleHelper.CreateHeroCard().ToAttachment(),
+                                        CardSampleHelper.CreateHeroCard().ToAttachment()
+                                }),
+                                cancellationToken).ConfigureAwait(false);
+                            break;
+                        case CardOptions.O365:
+
+                            await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeO365CardAttachmentAsync()), cancellationToken).ConfigureAwait(false);
+                            break;
+                        case CardOptions.TeamsFileConsent:
+                            await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeTeamsFileConsentCard()), cancellationToken);
+                            break;
+                        case CardOptions.Animation:
+                            await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeAnimationCard().ToAttachment()), cancellationToken);
+                            break;
+                        case CardOptions.Audio:
+                            await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeAudioCard().ToAttachment()), cancellationToken);
+                            break;
+                        case CardOptions.Video:
+                            await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeVideoCard().ToAttachment()), cancellationToken);
+                            break;
+                        case CardOptions.AdaptiveUpdate:
+                            await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeUpdateAdaptiveCard().ToAttachment()), cancellationToken);
+                            break;
+                        case CardOptions.End:
+                            return new DialogTurnResult(DialogTurnStatus.Complete);
+                    }
+                }
+                else
+                {
+                    await stepContext.Context.SendActivityAsync(MessageFactory.Text($"{cardType} cards are not supported in the {stepContext.Context.Activity.ChannelId} channel."), cancellationToken);
+                }
+            }
 
             return await stepContext.ReplaceDialogAsync(InitialDialogId, "What card would you want?", cancellationToken);
+        }
+
+        private async Task HandleSpecialActivity(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            if (stepContext.Context.Activity.Text == null)
+            {  
+                await stepContext.Context.SendActivityAsync(MessageFactory.Text($"I received an activity with this data in the value field {stepContext.Context.Activity.Value}"), cancellationToken);   
+            }
+            else
+            {
+                if (stepContext.Context.Activity.Text.ToLowerInvariant().Contains("update"))
+                {
+                    if (stepContext.Context.Activity.ReplyToId == null)
+                    {
+                        await stepContext.Context.SendActivityAsync(MessageFactory.Text($"Update activity is not supported in the {stepContext.Context.Activity.ChannelId} channel."), cancellationToken);
+                    }
+                    else
+                    {
+                        var heroCard = MakeUpdatedHeroCard(stepContext);
+
+                        var activity = MessageFactory.Attachment(heroCard.ToAttachment());
+                        activity.Id = stepContext.Context.Activity.ReplyToId;
+                        await stepContext.Context.UpdateActivityAsync(activity, cancellationToken);
+                    }
+                }
+                else
+                {
+                    await stepContext.Context.SendActivityAsync(MessageFactory.Text($"I received an activity with this data in the text field {stepContext.Context.Activity.Text} and this data in the value field {stepContext.Context.Activity.Value}"), cancellationToken);
+                }
+            }
         }
 
         private async Task<bool> CardPromptValidatorAsync(PromptValidatorContext<FoundChoice> promptContext, CancellationToken cancellationToken)
