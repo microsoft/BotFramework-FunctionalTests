@@ -76,7 +76,7 @@ namespace SkillFunctionalTests.Attachments
             Logger.LogInformation(JsonConvert.SerializeObject(testCase, Formatting.Indented));
 
             var options = TestClientOptions[testCase.HostBot];
-            var runner = new XUnitTestRunner(new TestClientFactory(testCase.ClientType, options).GetTestClient(), Logger);
+            var runner = new XUnitTestRunner(new TestClientFactory(testCase.ClientType, options, Logger).GetTestClient(), TestRequestTimeout, Logger);
 
             await runner.RunTestAsync(Path.Combine(_testScriptsFolder, testCase.Script));
         }

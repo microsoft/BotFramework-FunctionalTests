@@ -80,7 +80,7 @@ namespace SkillFunctionalTests.ProactiveMessages
             Logger.LogInformation(JsonConvert.SerializeObject(testCase, Formatting.Indented));
 
             var options = TestClientOptions[testCase.HostBot];
-            var runner = new XUnitTestRunner(new TestClientFactory(testCase.ClientType, options).GetTestClient(), Logger);
+            var runner = new XUnitTestRunner(new TestClientFactory(testCase.ClientType, options, Logger).GetTestClient(), TestRequestTimeout, Logger);
             
             // Execute the first part of the conversation.
             await runner.RunTestAsync(Path.Combine(_testScriptsFolder, testCase.Script));
