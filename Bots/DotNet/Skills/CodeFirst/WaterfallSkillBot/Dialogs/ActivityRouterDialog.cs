@@ -36,7 +36,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs
         {
             AddDialog(new CardDialog(httpContextAccessor));
             AddDialog(new WaitForProactiveDialog(httpContextAccessor));
-            AddDialog(new AttachmentDialog());
+            AddDialog(new MessageWithAttachmentDialog());
             AddDialog(new AuthDialog(configuration));
             AddDialog(new SsoSkillDialog(configuration));
             AddDialog(new FileUploadDialog());
@@ -112,8 +112,8 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs
                 case "Proactive":
                     return await stepContext.BeginDialogAsync(FindDialog(nameof(WaitForProactiveDialog)).Id, cancellationToken: cancellationToken);
 
-                case "Attachment":
-                    return await stepContext.BeginDialogAsync(FindDialog(nameof(AttachmentDialog)).Id, cancellationToken: cancellationToken);
+                case "MessageWithAttachment":
+                    return await stepContext.BeginDialogAsync(FindDialog(nameof(MessageWithAttachmentDialog)).Id, cancellationToken: cancellationToken);
 
                 case "Auth":
                     return await stepContext.BeginDialogAsync(FindDialog(nameof(AuthDialog)).Id, cancellationToken: cancellationToken);
