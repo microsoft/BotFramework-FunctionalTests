@@ -36,7 +36,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs
         {
             AddDialog(new CardDialog(httpContextAccessor));
             AddDialog(new WaitForProactiveDialog(httpContextAccessor));
-            AddDialog(new AttachmentDialog());
+            AddDialog(new AttachmentDialog(new Uri($"{httpContextAccessor.HttpContext.Request.Scheme}://{httpContextAccessor.HttpContext.Request.Host.Value}")));    
             AddDialog(new AuthDialog(configuration));
             AddDialog(new SsoSkillDialog(configuration));
             AddDialog(new FileUploadDialog());

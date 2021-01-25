@@ -1,17 +1,14 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using AdaptiveCards;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.TraceExtensions;
 using Microsoft.Bot.Schema;
-using Microsoft.Bot.Schema.Teams;
 using Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Attachments;
 using Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Auth;
 using Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Cards;
@@ -20,8 +17,7 @@ using Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Proac
 using Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Sso;
 using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.FileUpload;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using Newtonsoft.Json
 
 namespace Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs
 {
@@ -35,7 +31,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs
         {
             AddDialog(new CardDialog(httpContextAccessor, clientFactory));
             AddDialog(new WaitForProactiveDialog(httpContextAccessor));
-            AddDialog(new AttachmentDialog());
+            AddDialog(new AttachmentDialog(new Uri($"{httpContextAccessor.HttpContext.Request.Scheme}://{httpContextAccessor.HttpContext.Request.Host.Value}"))));
             AddDialog(new AuthDialog(configuration));
             AddDialog(new SsoSkillDialog(configuration));
             AddDialog(new EchoDialog());

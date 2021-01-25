@@ -17,10 +17,12 @@ namespace Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.A
     public class AttachmentDialog : ComponentDialog
     {
         private const string Picture = "architecture-resize.png";
+        private readonly Uri _uri;
 
-        public AttachmentDialog()
+        public AttachmentDialog(Uri uri)
              : base(nameof(AttachmentDialog))
         {
+            _uri = uri;
             AddDialog(new ChoicePrompt("AttachmentTypePrompt"));
             AddDialog(new ChoicePrompt("EndPrompt"));
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[] { SelectAttachmentAsync, HandleAttachmentAsync, FinalStepAsync }));
@@ -37,17 +39,6 @@ namespace Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.A
                 Name = $@"Files\{Picture}",
                 ContentType = "image/png",
                 ContentUrl = $"data:image/png;base64,{imageData}",
-            };
-        }
-
-        private static Attachment GetInternetAttachment()
-        {
-            // ContentUrl must be HTTPS.
-            return new Attachment
-            {
-                Name = $@"Files\{Picture}",
-                ContentType = "image/png",
-                ContentUrl = "https://docs.microsoft.com/en-us/bot-framework/media/how-it-works/architecture-resize.png",
             };
         }
 
@@ -163,6 +154,17 @@ namespace Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.A
             }
 
             return new DialogTurnResult(DialogTurnStatus.Complete);
+        }
+
+        private Attachment GetInternetAttachment()
+        {
+            // ContentUrl must be HTTPS.
+            return new Attachment
+            {
+                Name = $@"Files\{Picture}",
+                ContentType = "image/png",
+                ContentUrl = $"{_uri}api/attachments",
+            };
         }
     }
 }

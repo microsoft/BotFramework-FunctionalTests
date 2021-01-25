@@ -91,7 +91,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot
                 });
 
             // Uncomment this to support HTTPS.
-            // app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
         }
     }
 }

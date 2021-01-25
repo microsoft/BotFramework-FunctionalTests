@@ -14,6 +14,7 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Teams;
 using Microsoft.Bot.Schema;
 using Microsoft.Bot.Schema.Teams;
+using Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Cards;
 using Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Proactive;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -113,7 +114,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Bots
             // This Messaging Extension example allows the user to check a box to include an image with the
             // shared message.  This demonstrates sending custom parameters along with the message payload.
             var includeImage = ((JObject)action.Data)["includeImage"]?.ToString();
-            if (!string.IsNullOrEmpty(includeImage) && bool.TrueString == includeImage)
+            if (!string.IsNullOrEmpty(includeImage) && includeImage == bool.TrueString)
             {
                 heroCard.Images = new List<CardImage>
                 {
