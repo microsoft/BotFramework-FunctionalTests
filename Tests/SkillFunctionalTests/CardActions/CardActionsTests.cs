@@ -18,8 +18,7 @@ namespace SkillFunctionalTests.CardActions
     [Trait("TestCategory", "CardActions")]
     public class CardActionsTests : ScriptTestBase
     {
-        private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/CardActions/SourceTestScripts";
-        private readonly string _transcriptsFolder = Directory.GetCurrentDirectory() + @"/CardActions/SourceTranscripts";
+        private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/CardActions/TestScripts";
 
         public CardActionsTests(ITestOutputHelper output)
             : base(output)
