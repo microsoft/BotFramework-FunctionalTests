@@ -113,7 +113,7 @@ namespace TranscriptTestRunner
             return idMatch.Success;
         }
 
-        private static bool IschannelId(string value)
+        private static bool IsChannelId(string value)
         {
             return value.ToUpper(CultureInfo.InvariantCulture) == "EMULATOR";
         }
@@ -226,7 +226,7 @@ namespace TranscriptTestRunner
                     return false;
                 }
 
-                return IsGuid(value) || IsDateTime(value) || IsId(value) || IsServiceUrl(value) || IschannelId(value);
+                return IsGuid(value) || IsDateTime(value) || IsId(value) || IsServiceUrl(value) || IsChannelId(value);
             });
 
             return token.ToString();
