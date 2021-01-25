@@ -11,7 +11,7 @@
   <ItemGroup>
     <None Remove="Dialogs\Cards\Files\music.mp3" />
     <None Remove="Dialogs\Cards\Files\teams-logo.png" />
-    <None Remove="Dialogs\Attachments\Files\architecture-resize.png" />
+    <None Remove="Dialogs\MessageWithAttachment\Files\architecture-resize.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -21,7 +21,7 @@
     <Content Include="Dialogs\Cards\Files\teams-logo.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Dialogs\Attachments\Files\architecture-resize.png">
+    <Content Include="Dialogs\MessageWithAttachment\Files\architecture-resize.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

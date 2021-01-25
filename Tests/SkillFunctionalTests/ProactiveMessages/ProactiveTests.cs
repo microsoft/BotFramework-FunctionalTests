@@ -19,8 +19,7 @@ namespace SkillFunctionalTests.ProactiveMessages
     [Trait("TestCategory", "ProactiveMessages")]
     public class ProactiveTests : ScriptTestBase
     {
-        private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/ProactiveMessages/SourceTestScripts";
-        private readonly string _transcriptsFolder = Directory.GetCurrentDirectory() + @"/ProactiveMessages/SourceTranscripts";
+        private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/ProactiveMessages/TestScripts";
 
         public ProactiveTests(ITestOutputHelper output)
             : base(output)

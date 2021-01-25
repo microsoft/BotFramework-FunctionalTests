@@ -271,7 +271,7 @@ namespace TranscriptTestRunner
             _transcriptConverter = new TranscriptConverter
             {
                 EmulatorTranscript = transcriptPath,
-                TestScript = $"{Directory.GetCurrentDirectory()}/TestScripts/{Path.GetFileNameWithoutExtension(transcriptPath)}.json"
+                TestScript = $"{Directory.GetCurrentDirectory()}/ConvertedTestTranscripts/{Path.GetFileNameWithoutExtension(transcriptPath)}.json"
             };
 
             _transcriptConverter.Convert();

@@ -16,8 +16,7 @@ namespace SkillFunctionalTests.LegacyTests
     [Trait("TestCategory", "FunctionalTests")]
     public class SimpleHostBotToEchoSkillTest : ScriptTestBase
     {
-        private readonly string _transcriptsFolder = Directory.GetCurrentDirectory() + @"/LegacyTests/SourceTranscripts";
-        private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/LegacyTests/SourceTestScripts";
+        private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/LegacyTests/TestScripts";
 
         public SimpleHostBotToEchoSkillTest(ITestOutputHelper output)
             : base(output)
@@ -30,7 +29,7 @@ namespace SkillFunctionalTests.LegacyTests
         public async Task RunScripts(string transcript)
         {
             var runner = new XUnitTestRunner(new TestClientFactory(ClientType.DirectLine, TestClientOptions[HostBot.SimpleHostBotDotNet], Logger).GetTestClient(), TestRequestTimeout, Logger);
-            await runner.RunTestAsync(Path.Combine(_transcriptsFolder, transcript));
+            await runner.RunTestAsync(Path.Combine(_testScriptsFolder, transcript));
         }
 
         [Fact]

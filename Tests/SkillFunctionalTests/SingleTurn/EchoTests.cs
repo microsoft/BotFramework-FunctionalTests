@@ -20,8 +20,7 @@ namespace SkillFunctionalTests.SingleTurn
     [Trait("TestCategory", "SingleTurn")]
     public class EchoTests : ScriptTestBase
     {
-        private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/SingleTurn/SourceTestScripts";
-        private readonly string _transcriptsFolder = Directory.GetCurrentDirectory() + @"/SingleTurn/SourceTranscripts";
+        private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/SingleTurn/TestScripts";
 
         public EchoTests(ITestOutputHelper output)
             : base(output)

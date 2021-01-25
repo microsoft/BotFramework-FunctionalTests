@@ -13,14 +13,14 @@ using TranscriptTestRunner.XUnit;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace SkillFunctionalTests.CardActions
+namespace SkillFunctionalTests.MessageWithAttachment
 {
-    [Trait("TestCategory", "CardActions")]
-    public class CardActionsTests : ScriptTestBase
+    [Trait("TestCategory", "Attachments")]
+    public class MessageWithAttachmentTests : ScriptTestBase
     {
-        private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/CardActions/TestScripts";
+        private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/MessageWithAttachment/TestScripts";
 
-        public CardActionsTests(ITestOutputHelper output)
+        public MessageWithAttachmentTests(ITestOutputHelper output)
             : base(output)
         {
         }
@@ -28,10 +28,9 @@ namespace SkillFunctionalTests.CardActions
         public static IEnumerable<object[]> TestCases()
         {
             var clientTypes = new List<ClientType> { ClientType.DirectLine };
-            
             var deliverModes = new List<string>
             {
-                DeliveryModes.Normal
+                DeliveryModes.Normal,
             };
 
             var hostBots = new List<HostBot>
@@ -56,22 +55,11 @@ namespace SkillFunctionalTests.CardActions
 
             var scripts = new List<string>
             {
-                "BotAction.json",
-                "TaskModule.json",
-                "SubmitAction.json",
-                "Hero.json",
-                "Thumbnail.json",
-                "Receipt.json",
-                "SignIn.json",
-                "Carousel.json",
-                "List.json",
-                "O365.json",
-                "Animation.json",
-                "Audio.json",
-                "Video.json"
+                "MessageWithAttachment.json",
             };
 
             var testCaseBuilder = new TestCaseBuilder();
+
             var testCases = testCaseBuilder.BuildTestCases(clientTypes, deliverModes, hostBots, targetSkills, scripts);
             foreach (var testCase in testCases)
             {
@@ -89,7 +77,6 @@ namespace SkillFunctionalTests.CardActions
             var options = TestClientOptions[testCase.HostBot];
             var runner = new XUnitTestRunner(new TestClientFactory(testCase.ClientType, options, Logger).GetTestClient(), TestRequestTimeout, Logger);
 
-            await runner.RunTestAsync(Path.Combine(_testScriptsFolder, "WaterfallGreeting.json"));
             await runner.RunTestAsync(Path.Combine(_testScriptsFolder, testCase.Script));
         }
     }
