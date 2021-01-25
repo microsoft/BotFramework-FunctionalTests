@@ -1,0 +1,211 @@
+#
+# Deletes resources from Deploy & Shared Pipelines for the Skills Functional Tests.
+#
+
+# "name" here defines the build number format. Build number is accessed via $(Build.BuildNumber)
+name: $(Build.BuildId)
+trigger: none
+pr: none
+
+variables:
+  AppServicePlan: 'bffnbotsappservicewin'
+  AppServicePlanLinux: 'bffnbotsappservicelinux'
+  AppInsights: 'bffnappinsights'
+  CosmosDB: 'bffnbotstatedb'
+  KeyVault: 'bffnbotkeyvault'
+  # AzureSubscription: define in Azure
+  # SharedResourceGroup: define in Azure
+  # DeployResourceGroup: define in Azure
+
+pool:
+  vmImage: 'windows-2019'
+
+stages:
+  - stage: 'Deploy_DotNet_ResourceGroup'
+    displayName: "[Deploy] Delete DotNet Bots Resource Group"
+    dependsOn: []
+    jobs:
+      - job: 'Delete'
+        displayName: "Delete DotNet bots resource group"
+        steps:
+          - template: ../common/deleteResourceGroup.yml
+            parameters:
+              name: "$(DeployResourceGroup)-DotNet"
+
+  - stage: 'Deploy_Js_ResourceGroup'
+    displayName: "[Deploy] Delete Js Bots Resource Group"
+    dependsOn: []
+    jobs:
+      - job: 'Delete'
+        displayName: 'Delete Js bots resource group'
+        steps:
+          - template: ../common/deleteResourceGroup.yml
+            parameters:
+              name: "$(DeployResourceGroup)-Js"
+
+  - stage: 'Shared_Windows_AppServicePlan'
+    displayName: '[Shared] Delete Windows App Service Plan'
+    dependsOn: 
+      - Deploy_DotNet_ResourceGroup
+      - Deploy_Js_ResourceGroup
+    jobs:
+      - job: 'Delete'
+        displayName: 'Delete ${{ variables.AppServicePlan }}'
+        steps:
+          - task: AzureCLI@2
+            displayName: 'Delete Windows App Service Plan'
+            inputs:
+              azureSubscription: $(AzureSubscription)
+              scriptType: ps
+              scriptLocation: inlineScript
+              inlineScript: |
+                Write-Host "Looking for '${{ variables.AppServicePlan }}'...";
+                $exists = az appservice plan show --name "${{ variables.AppServicePlan }}" --resource-group "$(SharedResourceGroup)"
+                if ($exists) {
+                  Write-Host "Deleting '${{ variables.AppServicePlan }}'...";
+                  az appservice plan delete --name "${{ variables.AppServicePlan }}" --resource-group "$(SharedResourceGroup)" --yes
+                } else {
+                  Write-Host "No pre-existing '${{ variables.AppServicePlan }}' resource found.";
+                }
+
+  - stage: 'Shared_Linux_AppServicePlan'
+    displayName: '[Shared] Delete Linux App Service Plan'
+    dependsOn: []
+    jobs:
+      - job: 'Delete'
+        displayName: 'Delete ${{ variables.AppServicePlanLinux }}'
+        steps:
+          - task: AzureCLI@2
+            displayName: 'Delete Linux App Service Plan'
+            inputs:
+              azureSubscription: $(AzureSubscription)
+              scriptType: ps
+              scriptLocation: inlineScript
+              inlineScript: |
+                Write-Host "Looking for '${{ variables.AppServicePlanLinux }}'...";
+                $exists = az appservice plan show --name "${{ variables.AppServicePlanLinux }}" --resource-group "$(SharedResourceGroup)-linux"
+                if ($exists) {
+                  Write-Host "Deleting '${{ variables.AppServicePlanLinux }}'...";
+                  az appservice plan delete --name "${{ variables.AppServicePlanLinux }}" --resource-group "$(SharedResourceGroup)-linux" --yes
+                } else {
+                  Write-Host "No pre-existing '${{ variables.AppServicePlanLinux }}' resource found.";
+                }
+
+  - stage: 'Shared_AppInsights'
+    displayName: '[Shared] Delete App Insights'
+    dependsOn: []
+    jobs:
+      - job: 'Delete'
+        displayName: 'Delete ${{ variables.AppInsights }}'
+        steps:
+          - task: AzureCLI@2
+            displayName: 'Delete App Insights'
+            inputs:
+              azureSubscription: $(AzureSubscription)
+              scriptType: ps
+              scriptLocation: inlineScript
+              inlineScript: |
+                az config set extension.use_dynamic_install=yes_without_prompt
+                az feature register --name AIWorkspacePreview --namespace microsoft.insights
+                Write-Host "Looking for '${{ variables.AppInsights }}'...";
+                if ((az group exists -n "$(SharedResourceGroup)") -eq 'true') {
+                  $exists = az monitor app-insights component show --app "${{ variables.AppInsights }}" --resource-group "$(SharedResourceGroup)"
+                  if ($exists) {
+                    Write-Host "Deleting '${{ variables.AppInsights }}'...";
+                    az monitor app-insights component delete --app "${{ variables.AppInsights }}" --resource-group "$(SharedResourceGroup)"
+                  } else {
+                    Write-Host "No pre-existing '${{ variables.AppInsights }}' resource found.";
+                  }
+                } else {
+                  Write-Host "No pre-existing '$(SharedResourceGroup)' group found.";
+                }
+
+  - stage: 'Shared_CosmosDB'
+    displayName: '[Shared] Delete CosmosDB'
+    dependsOn: []
+    jobs:
+      - job: 'Delete'
+        displayName: 'Delete ${{ variables.CosmosDB }}'
+        steps:
+          - task: AzureCLI@2
+            displayName: 'Delete CosmosDB'
+            inputs:
+              azureSubscription: $(AzureSubscription)
+              scriptType: ps
+              scriptLocation: inlineScript
+              inlineScript: |
+                Write-Host "Looking for '${{ variables.CosmosDB }}'...";
+                $exists = az cosmosdb check-name-exists --name "test-jmut"
+                if ($exists -eq $true) {
+                  Write-Host "Deleting '${{ variables.CosmosDB }}'...";
+                  az cosmosdb delete --name "${{ variables.CosmosDB }}" --resource-group "$(SharedResourceGroup)" --yes
+                } else {
+                  Write-Host "No pre-existing '${{ variables.CosmosDB }}' resource found.";
+                }
+
+  - stage: 'Shared_Bots_AppRegistrations'
+    displayName: '[Shared] Delete Bots App Registrations'
+    dependsOn: []
+    jobs:
+      - job: 'Delete'
+        displayName: 'Delete bots app registrations'
+        steps:
+          - template: deleteBotsAppRegistrations.yml
+            parameters:
+              keyVault: '${{ variables.KeyVault }}'
+              resourceGroup: $(SharedResourceGroup)
+
+  - stage: 'Shared_KeyVault'
+    displayName: '[Shared] Delete Key Vault'
+    dependsOn: 
+      - Shared_Bots_AppRegistrations
+    jobs:
+      - job: 'Delete'
+        displayName: 'Delete ${{ variables.KeyVault }}'
+        steps:
+          - task: AzureCLI@2
+            displayName: 'Delete Key Vault'
+            inputs:
+              azureSubscription: $(AzureSubscription)
+              scriptType: ps
+              scriptLocation: inlineScript
+              inlineScript: |
+                Write-Host "Looking for '${{ variables.KeyVault }}'...";
+                $exists = az keyvault list --resource-group "$(SharedResourceGroup)" --query "[?name == '${{ variables.KeyVault }}']" | ConvertFrom-Json
+                if ($exists) {
+                  Write-Host "Deleting '${{ variables.KeyVault }}'...";
+                  az keyvault delete --name "${{ variables.KeyVault }}" --resource-group "$(SharedResourceGroup)"
+                  az keyvault purge --name "${{ variables.KeyVault }}"
+                } else {
+                  Write-Host "No pre-existing '${{ variables.KeyVault }}' resource found.";
+                }
+
+  - stage: 'Shared_Windows_ResourceGroup'
+    displayName: '[Shared] Delete Windows Resource Group'
+    dependsOn: 
+      - Deploy_DotNet_ResourceGroup
+      - Deploy_Js_ResourceGroup
+      - Shared_Windows_AppServicePlan
+      - Shared_AppInsights
+      - Shared_CosmosDB
+      - Shared_Bots_AppRegistrations
+      - Shared_KeyVault
+    jobs:
+      - job: 'Delete'
+        displayName: 'Delete Windows resource group'
+        steps:
+          - template: ../common/deleteResourceGroup.yml
+            parameters:
+              name: "$(SharedResourceGroup)"
+
+  - stage: 'Shared_Linux_ResourceGroup'
+    displayName: '[Shared] Delete Linux Resource Group'
+    dependsOn: 
+      - Shared_Linux_AppServicePlan
+    jobs:
+      - job: 'Delete'
+        displayName: 'Delete Linux resource group'
+        steps:
+          - template: ../common/deleteResourceGroup.yml
+            parameters:
+              name: "$(SharedResourceGroup)-linux"

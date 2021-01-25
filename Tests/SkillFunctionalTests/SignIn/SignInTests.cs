@@ -9,7 +9,6 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SkillFunctionalTests.Common;
 using TranscriptTestRunner;
-using TranscriptTestRunner.XUnit;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -17,8 +16,7 @@ namespace SkillFunctionalTests.SignIn
 {
     public class SignInTests : ScriptTestBase
     {
-        private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/SignIn/SourceTestScripts";
-        private readonly string _transcriptsFolder = Directory.GetCurrentDirectory() + @"/SignIn/SourceTranscripts";
+        private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/SignIn/TestScripts";
 
         public SignInTests(ITestOutputHelper output)
             : base(output)

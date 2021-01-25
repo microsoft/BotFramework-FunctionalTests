@@ -17,8 +17,7 @@ namespace SkillFunctionalTests.Sso
 {
     public class SsoTests : ScriptTestBase
     {
-        private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/Sso/SourceTestScripts";
-        private readonly string _transcriptsFolder = Directory.GetCurrentDirectory() + @"/Sso/SourceTranscripts";
+        private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/Sso/TestScripts";
 
         public SsoTests(ITestOutputHelper output)
             : base(output)

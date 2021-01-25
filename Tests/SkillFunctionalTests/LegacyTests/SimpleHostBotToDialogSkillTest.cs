@@ -13,8 +13,7 @@ namespace SkillFunctionalTests.LegacyTests
 {
     public class SimpleHostBotToDialogSkillTest : ScriptTestBase
     {
-        private readonly string _transcriptsFolder = Directory.GetCurrentDirectory() + @"/LegacyTests/SourceTranscripts";
-        private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/LegacyTests/SourceTestScripts";
+        private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/LegacyTests/TestScripts";
 
         public SimpleHostBotToDialogSkillTest(ITestOutputHelper output)
             : base(output)
