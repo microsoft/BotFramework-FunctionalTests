@@ -4,10 +4,11 @@ parameters:
   source: ''
 
 steps:
-  - task: AzureCLI@1
+  - task: AzureCLI@2
     displayName: 'Deploy'
     inputs:
       azureSubscription: $(AzureSubscription)
+      scriptType: ps
       scriptLocation: inlineScript
       inlineScript: |
-        call az webapp deployment source config-zip --resource-group "${{ parameters.botGroup }}" --name "${{ parameters.botName }}" --src "${{ parameters.source }}"
+        az webapp deployment source config-zip --resource-group "${{ parameters.botGroup }}" --name "${{ parameters.botName }}$($env:BotNamesSuffix)" --src "${{ parameters.source }}"

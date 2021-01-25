@@ -18,7 +18,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Controllers
         [HttpGet]
         public FileResult Get()
         {
-            var path = Path.Combine(Directory.GetCurrentDirectory(), "Dialogs", "Attachments", "Files", Attachment);
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "Dialogs", "MessageWithAttachment", "Files", Attachment);
 
             return new FileStreamResult(new FileStream(path, FileMode.Open), "image/png");
         }

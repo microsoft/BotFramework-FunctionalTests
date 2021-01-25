@@ -125,7 +125,7 @@ steps:
         # Set DirectLine into FunctionalTests project
         function ConfigureAppSettings ($key, $botName, $resourceGroup) {
           # Gets the Consumer DirectLine
-          $directLine = (az bot directline show --name $botName --resource-group $resourceGroup --with-secrets true | ConvertFrom-Json).properties.properties.sites.key;
+          $directLine = (az bot directline show --name "$($botName)$($env:BotNamesSuffix)" --resource-group $resourceGroup --with-secrets true | ConvertFrom-Json).properties.properties.sites.key;
 
           $appsettingsTestProject.HostBotClientOptions[$key] = @{
             DirectLineSecret = $directLine
@@ -147,7 +147,7 @@ steps:
               }
 
               # Check if the Consumer bot resource exists.
-              $resource = az webapp list --resource-group $consumerBot.resourceGroup --query "[?name=='$($consumerBot.botName)']" | ConvertFrom-Json
+              $resource = az webapp list --resource-group $consumerBot.resourceGroup --query "[?name=='$($consumerBot.botName)$($env:BotNamesSuffix)']" | ConvertFrom-Json
 
               if (-not $resource) {
                 continue;
@@ -156,17 +156,17 @@ steps:
               ConfigureAppSettings $consumerBot.key $consumerBot.botName $consumerBot.resourceGroup
 
               # Gets the previous settings to delete it
-              $json = (az webapp config appsettings list --name $consumerBot.botName --resource-group $consumerBot.resourceGroup) | ConvertFrom-Json
+              $json = (az webapp config appsettings list --name "$($consumerBot.botName)$($env:BotNamesSuffix)" --resource-group $consumerBot.resourceGroup) | ConvertFrom-Json
               $botFrameworkSkillsNames = @($json | Where-Object { $_.name -match "BotFrameworkSkills*" -or $_.name -eq "SkillHostEndpoint" }) | Select-Object -ExpandProperty name
 
               if ($botFrameworkSkillsNames.Length -gt 0) {
                 $settings = $botFrameworkSkillsNames | ForEach-Object { $_ }
-                az webapp config appsettings delete --name $consumerBot.botName --resource-group $consumerBot.resourceGroup --setting-names $settings --output none
+                az webapp config appsettings delete --name "$($consumerBot.botName)$($env:BotNamesSuffix)" --resource-group $consumerBot.resourceGroup --setting-names $settings --output none
               }
 
               # Create settings list
               $properties = @(
-                "SkillHostEndpoint=https://$($consumerBot.botName).azurewebsites.net/api/skills"
+                "SkillHostEndpoint=https://$($consumerBot.botName)$($env:BotNamesSuffix).azurewebsites.net/api/skills"
               )
 
               $index = 0
@@ -183,7 +183,7 @@ steps:
                 }
 
                 # Check if the Skill bot resource exists.
-                $resource = az webapp list --resource-group $skillBot.resourceGroup --query "[?name=='$($skillBot.botName)']" | ConvertFrom-Json
+                $resource = az webapp list --resource-group $skillBot.resourceGroup --query "[?name=='$($skillBot.botName)$($env:BotNamesSuffix)']" | ConvertFrom-Json
 
                 if (-not $resource) {
                     continue;
@@ -193,16 +193,16 @@ steps:
                     $types.DotNet { 
                       $properties += "BotFrameworkSkills:$($index):Id=$($skillBot.key)";
                       $properties += "BotFrameworkSkills:$($index):AppId=$($skillBot.appId)";
-                      $properties += "BotFrameworkSkills:$($index):SkillEndpoint=https://$($skillBot.botName).azurewebsites.net/api/messages";
+                      $properties += "BotFrameworkSkills:$($index):SkillEndpoint=https://$($skillBot.botName)$($env:BotNamesSuffix).azurewebsites.net/api/messages";
                     }
                     $types.Js { 
                       $properties += "skill_$($skillBot.key)_appId=$($skillBot.appId)";
-                      $properties += "skill_$($skillBot.key)_endpoint=https://$($skillBot.botName).azurewebsites.net/api/messages";
+                      $properties += "skill_$($skillBot.key)_endpoint=https://$($skillBot.botName)$($env:BotNamesSuffix).azurewebsites.net/api/messages";
                     }
                     $types.Composer { 
                       # NOTE: Currently Composer Host bot only supports one Skill.
                       $properties += "skill__EchoSkillBot__msAppId=$($skillBot.appId)";
-                      $properties += "skill__EchoSkillBot__endpointUrl=https://$($skillBot.botName).azurewebsites.net/api/messages";
+                      $properties += "skill__EchoSkillBot__endpointUrl=https://$($skillBot.botName)$($env:BotNamesSuffix).azurewebsites.net/api/messages";
                     }
                 }
 
@@ -211,7 +211,7 @@ steps:
 
               $settings = $properties | ForEach-Object { $_ }
 
-              $appsettings = az webapp config appsettings set --name $consumerBot.botName --resource-group $consumerBot.resourceGroup --settings $settings | ConvertFrom-Json
+              $appsettings = az webapp config appsettings set --name "$($consumerBot.botName)$($env:BotNamesSuffix)" --resource-group $consumerBot.resourceGroup --settings $settings | ConvertFrom-Json
 
               Write-Host "`nConsumer AppSettings: $($consumerBot.key)";
 

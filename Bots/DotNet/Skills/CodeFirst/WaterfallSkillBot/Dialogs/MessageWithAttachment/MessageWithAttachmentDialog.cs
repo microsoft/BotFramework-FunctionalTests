@@ -14,13 +14,13 @@ using Microsoft.Bot.Schema;
 
 namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Attachments
 {
-    public class AttachmentDialog : ComponentDialog
+    public class MessageWithAttachmentDialog : ComponentDialog
     {
         private const string Picture = "architecture-resize.png";
         private readonly Uri _uri;
 
-        public AttachmentDialog(Uri uri)
-             : base(nameof(AttachmentDialog))
+        public MessageWithAttachmentDialog(Uri uri)
+             : base(nameof(MessageWithAttachmentDialog))
         {
             _uri = uri;
             AddDialog(new ChoicePrompt("AttachmentTypePrompt"));
@@ -31,7 +31,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Attach
 
         private static Attachment GetInlineAttachment()
         {
-            var imagePath = Path.Combine(Environment.CurrentDirectory, @"Dialogs/Attachments/Files", Picture);
+            var imagePath = Path.Combine(Environment.CurrentDirectory, @"Dialogs/MessageWithAttachment/Files", Picture);
             var imageData = Convert.ToBase64String(File.ReadAllBytes(imagePath));
 
             return new Attachment
