@@ -5,11 +5,13 @@
     <LangVersion>latest</LangVersion>
     <AssemblyName>Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot</AssemblyName>
     <RootNamespace>Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot</RootNamespace>
+    <UserSecretsId>cca62821-0d1d-4b4d-8e5b-8ee934324a2c</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="Dialogs\Cards\Files\music.mp3" />
     <None Remove="Dialogs\Cards\Files\teams-logo.png" />
+    <None Remove="Dialogs\MessageWithAttachment\Files\architecture-resize.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -17,6 +19,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Dialogs\Cards\Files\teams-logo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Dialogs\MessageWithAttachment\Files\architecture-resize.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

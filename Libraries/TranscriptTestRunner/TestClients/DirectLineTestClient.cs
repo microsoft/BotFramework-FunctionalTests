@@ -213,7 +213,7 @@ namespace TranscriptTestRunner.TestClients
                 // Add activities to the queue
                 foreach (var dlActivity in activitySet.Activities)
                 {
-                    if (dlActivity.From.Id == _botId)
+                    if (dlActivity.From.Id.StartsWith(_botId, StringComparison.CurrentCultureIgnoreCase))
                     {
                         // Convert the DL Activity object to a BF activity object.
                         var botActivity = JsonConvert.DeserializeObject<BotActivity>(JsonConvert.SerializeObject(dlActivity));
