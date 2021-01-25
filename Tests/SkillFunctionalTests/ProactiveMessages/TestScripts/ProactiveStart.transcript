@@ -1,0 +1,275 @@
+[
+  {
+    "type": "conversationUpdate",
+    "membersAdded": [
+      {
+        "id": "1194bd50-5ec9-11eb-b04a-9f26b6ae8831",
+        "name": "Bot"
+      },
+      {
+        "id": "4945580b-e1c4-44ef-9e29-f28e0207dc96",
+        "name": "User"
+      }
+    ],
+    "membersRemoved": [],
+    "channelId": "emulator",
+    "conversation": {
+      "id": "2110f910-5ec9-11eb-b04a-9f26b6ae8831|livechat"
+    },
+    "id": "211e6690-5ec9-11eb-b3fe-076f0ef20531",
+    "localTimestamp": "2021-01-24T23:52:30-05:00",
+    "recipient": {
+      "id": "1194bd50-5ec9-11eb-b04a-9f26b6ae8831",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "timestamp": "2021-01-25T04:52:30.201Z",
+    "from": {
+      "id": "4945580b-e1c4-44ef-9e29-f28e0207dc96",
+      "name": "User",
+      "role": "user"
+    },
+    "locale": "en-US",
+    "serviceUrl": "http://localhost:56454"
+  },
+  {
+    "type": "message",
+    "serviceUrl": "http://localhost:56454",
+    "channelId": "emulator",
+    "from": {
+      "id": "1194bd50-5ec9-11eb-b04a-9f26b6ae8831",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "conversation": {
+      "id": "2110f910-5ec9-11eb-b04a-9f26b6ae8831|livechat"
+    },
+    "recipient": {
+      "id": "4945580b-e1c4-44ef-9e29-f28e0207dc96",
+      "role": "user"
+    },
+    "attachmentLayout": "list",
+    "locale": "en-US",
+    "speak": "Welcome to the waterfall host bot",
+    "inputHint": "acceptingInput",
+    "attachments": [
+      {
+        "contentType": "application/vnd.microsoft.card.adaptive",
+        "content": {
+          "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+          "type": "AdaptiveCard",
+          "version": "1.0",
+          "body": [
+            {
+              "type": "Image",
+              "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtB3AwMUeNoq4gUBGe6Ocj8kyh3bXa9ZbV7u1fVKQoyKFHdkqU",
+              "size": "stretch"
+            },
+            {
+              "type": "TextBlock",
+              "spacing": "Medium",
+              "size": "Medium",
+              "weight": "Bolder",
+              "text": "Welcome to the Skill Dialog Sample!",
+              "wrap": true,
+              "maxLines": 0,
+              "color": "Accent"
+            },
+            {
+              "type": "TextBlock",
+              "size": "default",
+              "text": "This sample allows you to connect to a skill using a SkillDialog and invoke several actions.",
+              "wrap": true,
+              "maxLines": 0
+            }
+          ]
+        }
+      }
+    ],
+    "entities": [],
+    "replyToId": "211e6690-5ec9-11eb-b3fe-076f0ef20531",
+    "id": "212173d0-5ec9-11eb-b3fe-076f0ef20531",
+    "localTimestamp": "2021-01-24T23:52:30-05:00",
+    "timestamp": "2021-01-25T04:52:30.220Z"
+  },
+  {
+    "type": "message",
+    "serviceUrl": "http://localhost:56454",
+    "channelId": "emulator",
+    "from": {
+      "id": "1194bd50-5ec9-11eb-b04a-9f26b6ae8831",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "conversation": {
+      "id": "2110f910-5ec9-11eb-b04a-9f26b6ae8831|livechat"
+    },
+    "recipient": {
+      "id": "4945580b-e1c4-44ef-9e29-f28e0207dc96",
+      "role": "user"
+    },
+    "locale": "en-US",
+    "text": "What skill would you like to call?",
+    "speak": "What skill would you like to call?",
+    "inputHint": "expectingInput",
+    "suggestedActions": {
+      "actions": [
+        {
+          "type": "imBack",
+          "title": "EchoSkillBot",
+          "value": "EchoSkillBot"
+        },
+        {
+          "type": "imBack",
+          "title": "WaterfallSkillBot",
+          "value": "WaterfallSkillBot"
+        }
+      ]
+    },
+    "attachments": [],
+    "entities": [],
+    "replyToId": "211e6690-5ec9-11eb-b3fe-076f0ef20531",
+    "id": "2128ede0-5ec9-11eb-b3fe-076f0ef20531",
+    "localTimestamp": "2021-01-24T23:52:30-05:00",
+    "timestamp": "2021-01-25T04:52:30.270Z"
+  },
+  {
+    "channelData": {
+      "clientActivityID": "1611550352387txgz3fjrp1",
+      "clientTimestamp": "2021-01-25T04:52:32.387Z"
+    },
+    "text": "WaterfallSkillBot",
+    "textFormat": "plain",
+    "type": "message",
+    "channelId": "emulator",
+    "from": {
+      "id": "4945580b-e1c4-44ef-9e29-f28e0207dc96",
+      "name": "User",
+      "role": "user"
+    },
+    "locale": "en-US",
+    "timestamp": "2021-01-25T04:52:32.412Z",
+    "entities": [
+      {
+        "requiresBotState": true,
+        "supportsListening": true,
+        "supportsTts": true,
+        "type": "ClientCapabilities"
+      }
+    ],
+    "conversation": {
+      "id": "2110f910-5ec9-11eb-b04a-9f26b6ae8831|livechat"
+    },
+    "id": "226fc5c0-5ec9-11eb-b3fe-076f0ef20531",
+    "localTimestamp": "2021-01-24T23:52:32-05:00",
+    "recipient": {
+      "id": "1194bd50-5ec9-11eb-b04a-9f26b6ae8831",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "serviceUrl": "http://localhost:56454"
+  },
+  {
+    "type": "message",
+    "serviceUrl": "http://localhost:56454",
+    "channelId": "emulator",
+    "from": {
+      "id": "1194bd50-5ec9-11eb-b04a-9f26b6ae8831",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "conversation": {
+      "id": "2110f910-5ec9-11eb-b04a-9f26b6ae8831|livechat"
+    },
+    "recipient": {
+      "id": "4945580b-e1c4-44ef-9e29-f28e0207dc96",
+      "role": "user"
+    },
+    "locale": "en-US",
+    "text": "Select an action # to send to **WaterfallSkillBot**.\n\nOr just type in a message and it will be forwarded to the skill as a message activity.\n\n   1. Cards\n   2. Proactive\n   3. Auth\n   4. MessageWithAttachment\n   5. Sso\n   6. FileUpload\n   7. Echo",
+    "speak": "Select an action # to send to **WaterfallSkillBot**.\n\nOr just type in a message and it will be forwarded to the skill as a message activity.",
+    "inputHint": "expectingInput",
+    "attachments": [],
+    "entities": [],
+    "replyToId": "226fc5c0-5ec9-11eb-b3fe-076f0ef20531",
+    "id": "227962b0-5ec9-11eb-b3fe-076f0ef20531",
+    "localTimestamp": "2021-01-24T23:52:32-05:00",
+    "timestamp": "2021-01-25T04:52:32.475Z"
+  },
+  {
+    "channelData": {
+      "clientActivityID": "161155035794488m2gz5wr7s",
+      "clientTimestamp": "2021-01-25T04:52:37.944Z"
+    },
+    "text": "Proactive",
+    "textFormat": "plain",
+    "type": "message",
+    "channelId": "emulator",
+    "from": {
+      "id": "4945580b-e1c4-44ef-9e29-f28e0207dc96",
+      "name": "User",
+      "role": "user"
+    },
+    "locale": "en-US",
+    "timestamp": "2021-01-25T04:52:37.965Z",
+    "conversation": {
+      "id": "2110f910-5ec9-11eb-b04a-9f26b6ae8831|livechat"
+    },
+    "id": "25bf17d0-5ec9-11eb-b3fe-076f0ef20531",
+    "localTimestamp": "2021-01-24T23:52:37-05:00",
+    "recipient": {
+      "id": "1194bd50-5ec9-11eb-b04a-9f26b6ae8831",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "serviceUrl": "http://localhost:56454"
+  },
+  {
+    "type": "trace",
+    "timestamp": "2021-01-25T04:52:38.086Z",
+    "serviceUrl": "http://localhost:56454",
+    "channelId": "emulator",
+    "from": {
+      "id": "1194bd50-5ec9-11eb-b04a-9f26b6ae8831",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "conversation": {
+      "id": "2110f910-5ec9-11eb-b04a-9f26b6ae8831|livechat"
+    },
+    "recipient": {
+      "id": "4945580b-e1c4-44ef-9e29-f28e0207dc96",
+      "role": "user"
+    },
+    "locale": "en-US",
+    "replyToId": "25bf17d0-5ec9-11eb-b3fe-076f0ef20531",
+    "label": "Got ActivityType: event",
+    "name": "ActivityRouterDialog.ProcessActivityAsync()",
+    "id": "25d18e60-5ec9-11eb-b3fe-076f0ef20531",
+    "localTimestamp": "2021-01-24T23:52:38-05:00"
+  },
+  {
+    "type": "trace",
+    "timestamp": "2021-01-25T04:52:38.101Z",
+    "serviceUrl": "http://localhost:56454",
+    "channelId": "emulator",
+    "from": {
+      "id": "1194bd50-5ec9-11eb-b04a-9f26b6ae8831",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "conversation": {
+      "id": "2110f910-5ec9-11eb-b04a-9f26b6ae8831|livechat"
+    },
+    "recipient": {
+      "id": "4945580b-e1c4-44ef-9e29-f28e0207dc96",
+      "role": "user"
+    },
+    "locale": "en-US",
+    "replyToId": "25bf17d0-5ec9-11eb-b3fe-076f0ef20531",
+    "label": "Name: Proactive. Value: ",
+    "name": "ActivityRouterDialog.OnEventActivityAsync()",
+    "id": "25d3d850-5ec9-11eb-b3fe-076f0ef20531",
+    "localTimestamp": "2021-01-24T23:52:38-05:00"
+  }
+]

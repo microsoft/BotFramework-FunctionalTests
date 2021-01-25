@@ -20,7 +20,7 @@ namespace SkillFunctionalTests.LegacyTests
     [Trait("TestCategory", "SkipForV3Bots")]
     public class OAuthSkillTest : ScriptTestBase
     {
-        private readonly string _transcriptsFolder = Directory.GetCurrentDirectory() + @"/LegacyTests/SourceTranscripts";
+        private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/LegacyTests/TestScripts";
 
         public OAuthSkillTest(ITestOutputHelper output)
             : base(output)
@@ -34,7 +34,7 @@ namespace SkillFunctionalTests.LegacyTests
             var signInUrl = string.Empty;
             
             // Execute the first part of the conversation.
-            await runner.RunTestAsync(Path.Combine(_transcriptsFolder, "ShouldSignIn1.transcript"));
+            await runner.RunTestAsync(Path.Combine(_testScriptsFolder, "ShouldSignIn1.transcript"));
 
             // Obtain the signIn url.
             await runner.AssertReplyAsync(activity =>
@@ -52,7 +52,7 @@ namespace SkillFunctionalTests.LegacyTests
             await runner.ClientSignInAsync(signInUrl);
 
             // Execute the rest of the conversation.
-            await runner.RunTestAsync(Path.Combine(_transcriptsFolder, "ShouldSignIn2.transcript"));
+            await runner.RunTestAsync(Path.Combine(_testScriptsFolder, "ShouldSignIn2.transcript"));
         }
     }
 }

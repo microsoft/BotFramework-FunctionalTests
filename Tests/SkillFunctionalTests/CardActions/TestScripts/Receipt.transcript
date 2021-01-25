@@ -1,0 +1,197 @@
+[
+  {
+    "channelData": {
+      "clientActivityID": "1611063515598bcbk7wxzlzs",
+      "clientTimestamp": "2021-01-19T13:38:35.598Z"
+    },
+    "text": "Receipt",
+    "textFormat": "plain",
+    "type": "message",
+    "channelId": "emulator",
+    "from": {
+      "id": "84c0b696-d6ca-4a36-a5b8-75be49cc9585",
+      "name": "User",
+      "role": "user"
+    },
+    "locale": "",
+    "timestamp": "2021-01-19T13:38:35.644Z",
+    "conversation": {
+      "id": "9733f2e0-5a5b-11eb-856d-5fc1719d27ce|livechat"
+    },
+    "id": "a11c43c0-5a5b-11eb-9f42-afe5fddb4d6c",
+    "localTimestamp": "2021-01-19T10:38:35-03:00",
+    "recipient": {
+      "id": "e6f62e00-5a57-11eb-856d-5fc1719d27ce",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "serviceUrl": "https://a3c0daa166e8.ngrok.io"
+  },
+  {
+    "type": "message",
+    "serviceUrl": "https://a3c0daa166e8.ngrok.io",
+    "channelId": "emulator",
+    "from": {
+      "id": "e6f62e00-5a57-11eb-856d-5fc1719d27ce",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "conversation": {
+      "id": "9733f2e0-5a5b-11eb-856d-5fc1719d27ce|livechat"
+    },
+    "recipient": {
+      "id": "84c0b696-d6ca-4a36-a5b8-75be49cc9585",
+      "role": "user"
+    },
+    "attachmentLayout": "list",
+    "locale": "",
+    "inputHint": "acceptingInput",
+    "attachments": [
+      {
+        "contentType": "application/vnd.microsoft.card.receipt",
+        "content": {
+          "title": "John Doe",
+          "facts": [
+            {
+              "key": "Order Number",
+              "value": "1234"
+            },
+            {
+              "key": "Payment Method",
+              "value": "VISA 5555-****"
+            }
+          ],
+          "items": [
+            {
+              "title": "Data Transfer",
+              "image": {
+                "url": "https://github.com/amido/azure-vector-icons/raw/master/renders/traffic-manager.png"
+              },
+              "price": "$ 38.45",
+              "quantity": "368"
+            },
+            {
+              "title": "App Service",
+              "image": {
+                "url": "https://github.com/amido/azure-vector-icons/raw/master/renders/cloud-service.png"
+              },
+              "price": "$ 45.00",
+              "quantity": "720"
+            }
+          ],
+          "total": "$ 90.95",
+          "tax": "$ 7.50",
+          "buttons": [
+            {
+              "type": "openUrl",
+              "title": "More information",
+              "image": "https://account.windowsazure.com/content/6.10.1.38-.8225.160809-1618/aux-pre/images/offer-icon-freetrial.png",
+              "value": "https://azure.microsoft.com/en-us/pricing/"
+            }
+          ]
+        }
+      }
+    ],
+    "entities": [],
+    "replyToId": "a11c43c0-5a5b-11eb-9f42-afe5fddb4d6c",
+    "id": "a1b43e00-5a5b-11eb-9f42-afe5fddb4d6c",
+    "localTimestamp": "2021-01-19T10:38:36-03:00",
+    "timestamp": "2021-01-19T13:38:36.640Z"
+  },
+  {
+    "type": "message",
+    "serviceUrl": "https://a3c0daa166e8.ngrok.io",
+    "channelId": "emulator",
+    "from": {
+      "id": "e6f62e00-5a57-11eb-856d-5fc1719d27ce",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "conversation": {
+      "id": "9733f2e0-5a5b-11eb-856d-5fc1719d27ce|livechat"
+    },
+    "recipient": {
+      "id": "84c0b696-d6ca-4a36-a5b8-75be49cc9585",
+      "role": "user"
+    },
+    "locale": "",
+    "text": "What card do you want?\n\n   1. AdaptiveCardBotAction\n   2. AdaptiveCardTaskModule\n   3. AdaptiveCardSumbitAction\n   4. Hero\n   5. Thumbnail\n   6. Receipt\n   7. Signin\n   8. Carousel\n   9. List\n   10. O365\n   11. TeamsFileConsent\n   12. Animation\n   13. Audio\n   14. Video\n   15. End",
+    "speak": "What card do you want?",
+    "inputHint": "expectingInput",
+    "attachments": [],
+    "entities": [],
+    "replyToId": "a11c43c0-5a5b-11eb-9f42-afe5fddb4d6c",
+    "id": "a1dea960-5a5b-11eb-9f42-afe5fddb4d6c",
+    "localTimestamp": "2021-01-19T10:38:36-03:00",
+    "timestamp": "2021-01-19T13:38:36.918Z"
+  },
+  {
+    "channelData": {
+      "clientActivityID": "16110635218980a1zm9etg25j",
+      "clientTimestamp": "2021-01-19T13:38:41.898Z"
+    },
+    "text": "end",
+    "textFormat": "plain",
+    "type": "message",
+    "channelId": "emulator",
+    "from": {
+      "id": "84c0b696-d6ca-4a36-a5b8-75be49cc9585",
+      "name": "User",
+      "role": "user"
+    },
+    "locale": "",
+    "timestamp": "2021-01-19T13:38:41.970Z",
+    "conversation": {
+      "id": "9733f2e0-5a5b-11eb-856d-5fc1719d27ce|livechat"
+    },
+    "id": "a4e18920-5a5b-11eb-9f42-afe5fddb4d6c",
+    "localTimestamp": "2021-01-19T10:38:41-03:00",
+    "recipient": {
+      "id": "e6f62e00-5a57-11eb-856d-5fc1719d27ce",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "serviceUrl": "https://a3c0daa166e8.ngrok.io"
+  },
+  {
+    "type": "message",
+    "serviceUrl": "https://a3c0daa166e8.ngrok.io",
+    "channelId": "emulator",
+    "from": {
+      "id": "e6f62e00-5a57-11eb-856d-5fc1719d27ce",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "conversation": {
+      "id": "9733f2e0-5a5b-11eb-856d-5fc1719d27ce|livechat"
+    },
+    "recipient": {
+      "id": "84c0b696-d6ca-4a36-a5b8-75be49cc9585",
+      "role": "user"
+    },
+    "locale": "",
+    "text": "Done with \"WaterfallSkillBot\". \n\n What skill would you like to call?",
+    "speak": "Done with \"WaterfallSkillBot\". \n\n What skill would you like to call?",
+    "inputHint": "expectingInput",
+    "suggestedActions": {
+      "actions": [
+        {
+          "type": "imBack",
+          "title": "EchoSkillBot",
+          "value": "EchoSkillBot"
+        },
+        {
+          "type": "imBack",
+          "title": "WaterfallSkillBot",
+          "value": "WaterfallSkillBot"
+        }
+      ]
+    },
+    "attachments": [],
+    "entities": [],
+    "replyToId": "a4e18920-5a5b-11eb-9f42-afe5fddb4d6c",
+    "id": "a581e7d0-5a5b-11eb-9f42-afe5fddb4d6c",
+    "localTimestamp": "2021-01-19T10:38:43-03:00",
+    "timestamp": "2021-01-19T13:38:43.021Z"
+  }
+]
