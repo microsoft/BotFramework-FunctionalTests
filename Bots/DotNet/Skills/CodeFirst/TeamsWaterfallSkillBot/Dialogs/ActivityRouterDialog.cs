@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,7 +18,7 @@ using Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Proac
 using Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Sso;
 using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.FileUpload;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json
+using Newtonsoft.Json;
 
 namespace Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs
 {
@@ -31,7 +32,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs
         {
             AddDialog(new CardDialog(httpContextAccessor, clientFactory));
             AddDialog(new WaitForProactiveDialog(httpContextAccessor));
-            AddDialog(new AttachmentDialog(new Uri($"{httpContextAccessor.HttpContext.Request.Scheme}://{httpContextAccessor.HttpContext.Request.Host.Value}"))));
+            AddDialog(new AttachmentDialog(new Uri($"{httpContextAccessor.HttpContext.Request.Scheme}://{httpContextAccessor.HttpContext.Request.Host.Value}")));
             AddDialog(new AuthDialog(configuration));
             AddDialog(new SsoSkillDialog(configuration));
             AddDialog(new EchoDialog());
