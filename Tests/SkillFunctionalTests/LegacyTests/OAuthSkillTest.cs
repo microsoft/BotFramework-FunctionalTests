@@ -30,7 +30,7 @@ namespace SkillFunctionalTests.LegacyTests
         [Fact]
         public async Task ShouldSignIn()
         {
-            var runner = new XUnitTestRunner(new TestClientFactory(ClientType.DirectLine, TestClientOptions[HostBot.SimpleHostBotDotNet]).GetTestClient(), Logger);
+            var runner = new XUnitTestRunner(new TestClientFactory(ClientType.DirectLine, TestClientOptions[HostBot.SimpleHostBotDotNet], Logger).GetTestClient(), TestRequestTimeout, Logger);
             var signInUrl = string.Empty;
             
             // Execute the first part of the conversation.
