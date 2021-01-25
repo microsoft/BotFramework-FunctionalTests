@@ -13,14 +13,14 @@ using TranscriptTestRunner.XUnit;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace SkillFunctionalTests.MultiTurn
+namespace SkillFunctionalTests.MessageWithAttachment
 {
-    public class BookFlightTests : ScriptTestBase
+    [Trait("TestCategory", "Attachments")]
+    public class MessageWithAttachmentTests : ScriptTestBase
     {
-        private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/MultiTurn/SourceTestScripts";
-        private readonly string _transcriptsFolder = Directory.GetCurrentDirectory() + @"/MultiTurn/SourceTranscripts";
+        private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/MessageWithAttachment/TestScripts";
 
-        public BookFlightTests(ITestOutputHelper output)
+        public MessageWithAttachmentTests(ITestOutputHelper output)
             : base(output)
         {
         }
@@ -31,29 +31,31 @@ namespace SkillFunctionalTests.MultiTurn
             var deliverModes = new List<string>
             {
                 DeliveryModes.Normal,
-                DeliveryModes.ExpectReplies,
             };
 
             var hostBots = new List<HostBot>
             {
                 HostBot.WaterfallHostBotDotNet,
-                HostBot.WaterfallHostBotJS,
-                HostBot.WaterfallHostBotPython,
-                HostBot.ComposerHostBotDotNet
+
+                // TODO: Enable these when the ports to JS, Python and composer are ready
+                //HostBotNames.WaterfallHostBotJS,
+                //HostBotNames.WaterfallHostBotPython,
+                //HostBotNames.ComposerHostBotDotNet
             };
 
             var targetSkills = new List<string>
             {
                 SkillBotNames.WaterfallSkillBotDotNet,
-                SkillBotNames.WaterfallSkillBotJS,
-                SkillBotNames.WaterfallSkillBotPython,
-                SkillBotNames.ComposerSkillBotDotNet
+
+                // TODO: Enable these when the ports to JS, Python and composer are ready
+                //SkillBotNames.WaterfallSkillBotJS,
+                //SkillBotNames.WaterfallSkillBotPython,
+                //SkillBotNames.ComposerSkillBotDotNet
             };
 
             var scripts = new List<string>
             {
-                "BookFlight.json",
-                "BookFlightWithInput.json",
+                "MessageWithAttachment.json",
             };
 
             var testCaseBuilder = new TestCaseBuilder();
@@ -67,17 +69,15 @@ namespace SkillFunctionalTests.MultiTurn
 
         [Theory]
         [MemberData(nameof(TestCases))]
-        public Task RunTestCases(TestCaseDataObject testData)
+        public async Task RunTestCases(TestCaseDataObject testData)
         {
             var testCase = testData.GetObject<TestCase>();
             Logger.LogInformation(JsonConvert.SerializeObject(testCase, Formatting.Indented));
 
-            // TODO: Implement tests and scripts
-            //var runner = new XUnitTestRunner(new TestClientFactory(testCase.ClientType).GetTestClient(), Logger);
-            //await runner.RunTestAsync(Path.Combine(_testScriptsFolder, testCase.Script));
+            var options = TestClientOptions[testCase.HostBot];
+            var runner = new XUnitTestRunner(new TestClientFactory(testCase.ClientType, options).GetTestClient(), Logger);
 
-            // TODO: remove this line once we implement the test and we change the method to public async task
-            return Task.CompletedTask;
+            await runner.RunTestAsync(Path.Combine(_testScriptsFolder, testCase.Script));
         }
     }
 }

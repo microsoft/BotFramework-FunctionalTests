@@ -30,13 +30,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="**/SourceTranscripts/**/*.transcript">
+    <None Update="**/TestScripts/**/*.transcript">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="**/SourceTestScripts/**/*.json">
+    <None Update="**/TestScripts/**/*.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
