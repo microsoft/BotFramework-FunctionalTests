@@ -13,8 +13,9 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
             {
                 Channels.Emulator, new List<CardOptions>
                 {
-                    CardOptions.TeamsFileConsent,
-                    CardOptions.O365
+                    CardOptions.AdaptiveCardTeamsTaskModule,
+                    CardOptions.O365,
+                    CardOptions.TeamsFileConsent
                 }
             },
             {

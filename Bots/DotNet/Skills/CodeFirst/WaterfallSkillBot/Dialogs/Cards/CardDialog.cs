@@ -112,7 +112,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
                         case CardOptions.AdaptiveCardBotAction:
                             await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeAdaptiveCard("botaction").ToAttachment()), cancellationToken);
                             break;
-                        case CardOptions.AdaptiveCardTaskModule:
+                        case CardOptions.AdaptiveCardTeamsTaskModule:
                             await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeAdaptiveCard("taskmodule").ToAttachment()), cancellationToken);
                             break;
                         case CardOptions.AdaptiveCardSumbitAction:

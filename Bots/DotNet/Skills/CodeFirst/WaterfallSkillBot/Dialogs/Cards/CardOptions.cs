@@ -10,7 +10,7 @@
         /// <summary>
         /// Adaptive card - Task module
         /// </summary>
-        AdaptiveCardTaskModule,
+        AdaptiveCardTeamsTaskModule,
 
         /// <summary>
         /// Adaptive card - Submit action
