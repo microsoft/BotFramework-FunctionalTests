@@ -103,7 +103,6 @@ stages:
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
         Parameters.solution: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3/EchoSkillBot.sln'
         Parameters.sourceLocation: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3/'
-        TemplateLocation: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3/DeploymentTemplates/template-with-new-rg.json'
       steps:
       - template: dotnetV3DeploySteps.yml
 

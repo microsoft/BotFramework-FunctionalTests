@@ -99,7 +99,7 @@ steps:
      az group create --location westus --name $(BotGroup);
 
      # set up bot channels registration, app service, app service plan
-     az deployment group create --resource-group "$(BotGroup)" --name "$(BotName)$(Build.BuildId)" --template-file "$(System.DefaultWorkingDirectory)/$(TemplateLocation)" --parameters appId="$(DeployAppId)" appSecret="$(DeployAppSecret)" botId="$(BotName)" newWebAppName="$(BotName)-$(Build.BuildId)" newAppServicePlanName="$(BotName)" appServicePlanLocation="westus" --name "$(BotName)";
+     az deployment group create --resource-group "$(BotGroup)" --name "$(BotName)$(Build.BuildId)" --template-file "build\templates\template-bot-resources-legacy-python-pre.json" --parameters appId="$(DeployAppId)" appSecret="$(DeployAppSecret)" botId="$(BotName)" newWebAppName="$(BotName)-$(Build.BuildId)" newAppServicePlanName="$(BotName)" appServicePlanLocation="westus" --name "$(BotName)";
      Set-PSDebug -Trace 0;
 
 - script: |
