@@ -3,7 +3,7 @@
   "manifestVersion": "1.7",
   "version": "1.0.0",
   "id": "{Your MS Bot ID}",
-  "packageName": "com.microsoft.botframeworkfunctionaltests.teamsskill",
+  "packageName": "com.microsoft.botframeworkfunctionaltests.teamssso",
   "developer": {
     "name": "Microsoft",
     "websiteUrl": "https://example.azurewebsites.net",
@@ -15,12 +15,12 @@
     "outline": "icon-outline.png"
   },
   "name": {
-    "short": "Teams Waterfall Skill",
-    "full": "Teams Waterfall Skill"
+    "short": "Teams SSO Auth",
+    "full": "Teams Single Sign On Sample"
   },
   "description": {
-    "short": "Teams Waterfall Skill",
-    "full": "Teams Waterfall Skill"
+    "short": "Test Teams SSO Auth",
+    "full": "This is a bot for testing Single Sign on for Teams"
   },
   "accentColor": "#FFFFFF",
   "bots": [
@@ -33,6 +33,10 @@
       "isNotificationOnly": false
     }
   ],
+  "webApplicationInfo": {
+    "id": "{Your AAD client/appID}",
+    "resource": "api://botid-{Your MS Bot ID}"
+  },
   "permissions": [
     "identity",
     "messageTeamMembers"
