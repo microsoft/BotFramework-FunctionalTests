@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Globalization;
 using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,9 +17,9 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Proact
     {
         // Message to send to users when the bot receives a Conversation Update event
         private const string NotifyMessage = "Navigate to {0}api/notify?user={1} to proactively message the user.";
+        private readonly ConcurrentDictionary<string, ContinuationParameters> _continuationParametersStore;
 
         private readonly Uri _serverUrl;
-        private readonly ConcurrentDictionary<string, ContinuationParameters> _continuationParametersStore;
 
         public WaitForProactiveDialog(IHttpContextAccessor httpContextAccessor, ConcurrentDictionary<string, ContinuationParameters> continuationParametersStore)
         {
@@ -71,7 +70,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Proact
                 OAuthScope = turnContext.TurnState.Get<string>(BotAdapter.OAuthScopeKey)
             };
 
-            _continuationParametersStore.AddOrUpdate(turnContext.Activity.From.Id, continuationParameters, (key, newValue) => continuationParameters);
+            _continuationParametersStore.AddOrUpdate(turnContext.Activity.From.Id, continuationParameters, (_, _) => continuationParameters);
         }
     }
 }
