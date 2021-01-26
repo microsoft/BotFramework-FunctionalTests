@@ -16,7 +16,7 @@
       "role": "user"
     },
     "locale": "",
-    "text": "Got proactive message with value: ${MessageId}",
+    "text": "Got proactive message for user: ${UserId}",
     "inputHint": "acceptingInput",
     "replyToId": "555308d5-334b-4189-bdf7-f15753c52270",
     "id": "857d41e0-4f62-11eb-9aff-410b1b0e908c",
