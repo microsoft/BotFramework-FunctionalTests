@@ -127,7 +127,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs
         private async Task<DialogTurnResult> SelectDeliveryModeStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             // Create the PromptOptions with the delivery modes supported.
-            const string messageText = "What delivery mode would you like to use?";
+            var messageText = stepContext.Options?.ToString() ?? "What delivery mode would you like to use?";
             const string rePromptMessageText = "That was not a valid choice, please select a valid delivery mode.";
             var choices = new List<Choice>
             {
@@ -149,15 +149,14 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs
         private async Task<DialogTurnResult> SelectSkillStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             // Set delivery mode.
-            // await _deliveryModeProperty.SetAsync(stepContext.Context, ((FoundChoice)stepContext.Result).Value, cancellationToken);
             var deliveryMode = ((FoundChoice)stepContext.Result).Value;
 
-            // Remember the skill selected by the user.
+            // Remember the delivery mode selected by the user.
             stepContext.Values[_deliveryMode] = deliveryMode;
 
             // Create the PromptOptions from the skill configuration which contain the list of configured skills.
-            var messageText = stepContext.Options?.ToString() ?? "What skill would you like to call?";
-            var repromptMessageText = "That was not a valid choice, please select a valid skill.";
+            const string messageText = "What skill would you like to call?";
+            const string repromptMessageText = "That was not a valid choice, please select a valid skill.";
             var options = new PromptOptions
             {
                 Prompt = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput),
