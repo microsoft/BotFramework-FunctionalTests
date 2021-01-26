@@ -72,7 +72,7 @@ namespace SkillFunctionalTests.ProactiveMessages
         [MemberData(nameof(TestCases))]
         public async Task RunTestCases(TestCaseDataObject testData)
         {
-            var messageId = string.Empty;
+            var userId = string.Empty;
             var url = string.Empty;
 
             var testCase = testData.GetObject<TestCase>();
@@ -91,10 +91,10 @@ namespace SkillFunctionalTests.ProactiveMessages
 
                 var message = activity.Text.Split(" ");
                 url = message[2];
-                messageId = url.Split("message=")[1];
+                userId = url.Split("user=")[1];
             });
 
-            // Get to the message's url
+            // Send a get request to the message's url to continue the conversation.
             using (var client = new HttpClient())
             {
                 await client.GetAsync(url).ConfigureAwait(false);
@@ -102,7 +102,7 @@ namespace SkillFunctionalTests.ProactiveMessages
 
             var testParams = new Dictionary<string, string>
             {
-                { "MessageId", messageId }
+                { "UserId", userId }
             };
 
             // Execute the rest of the conversation passing the messageId.
