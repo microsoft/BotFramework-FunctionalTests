@@ -16,12 +16,14 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Bots
         where T : Dialog
     {
         private readonly ConversationState _conversationState;
+        private readonly UserState _userState;
         private readonly Dialog _mainDialog;
 
-        public RootBot(ConversationState conversationState, T mainDialog)
+        public RootBot(ConversationState conversationState, T mainDialog, UserState userState)
         {
             _conversationState = conversationState;
             _mainDialog = mainDialog;
+            _userState = userState;
         }
 
         public override async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default)
@@ -56,6 +58,13 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Bots
                     await _mainDialog.RunAsync(turnContext, _conversationState.CreateProperty<DialogState>("DialogState"), cancellationToken);
                 }
             }
+        }
+
+        protected override async Task OnTokenResponseEventAsync(ITurnContext<IEventActivity> turnContext, CancellationToken cancellationToken)
+        {
+            await _conversationState.LoadAsync(turnContext, true, cancellationToken);
+            await _userState.LoadAsync(turnContext, true, cancellationToken);
+            await _mainDialog.RunAsync(turnContext, _conversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
         }
 
         // Load attachment from embedded resource.

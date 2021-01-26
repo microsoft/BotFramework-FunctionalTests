@@ -16,7 +16,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.TeamsSsoHostBot.Dialogs
         public DisplayTokenDialog(IConfiguration configuration)
             : base(nameof(DisplayTokenDialog))
         {
-            _connectionName = configuration.GetSection("ConnectionName")?.Value;
+            _connectionName = configuration.GetSection("SsoConnectionName")?.Value;
 
             var steps = new WaterfallStep[] 
             {

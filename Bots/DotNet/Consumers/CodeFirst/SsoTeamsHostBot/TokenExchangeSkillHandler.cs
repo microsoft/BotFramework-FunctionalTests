@@ -54,7 +54,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.TeamsSsoHostBot
             _conversationIdFactory = conversationIdFactory;
 
             _botId = configuration.GetSection(MicrosoftAppCredentials.MicrosoftAppIdKey)?.Value;
-            _connectionName = configuration.GetSection("ConnectionName")?.Value;
+            _connectionName = configuration.GetSection("SsoConnectionName")?.Value;
         }
 
         protected override async Task<ResourceResponse> OnSendToConversationAsync(ClaimsIdentity claimsIdentity, string conversationId, Activity activity, CancellationToken cancellationToken = default(CancellationToken))

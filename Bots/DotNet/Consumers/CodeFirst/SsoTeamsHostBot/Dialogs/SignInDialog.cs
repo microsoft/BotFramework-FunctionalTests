@@ -16,7 +16,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.TeamsSsoHostBot.Dialogs
         public SignInDialog(IConfiguration configuration)
             : base(nameof(SignInDialog))
         {
-            _connectionName = configuration.GetSection("ConnectionName")?.Value;
+            _connectionName = configuration.GetSection("SsoConnectionName")?.Value;
 
             var steps = new WaterfallStep[] 
             {
