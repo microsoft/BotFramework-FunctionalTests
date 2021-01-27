@@ -27,9 +27,11 @@
     {
       "botId": "{Your MS Bot ID}",
       "scopes": [
-        "personal"
+        "personal",
+        "groupchat",
+        "team"
       ],
-      "supportsFiles": false,
+      "supportsFiles": true,
       "isNotificationOnly": false
     }
   ],
