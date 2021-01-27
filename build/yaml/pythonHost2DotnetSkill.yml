@@ -120,7 +120,6 @@ stages:
       variables:
         HostBotName: $(PyDotNetHostBotName)
         Parameters.project: 'Tests/SkillFunctionalTests/SkillFunctionalTests.csproj'
-        Parameters.solution: 'SkillFunctionalTests.sln'
         DefaultTestFilter: ''
         DotNetTestFilter: $[ coalesce( variables['TestFilter'], variables['DefaultTestFilter'] ) ]
       steps:
