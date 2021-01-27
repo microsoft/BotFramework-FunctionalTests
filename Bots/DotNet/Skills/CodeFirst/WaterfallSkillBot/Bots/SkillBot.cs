@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Security.Principal;
 using System.Threading;
@@ -11,31 +10,25 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
-using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Proactive;
 
 namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Bots
 {
     public class SkillBot<T> : ActivityHandler
         where T : Dialog
     {
-        private readonly ConcurrentDictionary<string, ContinuationParameters> _continuationParameters;
         private readonly ConversationState _conversationState;
         private readonly Dialog _mainDialog;
         private readonly Uri _serverUrl;
 
-        public SkillBot(ConversationState conversationState, T mainDialog, ConcurrentDictionary<string, ContinuationParameters> continuationParameters, IHttpContextAccessor httpContextAccessor)
+        public SkillBot(ConversationState conversationState, T mainDialog, IHttpContextAccessor httpContextAccessor)
         {
             _conversationState = conversationState;
             _mainDialog = mainDialog;
-            _continuationParameters = continuationParameters;
             _serverUrl = new Uri($"{httpContextAccessor.HttpContext.Request.Scheme}://{httpContextAccessor.HttpContext.Request.Host.Value}");
         }
 
         public override async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default)
         {
-            // Store continuation parameters for proactive messages.
-            AddOrUpdateContinuationParameters(turnContext);
-
             if (turnContext.Activity.Type == ActivityTypes.ConversationUpdate)
             {
                 // Let the base class handle the activity (this will trigger OnMembersAddedAsync).
@@ -69,22 +62,6 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Bots
                     await turnContext.SendActivityAsync($"You can check the skill manifest to see what it supports here: {_serverUrl}manifests/waterfallskillbot-manifest-1.0.json", cancellationToken: cancellationToken);
                 }
             }
-        }
-
-        /// <summary>
-        /// Helper to extract and store parameters we need to continue a conversation from a proactive message.
-        /// </summary>
-        /// <param name="turnContext">A turnContext instance with the parameters we need.</param>
-        private void AddOrUpdateContinuationParameters(ITurnContext turnContext)
-        {
-            var continuationParameters = new ContinuationParameters
-            {
-                ClaimsIdentity = turnContext.TurnState.Get<IIdentity>(BotAdapter.BotIdentityKey),
-                ConversationReference = turnContext.Activity.GetConversationReference(),
-                OAuthScope = turnContext.TurnState.Get<string>(BotAdapter.OAuthScopeKey)
-            };
-
-            _continuationParameters.AddOrUpdate(continuationParameters.ConversationReference.User.Id, continuationParameters, (key, newValue) => continuationParameters);
         }
     }
 }
