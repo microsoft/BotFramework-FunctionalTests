@@ -16,5 +16,7 @@ namespace SkillFunctionalTests.Common
         public const string WaterfallSkillBotJS = "WaterfallSkillBotJS";
         public const string WaterfallSkillBotPython = "WaterfallSkillBotPython";
         public const string ComposerSkillBotDotNet = "ComposerSkillBotDotnet";
+
+        public const string EchoSkillBot = "EchoSkillBot";
     }
 }

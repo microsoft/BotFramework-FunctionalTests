@@ -11,6 +11,8 @@ using Xunit.Abstractions;
 
 namespace SkillFunctionalTests.LegacyTests
 {
+    [Trait("TestCategory", "FunctionalTests")]
+    [Trait("TestCategory", "Legacy")]
     public class SimpleHostBotToDialogSkillTest : ScriptTestBase
     {
         private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/LegacyTests/TestScripts";
@@ -23,7 +25,7 @@ namespace SkillFunctionalTests.LegacyTests
         [Fact(Skip = "Skipped until DialogSkillBot is supported.")]
         public async Task DialogSkillShouldConnect()
         {
-            var runner = new XUnitTestRunner(new TestClientFactory(ClientType.DirectLine, TestClientOptions[HostBot.SimpleHostBotDotNet], Logger).GetTestClient(), TestRequestTimeout, Logger);
+            var runner = new XUnitTestRunner(new TestClientFactory(ClientType.DirectLine, TestClientOptions[HostBot.EchoHostBot], Logger).GetTestClient(), TestRequestTimeout, Logger);
             await runner.RunTestAsync(Path.Combine(_testScriptsFolder, "DialogSkill.json"));
         }
     }
