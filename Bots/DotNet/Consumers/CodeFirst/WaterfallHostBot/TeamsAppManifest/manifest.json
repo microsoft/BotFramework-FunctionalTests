@@ -2,8 +2,13 @@
   "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.7/MicrosoftTeams.schema.json",
   "manifestVersion": "1.7",
   "version": "1.0.0",
+<<<<<<< HEAD
   "id": "",
   "packageName": "com.microsoft.botframeworkfunctionaltests.teamswaterfallhost",
+=======
+  "id": "93391624-182e-4733-bc6f-fff777cc9dff",
+  "packageName": "com.microsoft.botframeworkfunctionaltests.teamsskill",
+>>>>>>> 4432f1d... saving changes while testing
   "developer": {
     "name": "Microsoft",
     "websiteUrl": "https://example.azurewebsites.net",
@@ -25,7 +30,11 @@
   "accentColor": "#FFFFFF",
   "bots": [
     {
+<<<<<<< HEAD
       "botId": "",
+=======
+      "botId": "93391624-182e-4733-bc6f-fff777cc9dff",
+>>>>>>> 4432f1d... saving changes while testing
       "scopes": [
         "personal",
         "groupchat",
@@ -35,6 +44,10 @@
       "isNotificationOnly": false
     }
   ],
+  "webApplicationInfo": {
+    "id": "5a9aab0e-7411-4d08-bc23-bc8731e768fb",
+    "resource": "api://botid-93391624-182e-4733-bc6f-fff777cc9dff"
+  },
   "permissions": [
     "identity",
     "messageTeamMembers"
