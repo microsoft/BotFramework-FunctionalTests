@@ -1,0 +1,27 @@
+parameters:
+  resourceGroup: ''
+  resourceName: ''
+
+steps:
+  - task: AzureCLI@2
+    displayName: 'Delete pre-existing bot resources'
+    inputs:
+      azureSubscription: $(AzureSubscription)
+      scriptType: ps
+      scriptLocation: inlineScript
+      inlineScript: |
+        $group = "${{ parameters.resourceGroup }}"
+        $resource = "${{ parameters.resourceName }}$($env:BotNamesSuffix)"
+
+        $existsGroup = (az group exists --name "$group") -eq 'true'
+        if (-not $existsGroup) {
+          Write-Host "Resource Group does not exist!"
+          Write-Host "##vso[task.complete result=Failed;]"
+          return;
+        }
+
+        $message = "Deleting App Service and Bot Channel Registration ..."
+        Write-Host "[Starting] $message"
+        az webapp delete --name "$resource" --resource-group "$group"
+        az bot delete --name "$resource" --resource-group "$group"
+        Write-Host "[Finished] $message"
