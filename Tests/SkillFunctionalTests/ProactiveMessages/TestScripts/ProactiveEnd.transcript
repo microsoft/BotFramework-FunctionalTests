@@ -1,0 +1,91 @@
+[
+  {
+    "type": "message",
+    "serviceUrl": "https://a07ed5717626.ngrok.io",
+    "channelId": "emulator",
+    "from": {
+      "id": "3be11c50-4f62-11eb-b5ff-fdb5df7a03a3",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "conversation": {
+      "id": "3be33f30-4f62-11eb-9aff-410b1b0e908c|livechat"
+    },
+    "recipient": {
+      "id": "d380b153-6044-48e7-bd28-f63747480069",
+      "role": "user"
+    },
+    "locale": "",
+    "text": "Got proactive message for user: ${UserId}",
+    "inputHint": "acceptingInput",
+    "replyToId": "555308d5-334b-4189-bdf7-f15753c52270",
+    "id": "857d41e0-4f62-11eb-9aff-410b1b0e908c",
+    "localTimestamp": "2021-01-05T11:30:12-03:00",
+    "timestamp": "2021-01-05T14:30:12.989Z"
+  },
+  {
+    "type": "message",
+    "serviceUrl": "https://a07ed5717626.ngrok.io",
+    "channelId": "emulator",
+    "from": {
+      "id": "3be11c50-4f62-11eb-b5ff-fdb5df7a03a3",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "conversation": {
+      "id": "3be33f30-4f62-11eb-9aff-410b1b0e908c|livechat"
+    },
+    "recipient": {
+      "id": "d380b153-6044-48e7-bd28-f63747480069",
+      "role": "user"
+    },
+    "locale": "",
+    "text": "We received a proactive message, ending the dialog",
+    "inputHint": "acceptingInput",
+    "replyToId": "555308d5-334b-4189-bdf7-f15753c52270",
+    "id": "85a9a910-4f62-11eb-9aff-410b1b0e908c",
+    "localTimestamp": "2021-01-05T11:30:13-03:00",
+    "timestamp": "2021-01-05T14:30:13.280Z"
+  },
+  {
+    "type": "message",
+    "serviceUrl": "https://a07ed5717626.ngrok.io",
+    "channelId": "emulator",
+    "from": {
+      "id": "3be11c50-4f62-11eb-b5ff-fdb5df7a03a3",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "conversation": {
+      "id": "3be33f30-4f62-11eb-9aff-410b1b0e908c|livechat"
+    },
+    "recipient": {
+      "id": "d380b153-6044-48e7-bd28-f63747480069",
+      "role": "user"
+    },
+    "locale": "",
+    "text": "Done with \"WaterfallSkillBot\". \n\n What skill would you like to call?",
+    "speak": "Done with \"WaterfallSkillBot\". \n\n What skill would you like to call?",
+    "inputHint": "expectingInput",
+    "suggestedActions": {
+      "actions": [
+        {
+          "type": "imBack",
+          "title": "EchoSkillBot",
+          "value": "EchoSkillBot"
+        },
+        {
+          "type": "imBack",
+          "title": "WaterfallSkillBot",
+          "value": "WaterfallSkillBot"
+        }
+      ]
+    },
+    "attachments": [],
+    "entities": [],
+    "replyToId": "555308d5-334b-4189-bdf7-f15753c52270",
+    "id": "85d266c0-4f62-11eb-9aff-410b1b0e908c",
+    "localTimestamp": "2021-01-05T11:30:13-03:00",
+    "timestamp": "2021-01-05T14:30:13.548Z"
+  }
+]

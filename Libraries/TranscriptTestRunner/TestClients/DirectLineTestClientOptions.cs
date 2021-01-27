@@ -19,5 +19,21 @@ namespace TranscriptTestRunner.TestClients
         /// </summary>
         /// <value>The secret for the connection with the test client.</value>
         public string DirectLineSecret { get; set; }
+
+        /// <summary>
+        /// Gets or sets the timeout for starting a conversation in milliseconds (default is 120000).
+        /// </summary>
+        /// <value>
+        /// The timeout for starting a conversation (in milliseconds).
+        /// </value>
+        public int StartConversationTimeout { get; set; } = 120000;
+
+        /// <summary>
+        /// Gets or sets the maximum number of attempts to start a conversation (default is 3).
+        /// </summary>
+        /// <value>
+        /// The maximum number of attempts to start a conversation.
+        /// </value>
+        public int StartConversationMaxAttempts { get; set; } = 3;
     }
 }

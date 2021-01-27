@@ -3,10 +3,11 @@ parameters:
   botGroup: ''
 
 steps:
-- task: AzureCLI@1
+- task: AzureCLI@2
   displayName: 'Create DirectLine Channel'
   inputs:
     azureSubscription: $(AzureSubscription)
+    scriptType: ps
     scriptLocation: inlineScript
     inlineScript: |
-      call az bot directline create -n "${{ parameters.botName }}" -g "${{ parameters.botGroup }}"
+      az bot directline create -n "${{ parameters.botName }}$($env:BotNamesSuffix)" -g "${{ parameters.botGroup }}"

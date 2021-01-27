@@ -16,8 +16,7 @@ namespace SkillFunctionalTests.LegacyTests
     [Trait("TestCategory", "FunctionalTests")]
     public class SimpleHostBotToEchoSkillTest : ScriptTestBase
     {
-        private readonly string _transcriptsFolder = Directory.GetCurrentDirectory() + @"/LegacyTests/SourceTranscripts";
-        private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/LegacyTests/SourceTestScripts";
+        private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/LegacyTests/TestScripts";
 
         public SimpleHostBotToEchoSkillTest(ITestOutputHelper output)
             : base(output)
@@ -29,14 +28,14 @@ namespace SkillFunctionalTests.LegacyTests
         [InlineData("HostReceivesEndOfConversation.transcript")]
         public async Task RunScripts(string transcript)
         {
-            var runner = new XUnitTestRunner(new TestClientFactory(ClientType.DirectLine, TestClientOptions[HostBot.SimpleHostBotDotNet]).GetTestClient(), Logger);
-            await runner.RunTestAsync(Path.Combine(_transcriptsFolder, transcript));
+            var runner = new XUnitTestRunner(new TestClientFactory(ClientType.DirectLine, TestClientOptions[HostBot.SimpleHostBotDotNet], Logger).GetTestClient(), TestRequestTimeout, Logger);
+            await runner.RunTestAsync(Path.Combine(_testScriptsFolder, transcript));
         }
 
         [Fact]
         public async Task ManualTest()
         {
-            var runner = new XUnitTestRunner(new TestClientFactory(ClientType.DirectLine, TestClientOptions[HostBot.SimpleHostBotDotNet]).GetTestClient(), Logger);
+            var runner = new XUnitTestRunner(new TestClientFactory(ClientType.DirectLine, TestClientOptions[HostBot.SimpleHostBotDotNet], Logger).GetTestClient(), TestRequestTimeout, Logger);
 
             await runner.SendActivityAsync(new Activity(ActivityTypes.ConversationUpdate));
 

@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.IO;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
@@ -15,10 +16,10 @@ using Xunit.Abstractions;
 
 namespace SkillFunctionalTests.ProactiveMessages
 {
+    [Trait("TestCategory", "ProactiveMessages")]
     public class ProactiveTests : ScriptTestBase
     {
-        private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/ProactiveMessages/SourceTestScripts";
-        private readonly string _transcriptsFolder = Directory.GetCurrentDirectory() + @"/ProactiveMessages/SourceTranscripts";
+        private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/ProactiveMessages/TestScripts";
 
         public ProactiveTests(ITestOutputHelper output)
             : base(output)
@@ -31,28 +32,31 @@ namespace SkillFunctionalTests.ProactiveMessages
             var deliverModes = new List<string>
             {
                 DeliveryModes.Normal,
-                DeliveryModes.ExpectReplies,
             };
 
             var hostBots = new List<HostBot>
             {
                 HostBot.WaterfallHostBotDotNet,
-                HostBot.WaterfallHostBotJS,
-                HostBot.WaterfallHostBotPython,
-                HostBot.ComposerHostBotDotNet
+
+                // TODO: Enable these when the ports to JS, Python and composer are ready
+                //HostBotNames.WaterfallHostBotJS,
+                //HostBotNames.WaterfallHostBotPython,
+                //HostBotNames.ComposerHostBotDotNet
             };
 
             var targetSkills = new List<string>
             {
                 SkillBotNames.WaterfallSkillBotDotNet,
-                SkillBotNames.WaterfallSkillBotJS,
-                SkillBotNames.WaterfallSkillBotPython,
-                SkillBotNames.ComposerSkillBotDotNet
+
+                // TODO: Enable these when the ports to JS, Python and composer are ready
+                //SkillBotNames.WaterfallSkillBotJS,
+                //SkillBotNames.WaterfallSkillBotPython,
+                //SkillBotNames.ComposerSkillBotDotNet
             };
 
             var scripts = new List<string>
             {
-                "Proactive.json",
+                "ProactiveStart.json",
             };
 
             var testCaseBuilder = new TestCaseBuilder();
@@ -66,17 +70,43 @@ namespace SkillFunctionalTests.ProactiveMessages
 
         [Theory]
         [MemberData(nameof(TestCases))]
-        public Task RunTestCases(TestCaseDataObject testData)
+        public async Task RunTestCases(TestCaseDataObject testData)
         {
+            var userId = string.Empty;
+            var url = string.Empty;
+
             var testCase = testData.GetObject<TestCase>();
             Logger.LogInformation(JsonConvert.SerializeObject(testCase, Formatting.Indented));
-            
-            // TODO: Implement tests and scripts
-            //var runner = new XUnitTestRunner(new TestClientFactory(testCase.ClientType).GetTestClient(), Logger);
-            //await runner.RunTestAsync(Path.Combine(_testScriptsFolder, testCase.Script));
 
-            // TODO: remove this line once we implement the test and we change the method to public async task
-            return Task.CompletedTask;
+            var options = TestClientOptions[testCase.HostBot];
+            var runner = new XUnitTestRunner(new TestClientFactory(testCase.ClientType, options, Logger).GetTestClient(), TestRequestTimeout, Logger);
+            
+            // Execute the first part of the conversation.
+            await runner.RunTestAsync(Path.Combine(_testScriptsFolder, testCase.Script));
+
+            await runner.AssertReplyAsync(activity =>
+            {
+                Assert.Equal(ActivityTypes.Message, activity.Type);
+                Assert.Contains("Navigate to https:", activity.Text);
+
+                var message = activity.Text.Split(" ");
+                url = message[2];
+                userId = url.Split("user=")[1];
+            });
+
+            // Send a get request to the message's url to continue the conversation.
+            using (var client = new HttpClient())
+            {
+                await client.GetAsync(url).ConfigureAwait(false);
+            }
+
+            var testParams = new Dictionary<string, string>
+            {
+                { "UserId", userId }
+            };
+
+            // Execute the rest of the conversation passing the messageId.
+            await runner.RunTestAsync(Path.Combine(_testScriptsFolder, "ProactiveEnd.json"), testParams);
         }
     }
 }

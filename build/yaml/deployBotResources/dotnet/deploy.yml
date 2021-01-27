@@ -84,6 +84,23 @@ stages:
                 projects: '${{ bot.project.directory }}/${{ bot.project.name }}'
                 arguments: '--output $(System.DefaultWorkingDirectory)/build/${{ bot.name }}'
                 modifyOutputPath: false
+                
+            # Get BotBuilder package version
+            - powershell: |
+                [XML]$data = Get-Content "${{ bot.project.directory }}/${{ bot.project.name }}";
+                $package = $data.Project.ItemGroup.PackageReference | Where-Object { $_.Include -eq "Microsoft.Bot.Builder.Integration.AspNet.Core" };
+                Write-Host "##vso[task.setvariable variable=BotBuilderVersionNumber]$($package.version)";
+              displayName: 'Get BotBuilder Version'
+
+            # Tag BotBuilder package version
+            - template: ../common/tagBotBuilderVersion.yml
+              parameters:
+                ${{ if eq(bot.displayName, '') }}:
+                  botName: '${{ bot.name }}'
+                ${{ if ne(bot.displayName, '') }}:
+                  botName: '${{ bot.displayName }}'
+                version: "$(BotBuilderVersionNumber)"
+
           # End of DotNet Install & Build
 
           # Start DotNet v3 Install, Build
@@ -107,6 +124,22 @@ stages:
                 vsVersion: 16.0
                 platform: '$(BuildPlatform)'
                 configuration: '$(BuildConfiguration)'
+
+            # Get BotBuilder version
+            - powershell: |
+                $result = @(Get-ChildItem "${{ bot.project.directory }}\packages\Microsoft.Bot.Builder.[0-9]*" -directory | Sort LastWriteTime -Descending)
+                $version = $result[0].Name.Replace("Microsoft.Bot.Builder.", "")
+                Write-Host "##vso[task.setvariable variable=BotBuilderVersionNumber]$($version)";
+              displayName: 'Get BotBuilder Version'
+
+            # Tag BotBuilder version
+            - template: ../common/tagBotBuilderVersion.yml
+              parameters:
+                ${{ if eq(bot.displayName, '') }}:
+                  botName: '${{ bot.name }}'
+                ${{ if ne(bot.displayName, '') }}:
+                  botName: '${{ bot.displayName }}'
+                version: "$(BotBuilderVersionNumber)"
 
             # Zip bot
             - powershell: |
