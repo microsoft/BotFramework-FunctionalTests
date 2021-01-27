@@ -16,7 +16,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Skills
         private const string SkillActionTeamsProactive = "Proactive";
         private const string SkillActionTeamsAttachment = "Attachment";
         private const string SkillActionTeamsAuth = "Auth";
-        private const string SkillActionTeamsSso = "Sso";
+        private const string SkillActionTeamsSso = "TeamsSso";
         private const string SkillActionTeamsEcho = "Echo";
         private const string SkillActionTeamsFileUpload = "FileUpload";
 
