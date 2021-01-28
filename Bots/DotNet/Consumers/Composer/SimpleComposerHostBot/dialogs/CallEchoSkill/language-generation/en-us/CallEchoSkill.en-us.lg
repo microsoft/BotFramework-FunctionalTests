@@ -1,0 +1,8 @@
+[import](common.lg)
+
+# ChoiceInput_Prompt_mE6pFA()
+- What skill?
+# SendActivity_fk72Jh()
+- You selected ${dialog.selectedSkill}
+# SendActivity_4gk8oF()
+- DidintGetThat

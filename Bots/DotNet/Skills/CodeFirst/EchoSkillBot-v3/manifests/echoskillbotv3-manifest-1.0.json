@@ -1,9 +1,9 @@
 {
-  "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/skills/skill-manifest-2.0.0.json",
-  "$id": "EchoSkillBot-v3",
-  "name": "Echo skill bot v3",
+  "$schema": "https://schemas.botframework.com/schemas/skills/v2.1/skill-manifest.json",
+  "$id": "EchoSkillBotV3DotNet",
+  "name": "EchoSkillBotV3DotNet",
   "version": "1.0",
-  "description": "This is a skill for echoing what the user sent to the bot.",
+  "description": "This is a skill for echoing what the user sent to the bot (using BF V3).",
   "publisherName": "Microsoft",
   "privacyUrl": "https://microsoft.com/privacy",
   "copyright": "Copyright (c) Microsoft Corporation. All rights reserved.",
@@ -13,7 +13,7 @@
   ],
   "endpoints": [
     {
-      "name": "localhost",
+      "name": "default",
       "protocol": "BotFrameworkV3",
       "description": "Localhost endpoint for the skill (on port 35407)",
       "endpointUrl": "http://localhost:35407/api/messages",

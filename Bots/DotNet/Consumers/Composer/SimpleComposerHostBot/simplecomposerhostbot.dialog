@@ -22,6 +22,14 @@
             "id": "1fPEND"
           },
           "activity": "${SendActivity_1fPEND()}"
+        },
+        {
+          "$kind": "Microsoft.BeginDialog",
+          "$designer": {
+            "id": "QBsvJ6"
+          },
+          "activityProcessed": true,
+          "dialog": "CallEchoSkill"
         }
       ]
     },
@@ -65,8 +73,8 @@
           "skillHostEndpoint": "=settings.skillHostEndpoint",
           "connectionName": "=settings.connectionName",
           "allowInterruptions": true,
-          "skillEndpoint": "=settings.skill['EchoSkillBot'].endpointUrl",
-          "skillAppId": "=settings.skill['EchoSkillBot'].msAppId",
+          "skillEndpoint": "=settings.skill['echoSkillBotDotNet'].endpointUrl",
+          "skillAppId": "=settings.skill['echoSkillBotDotNet'].msAppId",
           "resultProperty": "dialog.result"
         }
       ]

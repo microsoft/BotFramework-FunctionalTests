@@ -1,9 +1,9 @@
 {
-  "$schema": "https://schemas.botframework.com/schemas/skills/skill-manifest-2.0.0.json",
-  "$id": "EchoSkillBot-2.1",
-  "name": "Echo skill bot .netcore 2.1",
+  "$schema": "https://schemas.botframework.com/schemas/skills/v2.1/skill-manifest.json",
+  "$id": "EchoSkillBot21DotNet",
+  "name": "EchoSkillBot21DotNet",
   "version": "1.0",
-  "description": "This is a skill for echoing what the user sent to the bot.",
+  "description": "This is a skill for echoing what the user sent to the bot (using .netcore 2.1).",
   "publisherName": "Microsoft",
   "privacyUrl": "https://microsoft.com/privacy",
   "copyright": "Copyright (c) Microsoft Corporation. All rights reserved.",
@@ -13,10 +13,10 @@
   ],
   "endpoints": [
     {
-      "name": "localhost",
+      "name": "default",
       "protocol": "BotFrameworkV3",
-      "description": "Localhost endpoint for the skill (on port 35005)",
-      "endpointUrl": "http://localhost:35005/api/messages",
+      "description": "Localhost endpoint for the skill (on port 35405)",
+      "endpointUrl": "http://localhost:35405/api/messages",
       "msAppId": "00000000-0000-0000-0000-000000000000"
     }
   ]

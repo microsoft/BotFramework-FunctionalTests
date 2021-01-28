@@ -1,0 +1,189 @@
+{
+  "$kind": "Microsoft.AdaptiveDialog",
+  "$designer": {
+    "id": "R1ZiHs",
+    "name": "CallEchoSkill",
+    "description": ""
+  },
+  "autoEndDialog": true,
+  "defaultResultProperty": "dialog.result",
+  "triggers": [
+    {
+      "$kind": "Microsoft.OnBeginDialog",
+      "$designer": {
+        "name": "BeginDialog",
+        "description": "",
+        "id": "tPRiGA"
+      },
+      "actions": [
+        {
+          "$kind": "Microsoft.ChoiceInput",
+          "$designer": {
+            "id": "mE6pFA"
+          },
+          "defaultLocale": "en-us",
+          "disabled": false,
+          "maxTurnCount": 3,
+          "alwaysPrompt": false,
+          "allowInterruptions": false,
+          "prompt": "${ChoiceInput_Prompt_mE6pFA()}",
+          "unrecognizedPrompt": "",
+          "invalidPrompt": "",
+          "defaultValueResponse": "",
+          "choiceOptions": {
+            "includeNumbers": true,
+            "inlineOrMore": ", or ",
+            "inlineOr": " or ",
+            "inlineSeparator": ", "
+          },
+          "style": "suggestedAction",
+          "choices": [
+            "EchoSkillBotDotNet",
+            "EchoSkillBot21DotNet",
+            "EchoSkillBotV3DotNet",
+            "EchoSkillBotJS",
+            "EchoSkillBotV3JS",
+            "EchoSkillBotPython"
+          ],
+          "property": "dialog.selectedSkill"
+        },
+        {
+          "$kind": "Microsoft.SendActivity",
+          "$designer": {
+            "id": "fk72Jh"
+          },
+          "activity": "${SendActivity_fk72Jh()}"
+        },
+        {
+          "$kind": "Microsoft.SwitchCondition",
+          "$designer": {
+            "id": "G2DuUz"
+          },
+          "default": [
+            {
+              "$kind": "Microsoft.SendActivity",
+              "$designer": {
+                "id": "4gk8oF"
+              },
+              "activity": "${SendActivity_4gk8oF()}"
+            }
+          ],
+          "cases": [
+            {
+              "value": "EchoSkillBotDotNet",
+              "actions": [
+                {
+                  "$kind": "Microsoft.BeginSkill",
+                  "$designer": {
+                    "id": "iVt04z"
+                  },
+                  "activityProcessed": true,
+                  "botId": "=settings.MicrosoftAppId",
+                  "skillHostEndpoint": "=settings.skillHostEndpoint",
+                  "connectionName": "=settings.connectionName",
+                  "allowInterruptions": true,
+                  "skillEndpoint": "=settings.skill['echoSkillBotDotNet'].endpointUrl",
+                  "skillAppId": "=settings.skill['echoSkillBotDotNet'].msAppId"
+                }
+              ]
+            },
+            {
+              "value": "EchoSkillBot21DotNet",
+              "actions": [
+                {
+                  "$kind": "Microsoft.BeginSkill",
+                  "$designer": {
+                    "id": "SMZQkv"
+                  },
+                  "activityProcessed": true,
+                  "botId": "=settings.MicrosoftAppId",
+                  "skillHostEndpoint": "=settings.skillHostEndpoint",
+                  "connectionName": "=settings.connectionName",
+                  "allowInterruptions": true,
+                  "skillEndpoint": "=settings.skill['echoSkillBot21DotNet'].endpointUrl",
+                  "skillAppId": "=settings.skill['echoSkillBot21DotNet'].msAppId"
+                }
+              ]
+            },
+            {
+              "value": "EchoSkillBotV3DotNet",
+              "actions": [
+                {
+                  "$kind": "Microsoft.BeginSkill",
+                  "$designer": {
+                    "id": "57wwb7"
+                  },
+                  "activityProcessed": true,
+                  "botId": "=settings.MicrosoftAppId",
+                  "skillHostEndpoint": "=settings.skillHostEndpoint",
+                  "connectionName": "=settings.connectionName",
+                  "allowInterruptions": true,
+                  "skillEndpoint": "=settings.skill['echoSkillBotV3DotNet'].endpointUrl",
+                  "skillAppId": "=settings.skill['echoSkillBotV3DotNet'].msAppId"
+                }
+              ]
+            },
+            {
+              "value": "EchoSkillBotJS",
+              "actions": [
+                {
+                  "$kind": "Microsoft.BeginSkill",
+                  "$designer": {
+                    "id": "DjyTJf"
+                  },
+                  "activityProcessed": true,
+                  "botId": "=settings.MicrosoftAppId",
+                  "skillHostEndpoint": "=settings.skillHostEndpoint",
+                  "connectionName": "=settings.connectionName",
+                  "allowInterruptions": true,
+                  "skillEndpoint": "=settings.skill['echoSkillBotJs'].endpointUrl",
+                  "skillAppId": "=settings.skill['echoSkillBotJs'].msAppId"
+                }
+              ]
+            },
+            {
+              "value": "EchoSkillBotV3JS",
+              "actions": [
+                {
+                  "$kind": "Microsoft.BeginSkill",
+                  "$designer": {
+                    "id": "cVFpif"
+                  },
+                  "activityProcessed": true,
+                  "botId": "=settings.MicrosoftAppId",
+                  "skillHostEndpoint": "=settings.skillHostEndpoint",
+                  "connectionName": "=settings.connectionName",
+                  "allowInterruptions": true,
+                  "skillEndpoint": "=settings.skill['echoSkillBotV3Js'].endpointUrl",
+                  "skillAppId": "=settings.skill['echoSkillBotV3Js'].msAppId"
+                }
+              ]
+            },
+            {
+              "value": "EchoSkillBotPython",
+              "actions": [
+                {
+                  "$kind": "Microsoft.BeginSkill",
+                  "$designer": {
+                    "id": "5j6nOJ"
+                  },
+                  "activityProcessed": true,
+                  "botId": "=settings.MicrosoftAppId",
+                  "skillHostEndpoint": "=settings.skillHostEndpoint",
+                  "connectionName": "=settings.connectionName",
+                  "allowInterruptions": true,
+                  "skillEndpoint": "=settings.skill['echoSkillBotPython'].endpointUrl",
+                  "skillAppId": "=settings.skill['echoSkillBotPython'].msAppId"
+                }
+              ]
+            }
+          ],
+          "condition": "dialog.selectedSkill"
+        }
+      ]
+    }
+  ],
+  "generator": "CallEchoSkill.lg",
+  "recognizer": "CallEchoSkill.lu.qna",
+  "id": "CallEchoSkill"
+}
