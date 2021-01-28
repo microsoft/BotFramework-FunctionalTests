@@ -107,6 +107,10 @@ async def messages(req: Request) -> Response:
 APP = web.Application()
 APP.router.add_post("/api/messages", messages)
 
+# simple way of exposing the manifest for dev purposes.
+APP.router.add_static("/manifests", "./manifests/")
+
+
 if __name__ == "__main__":
     try:
         web.run_app(APP, host="localhost", port=CONFIG.PORT)
