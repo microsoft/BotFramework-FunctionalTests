@@ -76,7 +76,10 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs
 
             // Add dialog to prepare SSO on the host and test the SSO skill
             // The waterfall skillDialog created in AddSkillDialogs contains the SSO skill action.
-            var waterfallDialog = Dialogs.Find("WaterfallSkillBot");
+            var waterfallDialog = Dialogs
+                .GetDialogs()
+                .Where(e => e.Id.StartsWith("WaterfallSkill"))
+                .First();
             AddDialog(new SsoDialog(waterfallDialog, configuration));
 
             // Add main waterfall dialog for this bot.
@@ -142,6 +145,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs
             {
                 Prompt = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput),
                 RetryPrompt = MessageFactory.Text(rePromptMessageText, rePromptMessageText, InputHints.ExpectingInput),
+                Style = ListStyle.SuggestedAction,
                 Choices = choices
             };
 
@@ -167,6 +171,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs
             {
                 Prompt = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput),
                 RetryPrompt = MessageFactory.Text(rePromptMessageText, rePromptMessageText, InputHints.ExpectingInput),
+                Style = ListStyle.SuggestedAction,
                 Choices = choices
             };
 
@@ -182,14 +187,18 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs
             // Create the PromptOptions from the skill configuration which contain the list of configured skills.
             const string messageText = "What skill would you like to call?";
             const string repromptMessageText = "That was not a valid choice, please select a valid skill.";
+
+            var choices = _skillsConfig.Skills
+                .Where(skill => skill.Key.StartsWith(skillType))
+                .Select(skill => new Choice(skill.Value.Id))
+                .ToList();
+
             var options = new PromptOptions
             {
                 Prompt = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput),
                 RetryPrompt = MessageFactory.Text(repromptMessageText, repromptMessageText, InputHints.ExpectingInput),
-                Choices = _skillsConfig.Skills
-                    .Where(skill => skill.Key.StartsWith(skillType))
-                    .Select(skill => new Choice(skill.Value.Id))
-                    .ToList()
+                Style = ListStyle.SuggestedAction,
+                Choices = choices
             };
 
             // Prompt the user to select a skill.
