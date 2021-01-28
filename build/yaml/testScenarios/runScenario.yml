@@ -3,14 +3,18 @@ parameters:
 
 stages:
   - ${{ each scenario in parameters.scenarios }}:
-    - stage: 
+    - stage: "${{ scenario.name }}"
       displayName: Test ${{ scenario }} Scenario
+      ${{ if eq(scenario.dependsOn, '') }}:
+        dependsOn: []
+      ${{ if ne(scenario.dependsOn, '') }}:
+        dependsOn: "${{ scenario.dependsOn }}"
       jobs:
         - job: Test
           steps:
             - template: configureConsumers.yml
               parameters:
-                scenario: ${{ scenario }}
+                scenario: ${{ scenario.name }}
 
             - task: UseDotNet@2
               displayName: 'Use .Net Core sdk 3.1.x'
@@ -30,4 +34,4 @@ stages:
               inputs:
                 command: test
                 projects: 'Tests/SkillFunctionalTests/SkillFunctionalTests.csproj'
-                arguments: '-v n --configuration $(BuildConfiguration) --no-build --no-restore --filter TestCategory!=IgnoreInAutomatedBuild&TestCategory=${{ scenario }}'
+                arguments: "-v n --configuration $(BuildConfiguration) --no-build --no-restore --filter TestCategory!=IgnoreInAutomatedBuild&TestCategory=${{ join('|TestCategory=', scenario.testCategories) }}"

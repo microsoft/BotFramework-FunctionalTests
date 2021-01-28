@@ -18,6 +18,7 @@ variables:
   # BffnEchoSkillBotV3DotnetAppId: (optional) define in Azure
   # BffnEchoSkillBotJSAppId: (optional) define in Azure
   # BffnEchoSkillBotV3JSAppId: (optional) define in Azure
+  # BffnWaterfallSkillBotDotNetAppId: (optional) define in Azure
   # BotNamesSuffix: (optional) define in Azure
 
 pool:
@@ -27,4 +28,12 @@ stages:
   - template: runScenario.yml
     parameters:
       scenarios:
-        - SingleTurn
+        - name: Waterfall
+          testCategories:
+            - Attachments
+            - CardActions
+            - ProactiveMessages
+
+        - name: SingleTurn
+          testCategories:
+            - SingleTurn

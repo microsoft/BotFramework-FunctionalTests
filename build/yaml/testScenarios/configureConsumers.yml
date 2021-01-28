@@ -43,6 +43,12 @@ steps:
               configType    = $types.Composer
           }
           @{
+              key           = 'WaterfallHostBotDotNet'
+              botName       = 'bffnwaterfallhostbotdotnet'
+              resourceGroup = $groups.DotNet
+              configType    = $types.DotNet
+          }
+          @{
               key           = 'SimpleHostBotJS'
               botName       = 'bffnsimplehostbotjs'
               resourceGroup = $groups.Js
@@ -73,6 +79,12 @@ steps:
               key        = 'EchoComposerSkillBotDotNet'
               botName    = 'bffnechocomposerskillbotdotnet'
               appId      = "$env:BffnEchoComposerSkillBotDotnetAppId"
+              resourceGroup = $groups.DotNet
+          }
+          @{
+              key        = 'WaterfallSkillBotDotNet'
+              botName    = 'bffnwaterfallskillbotdotnet'
+              appId      = "$env:BffnWaterfallSkillBotDotNetAppId"
               resourceGroup = $groups.DotNet
           }
           @{
@@ -113,6 +125,15 @@ steps:
               );
               skills    = @(
                 'EchoComposerSkillBotDotNet'
+              );
+          }
+          @{ 
+              name      = 'Waterfall'; 
+              consumers = @(
+                'WaterfallHostBotDotNet'
+              );
+              skills    = @(
+                'WaterfallSkillBotDotNet'
               );
           }
         )
