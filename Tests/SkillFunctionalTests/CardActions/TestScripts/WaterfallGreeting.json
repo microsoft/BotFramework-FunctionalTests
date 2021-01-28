@@ -88,8 +88,7 @@
         "recipient.role == 'user'",
         "text == 'What skill would you like to call?'",
         "speak == 'What skill would you like to call?'",
-        "inputHint == 'expectingInput'",
-        "suggestedActions.actions[0].type == 'imBack'"
+        "inputHint == 'expectingInput'"
       ]
     },
     {
