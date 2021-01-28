@@ -54,37 +54,37 @@ steps:
           @{
               key     = 'EchoSkillBotDotNet'
               botName = 'bffnechoskillbotdotnet'
-              appId   = '$(BffnEchoSkillBotDotnetAppId)'
+              appId   = "$env:BffnEchoSkillBotDotnetAppId"
               resourceGroup = $groups.DotNet
           }
           @{
               key     = 'EchoSkillBot21DotNet'
               botName = 'bffnechoskillbot21dotnet'
-              appId   = '$(BffnEchoSkillBot21DotnetAppId)'
+              appId   = "$env:BffnEchoSkillBot21DotnetAppId"
               resourceGroup = $groups.DotNet
           }
           @{
               key        = 'EchoSkillBotV3DotNet'
               botName    = 'bffnechoskillbotv3dotnet'
-              appId      = '$(BffnEchoSkillBotV3DotnetAppId)'
+              appId      = "$env:BffnEchoSkillBotV3DotnetAppId"
               resourceGroup = $groups.DotNet
           }
           @{
               key        = 'EchoComposerSkillBotDotNet'
               botName    = 'bffnechocomposerskillbotdotnet'
-              appId      = '$(BffnEchoComposerSkillBotDotnetAppId)'
+              appId      = "$env:BffnEchoComposerSkillBotDotnetAppId"
               resourceGroup = $groups.DotNet
           }
           @{
               key     = 'EchoSkillBotJS'
               botName = 'bffnechoskillbotjs'
-              appId   = '$(BffnEchoSkillBotJSAppId)'
+              appId   = "$env:BffnEchoSkillBotJSAppId"
               resourceGroup = $groups.Js
           }
           @{
               key        = 'EchoSkillBotV3JS'
               botName    = 'bffnechoskillbotv3js'
-              appId      = '$(BffnEchoSkillBotV3JSAppId)'
+              appId      = "$env:BffnEchoSkillBotV3JSAppId"
               resourceGroup = $groups.Js
           }
         )
@@ -116,6 +116,16 @@ steps:
               );
           }
         )
+
+        # Load AppIds from KeyVault
+        foreach ($skill in $skills) {
+          if(-not [string]::IsNullOrEmpty($skill.appId)){
+            continue;
+          }
+          $entry = az keyvault secret list --vault-name "bffnbotkeyvault" --query "[?name == 'Bffn$($skill.key)AppId']" | ConvertFrom-Json;
+          $secretVault = az keyvault secret show --id $entry.id | ConvertFrom-Json;
+          $skill.appId = $secretVault.value;
+        }
 
         $appsettingsPath = "tests/SkillFunctionalTests/appsettings.json"
 
