@@ -35,7 +35,7 @@ namespace SkillFunctionalTests.Common
 
                                 if (!ExcludeTestCase(shouldExclude, testCase))
                                 {
-                                    testCases.Add(new object[] { new TestCaseDataObject(testCase.Id, testCase) });
+                                    testCases.Add(new object[] { new TestCaseDataObject(testCase) });
                                     count++;
                                 }
                             }
