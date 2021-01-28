@@ -1,5 +1,10 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/BotFramework-Composer/main/Composer/packages/server/schemas/botproject.schema",
   "name": "SimpleComposerHostBot",
-  "skills": {}
+  "skills": {
+    "echoSkillBot": {
+      "manifest": "http://localhost:35410/manifest/echoskillbot-manifest-1.0.json",
+      "remote": true
+    }
+  }
 }
