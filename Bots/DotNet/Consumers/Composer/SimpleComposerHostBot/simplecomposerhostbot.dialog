@@ -34,21 +34,6 @@
       ]
     },
     {
-      "$kind": "Microsoft.OnUnknownIntent",
-      "$designer": {
-        "id": "QrWyk2"
-      },
-      "actions": [
-        {
-          "$kind": "Microsoft.SendActivity",
-          "$designer": {
-            "id": "VV7JVt"
-          },
-          "activity": "${SendActivity_VV7JVt()}"
-        }
-      ]
-    },
-    {
       "$kind": "Microsoft.OnIntent",
       "$designer": {
         "id": "MKei69",
@@ -98,6 +83,14 @@
             "id": "71moHf"
           },
           "activity": "${SendActivity_71moHf()}"
+        },
+        {
+          "$kind": "Microsoft.BeginDialog",
+          "$designer": {
+            "id": "ZUWV1K"
+          },
+          "activityProcessed": true,
+          "dialog": "CallEchoSkill"
         }
       ]
     }
