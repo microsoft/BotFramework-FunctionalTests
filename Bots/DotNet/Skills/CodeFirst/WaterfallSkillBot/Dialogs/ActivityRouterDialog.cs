@@ -16,9 +16,11 @@ using Microsoft.Bot.Schema;
 using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Attachments;
 using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Auth;
 using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards;
+using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Delete;
 using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.FileUpload;
 using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Proactive;
 using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Sso;
+using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Update;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
@@ -40,6 +42,8 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs
             AddDialog(new AuthDialog(configuration));
             AddDialog(new SsoSkillDialog(configuration));
             AddDialog(new FileUploadDialog());
+            AddDialog(new DeleteDialog());
+            AddDialog(new UpdateDialog());
 
             AddDialog(CreateEchoSkillDialog(conversationState, conversationIdFactory, skillClient, configuration));
 
@@ -128,6 +132,12 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs
                     // Start the EchoSkillBot
                     var messageActivity = MessageFactory.Text("I'm the echo skill bot");
                     return await stepContext.BeginDialogAsync(FindDialog(_echoSkill).Id, new BeginSkillDialogOptions { Activity = messageActivity }, cancellationToken);
+
+                case "Delete":
+                    return await stepContext.BeginDialogAsync(FindDialog(nameof(DeleteDialog)).Id, cancellationToken: cancellationToken);
+
+                case "Update":
+                    return await stepContext.BeginDialogAsync(FindDialog(nameof(UpdateDialog)).Id, cancellationToken: cancellationToken);
 
                 default:
                     // We didn't get an event name we can handle.

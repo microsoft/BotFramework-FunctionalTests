@@ -16,6 +16,8 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Skills
         private const string SkillActionSso = "Sso";
         private const string SkillActionFileUpload = "FileUpload";
         private const string SkillActionCallEchoSkill = "Echo";
+        private const string SkillActionDelete = "Delete";
+        private const string SkillActionUpdate = "Update";
 
         public override IList<string> GetActions()
         {
@@ -27,7 +29,9 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Skills
                 SkillActionMessageWithAttachment,
                 SkillActionSso,
                 SkillActionFileUpload,
-                SkillActionCallEchoSkill
+                SkillActionCallEchoSkill,
+                SkillActionDelete,
+                SkillActionUpdate
             };
         }
 
@@ -88,6 +92,22 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Skills
             {
                 activity = (Activity)Activity.CreateEventActivity();
                 activity.Name = SkillActionCallEchoSkill;
+                return activity;
+            }
+
+            // Send an event activity to the skill with "Delete" in the name.
+            if (actionId.Equals(SkillActionDelete, StringComparison.CurrentCultureIgnoreCase))
+            {
+                activity = (Activity)Activity.CreateEventActivity();
+                activity.Name = SkillActionDelete;
+                return activity;
+            }
+
+            // Send an event activity to the skill with "Update" in the name.
+            if (actionId.Equals(SkillActionUpdate, StringComparison.CurrentCultureIgnoreCase))
+            {
+                activity = (Activity)Activity.CreateEventActivity();
+                activity.Name = SkillActionUpdate;
                 return activity;
             }
 
