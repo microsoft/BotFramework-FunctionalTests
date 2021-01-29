@@ -16,6 +16,6 @@ steps:
 
         $botPricingTier = if($env:BotPricingTier) { "botSku=$env:BotPricingTier" };
 
-        az deployment group create --resource-group "${{ parameters.botGroup }}" --name "${{ parameters.botName }}$($env:BotNamesSuffix)" --template-file "build\templates\template-bot-resources.json" --parameters $botPricingTier botLocation="westus" appId="${{ parameters.appId }}" appSecret="${{ parameters.appSecret }}" botName="${{ parameters.botName }}$($env:BotNamesSuffix)" appServicePlanName="$(AppServicePlanName)" appServicePlanResourceGroup="$(AppServicePlanGroup)";
+        az deployment group create --resource-group "${{ parameters.botGroup }}" --name "${{ parameters.botName }}$($env:BotNamesSuffix)" --template-file "build\templates\template-bot-resources.json" --parameters $botPricingTier botLocation="westus" appId="${{ parameters.appId }}" appSecret="${{ parameters.appSecret }}" botName="${{ parameters.botName }}$($env:BotNamesSuffix)" appServicePlanName="$(AppServicePlanName)" appServicePlanResourceGroup="$(AppServicePlanGroup)" appInsightsName="$env:AppInsightsName";
 
         Set-PSDebug -Trace 0;

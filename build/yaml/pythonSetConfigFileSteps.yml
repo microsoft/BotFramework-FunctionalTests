@@ -1,12 +1,16 @@
 steps:
 - powershell: |
-   Write-host "Setting config file"
-   $file = "$(System.DefaultWorkingDirectory)/$(Parameters.sourceLocation)/.env";
-   $content = Get-Content -Raw $file | ConvertFrom-StringData;
-   $content.SKILL_BOT_APP_ID = "$(SkillAppId)";
-   $content.SKILL_BOT_ENDPOINT = "https://$(SkillBotName)-$(Build.BuildId).azurewebsites.net/api/messages";
-   $content.SKILL_HOST_ENDPOINT = "https://$(HostBotName)-$(Build.BuildId).azurewebsites.net/api/skills";
-
-   Clear-Content $file;
-   foreach ($key in $content.keys) { Add-Content $file "$key=$($content.$key)" };
+    Write-host "Setting values in .env file"
+    $file = "$(System.DefaultWorkingDirectory)/$(Parameters.sourceLocation)/.env";
+    $content = Get-Content $file
+    $content = $content | ForEach-Object {
+      $line = $_
+      if ($line.Trim().Length -gt 0 -and -not $line.Trim().ToLower().StartsWith('skill')) {
+        $line
+      }
+    } 
+    $content += "SkillHostEndpoint=https://$(HostBotName)-$(Build.BuildId).azurewebsites.net/api/skills";
+    $content += "skill_EchoSkillBot_appId=$(SkillAppId)";
+    $content += "skill_EchoSkillBot_endpoint=https://$(SkillBotName)-$(Build.BuildId).azurewebsites.net/api/messages";
+    $content | Set-Content $file;
   displayName: 'Update .env file'

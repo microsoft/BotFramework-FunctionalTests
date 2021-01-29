@@ -56,20 +56,20 @@
     {
       "type": "message",
       "role": "bot",
-      "text": "Done with \"WaterfallSkillBot\". \n\n What skill would you like to call?",
+      "text": "Done with \"${TargetSkill}\". \n\n What delivery mode would you like to use?",
       "assertions": [
         "type == 'message'",
         "from.role == 'bot'",
         "recipient.role == 'user'",
-        "text == 'Done with \"WaterfallSkillBot\". \n\n What skill would you like to call?'",
-        "speak == 'Done with \"WaterfallSkillBot\". \n\n What skill would you like to call?'",
+        "text == 'Done with \"${TargetSkill}\". \n\n What delivery mode would you like to use?'",
+        "speak == 'Done with \"${TargetSkill}\". \n\n What delivery mode would you like to use?'",
         "inputHint == 'expectingInput'",
         "suggestedActions.actions[0].type == 'imBack'",
-        "suggestedActions.actions[0].title == 'EchoSkillBot'",
-        "suggestedActions.actions[0].value == 'EchoSkillBot'",
+        "suggestedActions.actions[0].title == 'normal'",
+        "suggestedActions.actions[0].value == 'normal'",
         "suggestedActions.actions[1].type == 'imBack'",
-        "suggestedActions.actions[1].title == 'WaterfallSkillBot'",
-        "suggestedActions.actions[1].value == 'WaterfallSkillBot'"
+        "suggestedActions.actions[1].title == 'expectReplies'",
+        "suggestedActions.actions[1].value == 'expectReplies'"
       ]
     }
   ]

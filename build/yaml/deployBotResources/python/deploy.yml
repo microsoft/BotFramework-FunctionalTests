@@ -1,0 +1,94 @@
+parameters:
+  dependsOn: ''
+  resourceGroup: ''
+  bots: []
+
+stages:
+- ${{ each bot in parameters.bots }}:
+  - stage: 'Deploy_${{ bot.name }}'
+    ${{ if eq(bot.displayName, '') }}:
+      displayName: '${{ bot.name }}'
+    ${{ if ne(bot.displayName, '') }}:
+      displayName: '${{ bot.displayName }}'
+    dependsOn: '${{ parameters.dependsOn }}'
+    jobs:
+      - job: 'Deploy'
+        displayName: 'Deploy steps'
+        steps:
+          # Delete Bot Resources
+          - template: ../common/deleteResources.yml
+            parameters:
+              resourceGroup: '${{ parameters.resourceGroup }}'
+              resourceName: '${{ bot.name }}'
+
+          # Gets Bot App Registration credentials from KeyVault or Pipeline Variables
+          - template: ../common/getAppRegistration.yml
+            parameters:
+              appId: ${{ bot.appId }}
+              appSecret: ${{ bot.appSecret }}
+              botName: '${{ bot.name }}'
+
+          # Prepare .env file, deleting all the declared skills, so it uses only the settings define in Azure
+          - ${{ if eq(bot.type, 'Host') }}:
+            - powershell: |
+                $file = "${{ bot.project.directory }}/.env"
+                $content = Get-Content $file
+                $content | ForEach-Object {
+                  $line = $_
+                  if ($line.Trim().Length -gt 0 -and -not $line.Trim().ToLower().StartsWith('skill_')) {
+                    $line
+                  }
+                } | Set-Content $file;
+              displayName: 'Prepare .env file'
+
+          # Evaluate dependencies source and version
+          - template: evaluateDependenciesVariables.yml
+            parameters:
+              ${{ if eq(bot.type, 'Host') }}:
+                registry: "$env:DependenciesRegistryHosts"
+                version: "$env:DependeciesVersionHosts"
+              ${{ if eq(bot.type, 'Skill') }}:
+                registry: "$env:DependenciesRegistrySkills"
+                version: "$env:DependeciesVersionSkills"
+              botType: '${{ bot.type }}'
+              project: '${{ bot.project }}'
+
+          # Tag BotBuilder package version
+          - template: ../common/tagBotBuilderVersion.yml
+            parameters:
+              ${{ if eq(bot.displayName, '') }}:
+                botName: '${{ bot.name }}'
+              ${{ if ne(bot.displayName, '') }}:
+                botName: '${{ bot.displayName }}'
+              version: "$(DependenciesVersionNumber)"
+
+          # Create App Service and Bot Channel Registration
+          - template: createAppService.yml
+            parameters:
+              appId: $(AppId)
+              appSecret:  $(AppSecret)
+              botName: '${{ bot.name }}'
+              botGroup: '${{ parameters.resourceGroup }}'
+
+          # Configure OAuth
+          - ${{ if eq(bot.type, 'Skill') }}:
+            - template: ../common/configureOAuth.yml
+              parameters:
+                appId: $(AppId)
+                appSecret:  $(AppSecret)
+                botName: '${{ bot.name }}'
+                botGroup: '${{ parameters.resourceGroup }}'
+          
+          # Deploy bot
+          - template: ../common/gitDeploy.yml
+            parameters:
+              botName: '${{ bot.name }}'
+              resourceGroup: '${{ parameters.resourceGroup }}'
+              project: '${{ bot.project }}'
+
+          # Create DirectLine Channel Hosts
+          - ${{ if eq(bot.type, 'Host') }}:
+            - template: ../common/createDirectLine.yml
+              parameters:
+                botName: '${{ bot.name }}'
+                botGroup: '${{ parameters.resourceGroup }}'

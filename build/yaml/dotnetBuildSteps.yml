@@ -17,18 +17,21 @@ steps:
 - task: NuGetToolInstaller@1
   displayName: 'Use NuGet '
 
-- task: NuGetCommand@2
-  displayName: 'NuGet restore'
+- task: DotNetCoreCLI@2
+  displayName: 'Restore'
   inputs:
-    restoreSolution: '$(Parameters.solution)'
+    command: restore
+    projects: '$(Parameters.project)'
+    nobuild: 'true'
+    arguments: '--no-build'
 
-- task: VSBuild@1
-  displayName: 'Build solution'
+- task: DotNetCoreCLI@2
+  displayName: 'Build'
   inputs:
-    solution: '$(Parameters.solution)'
-    vsVersion: 16.0
-    platform: '$(BuildPlatform)'
-    configuration: '$(BuildConfiguration)'
+    command: build
+    publishWebProjects: false
+    projects: '$(Parameters.project)'
+    arguments: '-v n --configuration $(BuildConfiguration) -p:Platform="$(BuildPlatform)" --no-restore'
 
 - script: |
    cd ..
