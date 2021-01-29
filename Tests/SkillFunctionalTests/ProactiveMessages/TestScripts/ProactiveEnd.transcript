@@ -1,91 +1,91 @@
 [
   {
     "type": "message",
-    "serviceUrl": "https://a07ed5717626.ngrok.io",
+    "serviceUrl": "https://9ed82cccfc76.ngrok.io",
     "channelId": "emulator",
     "from": {
-      "id": "3be11c50-4f62-11eb-b5ff-fdb5df7a03a3",
+      "id": "48224d50-60a5-11eb-881a-afe376da3863",
       "name": "Bot",
       "role": "bot"
     },
     "conversation": {
-      "id": "3be33f30-4f62-11eb-9aff-410b1b0e908c|livechat"
+      "id": "980966c0-616b-11eb-881a-afe376da3863|livechat"
     },
     "recipient": {
-      "id": "d380b153-6044-48e7-bd28-f63747480069",
+      "id": "bc95d182-9d74-4d9d-82ec-d650cb5e83d8",
       "role": "user"
     },
     "locale": "",
     "text": "Got proactive message for user: ${UserId}",
     "inputHint": "acceptingInput",
-    "replyToId": "555308d5-334b-4189-bdf7-f15753c52270",
-    "id": "857d41e0-4f62-11eb-9aff-410b1b0e908c",
-    "localTimestamp": "2021-01-05T11:30:12-03:00",
-    "timestamp": "2021-01-05T14:30:12.989Z"
+    "replyToId": "5dfebb53-9851-449a-a86f-dff9a9155816",
+    "id": "f44c7b20-616b-11eb-b46e-c3c3213a748e",
+    "localTimestamp": "2021-01-28T10:23:05-03:00",
+    "timestamp": "2021-01-28T13:23:05.298Z"
   },
   {
     "type": "message",
-    "serviceUrl": "https://a07ed5717626.ngrok.io",
+    "serviceUrl": "https://9ed82cccfc76.ngrok.io",
     "channelId": "emulator",
     "from": {
-      "id": "3be11c50-4f62-11eb-b5ff-fdb5df7a03a3",
+      "id": "48224d50-60a5-11eb-881a-afe376da3863",
       "name": "Bot",
       "role": "bot"
     },
     "conversation": {
-      "id": "3be33f30-4f62-11eb-9aff-410b1b0e908c|livechat"
+      "id": "980966c0-616b-11eb-881a-afe376da3863|livechat"
     },
     "recipient": {
-      "id": "d380b153-6044-48e7-bd28-f63747480069",
+      "id": "bc95d182-9d74-4d9d-82ec-d650cb5e83d8",
       "role": "user"
     },
     "locale": "",
     "text": "We received a proactive message, ending the dialog",
     "inputHint": "acceptingInput",
-    "replyToId": "555308d5-334b-4189-bdf7-f15753c52270",
-    "id": "85a9a910-4f62-11eb-9aff-410b1b0e908c",
-    "localTimestamp": "2021-01-05T11:30:13-03:00",
-    "timestamp": "2021-01-05T14:30:13.280Z"
+    "replyToId": "5dfebb53-9851-449a-a86f-dff9a9155816",
+    "id": "f4789430-616b-11eb-b46e-c3c3213a748e",
+    "localTimestamp": "2021-01-28T10:23:05-03:00",
+    "timestamp": "2021-01-28T13:23:05.587Z"
   },
   {
     "type": "message",
-    "serviceUrl": "https://a07ed5717626.ngrok.io",
+    "serviceUrl": "https://9ed82cccfc76.ngrok.io",
     "channelId": "emulator",
     "from": {
-      "id": "3be11c50-4f62-11eb-b5ff-fdb5df7a03a3",
+      "id": "48224d50-60a5-11eb-881a-afe376da3863",
       "name": "Bot",
       "role": "bot"
     },
     "conversation": {
-      "id": "3be33f30-4f62-11eb-9aff-410b1b0e908c|livechat"
+      "id": "980966c0-616b-11eb-881a-afe376da3863|livechat"
     },
     "recipient": {
-      "id": "d380b153-6044-48e7-bd28-f63747480069",
+      "id": "bc95d182-9d74-4d9d-82ec-d650cb5e83d8",
       "role": "user"
     },
     "locale": "",
-    "text": "Done with \"WaterfallSkillBot\". \n\n What skill would you like to call?",
-    "speak": "Done with \"WaterfallSkillBot\". \n\n What skill would you like to call?",
+    "text": "Done with \"WaterfallSkillBotDotNet\". \n\n What delivery mode would you like to use?",
+    "speak": "Done with \"WaterfallSkillBotDotNet\". \n\n What delivery mode would you like to use?",
     "inputHint": "expectingInput",
     "suggestedActions": {
       "actions": [
         {
           "type": "imBack",
-          "title": "EchoSkillBot",
-          "value": "EchoSkillBot"
+          "title": "normal",
+          "value": "normal"
         },
         {
           "type": "imBack",
-          "title": "WaterfallSkillBot",
-          "value": "WaterfallSkillBot"
+          "title": "expectReplies",
+          "value": "expectReplies"
         }
       ]
     },
     "attachments": [],
     "entities": [],
-    "replyToId": "555308d5-334b-4189-bdf7-f15753c52270",
-    "id": "85d266c0-4f62-11eb-9aff-410b1b0e908c",
-    "localTimestamp": "2021-01-05T11:30:13-03:00",
-    "timestamp": "2021-01-05T14:30:13.548Z"
+    "replyToId": "5dfebb53-9851-449a-a86f-dff9a9155816",
+    "id": "f4a4fb60-616b-11eb-b46e-c3c3213a748e",
+    "localTimestamp": "2021-01-28T10:23:05-03:00",
+    "timestamp": "2021-01-28T13:23:05.878Z"
   }
 ]
