@@ -4,7 +4,7 @@ parameters:
 stages:
   - ${{ each scenario in parameters.scenarios }}:
     - stage: "${{ scenario.name }}"
-      displayName: Test ${{ scenario }} Scenario
+      displayName: "Test ${{ scenario.name }} Scenario"
       ${{ if eq(scenario.dependsOn, '') }}:
         dependsOn: []
       ${{ if ne(scenario.dependsOn, '') }}:
