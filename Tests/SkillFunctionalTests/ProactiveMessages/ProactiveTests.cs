@@ -32,6 +32,7 @@ namespace SkillFunctionalTests.ProactiveMessages
             var deliverModes = new List<string>
             {
                 DeliveryModes.Normal,
+                DeliveryModes.ExpectReplies
             };
 
             var hostBots = new List<HostBot>
@@ -81,8 +82,14 @@ namespace SkillFunctionalTests.ProactiveMessages
             var options = TestClientOptions[testCase.HostBot];
             var runner = new XUnitTestRunner(new TestClientFactory(testCase.ClientType, options, Logger).GetTestClient(), TestRequestTimeout, Logger);
             
+            var testParamsStart = new Dictionary<string, string>
+            {
+                { "DeliveryMode", testCase.DeliveryMode },
+                { "TargetSkill", testCase.TargetSkill }
+            };
+
             // Execute the first part of the conversation.
-            await runner.RunTestAsync(Path.Combine(_testScriptsFolder, testCase.Script));
+            await runner.RunTestAsync(Path.Combine(_testScriptsFolder, testCase.Script), testParamsStart);
 
             await runner.AssertReplyAsync(activity =>
             {
@@ -100,13 +107,14 @@ namespace SkillFunctionalTests.ProactiveMessages
                 await client.GetAsync(url).ConfigureAwait(false);
             }
 
-            var testParams = new Dictionary<string, string>
+            var testParamsEnd = new Dictionary<string, string>
             {
-                { "UserId", userId }
+                { "UserId", userId },
+                { "TargetSkill", testCase.TargetSkill }
             };
 
             // Execute the rest of the conversation passing the messageId.
-            await runner.RunTestAsync(Path.Combine(_testScriptsFolder, "ProactiveEnd.json"), testParams);
+            await runner.RunTestAsync(Path.Combine(_testScriptsFolder, "ProactiveEnd.json"), testParamsEnd);
         }
     }
 }
