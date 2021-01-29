@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.botframework.com/schemas/skills/skill-manifest-2.0.0.json",
-  "$id": "EchoSkillBot",
-  "name": "Echo skill bot",
+  "$id": "ProactiveSkillBot",
+  "name": "Proactive Skill bot",
   "version": "1.0",
   "description": "This is a skill for echoing what the user sent to the bot.",
   "publisherName": "Microsoft",
