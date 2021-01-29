@@ -23,6 +23,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Dialogs
         private readonly IStatePropertyAccessor<string> _deliveryModeProperty;
         private readonly IStatePropertyAccessor<BotFrameworkSkill> _activeSkillProperty;
         private readonly SkillsConfiguration _skillsConfig;
+        private string _deliveryMode;
 
         public SetupDialog(ConversationState conversationState, SkillsConfiguration skillsConfig)
             : base(nameof(SetupDialog))
@@ -72,6 +73,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Dialogs
         private async Task<DialogTurnResult> SelectSkillStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             // Set delivery mode.
+            _deliveryMode = ((FoundChoice)stepContext.Result).Value;
             await _deliveryModeProperty.SetAsync(stepContext.Context, ((FoundChoice)stepContext.Result).Value, cancellationToken);
 
             // Create the PromptOptions from the skill configuration which contains the list of configured skills.
@@ -93,6 +95,16 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Dialogs
         {
             var selectedSkillKey = ((FoundChoice)stepContext.Result).Value;
             var selectedSkill = _skillsConfig.Skills.FirstOrDefault(skill => skill.Key == selectedSkillKey);
+
+            var v3Bots = new List<string> { "EchoSkillBotV3DotNet", "EchoSkillBotV3JS" };
+
+            if (_deliveryMode == DeliveryModes.ExpectReplies && v3Bots.Contains(selectedSkillKey))
+            {
+                await stepContext.Context.SendActivityAsync(MessageFactory.Text("V3 Bots do not support 'expectReplies' delivery mode."), cancellationToken);
+
+                // Restart setup dialog
+                return await stepContext.ReplaceDialogAsync(InitialDialogId, null, cancellationToken);
+            }
 
             // Set active skill
             await _activeSkillProperty.SetAsync(stepContext.Context, selectedSkill.Value, cancellationToken);

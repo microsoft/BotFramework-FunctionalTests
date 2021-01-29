@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 using System;
-using System.Net.Http;
+using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -31,11 +31,11 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs
     {
         private static readonly string _echoSkill = "EchoSkill";
 
-        public ActivityRouterDialog(IConfiguration configuration, IHttpClientFactory clientFactory, IHttpContextAccessor httpContextAccessor, ConversationState conversationState, SkillConversationIdFactoryBase conversationIdFactory, SkillHttpClient skillClient)
+        public ActivityRouterDialog(IConfiguration configuration, IHttpContextAccessor httpContextAccessor, ConversationState conversationState, SkillConversationIdFactoryBase conversationIdFactory, SkillHttpClient skillClient, ConcurrentDictionary<string, ContinuationParameters> continuationParametersStore)
             : base(nameof(ActivityRouterDialog))
         {
             AddDialog(new CardDialog(httpContextAccessor));
-            AddDialog(new WaitForProactiveDialog(httpContextAccessor));
+            AddDialog(new WaitForProactiveDialog(httpContextAccessor, continuationParametersStore));
             AddDialog(new MessageWithAttachmentDialog());
             AddDialog(new AuthDialog(configuration));
             AddDialog(new SsoSkillDialog(configuration));

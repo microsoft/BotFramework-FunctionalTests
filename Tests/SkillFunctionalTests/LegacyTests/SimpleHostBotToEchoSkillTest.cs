@@ -28,14 +28,14 @@ namespace SkillFunctionalTests.LegacyTests
         [InlineData("HostReceivesEndOfConversation.transcript")]
         public async Task RunScripts(string transcript)
         {
-            var runner = new XUnitTestRunner(new TestClientFactory(ClientType.DirectLine, TestClientOptions[HostBot.SimpleHostBotDotNet]).GetTestClient(), Logger);
+            var runner = new XUnitTestRunner(new TestClientFactory(ClientType.DirectLine, TestClientOptions[HostBot.SimpleHostBotDotNet], Logger).GetTestClient(), TestRequestTimeout, Logger);
             await runner.RunTestAsync(Path.Combine(_testScriptsFolder, transcript));
         }
 
         [Fact]
         public async Task ManualTest()
         {
-            var runner = new XUnitTestRunner(new TestClientFactory(ClientType.DirectLine, TestClientOptions[HostBot.SimpleHostBotDotNet]).GetTestClient(), Logger);
+            var runner = new XUnitTestRunner(new TestClientFactory(ClientType.DirectLine, TestClientOptions[HostBot.SimpleHostBotDotNet], Logger).GetTestClient(), TestRequestTimeout, Logger);
 
             await runner.SendActivityAsync(new Activity(ActivityTypes.ConversationUpdate));
 

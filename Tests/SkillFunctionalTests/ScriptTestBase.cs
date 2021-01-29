@@ -24,7 +24,7 @@ namespace SkillFunctionalTests
             var loggerFactory = LoggerFactory.Create(builder =>
             {
                 builder
-                    .AddConfiguration(configuration)
+                    .AddConfiguration(configuration.GetSection("Logging"))
                     .AddConsole()
                     .AddDebug()
                     .AddFile(Directory.GetCurrentDirectory() + @"/Logs/Log.json", isJson: true)
@@ -33,11 +33,14 @@ namespace SkillFunctionalTests
 
             Logger = loggerFactory.CreateLogger<ScriptTestBase>();
 
+            TestRequestTimeout = int.Parse(configuration["TestRequestTimeout"]);
             TestClientOptions = configuration.GetSection("HostBotClientOptions").Get<Dictionary<HostBot, DirectLineTestClientOptions>>();
         }
 
-        public static Dictionary<HostBot, DirectLineTestClientOptions> TestClientOptions { get; private set; }
+        public Dictionary<HostBot, DirectLineTestClientOptions> TestClientOptions { get; }
 
         public ILogger Logger { get; }
+
+        public int TestRequestTimeout { get; }
     }
 }
