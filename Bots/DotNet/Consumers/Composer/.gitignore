@@ -1,0 +1,2 @@
+# Ignore nuget.config files placed by composer 1.3 runtime (his ignore may not be needed in a future version of composer)
+**/NuGet.config
