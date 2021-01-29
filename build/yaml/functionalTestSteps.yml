@@ -8,11 +8,20 @@ steps:
       call az bot directline create -n "$(HostBotName)" -g "$(HostBotName)-RG" > "$(System.DefaultWorkingDirectory)\DirectLineCreate.json"
       
 - powershell: |
-    $json = Get-Content '$(System.DefaultWorkingDirectory)\DirectLineCreate.json' | Out-String | ConvertFrom-Json;
-    $key = $json.properties.properties.sites.key;
-    echo "##vso[task.setvariable variable=DIRECTLINE;]$key";
-    echo "##vso[task.setvariable variable=BOTID;]$(HostBotName)";
-  displayName: 'Get Bot Keys'
+    $directLineFile = Get-Content '$(System.DefaultWorkingDirectory)\DirectLineCreate.json' | Out-String | ConvertFrom-Json;
+    $directLineKey = $directLineFile.properties.properties.sites.key;
+    
+    $settingsPath = "tests/SkillFunctionalTests/appsettings.json"
+    $settings = Get-Content $settingsPath | ConvertFrom-Json
+    
+    $settings.HostBotClientOptions = @{}
+    $settings.HostBotClientOptions["EchoHostBot"] = @{
+      DirectLineSecret = $directLineKey
+      BotId            = "$(HostBotName)"
+    }
+    
+    $settings | ConvertTo-Json | Set-Content $settingsPath;
+  displayName: 'Set Bot Keys'
 
 - template: dotnetBuildSteps.yml
 
@@ -21,4 +30,4 @@ steps:
   inputs:
     command: test
     projects: $(Parameters.project)
-    arguments: '-v n  --configuration $(BuildConfiguration) --no-build --no-restore --filter TestCategory!=IgnoreInAutomatedBuild$(DotNetTestFilter)'
+    arguments: '-v n  --configuration $(BuildConfiguration) -p:Platform="$(BuildPlatform)" --no-build --no-restore --filter TestCategory!=IgnoreInAutomatedBuild&TestCategory=Legacy$(DotNetTestFilter)'

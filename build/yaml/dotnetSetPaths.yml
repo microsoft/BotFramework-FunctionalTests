@@ -4,12 +4,10 @@ steps:
    {
      if("$(NetCoreSdkVersionHost)".Trim() -eq "3.1")
      {
-       $SolutionPath = "Bots/DotNet/Consumers/CodeFirst/SimpleHostBot/SimpleHostBot.sln"
        $ProjectPath = "Bots/DotNet/Consumers/CodeFirst/SimpleHostBot/SimpleHostBot.csproj"
      }
      if("$(NetCoreSdkVersionHost)".Trim() -eq "2.1")
      {
-       $SolutionPath = "Bots/DotNet/Consumers/CodeFirst/SimpleHostBot-2.1/SimpleHostBot.sln"
        $ProjectPath = "Bots/DotNet/Consumers/CodeFirst/SimpleHostBot-2.1/SimpleHostBot-2.1.csproj"
      }
    }
@@ -17,17 +15,13 @@ steps:
    {
      if("$(NetCoreSdkVersionSkill)".Trim() -eq "3.1")
      {
-       $SolutionPath = "Bots/DotNet/Skills/CodeFirst/EchoSkillBot/EchoSkillBot.sln"
        $ProjectPath = "Bots/DotNet/Skills/CodeFirst/EchoSkillBot/EchoSkillBot.csproj"
      }
      if("$(NetCoreSdkVersionSkill)".Trim() -eq "2.1")
      {
-       $SolutionPath = "Bots/DotNet/Skills/CodeFirst/EchoSkillBot-2.1/EchoSkillBot.sln"
        $ProjectPath = "Bots/DotNet/Skills/CodeFirst/EchoSkillBot-2.1/EchoSkillBot-2.1.csproj"
      }
    }
-   Write-Host "##vso[task.setvariable variable=Parameters.solution;]$SolutionPath"
-   Write-Host "Solution path set to $SolutionPath"
    Write-Host "##vso[task.setvariable variable=Parameters.project;]$ProjectPath"
    Write-Host "Project path set to $ProjectPath"
   displayName: 'Set path variables'
