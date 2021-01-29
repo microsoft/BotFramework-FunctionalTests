@@ -1,6 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System;
+using System.ComponentModel;
+using Microsoft.Extensions.Logging;
 using TranscriptTestRunner.TestClients;
 
 namespace TranscriptTestRunner
@@ -17,12 +20,13 @@ namespace TranscriptTestRunner
         /// </summary>
         /// <param name="client">The type of client to create.</param>
         /// <param name="options">The options to create the client.</param>
-        public TestClientFactory(ClientType client, DirectLineTestClientOptions options)
+        /// <param name="logger">An optional <see cref="ILogger"/> instance.</param>
+        public TestClientFactory(ClientType client, DirectLineTestClientOptions options, ILogger logger)
         {
             switch (client)
             {
                 case ClientType.DirectLine:
-                    _testClientBase = new DirectLineTestClient(options);
+                    _testClientBase = new DirectLineTestClient(options, logger);
                     break;
                 case ClientType.Emulator:
                     break;
@@ -33,8 +37,7 @@ namespace TranscriptTestRunner
                 case ClientType.Slack:
                     break;
                 default:
-                    _testClientBase = new DirectLineTestClient(options);
-                    break;
+                    throw new InvalidEnumArgumentException($"Invalid client type ({client})");
             }
         }
 
