@@ -11,8 +11,8 @@ steps:
       inlineScript: |
         # Type of setting to use for the AppSettings variables.
         $types = @{
-          DotNet = 0
-          Js = 1
+          Appsettings = 0
+          Env = 1
           Composer = 2
         }
 
@@ -20,6 +20,7 @@ steps:
         $groups = @{
           DotNet = "$(ResourceGroup)-DotNet"
           Js     = "$(ResourceGroup)-Js"
+          Python = "$(ResourceGroup)-Python"
         }
 
         # Bots Settings
@@ -28,13 +29,13 @@ steps:
               key           = 'SimpleHostBotDotNet'
               botName       = 'bffnsimplehostbotdotnet'
               resourceGroup = $groups.DotNet
-              configType    = $types.DotNet
+              configType    = $types.Appsettings
           }
           @{
               key           = 'SimpleHostBotDotNet21'
               botName       = 'bffnsimplehostbot21dotnet'
               resourceGroup = $groups.DotNet
-              configType    = $types.DotNet
+              configType    = $types.Appsettings
           }
           @{
               key           = 'SimpleComposerHostBotDotNet'
@@ -46,7 +47,13 @@ steps:
               key           = 'SimpleHostBotJS'
               botName       = 'bffnsimplehostbotjs'
               resourceGroup = $groups.Js
-              configType    = $types.Js
+              configType    = $types.Env
+          }
+          @{
+              key           = 'SimpleHostBotPython'
+              botName       = 'bffnsimplehostbotpython'
+              resourceGroup = $groups.Python
+              configType    = $types.Env
           }
         )
 
@@ -54,38 +61,44 @@ steps:
           @{
               key     = 'EchoSkillBotDotNet'
               botName = 'bffnechoskillbotdotnet'
-              appId   = '$(BffnEchoSkillBotDotnetAppId)'
+              appId   = "$env:BffnEchoSkillBotDotnetAppId"
               resourceGroup = $groups.DotNet
           }
           @{
               key     = 'EchoSkillBot21DotNet'
               botName = 'bffnechoskillbot21dotnet'
-              appId   = '$(BffnEchoSkillBot21DotnetAppId)'
+              appId   = "$env:BffnEchoSkillBot21DotnetAppId"
               resourceGroup = $groups.DotNet
           }
           @{
               key        = 'EchoSkillBotV3DotNet'
               botName    = 'bffnechoskillbotv3dotnet'
-              appId      = '$(BffnEchoSkillBotV3DotnetAppId)'
+              appId      = "$env:BffnEchoSkillBotV3DotnetAppId"
               resourceGroup = $groups.DotNet
           }
           @{
               key        = 'EchoComposerSkillBotDotNet'
               botName    = 'bffnechocomposerskillbotdotnet'
-              appId      = '$(BffnEchoComposerSkillBotDotnetAppId)'
+              appId      = "$env:BffnEchoComposerSkillBotDotnetAppId"
               resourceGroup = $groups.DotNet
           }
           @{
               key     = 'EchoSkillBotJS'
               botName = 'bffnechoskillbotjs'
-              appId   = '$(BffnEchoSkillBotJSAppId)'
+              appId   = "$env:BffnEchoSkillBotJSAppId"
               resourceGroup = $groups.Js
           }
           @{
               key        = 'EchoSkillBotV3JS'
               botName    = 'bffnechoskillbotv3js'
-              appId      = '$(BffnEchoSkillBotV3JSAppId)'
+              appId      = "$env:BffnEchoSkillBotV3JSAppId"
               resourceGroup = $groups.Js
+          }
+          @{
+              key        = 'EchoSkillBotPython'
+              botName    = 'bffnechoskillbotpython'
+              appId      = "$env:BffnEchoSkillBotPythonAppId"
+              resourceGroup = $groups.Python
           }
         )
 
@@ -96,14 +109,16 @@ steps:
               consumers = @(
                 'SimpleHostBotDotNet',
                 'SimpleHostBotDotNet21',
-                'SimpleHostBotJS'
+                'SimpleHostBotJS',
+                'SimpleHostBotPython'
               );
               skills    = @(
                 'EchoSkillBotDotNet',
                 'EchoSkillBot21DotNet',
                 'EchoSkillBotV3DotNet',
                 'EchoSkillBotJS',
-                'EchoSkillBotV3JS'
+                'EchoSkillBotV3JS',
+                'EchoSkillBotPython'
               );
           }
           @{ 
@@ -116,6 +131,16 @@ steps:
               );
           }
         )
+
+        # Load AppIds from KeyVault
+        foreach ($skill in $skills) {
+          if(-not [string]::IsNullOrEmpty($skill.appId)){
+            continue;
+          }
+          $entry = az keyvault secret list --vault-name "bffnbotkeyvault" --query "[?name == 'Bffn$($skill.key)AppId']" | ConvertFrom-Json;
+          $secretVault = az keyvault secret show --id $entry.id | ConvertFrom-Json;
+          $skill.appId = $secretVault.value;
+        }
 
         $appsettingsPath = "tests/SkillFunctionalTests/appsettings.json"
 
@@ -147,6 +172,10 @@ steps:
               }
 
               # Check if the Consumer bot resource exists.
+              if ((az group exists -n "$($consumerBot.resourceGroup)") -eq 'false') {
+                continue;
+              }
+
               $resource = az webapp list --resource-group $consumerBot.resourceGroup --query "[?name=='$($consumerBot.botName)$($env:BotNamesSuffix)']" | ConvertFrom-Json
 
               if (-not $resource) {
@@ -182,6 +211,11 @@ steps:
                     continue;
                 }
 
+                # Check if the Consumer bot resource exists.
+                if ((az group exists -n "$($skillBot.resourceGroup)") -eq 'false') {
+                  continue;
+                }
+
                 # Check if the Skill bot resource exists.
                 $resource = az webapp list --resource-group $skillBot.resourceGroup --query "[?name=='$($skillBot.botName)$($env:BotNamesSuffix)']" | ConvertFrom-Json
 
@@ -190,16 +224,16 @@ steps:
                 }
 
                 switch ($consumerBot.configType) {
-                    $types.DotNet { 
+                    $types.Appsettings { 
                       $properties += "BotFrameworkSkills:$($index):Id=$($skillBot.key)";
                       $properties += "BotFrameworkSkills:$($index):AppId=$($skillBot.appId)";
                       $properties += "BotFrameworkSkills:$($index):SkillEndpoint=https://$($skillBot.botName)$($env:BotNamesSuffix).azurewebsites.net/api/messages";
                     }
-                    $types.Js { 
+                    $types.Env { 
                       $properties += "skill_$($skillBot.key)_appId=$($skillBot.appId)";
                       $properties += "skill_$($skillBot.key)_endpoint=https://$($skillBot.botName)$($env:BotNamesSuffix).azurewebsites.net/api/messages";
                     }
-                    $types.Composer { 
+                    $types.Composer {
                       # NOTE: Currently Composer Host bot only supports one Skill.
                       $properties += "skill__EchoSkillBot__msAppId=$($skillBot.appId)";
                       $properties += "skill__EchoSkillBot__endpointUrl=https://$($skillBot.botName)$($env:BotNamesSuffix).azurewebsites.net/api/messages";

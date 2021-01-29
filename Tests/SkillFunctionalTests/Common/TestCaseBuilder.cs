@@ -25,8 +25,7 @@ namespace SkillFunctionalTests.Common
                             {
                                 var testCase = new TestCase
                                 {
-                                    Id = $"{count:0000}-{script}",
-                                    Description = $"Script: {script}, HostBot: {hostBot}, TargetSkill: {targetSkill}, ClientType: {clientType}, DeliverMode: {deliveryMode}",
+                                    Description = $"{script}, {hostBot}, {targetSkill}, {clientType}, {deliveryMode}",
                                     ClientType = clientType,
                                     DeliveryMode = deliveryMode,
                                     HostBot = hostBot,
@@ -36,7 +35,7 @@ namespace SkillFunctionalTests.Common
 
                                 if (!ExcludeTestCase(shouldExclude, testCase))
                                 {
-                                    testCases.Add(new object[] { new TestCaseDataObject(testCase.Id, testCase) });
+                                    testCases.Add(new object[] { new TestCaseDataObject(testCase) });
                                     count++;
                                 }
                             }

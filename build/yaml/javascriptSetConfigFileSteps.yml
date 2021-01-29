@@ -2,13 +2,15 @@ steps:
 - powershell: |
     Write-host "Setting values in .env file"
     $file = "$(System.DefaultWorkingDirectory)/Bots/JavaScript/Consumers/CodeFirst/SimpleHostBot/.env";
-    $content = Get-Content -Raw $file | ConvertFrom-StringData;
-
-    $content.SkillHostEndpoint = "https://$(HostBotName)-$(Build.BuildId).azurewebsites.net/api/skills";
-    $content.SkillId = "EchoSkillBot";
-    $content.SkillAppId = "$(SkillAppId)";
-    $content.SkillEndpoint = "https://$(SkillBotName)-$(Build.BuildId).azurewebsites.net/api/messages";
-
-    Clear-Content $file;
-    foreach ($key in $content.keys) { Add-Content $file "$key=$($content.$key)" };
-  displayName: 'Update .env file with Skill Ids'
+    $content = Get-Content $file
+    $content = $content | ForEach-Object {
+      $line = $_
+      if ($line.Trim().Length -gt 0 -and -not $line.Trim().ToLower().StartsWith('skill')) {
+        $line
+      }
+    } 
+    $content += "SkillHostEndpoint=https://$(HostBotName)-$(Build.BuildId).azurewebsites.net/api/skills";
+    $content += "skill_EchoSkillBot_appId=$(SkillAppId)";
+    $content += "skill_EchoSkillBot_endpoint=https://$(SkillBotName)-$(Build.BuildId).azurewebsites.net/api/messages";
+    $content | Set-Content $file;
+  displayName: 'Update .env file'

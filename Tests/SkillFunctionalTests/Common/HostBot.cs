@@ -48,6 +48,11 @@ namespace SkillFunctionalTests.Common
         /// <summary>
         /// Host implemented using Composer and the dotnet runtime.
         /// </summary>
-        ComposerHostBotDotNet
+        ComposerHostBotDotNet,
+
+        /// <summary>
+        /// Host implemented for LegacyTests.
+        /// </summary>
+        EchoHostBot
     }
 }
