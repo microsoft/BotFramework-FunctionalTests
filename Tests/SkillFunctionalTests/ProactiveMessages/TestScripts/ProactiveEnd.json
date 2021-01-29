@@ -3,12 +3,12 @@
     {
       "type": "message",
       "role": "bot",
-      "text": "Got proactive message with value: ${MessageId}",
+      "text": "Got proactive message for user: ${UserId}",
       "assertions": [
         "type == 'message'",
         "from.role == 'bot'",
         "recipient.role == 'user'",
-        "text == 'Got proactive message with value: ${MessageId}'",
+        "text == 'Got proactive message for user: ${UserId}'",
         "inputHint == 'acceptingInput'"
       ]
     },
