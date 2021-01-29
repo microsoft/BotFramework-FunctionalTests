@@ -20,6 +20,7 @@ variables:
   # AzureDeploymentUser: (python) define in Azure
   # AzureDeploymentPassword: (python) define in Azure
   # ResourceGroup: define in Azure
+  # AppInsightsName : (optional) define in Azure
   # BffnSimpleHostBotDotnetAppId: (optional) define in Azure
   # BffnSimpleHostBotDotnetAppSecret: (optional) define in Azure
   # BffnSimpleHostBot21DotnetAppId: (optional) define in Azure
