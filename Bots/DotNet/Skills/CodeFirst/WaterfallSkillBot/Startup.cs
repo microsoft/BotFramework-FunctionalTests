@@ -68,7 +68,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot
             // The Bot needs an HttpClient to download and upload files. 
             services.AddHttpClient();
 
-            // Create a global hashset for our ConversationReferences
+            // Create a global dictionary for our ConversationReferences (used by proactive)
             services.AddSingleton<ConcurrentDictionary<string, ContinuationParameters>>();
 
             // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.

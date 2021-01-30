@@ -2,7 +2,7 @@
   "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.7/MicrosoftTeams.schema.json",
   "manifestVersion": "1.7",
   "version": "1.0.0",
-  "id": "bf45d61b-c82b-4a49-b7f9-63a04e7bedc6",
+  "id": "",
   "packageName": "com.microsoft.botframeworkfunctionaltests.teamwaterfallskillbot",
   "developer": {
     "name": "Microsoft",
@@ -25,20 +25,16 @@
   "accentColor": "#FFFFFF",
   "bots": [
     {
-      "botId": "bf45d61b-c82b-4a49-b7f9-63a04e7bedc6",
+      "botId": "",
       "scopes": [
         "personal",
         "groupchat",
         "team"
       ],
-      "supportsFiles": false,
+      "supportsFiles": true,
       "isNotificationOnly": false
     }
   ],
-  "webApplicationInfo": {
-    "id": "b87cec5a-1b34-457e-81a0-52321c4cc098",
-    "resource": "api://botid-bf45d61b-c82b-4a49-b7f9-63a04e7bedc6/test"
-  },
   "permissions": [
     "identity",
     "messageTeamMembers"

@@ -5,6 +5,7 @@
     <LangVersion>latest</LangVersion>
     <AssemblyName>Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot</AssemblyName>
     <RootNamespace>Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot</RootNamespace>
+    <UserSecretsId>807b124f-e6c7-458f-8b2b-5eefa87937f7</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
