@@ -11,7 +11,7 @@ pool:
 
 variables:
   BuildConfiguration: 'Debug'
-  BuildPlatform: 'any cpu'
+  BuildPlatform: 'AnyCPU'
   # AzureSubscription: define in Azure
   # AppServicePlanName: define in Azure
   # AppServicePlanGroup: define in Azure

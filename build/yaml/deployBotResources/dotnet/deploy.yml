@@ -129,7 +129,7 @@ stages:
               inputs:
                 solution: '${{ bot.project.directory }}/${{ bot.project.name }}'
                 vsVersion: 16.0
-                platform: 'AnyCPU'
+                platform: '$(BuildPlatform)'
                 configuration: '$(BuildConfiguration)'
 
             # Get BotBuilder version
