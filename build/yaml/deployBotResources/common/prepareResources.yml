@@ -20,4 +20,3 @@ stages:
               azureSubscription: $(AzureSubscription)
               scriptLocation: inlineScript
               inlineScript: az group create --location westus --name "${{ resourceGroup.name }}"
-            

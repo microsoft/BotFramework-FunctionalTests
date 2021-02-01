@@ -1,5 +1,4 @@
 {
-  "$schema": "../../../Libraries/TranscriptTestRunner/testscript.schema",
   "items": [
     {
       "type": "conversationUpdate",
@@ -19,47 +18,72 @@
     },
     {
       "type": "message",
-      "role": "user",
-      "text": "Hi"
-    },
-    {
-      "type": "message",
       "role": "bot",
-      "text": "Me no nothin'. Say \"skill\" and I'll patch you through",
+      "text": "What delivery mode would you like to use?",
       "assertions": [
         "type == 'message'",
         "from.role == 'bot'",
         "recipient.role == 'user'",
-        "text == 'Me no nothin\\'. Say \"skill\" and I\\'ll patch you through'",
+        "text == 'What delivery mode would you like to use?'",
+        "speak == 'What delivery mode would you like to use?'",
+        "inputHint == 'expectingInput'",
+        "suggestedActions.actions[0].type == 'imBack'",
+        "suggestedActions.actions[0].title == 'normal'",
+        "suggestedActions.actions[0].value == 'normal'",
+        "suggestedActions.actions[1].type == 'imBack'",
+        "suggestedActions.actions[1].title == 'expectReplies'",
+        "suggestedActions.actions[1].value == 'expectReplies'"
+      ]
+    },
+    {
+      "type": "message",
+      "role": "user",
+      "text": "${DeliveryMode}"
+    },
+    {
+      "type": "message",
+      "role": "bot",
+      "text": "What skill would you like to call?",
+      "assertions": [
+        "type == 'message'",
+        "from.role == 'bot'",
+        "recipient.role == 'user'",
+        "text == 'What skill would you like to call?'",
+        "speak == 'What skill would you like to call?'",
+        "inputHint == 'expectingInput'"
+      ]
+    },
+    {
+      "type": "message",
+      "role": "user",
+      "text": "${TargetSkill}"
+    },
+    {
+      "type": "message",
+      "role": "bot",
+      "text": "Type anything to send to the skill.",
+      "assertions": [
+        "type == 'message'",
+        "from.role == 'bot'",
+        "recipient.role == 'user'",
+        "text == 'Type anything to send to the skill.'",
         "inputHint == 'acceptingInput'"
       ]
     },
     {
       "type": "message",
       "role": "user",
-      "text": "skill"
+      "text": "Hello"
     },
     {
       "type": "message",
       "role": "bot",
-      "text": "Got it, connecting you to the skill...",
+      "text": "Echo: Hello",
       "assertions": [
         "type == 'message'",
         "from.role == 'bot'",
         "recipient.role == 'user'",
-        "text == 'Got it, connecting you to the skill...'",
-        "inputHint == 'acceptingInput'"
-      ]
-    },
-    {
-      "type": "message",
-      "role": "bot",
-      "text": "Echo: skill",
-      "assertions": [
-        "type == 'message'",
-        "from.role == 'bot'",
-        "recipient.role == 'user'",
-        "text == 'Echo: skill'",
+        "text == 'Echo: Hello'",
         "inputHint == 'acceptingInput'"
       ]
     },
@@ -107,13 +131,32 @@
     {
       "type": "message",
       "role": "bot",
-      "text": "Back in the host bot. Say \"skill\" and I'll patch you through",
+      "text": "Back in the host bot.",
       "assertions": [
         "type == 'message'",
         "from.role == 'bot'",
         "recipient.role == 'user'",
-        "text == 'Back in the host bot. Say \"skill\" and I\\'ll patch you through'",
+        "text == 'Back in the host bot.'",
         "inputHint == 'acceptingInput'"
+      ]
+    },
+    {
+      "type": "message",
+      "role": "bot",
+      "text": "What delivery mode would you like to use?",
+      "assertions": [
+        "type == 'message'",
+        "from.role == 'bot'",
+        "recipient.role == 'user'",
+        "text == 'What delivery mode would you like to use?'",
+        "speak == 'What delivery mode would you like to use?'",
+        "inputHint == 'expectingInput'",
+        "suggestedActions.actions[0].type == 'imBack'",
+        "suggestedActions.actions[0].title == 'normal'",
+        "suggestedActions.actions[0].value == 'normal'",
+        "suggestedActions.actions[1].type == 'imBack'",
+        "suggestedActions.actions[1].title == 'expectReplies'",
+        "suggestedActions.actions[1].value == 'expectReplies'"
       ]
     }
   ]

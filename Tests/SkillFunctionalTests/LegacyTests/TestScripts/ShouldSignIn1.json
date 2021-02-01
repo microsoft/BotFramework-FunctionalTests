@@ -1,5 +1,4 @@
 {
-  "$schema": "../../../Libraries/TranscriptTestRunner/testscript.schema",
   "items": [
     {
       "type": "conversationUpdate",
@@ -19,42 +18,58 @@
     },
     {
       "type": "message",
+      "role": "bot",
+      "text": "What delivery mode would you like to use?",
+      "assertions": [
+        "type == 'message'",
+        "from.role == 'bot'",
+        "recipient.role == 'user'",
+        "text == 'What delivery mode would you like to use?'",
+        "speak == 'What delivery mode would you like to use?'",
+        "inputHint == 'expectingInput'",
+        "suggestedActions.actions[0].type == 'imBack'",
+        "suggestedActions.actions[0].title == 'normal'",
+        "suggestedActions.actions[0].value == 'normal'",
+        "suggestedActions.actions[1].type == 'imBack'",
+        "suggestedActions.actions[1].title == 'expectReplies'",
+        "suggestedActions.actions[1].value == 'expectReplies'"
+      ]
+    },
+    {
+      "type": "message",
       "role": "user",
-      "text": "skill"
+      "text": "normal"
     },
     {
       "type": "message",
       "role": "bot",
-      "text": "Got it, connecting you to the skill...",
+      "text": "What skill would you like to call?",
       "assertions": [
         "type == 'message'",
         "from.role == 'bot'",
         "recipient.role == 'user'",
-        "text == 'Got it, connecting you to the skill...'",
-        "inputHint == 'acceptingInput'"
+        "text == 'What skill would you like to call?'",
+        "speak == 'What skill would you like to call?'",
+        "inputHint == 'expectingInput'",
+        "suggestedActions.actions[0].type == 'imBack'",
+        "suggestedActions.actions[0].title == 'EchoSkillBot'",
+        "suggestedActions.actions[0].value == 'EchoSkillBot'"
       ]
     },
     {
       "type": "message",
-      "role": "bot",
-      "text": "Echo: skill",
-      "assertions": [
-        "type == 'message'",
-        "from.role == 'bot'",
-        "recipient.role == 'user'",
-        "text == 'Echo: skill'",
-        "inputHint == 'acceptingInput'"
-      ]
+      "role": "user",
+      "text": "EchoSkillBot"
     },
     {
       "type": "message",
       "role": "bot",
-      "text": "Say \"end\" or \"stop\" and I'll end the conversation and back to the parent.",
+      "text": "Type anything to send to the skill.",
       "assertions": [
         "type == 'message'",
         "from.role == 'bot'",
         "recipient.role == 'user'",
-        "text == 'Say \"end\" or \"stop\" and I\\'ll end the conversation and back to the parent.'",
+        "text == 'Type anything to send to the skill.'",
         "inputHint == 'acceptingInput'"
       ]
     },

@@ -46,13 +46,13 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot
             SkillDefinition skillDefinition;
             switch (skill.Id)
             {
-                case "EchoSkillBot":
+                case string id when id.StartsWith("EchoSkillBot"):
                     skillDefinition = ObjectPath.Assign<EchoSkill>(new EchoSkill(), skill);
                     break;
-                case "WaterfallSkillBot":
+                case string id when id.StartsWith("WaterfallSkillBot"):
                     skillDefinition = ObjectPath.Assign<WaterfallSkill>(new WaterfallSkill(), skill);
                     break;
-                case "TeamsSkillBot":
+                case string id when id.StartsWith("TeamsSkillBot"):
                     skillDefinition = ObjectPath.Assign<TeamsSkill>(new TeamsSkill(), skill);
                     break;
                 default:
