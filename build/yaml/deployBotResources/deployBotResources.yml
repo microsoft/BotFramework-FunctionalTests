@@ -127,7 +127,7 @@ stages:
           appSecret: $env:BffnEchoSkillBotV3DotnetAppSecret
           project:
             directory: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3'
-            name: 'EchoSkillBot.sln'
+            name: 'EchoSkillBot-v3.csproj'
 
         - name: bffnwaterfallhostbotdotnet
           type: 'Host'

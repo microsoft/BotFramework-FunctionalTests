@@ -54,6 +54,7 @@ stages:
               displayName: 'NuGet restore'
               inputs:
                 restoreSolution: '${{ bot.project.directory }}/${{ bot.project.name }}'
+                restoreDirectory: 'packages'
 
           # Evaluate dependencies source and version
           - template: evaluateDependenciesVariables.yml
@@ -123,12 +124,12 @@ stages:
                   Microsoft.Bot.Builder.History
 
             # Build bot
-            - task: VSBuild@1
+            - task: MSBuild@1
               displayName: 'Build'
               inputs:
                 solution: '${{ bot.project.directory }}/${{ bot.project.name }}'
                 vsVersion: 16.0
-                platform: '$(BuildPlatform)'
+                platform: 'AnyCPU'
                 configuration: '$(BuildConfiguration)'
 
             # Get BotBuilder version
