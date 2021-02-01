@@ -53,7 +53,7 @@ namespace SkillFunctionalTests.LegacyTests
             {
                 if (testCase.DeliveryMode == DeliveryModes.ExpectReplies)
                 {
-                    if (testCase.TargetSkill == SkillBotNames.EchoSkillBotV3DotNet || testCase.TargetSkill == SkillBotNames.EchoSkillBotV3JS || testCase.TargetSkill == SkillBotNames.EchoSkillBotPython)
+                    if (testCase.TargetSkill == SkillBotNames.EchoSkillBotDotNetV3 || testCase.TargetSkill == SkillBotNames.EchoSkillBotJSV3 || testCase.TargetSkill == SkillBotNames.EchoSkillBotPython)
                     {
                         return true;
                     }

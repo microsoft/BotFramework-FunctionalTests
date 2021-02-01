@@ -16,7 +16,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "EchoSkillBot21DotNet": {
+    "EchoSkillBotDotNet21": {
       "commandName": "Project",
       "launchBrowser": true,
       "applicationUrl": "http://localhost:35405/",

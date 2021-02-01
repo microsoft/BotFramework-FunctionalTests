@@ -32,22 +32,22 @@ stages:
             parameters:
               name: "$(DeployResourceGroup)-DotNet"
 
-  - stage: 'Deploy_Js_ResourceGroup'
-    displayName: "[Deploy] Delete Js Bots Resource Group"
+  - stage: 'Deploy_JS_ResourceGroup'
+    displayName: "[Deploy] Delete JS Bots Resource Group"
     dependsOn: []
     jobs:
       - job: 'Delete'
-        displayName: 'Delete Js bots resource group'
+        displayName: 'Delete JS bots resource group'
         steps:
           - template: ../common/deleteResourceGroup.yml
             parameters:
-              name: "$(DeployResourceGroup)-Js"
+              name: "$(DeployResourceGroup)-JS"
 
   - stage: 'Shared_Windows_AppServicePlan'
     displayName: '[Shared] Delete Windows App Service Plan'
     dependsOn: 
       - Deploy_DotNet_ResourceGroup
-      - Deploy_Js_ResourceGroup
+      - Deploy_JS_ResourceGroup
     jobs:
       - job: 'Delete'
         displayName: 'Delete ${{ variables.AppServicePlan }}'
@@ -196,7 +196,7 @@ stages:
     displayName: '[Shared] Delete Windows Resource Group'
     dependsOn: 
       - Deploy_DotNet_ResourceGroup
-      - Deploy_Js_ResourceGroup
+      - Deploy_JS_ResourceGroup
       - Shared_Windows_AppServicePlan
       - Shared_AppInsights
       - Shared_CosmosDB
