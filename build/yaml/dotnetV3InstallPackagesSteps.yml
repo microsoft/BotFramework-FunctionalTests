@@ -50,16 +50,16 @@ steps:
   displayName: 'Install Microsoft.Bot.Builder'
   inputs:
     command: custom
-    arguments: 'update $(Parameters.solution) -Id Microsoft.Bot.Builder $(InstallPackageParameters)'
+    arguments: 'update $(Parameters.packages)/packages.config -Id Microsoft.Bot.Builder $(InstallPackageParameters) -RepositoryPath $(Parameters.packages)/packages'
 
 - task: NuGetCommand@2
   displayName: 'Install Microsoft.Bot.Builder.Azure'
   inputs:
     command: custom
-    arguments: 'update $(Parameters.solution) -Id Microsoft.Bot.Builder.Azure $(InstallPackageParameters)'
+    arguments: 'update $(Parameters.packages)/packages.config -Id Microsoft.Bot.Builder.Azure $(InstallPackageParameters) -RepositoryPath $(Parameters.packages)/packages'
 
 - task: NuGetCommand@2
   displayName: 'Install Microsoft.Bot.Builder.History'
   inputs:
     command: custom
-    arguments: 'update $(Parameters.solution) -Id Microsoft.Bot.Builder.History $(InstallPackageParameters)'
+    arguments: 'update $(Parameters.packages)/packages.config -Id Microsoft.Bot.Builder.History $(InstallPackageParameters) -RepositoryPath $(Parameters.packages)/packages'
