@@ -201,7 +201,7 @@ stages:
           appId: $env:BffnEchoSkillBotV3JsAppId
           appSecret: $env:BffnEchoSkillBotV3JsAppSecret
           project:
-            directory: 'Bots/JavaScript/Skills/CodeFirst/EchoSkillBot-v3/skill'
+            directory: 'Bots/JavaScript/Skills/CodeFirst/EchoSkillBot-v3'
             name: 'EchoSkillBot.sln'
 
 # Python
