@@ -10,7 +10,7 @@ from botbuilder.core import (
 )
 from botbuilder.core.skills import BotFrameworkSkill
 from botbuilder.dialogs import Dialog
-from botbuilder.schema import ActivityTypes, ChannelAccount, ExpectedReplies
+from botbuilder.schema import ActivityTypes, ChannelAccount, ExpectedReplies, DeliveryModes
 from botbuilder.integration.aiohttp.skills import SkillHttpClient
 
 from config import DefaultConfig, SkillConfiguration
@@ -52,15 +52,33 @@ class HostBot(ActivityHandler):
     async def on_message_activity(self, turn_context: TurnContext):
         # Forward all activities except EndOfConversation to the active skill.
         if turn_context.activity.type != ActivityTypes.end_of_conversation:
+            delivery_mode: str = await self._delivery_mode_property.get(
+                turn_context
+            )
+
+            if turn_context.activity.text in self._skills_config.SKILLS:
+                selected_skill = self._skills_config.SKILLS[turn_context.activity.text]
+                v3_bots = ['EchoSkillBotDotNetV3', 'EchoSkillBotJSV3']
+                if selected_skill and delivery_mode == DeliveryModes.expect_replies and selected_skill.id.lower() in (id.lower() for id in v3_bots):
+                    message = MessageFactory.text("V3 Bots do not support 'expectReplies' delivery mode.")
+                    await turn_context.send_activity(message)
+                    # Forget delivery mode and skill invocation.
+                    await self._delivery_mode_property.delete(turn_context)
+                    # Restart setup dialog
+                    await self._conversation_state.delete(turn_context)
+                    await DialogHelper.run_dialog(
+                        self._dialog,
+                        turn_context,
+                        self._dialog_state_property,
+                    )
+                    return
+
+
             # If there is an active skill
             active_skill: BotFrameworkSkill = await self._active_skill_property.get(
                 turn_context
             )
             if active_skill:
-                delivery_mode: str = await self._delivery_mode_property.get(
-                    turn_context
-                )
-
                 # If there is an active skill, forward the Activity to it.
                 await self.__send_to_skill(turn_context, delivery_mode, active_skill)
             else:

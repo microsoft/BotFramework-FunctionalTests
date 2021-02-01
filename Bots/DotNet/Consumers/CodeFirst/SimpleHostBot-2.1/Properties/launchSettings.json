@@ -16,7 +16,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "SimpleHostBot21DotNet": {
+    "SimpleHostBotDotNet21": {
       "commandName": "Project",
       "launchBrowser": true,
       "applicationUrl": "http://localhost:35005",
