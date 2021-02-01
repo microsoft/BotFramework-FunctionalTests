@@ -67,7 +67,7 @@
         "from.role == 'bot'",
         "recipient.role == 'user'",
         "text == 'Type anything to send to the skill.'",
-        "inputHint == 'acceptingInput'"
+        "inputHint == 'expectingInput'"
       ]
     },
     {

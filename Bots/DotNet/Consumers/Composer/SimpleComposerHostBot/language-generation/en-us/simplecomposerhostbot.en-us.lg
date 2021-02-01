@@ -18,11 +18,11 @@
 ]
 # SendActivity_Zkprn3()
 [Activity
-    Text = Received endOfConversation.\n\nCode: ${turn.activity.code}completedSuccessfully
+    Text = Received endOfConversation.\n\nCode: ${turn.activity.code}
     InputHint = acceptingInput
 ]
 # SendActivity_71moHf()
 [Activity
-    Text = Back in the host bot. Say "skill" and I'll patch you through
+    Text = Back in the host bot.
     InputHint = acceptingInput
 ]

@@ -111,7 +111,7 @@ class SetupDialog extends ComponentDialog {
             return await stepContext.replaceDialog(this.initialDialogId);
         }
 
-        const message = MessageFactory.text('Type anything to send to the skill.');
+        const message = MessageFactory.text('Type anything to send to the skill.', 'Type anything to send to the skill.', InputHints.ExpectingInput);
         await stepContext.context.sendActivity(message);
 
         return await stepContext.endDialog();

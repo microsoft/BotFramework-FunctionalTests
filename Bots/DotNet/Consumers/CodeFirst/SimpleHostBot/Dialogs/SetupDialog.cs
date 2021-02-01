@@ -109,7 +109,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Dialogs
             // Set active skill
             await _activeSkillProperty.SetAsync(stepContext.Context, selectedSkill.Value, cancellationToken);
 
-            var message = MessageFactory.Text("Type anything to send to the skill.");
+            var message = MessageFactory.Text("Type anything to send to the skill.", "Type anything to send to the skill.", InputHints.ExpectingInput);
             await stepContext.Context.SendActivityAsync(message, cancellationToken);
 
             return await stepContext.EndDialogAsync(stepContext.Values, cancellationToken);

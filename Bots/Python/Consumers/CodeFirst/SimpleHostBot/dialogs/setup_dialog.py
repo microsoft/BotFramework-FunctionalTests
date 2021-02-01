@@ -121,7 +121,7 @@ class SetupDialog(ComponentDialog):
             return await step_context.replace_dialog(self.initial_dialog_id)
 
         await step_context.context.send_activity(
-            MessageFactory.text("Type anything to send to the skill.")
+            MessageFactory.text("Type anything to send to the skill.", "Type anything to send to the skill.", InputHints.expecting_input)
         )
 
         return await step_context.end_dialog()

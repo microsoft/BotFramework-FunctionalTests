@@ -13,6 +13,5 @@
     ],
     "padlock": "",
     "version": "2.0",
-    "overrides": null,
-    "path": "C:\\Projects\\Repos\\BotFramework-FunctionalTests\\Bots\\SimpleComposerHostBotDotNet.bot"
+    "overrides": null
 }

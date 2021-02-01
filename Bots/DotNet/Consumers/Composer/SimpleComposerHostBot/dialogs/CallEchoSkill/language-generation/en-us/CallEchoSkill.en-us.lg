@@ -38,3 +38,8 @@
     Text = ${dialog.firstUtterance}
     DeliveryMode=${dialog.deliveryMode}
 ]
+# BeginSkill_Activity_8YZF62()
+[Activity
+    Text = ${dialog.firstUtterance}
+    DeliveryMode=${dialog.deliveryMode}
+]

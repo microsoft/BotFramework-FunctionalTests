@@ -34,42 +34,29 @@
       ]
     },
     {
-      "$kind": "Microsoft.OnIntent",
-      "$designer": {
-        "id": "MKei69",
-        "name": "EchoSkillBot"
-      },
-      "intent": "EchoSkillBot",
-      "actions": [
-        {
-          "$kind": "Microsoft.SendActivity",
-          "$designer": {
-            "id": "mb8ZXL"
-          },
-          "activity": "${SendActivity_mb8ZXL()}"
-        },
-        {
-          "$kind": "Microsoft.BeginSkill",
-          "$designer": {
-            "id": "NKX4SL"
-          },
-          "activityProcessed": true,
-          "botId": "=settings.MicrosoftAppId",
-          "skillHostEndpoint": "=settings.skillHostEndpoint",
-          "connectionName": "=settings.connectionName",
-          "allowInterruptions": true,
-          "skillEndpoint": "=settings.skill['echoSkillBotDotNet'].endpointUrl",
-          "skillAppId": "=settings.skill['echoSkillBotDotNet'].msAppId",
-          "resultProperty": "dialog.result"
-        }
-      ]
-    },
-    {
       "$kind": "Microsoft.OnEndOfConversationActivity",
       "$designer": {
         "id": "PGigli"
       },
       "actions": [
+        {
+          "$kind": "Microsoft.IfCondition",
+          "$designer": {
+            "id": "JDJv5L"
+          },
+          "condition": "=turn.activity.code == null",
+          "actions": [
+            {
+              "$kind": "Microsoft.SetProperty",
+              "$designer": {
+                "id": "yT94Ae"
+              },
+              "property": "turn.activity.code",
+              "value": "completedSuccessfully"
+            }
+          ],
+          "elseActions": []
+        },
         {
           "$kind": "Microsoft.SendActivity",
           "$designer": {
@@ -100,11 +87,6 @@
   "id": "SimpleComposerHostBot",
   "recognizer": {
     "$kind": "Microsoft.RegexRecognizer",
-    "intents": [
-      {
-        "intent": "EchoSkillBot",
-        "pattern": "skill"
-      }
-    ]
+    "intents": []
   }
 }

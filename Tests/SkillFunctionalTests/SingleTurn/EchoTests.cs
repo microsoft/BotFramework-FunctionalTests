@@ -36,13 +36,11 @@ namespace SkillFunctionalTests.SingleTurn
 
             var hostBots = new List<HostBot>
             {
+                HostBot.SimpleComposerHostBotDotNet,
                 HostBot.SimpleHostBotDotNet,
                 HostBot.SimpleHostBotDotNet21,
                 HostBot.SimpleHostBotJS,
                 HostBot.SimpleHostBotPython,
-
-                // TODO: Enable when composer bots support multiple skills.
-                // HostBot.SimpleComposerHostBotDotNet
             };
 
             var targetSkills = new List<string>
@@ -64,7 +62,7 @@ namespace SkillFunctionalTests.SingleTurn
             {
                 if (testCase.DeliveryMode == DeliveryModes.ExpectReplies)
                 {
-                    if (testCase.TargetSkill == SkillBotNames.EchoSkillBotV3DotNet || testCase.TargetSkill == SkillBotNames.EchoSkillBotV3JS)
+                    if (testCase.TargetSkill == SkillBotNames.EchoSkillBotV3DotNet || testCase.TargetSkill == SkillBotNames.EchoSkillBotV3JS || testCase.HostBot == HostBot.SimpleComposerHostBotDotNet)
                     {
                         return true;
                     }

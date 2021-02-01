@@ -65,6 +65,7 @@
           },
           "style": "suggestedAction",
           "choices": [
+            "EchoSkillBotComposerDotNet",
             "EchoSkillBotDotNet",
             "EchoSkillBot21DotNet",
             "EchoSkillBotV3DotNet",
@@ -104,6 +105,25 @@
             }
           ],
           "cases": [
+            {
+              "value": "EchoSkillBotComposerDotNet",
+              "actions": [
+                {
+                  "$kind": "Microsoft.BeginSkill",
+                  "$designer": {
+                    "id": "8YZF62"
+                  },
+                  "activityProcessed": true,
+                  "botId": "=settings.MicrosoftAppId",
+                  "skillHostEndpoint": "=settings.skillHostEndpoint",
+                  "connectionName": "=settings.connectionName",
+                  "allowInterruptions": true,
+                  "activity": "${BeginSkill_Activity_8YZF62()}",
+                  "skillEndpoint": "=settings.skill['echoSkillBotComposerDotNet'].endpointUrl",
+                  "skillAppId": "=settings.skill['echoSkillBotComposerDotNet'].msAppId"
+                }
+              ]
+            },
             {
               "value": "EchoSkillBotDotNet",
               "actions": [

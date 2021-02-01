@@ -28,8 +28,13 @@
       "endpointName": "default"
     },
     "echoSkillBotPython": {
-      "manifest": "http://localhost:37400/manifests/echoskillbotv3-manifest-1.0.json",
+      "manifest": "http://localhost:37400/manifests/echoskillbot-manifest-1.0.json",
       "remote": true
+    },
+    "echoSkillBotComposerDotNet": {
+      "manifest": "http://localhost:35410/manifests/echoskillbot-manifest-1.0.json",
+      "remote": true,
+      "endpointName": "default"
     }
   }
 }
