@@ -7,9 +7,9 @@ namespace SkillFunctionalTests.Common
     {
         public const string EchoSkillBotDotNet = "EchoSkillBotDotNet";
         public const string EchoSkillBotDotNet21 = "EchoSkillBotDotNet21";
-        public const string EchoSkillBotV3DotNet = "EchoSkillBotV3DotNet";
+        public const string EchoSkillBotDotNetV3 = "EchoSkillBotDotNetV3";
         public const string EchoSkillBotJS = "EchoSkillBotJS";
-        public const string EchoSkillBotV3JS = "EchoSkillBotV3JS";
+        public const string EchoSkillBotJSV3 = "EchoSkillBotJSV3";
         public const string EchoSkillBotPython = "EchoSkillBotPython";
 
         public const string WaterfallSkillBotDotNet = "WaterfallSkillBotDotNet";

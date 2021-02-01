@@ -82,7 +82,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Bots
             if (_skillsConfig.Skills.ContainsKey(turnContext.Activity.Text))
             {
                 var selectedSkill = _skillsConfig.Skills[turnContext.Activity.Text];
-                var v3Bots = new List<string> { "EchoSkillBotV3DotNet", "EchoSkillBotV3JS" };
+                var v3Bots = new List<string> { "EchoSkillBotDotNetV3", "EchoSkillBotJSV3" };
                 if (selectedSkill != null && deliveryMode == DeliveryModes.ExpectReplies && v3Bots.Contains(selectedSkill.Id))
                 {
                     var message = MessageFactory.Text("V3 Bots do not support 'expectReplies' delivery mode.");

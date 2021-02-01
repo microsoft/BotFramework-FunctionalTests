@@ -15,9 +15,9 @@ variables:
   # BffnEchoComposerSkillBotDotNetAppId: (optional) define in Azure
   # BffnEchoSkillBotDotNetAppId: (optional) define in Azure
   # BffnEchoSkillBotDotNet21AppId: (optional) define in Azure
-  # BffnEchoSkillBotV3DotNetAppId: (optional) define in Azure
+  # BffnEchoSkillBotDotNetV3AppId: (optional) define in Azure
   # BffnEchoSkillBotJSAppId: (optional) define in Azure
-  # BffnEchoSkillBotV3JSAppId: (optional) define in Azure
+  # BffnEchoSkillBotJSV3AppId: (optional) define in Azure
   # BffnEchoSkillBotPythonAppId: (optional) define in Azure
   # BotNamesSuffix: (optional) define in Azure
 

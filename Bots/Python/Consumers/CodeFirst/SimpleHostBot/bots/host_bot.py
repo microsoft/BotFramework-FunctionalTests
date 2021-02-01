@@ -58,7 +58,7 @@ class HostBot(ActivityHandler):
 
             if turn_context.activity.text in self._skills_config.SKILLS:
                 selected_skill = self._skills_config.SKILLS[turn_context.activity.text]
-                v3_bots = ['EchoSkillBotV3DotNet', 'EchoSkillBotV3JS']
+                v3_bots = ['EchoSkillBotDotNetV3', 'EchoSkillBotJSV3']
                 if selected_skill and delivery_mode == DeliveryModes.expect_replies and selected_skill.id.lower() in (id.lower() for id in v3_bots):
                     message = MessageFactory.text("V3 Bots do not support 'expectReplies' delivery mode.")
                     await turn_context.send_activity(message)

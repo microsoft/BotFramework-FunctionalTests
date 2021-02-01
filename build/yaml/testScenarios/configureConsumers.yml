@@ -71,9 +71,9 @@ steps:
               resourceGroup = $groups.DotNet
           }
           @{
-              key        = 'EchoSkillBotV3DotNet'
-              botName    = 'bffnechoskillbotv3dotnet'
-              appId      = "$env:BffnEchoSkillBotV3DotNetAppId"
+              key        = 'EchoSkillBotDotNetV3'
+              botName    = 'bffnechoskillbotdotnetv3'
+              appId      = "$env:BffnEchoSkillBotDotNetV3AppId"
               resourceGroup = $groups.DotNet
           }
           @{
@@ -89,9 +89,9 @@ steps:
               resourceGroup = $groups.JS
           }
           @{
-              key        = 'EchoSkillBotV3JS'
-              botName    = 'bffnechoskillbotv3js'
-              appId      = "$env:BffnEchoSkillBotV3JSAppId"
+              key        = 'EchoSkillBotJSV3'
+              botName    = 'bffnechoskillbotjsv3'
+              appId      = "$env:BffnEchoSkillBotJSV3AppId"
               resourceGroup = $groups.JS
           }
           @{
@@ -115,9 +115,9 @@ steps:
               skills    = @(
                 'EchoSkillBotDotNet',
                 'EchoSkillBotDotNet21',
-                'EchoSkillBotV3DotNet',
+                'EchoSkillBotDotNetV3',
                 'EchoSkillBotJS',
-                'EchoSkillBotV3JS',
+                'EchoSkillBotJSV3',
                 'EchoSkillBotPython'
               );
           }
