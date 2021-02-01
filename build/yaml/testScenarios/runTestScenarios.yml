@@ -19,6 +19,7 @@ variables:
   # BffnEchoSkillBotJSAppId: (optional) define in Azure
   # BffnEchoSkillBotV3JSAppId: (optional) define in Azure
   # BffnWaterfallSkillBotDotNetAppId: (optional) define in Azure
+  # BffnEchoSkillBotPythonAppId: define in Azure
   # BotNamesSuffix: (optional) define in Azure
 
 pool:

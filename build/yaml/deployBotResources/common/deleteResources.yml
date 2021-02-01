@@ -10,18 +10,20 @@ steps:
       scriptType: ps
       scriptLocation: inlineScript
       inlineScript: |
-        $group = "${{ parameters.resourceGroup }}"
-        $resource = "${{ parameters.resourceName }}$($env:BotNamesSuffix)"
+        Write-Host "Looking for '${{ parameters.resourceGroup }}'...";
+        if ((az group exists -n "${{ parameters.resourceGroup }}") -eq 'true')
+        {
+            Write-Host "Found pre-existing resource group '${{ parameters.resourceGroup }}'.";
+            Write-Host "Starting resource cleanup...";
 
-        $existsGroup = (az group exists --name "$group") -eq 'true'
-        if (-not $existsGroup) {
-          Write-Host "Resource Group does not exist!"
-          Write-Host "##vso[task.complete result=Failed;]"
-          return;
+            Write-Host ("Deleting '" + "${{ parameters.resourceName }}$($env:BotNamesSuffix)" + "'...")
+            az webapp delete --name "${{ parameters.resourceName }}$($env:BotNamesSuffix)" --resource-group ${{ parameters.resourceGroup }} --keep-empty-plan
+            az bot delete --name "${{ parameters.resourceName }}$($env:BotNamesSuffix)" --resource-group ${{ parameters.resourceGroup }}
+
+            Write-Host "Pre-existing bot resources for '${{ parameters.resourceName }}$($env:BotNamesSuffix)' deleted."
         }
-
-        $message = "Deleting App Service and Bot Channel Registration ..."
-        Write-Host "[Starting] $message"
-        az webapp delete --name "$resource" --resource-group "$group"
-        az bot delete --name "$resource" --resource-group "$group"
-        Write-Host "[Finished] $message"
+        else {
+            Write-Host "Resource group not found."
+            Write-Host "##vso[task.complete result=Failed;]"
+            return;
+        }

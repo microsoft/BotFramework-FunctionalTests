@@ -7,8 +7,6 @@ namespace SkillFunctionalTests.Common
 {
     public class TestCase
     {
-        public string Id { get; set; }
-
         public string Description { get; set; }
 
         public ClientType ClientType { get; set; }

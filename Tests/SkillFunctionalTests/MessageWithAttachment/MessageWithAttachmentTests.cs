@@ -31,6 +31,7 @@ namespace SkillFunctionalTests.MessageWithAttachment
             var deliverModes = new List<string>
             {
                 DeliveryModes.Normal,
+                DeliveryModes.ExpectReplies
             };
 
             var hostBots = new List<HostBot>
@@ -77,7 +78,13 @@ namespace SkillFunctionalTests.MessageWithAttachment
             var options = TestClientOptions[testCase.HostBot];
             var runner = new XUnitTestRunner(new TestClientFactory(testCase.ClientType, options, Logger).GetTestClient(), TestRequestTimeout, Logger);
 
-            await runner.RunTestAsync(Path.Combine(_testScriptsFolder, testCase.Script));
+            var testParams = new Dictionary<string, string>
+            {
+                { "DeliveryMode", testCase.DeliveryMode },
+                { "TargetSkill", testCase.TargetSkill }
+            };
+
+            await runner.RunTestAsync(Path.Combine(_testScriptsFolder, testCase.Script), testParams);
         }
     }
 }
