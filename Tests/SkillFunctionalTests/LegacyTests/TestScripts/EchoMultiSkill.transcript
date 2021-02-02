@@ -169,8 +169,8 @@
         },
 		{
           "type": "imBack",
-          "title": "EchoSkillBotV3DotNet",
-          "value": "EchoSkillBotV3DotNet"
+          "title": "EchoSkillBotDotNetV3",
+          "value": "EchoSkillBotDotNetV3"
         },
         {
           "type": "imBack",
@@ -179,8 +179,8 @@
         },
 		{
           "type": "imBack",
-          "title": "EchoSkillBotV3JS",
-          "value": "EchoSkillBotV3JS"
+          "title": "EchoSkillBotJSV3",
+          "value": "EchoSkillBotJSV3"
         },
 		{
           "type": "imBack",
