@@ -221,7 +221,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs
             // Get the skill info based on the selected skill.
             var selectedSkillId = ((FoundChoice)stepContext.Result).Value;
             var deliveryMode = stepContext.Values[_deliveryMode].ToString();
-            var v3Bots = new List<string> { "EchoSkillBotV3DotNet", "EchoSkillBotV3JS" };
+            var v3Bots = new List<string> { "EchoSkillBotDotNetV3", "EchoSkillBotJSV3" };
 
             // Exclude v3 bots from ExpectReplies
             if (deliveryMode == DeliveryModes.ExpectReplies && v3Bots.Contains(selectedSkillId))
