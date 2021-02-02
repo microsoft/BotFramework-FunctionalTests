@@ -40,24 +40,6 @@
       },
       "actions": [
         {
-          "$kind": "Microsoft.IfCondition",
-          "$designer": {
-            "id": "JDJv5L"
-          },
-          "condition": "=turn.activity.code == null",
-          "actions": [
-            {
-              "$kind": "Microsoft.SetProperty",
-              "$designer": {
-                "id": "yT94Ae"
-              },
-              "property": "turn.activity.code",
-              "value": "completedSuccessfully"
-            }
-          ],
-          "elseActions": []
-        },
-        {
           "$kind": "Microsoft.SendActivity",
           "$designer": {
             "id": "Zkprn3"

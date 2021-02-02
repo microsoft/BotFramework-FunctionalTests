@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -45,6 +46,7 @@ namespace SkillFunctionalTests.SingleTurn
 
             var targetSkills = new List<string>
             {
+                SkillBotNames.EchoSkillBotComposerDotNet,
                 SkillBotNames.EchoSkillBotDotNet,
                 SkillBotNames.EchoSkillBotDotNet21,
                 SkillBotNames.EchoSkillBotDotNetV3,
@@ -62,6 +64,8 @@ namespace SkillFunctionalTests.SingleTurn
             {
                 if (testCase.DeliveryMode == DeliveryModes.ExpectReplies)
                 {
+                    // Note: ExpectReplies is not supported by DotNetV3 and JSV3 skills.
+                    // BUG: ExpectReplies fails for SimpleHostBotComposerDotNet calls (remove the last OR when ).
                     if (testCase.TargetSkill == SkillBotNames.EchoSkillBotDotNetV3 || testCase.TargetSkill == SkillBotNames.EchoSkillBotJSV3 || testCase.HostBot == HostBot.SimpleHostBotComposerDotNet)
                     {
                         return true;
@@ -94,6 +98,29 @@ namespace SkillFunctionalTests.SingleTurn
                 { "DeliveryMode", testCase.DeliveryMode },
                 { "TargetSkill", testCase.TargetSkill }
             };
+
+            // BUG: Composer skills don't return status code, remove this and related placehoder in script once XYZ is fixed
+            if (testCase.TargetSkill == SkillBotNames.EchoSkillBotComposerDotNet)
+            {
+                switch (testCase.HostBot)
+                {
+                    case HostBot.SimpleHostBotJS:
+                        testParams.Add("ExpectedEocCode", "undefined");
+                        break;
+
+                    case HostBot.SimpleHostBotPython:
+                        testParams.Add("ExpectedEocCode", "None");
+                        break;
+                    
+                    default:
+                        testParams.Add("ExpectedEocCode", string.Empty);
+                        break;
+                }
+            }
+            else
+            {
+                testParams.Add("ExpectedEocCode", "completedSuccessfully");
+            }
 
             await runner.RunTestAsync(Path.Combine(_testScriptsFolder, testCase.Script), testParams);
         }

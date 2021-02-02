@@ -83,7 +83,8 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot21.Dialogs
             {
                 Prompt = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput),
                 RetryPrompt = MessageFactory.Text(repromptMessageText, repromptMessageText, InputHints.ExpectingInput),
-                Choices = _skillsConfig.Skills.Select(skill => new Choice(skill.Key)).ToList()
+                Choices = _skillsConfig.Skills.Select(skill => new Choice(skill.Key)).ToList(),
+                Style = ListStyle.SuggestedAction
             };
 
             // Prompt the user to select a skill.

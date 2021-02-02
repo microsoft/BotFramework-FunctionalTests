@@ -160,7 +160,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Bots
             await _activeSkillProperty.DeleteAsync(turnContext, cancellationToken);
 
             // Show status message, text and value returned by the skill
-            var eocActivityMessage = $"Received {ActivityTypes.EndOfConversation}.\n\nCode: {activity.Code}";
+            var eocActivityMessage = $"Received {ActivityTypes.EndOfConversation}.\n\nCode: {activity.Code}.";
             if (!string.IsNullOrWhiteSpace(activity.Text))
             {
                 eocActivityMessage += $"\n\nText: {activity.Text}";
