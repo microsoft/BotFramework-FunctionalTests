@@ -7,6 +7,7 @@ from botbuilder.dialogs import (
     WaterfallStepContext,
     DialogTurnResult,
 )
+from botbuilder.dialogs.choices.list_style import ListStyle
 from botbuilder.dialogs.prompts import (
     TextPrompt,
     ChoicePrompt,
@@ -94,6 +95,7 @@ class SetupDialog(ComponentDialog):
                 Choice(value=skill.id)
                 for _, skill in sorted(self._skills_config.SKILLS.items())
             ],
+            style=ListStyle.suggested_action
         )
 
         return await step_context.prompt(self.select_skill_step.__name__, options)
@@ -121,7 +123,7 @@ class SetupDialog(ComponentDialog):
             return await step_context.replace_dialog(self.initial_dialog_id)
 
         await step_context.context.send_activity(
-            MessageFactory.text("Type anything to send to the skill.")
+            MessageFactory.text("Type anything to send to the skill.", "Type anything to send to the skill.", InputHints.expecting_input)
         )
 
         return await step_context.end_dialog()

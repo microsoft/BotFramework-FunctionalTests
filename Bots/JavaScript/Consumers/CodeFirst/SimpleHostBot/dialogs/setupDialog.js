@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 const { InputHints, MessageFactory, DeliveryModes } = require('botbuilder');
-const { ChoicePrompt, ComponentDialog, DialogSet, DialogTurnStatus, WaterfallDialog } = require('botbuilder-dialogs');
+const { ChoicePrompt, ComponentDialog, DialogSet, DialogTurnStatus, WaterfallDialog, ListStyle } = require('botbuilder-dialogs');
 const { HostBot } = require('../bots/hostBot');
 
 const SETUP_DIALOG = 'SetupDialog';
@@ -82,7 +82,8 @@ class SetupDialog extends ComponentDialog {
         const options = {
             prompt: MessageFactory.text(messageText, messageText, InputHints.ExpectingInput),
             retryPrompt: MessageFactory.text(repromptMessageText, repromptMessageText, InputHints.ExpectingInput),
-            choices: Object.keys(this.skillsConfig.skills)
+            choices: Object.keys(this.skillsConfig.skills),
+            style: ListStyle.suggestedAction
         };
 
         // Prompt the user to select a skill.
@@ -111,7 +112,7 @@ class SetupDialog extends ComponentDialog {
             return await stepContext.replaceDialog(this.initialDialogId);
         }
 
-        const message = MessageFactory.text('Type anything to send to the skill.');
+        const message = MessageFactory.text('Type anything to send to the skill.', 'Type anything to send to the skill.', InputHints.ExpectingInput);
         await stepContext.context.sendActivity(message);
 
         return await stepContext.endDialog();

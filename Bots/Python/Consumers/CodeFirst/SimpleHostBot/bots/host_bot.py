@@ -118,7 +118,7 @@ class HostBot(ActivityHandler):
         await self._active_skill_property.delete(turn_context)
 
         eoc_activity_message = (
-            f"Received {ActivityTypes.end_of_conversation}.\n\nCode: {activity.code}"
+            f"Received {ActivityTypes.end_of_conversation}.\n\nCode: {activity.code}."
         )
         if activity.text:
             eoc_activity_message = eoc_activity_message + f"\n\nText: {activity.text}"
