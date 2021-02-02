@@ -10,7 +10,9 @@ namespace Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.U
     {
         private static readonly HashSet<string> UpdateUnsupported = new HashSet<string>
         {
-            Channels.Emulator
+            Channels.Emulator,
+            Channels.Webchat,
+            Channels.Facebook
         };
 
         /// <summary>

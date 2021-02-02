@@ -10,7 +10,9 @@ namespace Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.D
     {
         private static readonly HashSet<string> DeleteUnsupported = new HashSet<string>
         {            
-                Channels.Emulator
+                Channels.Emulator,
+                Channels.Facebook,
+                Channels.Webchat,
         };
 
         /// <summary>
