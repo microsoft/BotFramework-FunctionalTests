@@ -4,14 +4,13 @@
 using System.Collections.Generic;
 using Microsoft.Bot.Connector;
 
-namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Delete
+namespace Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Delete
 {
     public class DeleteSupportedInChannel
     {
         private static readonly HashSet<string> DeleteUnsupported = new HashSet<string>
         {            
-                Channels.Emulator,
-                Channels.Webchat
+                Channels.Emulator
         };
 
         /// <summary>

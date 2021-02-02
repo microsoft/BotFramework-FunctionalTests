@@ -28,8 +28,6 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs
 
         // Constants used for selecting actions on the skill.
         private const string JustForwardTheActivity = "JustForwardTurnContext.Activity";
-        private const string WaterfallDialog = "BasicWaterfallDialog";
-        private const string TeamsWaterfallDialog = "TeamsWaterfallDialog";
         private readonly IStatePropertyAccessor<BotFrameworkSkill> _activeSkillProperty;
         private readonly string _selectedSkillKey = $"{typeof(MainDialog).FullName}.SelectedSkillKey";
         private readonly SkillsConfiguration _skillsConfig;
@@ -69,19 +67,19 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs
 
             // Add dialog to prepare SSO on the host and test the SSO skill
             // The waterfall skillDialog created in AddSkillDialogs contains the SSO skill action.
-            var waterfallDialog = Dialogs.Find("WaterfallSkillBot");
+            var waterfallDialog = Dialogs.Find(Constants.WaterfallSkillBot);
             if (waterfallDialog != null)
             {
                 var temp = new SsoDialog(waterfallDialog, configuration);
-                temp.Id = WaterfallDialog;
+                temp.Id = Constants.WaterfallDialog;
                 AddDialog(temp);
             }
 
-            var teamsWaterfallDialog = Dialogs.Find("TeamsWaterfallSkillBot");
+            var teamsWaterfallDialog = Dialogs.Find(Constants.TeamsWaterfallSkillBot);
             if (teamsWaterfallDialog != null)
             {
                 var temp = new SsoDialog(teamsWaterfallDialog, configuration);
-                temp.Id = TeamsWaterfallDialog;
+                temp.Id = Constants.TeamsWaterfallDialog;
                 AddDialog(temp);
             }
 
@@ -201,11 +199,11 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs
             if (skillActivity.Name == "Sso")
             {
                 // Special case, we start the SSO dialog to prepare the host to call the skill.
-                return await stepContext.BeginDialogAsync(WaterfallDialog, cancellationToken: cancellationToken);
+                return await stepContext.BeginDialogAsync(Constants.WaterfallDialog, cancellationToken: cancellationToken);
             }
             else if (skillActivity.Name == "TeamsSso")
             {
-                return await stepContext.BeginDialogAsync(TeamsWaterfallDialog, cancellationToken: cancellationToken);
+                return await stepContext.BeginDialogAsync(Constants.TeamsWaterfallDialog, cancellationToken: cancellationToken);
             }
             else
             {

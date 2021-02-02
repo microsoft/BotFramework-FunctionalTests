@@ -13,10 +13,12 @@ using Microsoft.Bot.Schema;
 using Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Attachments;
 using Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Auth;
 using Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Cards;
+using Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Delete;
 using Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Echo;
+using Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.FileUpload;
 using Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Proactive;
 using Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Sso;
-using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.FileUpload;
+using Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Update;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
@@ -37,6 +39,8 @@ namespace Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs
             AddDialog(new SsoSkillDialog(configuration));
             AddDialog(new EchoDialog());
             AddDialog(new FileUploadDialog());
+            AddDialog(new DeleteDialog());
+            AddDialog(new UpdateDialog());
 
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[] { ProcessActivityAsync }));
 
@@ -90,6 +94,12 @@ namespace Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs
 
                 case "FileUpload":
                     return await stepContext.BeginDialogAsync(FindDialog(nameof(FileUploadDialog)).Id, cancellationToken: cancellationToken);
+
+                case "Delete":
+                    return await stepContext.BeginDialogAsync(FindDialog(nameof(DeleteDialog)).Id, cancellationToken: cancellationToken);
+
+                case "Update":
+                    return await stepContext.BeginDialogAsync(FindDialog(nameof(UpdateDialog)).Id, cancellationToken: cancellationToken);
 
                 default:
                     // We didn't get an event name we can handle.

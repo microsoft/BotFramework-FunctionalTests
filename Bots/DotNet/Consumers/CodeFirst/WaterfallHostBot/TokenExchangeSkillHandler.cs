@@ -60,7 +60,6 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot
             _logger = logger ?? NullLogger<TokenExchangeSkillHandler>.Instance;
 
             _botId = configuration.GetSection(MicrosoftAppCredentials.MicrosoftAppIdKey)?.Value;
-            _connectionName = configuration.GetSection("SsoConnectionName")?.Value;
         }
 
         protected override async Task<ResourceResponse> OnSendToConversationAsync(ClaimsIdentity claimsIdentity, string conversationId, Activity activity, CancellationToken cancellationToken = default(CancellationToken))

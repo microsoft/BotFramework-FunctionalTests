@@ -4,14 +4,13 @@
 using System.Collections.Generic;
 using Microsoft.Bot.Connector;
 
-namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Delete
+namespace Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Update
 {
-    public class DeleteSupportedInChannel
+    public class UpdateSupportedInChannel
     {
-        private static readonly HashSet<string> DeleteUnsupported = new HashSet<string>
-        {            
-                Channels.Emulator,
-                Channels.Webchat
+        private static readonly HashSet<string> UpdateUnsupported = new HashSet<string>
+        {
+            Channels.Emulator
         };
 
         /// <summary>
@@ -19,9 +18,9 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Delete
         /// </summary>
         /// <param name="channel">Bot Connector Channel.</param>
         /// <returns>A bool if the card is supported in the channel.</returns>
-        public static bool IsDeleteSupported(string channel)
+        public static bool IsSupported(string channel)
         {
-            return DeleteUnsupported.Contains(channel.ToString()) ? false : true;
+            return UpdateUnsupported.Contains(channel.ToString()) ? false : true;
         }
     }
 }

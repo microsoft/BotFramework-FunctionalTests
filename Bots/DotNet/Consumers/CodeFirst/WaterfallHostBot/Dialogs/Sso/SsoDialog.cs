@@ -24,7 +24,16 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs.Sso
         public SsoDialog(Dialog skillDialog, IConfiguration configuration)
             : base(nameof(SsoDialog))
         {
-            _connectionName = configuration.GetSection("SsoConnectionName")?.Value;
+            if (skillDialog.Id == Constants.WaterfallSkillBot)
+            {
+                _connectionName = configuration.GetSection("SsoConnectionName")?.Value;
+            }
+
+            if (skillDialog.Id == Constants.TeamsWaterfallSkillBot)
+            {
+                _connectionName = configuration.GetSection("TeamsSsoConnectionName")?.Value;
+            }
+
             _skillDialogId = skillDialog.Id;
 
             AddDialog(new ChoicePrompt("ActionStepPrompt"));

@@ -11,7 +11,7 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Choices;
 using Microsoft.Bot.Schema;
 
-namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.FileUpload
+namespace Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.FileUpload
 {
     public class FileUploadDialog : ComponentDialog
     {
