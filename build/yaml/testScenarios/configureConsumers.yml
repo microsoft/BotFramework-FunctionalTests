@@ -134,21 +134,13 @@ steps:
                 'SimpleHostBotPython'
               );
               skills    = @(
+                'EchoSkillBotComposerDotNet',
                 'EchoSkillBotDotNet',
                 'EchoSkillBotDotNet21',
                 'EchoSkillBotDotNetV3',
                 'EchoSkillBotJS',
                 'EchoSkillBotJSV3',
                 'EchoSkillBotPython'
-              );
-          }
-          @{ 
-              name      = 'SingleTurn'; 
-              consumers = @(
-                'SimpleHostBotComposerDotNet'
-              );
-              skills    = @(
-                'EchoSkillBotComposerDotNet'
               );
           }
           @{ 
