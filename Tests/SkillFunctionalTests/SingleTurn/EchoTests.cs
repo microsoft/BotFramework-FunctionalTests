@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -65,7 +64,7 @@ namespace SkillFunctionalTests.SingleTurn
                 if (testCase.DeliveryMode == DeliveryModes.ExpectReplies)
                 {
                     // Note: ExpectReplies is not supported by DotNetV3 and JSV3 skills.
-                    // BUG: ExpectReplies fails for SimpleHostBotComposerDotNet calls (remove the last OR when ).
+                    // BUG: ExpectReplies fails for SimpleHostBotComposerDotNet calls (remove the last OR when https://github.com/microsoft/BotFramework-FunctionalTests/issues/279 is fixed).
                     if (testCase.TargetSkill == SkillBotNames.EchoSkillBotDotNetV3 || testCase.TargetSkill == SkillBotNames.EchoSkillBotJSV3 || testCase.HostBot == HostBot.SimpleHostBotComposerDotNet)
                     {
                         return true;
@@ -90,7 +89,7 @@ namespace SkillFunctionalTests.SingleTurn
             Logger.LogInformation(JsonConvert.SerializeObject(testCase, Formatting.Indented));
 
             var options = TestClientOptions[testCase.HostBot];
-            
+
             var runner = new XUnitTestRunner(new TestClientFactory(testCase.ClientType, options, Logger).GetTestClient(), TestRequestTimeout, Logger);
 
             var testParams = new Dictionary<string, string>
@@ -99,7 +98,7 @@ namespace SkillFunctionalTests.SingleTurn
                 { "TargetSkill", testCase.TargetSkill }
             };
 
-            // BUG: Composer skills don't return status code, remove this and related placehoder in script once XYZ is fixed
+            // BUG: Composer skills don't return status code, remove this and related placeholder in script once https://github.com/microsoft/BotFramework-FunctionalTests/issues/278 is fixed
             if (testCase.TargetSkill == SkillBotNames.EchoSkillBotComposerDotNet)
             {
                 switch (testCase.HostBot)
@@ -111,7 +110,7 @@ namespace SkillFunctionalTests.SingleTurn
                     case HostBot.SimpleHostBotPython:
                         testParams.Add("ExpectedEocCode", "None");
                         break;
-                    
+
                     default:
                         testParams.Add("ExpectedEocCode", string.Empty);
                         break;
