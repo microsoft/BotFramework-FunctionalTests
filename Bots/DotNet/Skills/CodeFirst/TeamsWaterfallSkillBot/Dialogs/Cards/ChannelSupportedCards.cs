@@ -30,6 +30,16 @@ namespace Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.C
                 {
                     CardOptions.AdaptiveUpdate
                 }
+            },
+            {
+                Channels.Telegram, new List<CardOptions>
+                {
+                    CardOptions.AdaptiveCardBotAction,
+                    CardOptions.AdaptiveCardTaskModule,
+                    CardOptions.AdaptiveCardSumbitAction,
+                    CardOptions.List,
+                    CardOptions.TeamsFileConsent
+                }
             }
         };
 
