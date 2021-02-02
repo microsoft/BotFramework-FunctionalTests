@@ -107,7 +107,7 @@ class SetupDialog(ComponentDialog):
 
         await self._active_skill_property.set(step_context.context, selected_skill)
 
-        v3_bots = ['EchoSkillBotV3Dotnet', 'EchoSkillBotV3JS']
+        v3_bots = ['EchoSkillBotDotNetV3', 'EchoSkillBotJSV3']
 
         if self._delivery_mode == DeliveryModes.expect_replies and selected_skill.id.lower() in (id.lower() for id in v3_bots):
             message = MessageFactory.text("V3 Bots do not support 'expectReplies' delivery mode.")

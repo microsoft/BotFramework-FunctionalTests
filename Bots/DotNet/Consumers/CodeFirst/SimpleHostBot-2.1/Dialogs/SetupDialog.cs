@@ -96,7 +96,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot21.Dialogs
             var selectedSkillKey = ((FoundChoice)stepContext.Result).Value;
             var selectedSkill = _skillsConfig.Skills.FirstOrDefault(skill => skill.Key == selectedSkillKey);
 
-            var v3Bots = new List<string> { "EchoSkillBotV3DotNet", "EchoSkillBotV3JS" };
+            var v3Bots = new List<string> { "EchoSkillBotDotNetV3", "EchoSkillBotJSV3" };
 
             if (_deliveryMode == DeliveryModes.ExpectReplies && v3Bots.Contains(selectedSkillKey))
             {

@@ -46,10 +46,10 @@ namespace SkillFunctionalTests.SingleTurn
             var targetSkills = new List<string>
             {
                 SkillBotNames.EchoSkillBotDotNet,
-                SkillBotNames.EchoSkillBot21DotNet,
-                SkillBotNames.EchoSkillBotV3DotNet,
+                SkillBotNames.EchoSkillBotDotNet21,
+                SkillBotNames.EchoSkillBotDotNetV3,
                 SkillBotNames.EchoSkillBotJS,
-                SkillBotNames.EchoSkillBotV3JS,
+                SkillBotNames.EchoSkillBotJSV3,
                 SkillBotNames.EchoSkillBotPython
             };
 
@@ -62,7 +62,7 @@ namespace SkillFunctionalTests.SingleTurn
             {
                 if (testCase.DeliveryMode == DeliveryModes.ExpectReplies)
                 {
-                    if (testCase.TargetSkill == SkillBotNames.EchoSkillBotV3DotNet || testCase.TargetSkill == SkillBotNames.EchoSkillBotV3JS || testCase.HostBot == HostBot.SimpleComposerHostBotDotNet)
+                    if (testCase.TargetSkill == SkillBotNames.EchoSkillBotDotNetV3 || testCase.TargetSkill == SkillBotNames.EchoSkillBotJSV3 || testCase.HostBot == HostBot.SimpleComposerHostBotDotNet)
                     {
                         return true;
                     }
