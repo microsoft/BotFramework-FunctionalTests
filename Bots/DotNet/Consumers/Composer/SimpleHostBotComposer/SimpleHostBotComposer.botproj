@@ -7,12 +7,12 @@
       "remote": true,
       "endpointName": "default"
     },
-    "echoSkillBot21DotNet": {
+    "echoSkillBotDotNet21": {
       "manifest": "http://localhost:35405/manifests/echoskillbot-manifest-1.0.json",
       "remote": true,
       "endpointName": "default"
     },
-    "echoSkillBotV3DotNet": {
+    "echoSkillBotDotNetV3": {
       "manifest": "http://localhost:35407/manifests/echoskillbotv3-manifest-1.0.json",
       "remote": true,
       "endpointName": "default"
@@ -22,7 +22,7 @@
       "remote": true,
       "endpointName": "default"
     },
-    "echoSkillBotV3Js": {
+    "echoSkillBotJsV3": {
       "manifest": "http://localhost:36407/manifests/echoskillbotv3-manifest-1.0.json",
       "remote": true,
       "endpointName": "default"

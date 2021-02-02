@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.botframework.com/schemas/skills/v2.1/skill-manifest.json",
-  "$id": "EchoSkillBotV3JS",
-  "name": "EchoSkillBotV3JS",
+  "$id": "EchoSkillBotJSV3",
+  "name": "EchoSkillBotJSV3",
   "version": "1.0",
   "description": "This is a skill for echoing what the user sent to the bot (implemented using JS and BF v3).",
   "publisherName": "Microsoft",

@@ -67,10 +67,10 @@
           "choices": [
             "EchoSkillBotComposerDotNet",
             "EchoSkillBotDotNet",
-            "EchoSkillBot21DotNet",
-            "EchoSkillBotV3DotNet",
+            "EchoSkillBotDotNet21",
+            "EchoSkillBotDotNetV3",
             "EchoSkillBotJS",
-            "EchoSkillBotV3JS",
+            "EchoSkillBotJSV3",
             "EchoSkillBotPython"
           ],
           "property": "dialog.selectedSkill"
@@ -144,7 +144,7 @@
               ]
             },
             {
-              "value": "EchoSkillBot21DotNet",
+              "value": "EchoSkillBotDotNet21",
               "actions": [
                 {
                   "$kind": "Microsoft.BeginSkill",
@@ -156,14 +156,14 @@
                   "skillHostEndpoint": "=settings.skillHostEndpoint",
                   "connectionName": "=settings.connectionName",
                   "allowInterruptions": true,
-                  "skillEndpoint": "=settings.skill['echoSkillBot21DotNet'].endpointUrl",
-                  "skillAppId": "=settings.skill['echoSkillBot21DotNet'].msAppId",
+                  "skillEndpoint": "=settings.skill['echoSkillBotDotNet21'].endpointUrl",
+                  "skillAppId": "=settings.skill['echoSkillBotDotNet21'].msAppId",
                   "activity": "${BeginSkill_Activity_SMZQkv()}"
                 }
               ]
             },
             {
-              "value": "EchoSkillBotV3DotNet",
+              "value": "EchoSkillBotDotNetV3",
               "actions": [
                 {
                   "$kind": "Microsoft.BeginSkill",
@@ -175,8 +175,8 @@
                   "skillHostEndpoint": "=settings.skillHostEndpoint",
                   "connectionName": "=settings.connectionName",
                   "allowInterruptions": true,
-                  "skillEndpoint": "=settings.skill['echoSkillBotV3DotNet'].endpointUrl",
-                  "skillAppId": "=settings.skill['echoSkillBotV3DotNet'].msAppId",
+                  "skillEndpoint": "=settings.skill['echoSkillBotDotNetV3'].endpointUrl",
+                  "skillAppId": "=settings.skill['echoSkillBotDotNetV3'].msAppId",
                   "activity": "${BeginSkill_Activity_57wwb7()}"
                 }
               ]
@@ -201,7 +201,7 @@
               ]
             },
             {
-              "value": "EchoSkillBotV3JS",
+              "value": "EchoSkillBotJSV3",
               "actions": [
                 {
                   "$kind": "Microsoft.BeginSkill",
@@ -213,8 +213,8 @@
                   "skillHostEndpoint": "=settings.skillHostEndpoint",
                   "connectionName": "=settings.connectionName",
                   "allowInterruptions": true,
-                  "skillEndpoint": "=settings.skill['echoSkillBotV3Js'].endpointUrl",
-                  "skillAppId": "=settings.skill['echoSkillBotV3Js'].msAppId",
+                  "skillEndpoint": "=settings.skill['echoSkillBotJsV3'].endpointUrl",
+                  "skillAppId": "=settings.skill['echoSkillBotJsV3'].msAppId",
                   "activity": "${BeginSkill_Activity_cVFpif()}"
                 }
               ]

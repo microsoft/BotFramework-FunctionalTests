@@ -37,7 +37,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "runtime", "runtime", "{88BD
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "settings", "settings", "{F5187871-1120-4D76-B3B6-53D2F93E3071}"
 	ProjectSection(SolutionItems) = preProject
-		Consumers\Composer\SimpleHostBotComposer\settings\appsettings.Development.json = Consumers\Composer\SimpleHostBotComposer\settings\appsettings.Development.json
 		Consumers\Composer\SimpleHostBotComposer\settings\appsettings.json = Consumers\Composer\SimpleHostBotComposer\settings\appsettings.json
 	EndProjectSection
 EndProject
