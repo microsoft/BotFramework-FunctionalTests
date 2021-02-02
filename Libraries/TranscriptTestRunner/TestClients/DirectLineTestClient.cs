@@ -102,6 +102,9 @@ namespace TranscriptTestRunner.TestClients
                 Type = activity.Type
             };
 
+            _logger.LogDebug($"{DateTime.Now} Sending activity to conversation {_conversation.ConversationId}");
+            _logger.LogDebug(JsonConvert.SerializeObject(activityPost, Formatting.Indented));
+
             await _dlClient.Conversations.PostActivityAsync(_conversation.ConversationId, activityPost, cancellationToken).ConfigureAwait(false);
         }
 
