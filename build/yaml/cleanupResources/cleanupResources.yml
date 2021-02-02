@@ -14,8 +14,8 @@ variables:
   CosmosDB: 'bffnbotstatedb'
   KeyVault: 'bffnbotkeyvault'
   # AzureSubscription: define in Azure
-  # SharedResourceGroup: define in Azure
   # DeployResourceGroup: define in Azure
+  # SharedResourceGroup: define in Azure
 
 pool:
   vmImage: 'windows-2019'
@@ -82,7 +82,7 @@ stages:
   - stage: 'Shared_Linux_AppServicePlan'
     displayName: '[Shared] Delete Linux App Service Plan'
     dependsOn:
-    - Deploy_Python_ResourceGroup
+      - Deploy_Python_ResourceGroup
     jobs:
       - job: 'Delete'
         displayName: 'Delete ${{ variables.AppServicePlanLinux }}'
@@ -147,7 +147,7 @@ stages:
               scriptLocation: inlineScript
               inlineScript: |
                 Write-Host "Looking for '${{ variables.CosmosDB }}'...";
-                $exists = az cosmosdb check-name-exists --name "test-jmut"
+                $exists = az cosmosdb check-name-exists --name "${{ variables.CosmosDB }}"
                 if ($exists -eq $true) {
                   Write-Host "Deleting '${{ variables.CosmosDB }}'...";
                   az cosmosdb delete --name "${{ variables.CosmosDB }}" --resource-group "$(SharedResourceGroup)" --yes
