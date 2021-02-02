@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -10,7 +9,6 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SkillFunctionalTests.Common;
 using TranscriptTestRunner;
-using TranscriptTestRunner.TestClients;
 using TranscriptTestRunner.XUnit;
 using Xunit;
 using Xunit.Abstractions;
@@ -66,7 +64,7 @@ namespace SkillFunctionalTests.SingleTurn
             {
                 if (testCase.DeliveryMode == DeliveryModes.ExpectReplies)
                 {
-                    if (testCase.TargetSkill == SkillBotNames.EchoSkillBotV3DotNet || testCase.TargetSkill == SkillBotNames.EchoSkillBotV3JS || testCase.TargetSkill == SkillBotNames.EchoSkillBotPython)
+                    if (testCase.TargetSkill == SkillBotNames.EchoSkillBotV3DotNet || testCase.TargetSkill == SkillBotNames.EchoSkillBotV3JS)
                     {
                         return true;
                     }

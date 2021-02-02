@@ -14,7 +14,7 @@ from botbuilder.dialogs.prompts import (
 )
 from botbuilder.dialogs.choices import Choice
 from botbuilder.core import MessageFactory, ConversationState
-from botbuilder.schema import InputHints
+from botbuilder.schema import InputHints, DeliveryModes
 
 from bots.host_bot import ACTIVE_SKILL_PROPERTY_NAME, DELIVERY_MODE_PROPERTY_NAME
 from config import SkillConfiguration
@@ -32,6 +32,7 @@ class SetupDialog(ComponentDialog):
         self._active_skill_property = conversation_state.create_property(
             ACTIVE_SKILL_PROPERTY_NAME
         )
+        self._delivery_mode = ""
 
         self._skills_config = skills_config
 
@@ -78,6 +79,7 @@ class SetupDialog(ComponentDialog):
         self, step_context: WaterfallStepContext
     ) -> DialogTurnResult:
         # Set delivery mode.
+        self._delivery_mode = step_context.result.value
         await self._delivery_mode_property.set(
             step_context.context, step_context.result.value
         )
@@ -104,6 +106,19 @@ class SetupDialog(ComponentDialog):
                 selected_skill = self._skills_config.SKILLS.get(i)
 
         await self._active_skill_property.set(step_context.context, selected_skill)
+
+        v3_bots = ['EchoSkillBotV3Dotnet', 'EchoSkillBotV3JS']
+
+        if self._delivery_mode == DeliveryModes.expect_replies and selected_skill.id.lower() in (id.lower() for id in v3_bots):
+            message = MessageFactory.text("V3 Bots do not support 'expectReplies' delivery mode.")
+            await step_context.context.send_activity(message)
+
+            # Forget delivery mode and skill invocation.
+            await self._delivery_mode_property.delete(step_context.context)
+            await self._active_skill_property.delete(step_context.context)
+
+            # Restart setup dialog
+            return await step_context.replace_dialog(self.initial_dialog_id)
 
         await step_context.context.send_activity(
             MessageFactory.text("Type anything to send to the skill.")

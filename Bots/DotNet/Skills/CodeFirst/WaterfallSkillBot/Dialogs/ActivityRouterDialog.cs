@@ -131,6 +131,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs
                 case "Echo":
                     // Start the EchoSkillBot
                     var messageActivity = MessageFactory.Text("I'm the echo skill bot");
+                    messageActivity.DeliveryMode = stepContext.Context.Activity.DeliveryMode;
                     return await stepContext.BeginDialogAsync(FindDialog(_echoSkill).Id, new BeginSkillDialogOptions { Activity = messageActivity }, cancellationToken);
 
                 case "Delete":

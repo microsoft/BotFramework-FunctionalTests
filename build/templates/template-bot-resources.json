@@ -20,6 +20,10 @@
     "botLocation": {
       "type": "string"
     },
+    "appInsightsName": {
+      "type": "string",
+      "defaultValue": ""
+    },
     "appServicePlanName": {
       "type": "string"
     },
@@ -52,8 +56,8 @@
         "siteConfig": {
           "appSettings": [
             {
-                "name": "WEBSITE_NODE_DEFAULT_VERSION",
-                "value": "10.14.1"
+              "name": "WEBSITE_NODE_DEFAULT_VERSION",
+              "value": "10.14.1"
             },
             {
               "name": "MicrosoftAppId",
@@ -62,6 +66,18 @@
             {
               "name": "MicrosoftAppPassword",
               "value": "[parameters('appSecret')]"
+            },
+            {
+              "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+              "value": "[if(empty(parameters('appInsightsName')), '', reference(resourceId(parameters('appServicePlanResourceGroup'),'Microsoft.Insights/components', parameters('appInsightsName')), '2015-05-01', 'Full').properties.InstrumentationKey)]"
+            },
+            {
+              "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
+              "value": "[if(empty(parameters('appInsightsName')), '', reference(resourceId(parameters('appServicePlanResourceGroup'),'Microsoft.Insights/components', parameters('appInsightsName')), '2015-05-01', 'Full').properties.ConnectionString)]"
+            },
+            {
+              "name": "ApplicationInsightsAgent_EXTENSION_VERSION",
+              "value": "~2"
             }
           ],
           "cors": {
