@@ -83,9 +83,9 @@ steps:
               resourceGroup = $groups.DotNet
           }
           @{
-              key        = 'EchoComposerSkillBotDotNet'
-              botName    = 'bffnechocomposerskillbotdotnet'
-              appId      = "$env:BffnEchoComposerSkillBotDotNetAppId"
+              key        = 'EchoSkillBotComposerDotNet'
+              botName    = 'bffnechoskillbotcomposerdotnet'
+              appId      = "$env:BffnEchoSkillBotComposerDotNetAppId"
               resourceGroup = $groups.DotNet
           }
           @{
@@ -145,7 +145,7 @@ steps:
                 'SimpleHostBotComposerDotNet'
               );
               skills    = @(
-                'EchoComposerSkillBotDotNet'
+                'EchoSkillBotComposerDotNet'
               );
           }
           @{ 

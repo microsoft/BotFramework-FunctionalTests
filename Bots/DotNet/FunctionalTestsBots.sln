@@ -41,11 +41,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "settings", "settings", "{F5
 		Consumers\Composer\SimpleHostBotComposer\settings\appsettings.json = Consumers\Composer\SimpleHostBotComposer\settings\appsettings.json
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EchoComposerSkillBot", "EchoComposerSkillBot", "{9FF1FC77-3EBE-4001-864B-59DC0BF5ADDE}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EchoSkillBotComposer", "EchoSkillBotComposer", "{9FF1FC77-3EBE-4001-864B-59DC0BF5ADDE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "settings", "settings", "{95708A0E-37E4-4EC0-B381-DC2C440F1A1D}"
 	ProjectSection(SolutionItems) = preProject
-		Skills\Composer\EchoComposerSkillBot\settings\appsettings.json = Skills\Composer\EchoComposerSkillBot\settings\appsettings.json
+		Skills\Composer\EchoSkillBotComposer\settings\appsettings.json = Skills\Composer\EchoSkillBotComposer\settings\appsettings.json
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TeamsSsoSkillBot", "Skills\CodeFirst\TeamsSsoSkillBot\TeamsSsoSkillBot.csproj", "{148CA3AB-48D0-48F8-A4B7-A3D614132D31}"
@@ -66,15 +66,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.BotFramework.Comp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "runtime", "runtime", "{01755A2F-A272-4919-9F1E-5CE354065292}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.BotFramework.Composer.Core", "Skills\Composer\EchoComposerSkillBot\runtime\core\Microsoft.BotFramework.Composer.Core.csproj", "{90F62AD9-4CFC-47AA-8ABA-AE466F2EC620}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.BotFramework.Composer.Core", "Skills\Composer\EchoSkillBotComposer\runtime\core\Microsoft.BotFramework.Composer.Core.csproj", "{90F62AD9-4CFC-47AA-8ABA-AE466F2EC620}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.BotFramework.Composer.Functions", "Skills\Composer\EchoComposerSkillBot\runtime\azurefunctions\Microsoft.BotFramework.Composer.Functions.csproj", "{91FD58E7-A8CA-4C9B-8998-3F14E48EF49E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.BotFramework.Composer.Functions", "Skills\Composer\EchoSkillBotComposer\runtime\azurefunctions\Microsoft.BotFramework.Composer.Functions.csproj", "{91FD58E7-A8CA-4C9B-8998-3F14E48EF49E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.BotFramework.Composer.CustomAction", "Skills\Composer\EchoComposerSkillBot\runtime\customaction\Microsoft.BotFramework.Composer.CustomAction.csproj", "{85F63552-14ED-40D7-954B-7E79636BCCB1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.BotFramework.Composer.CustomAction", "Skills\Composer\EchoSkillBotComposer\runtime\customaction\Microsoft.BotFramework.Composer.CustomAction.csproj", "{85F63552-14ED-40D7-954B-7E79636BCCB1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.BotFramework.Composer.WebApp", "Skills\Composer\EchoComposerSkillBot\runtime\azurewebapp\Microsoft.BotFramework.Composer.WebApp.csproj", "{27923BEF-F775-4B8B-8868-A51715817BB1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.BotFramework.Composer.WebApp", "Skills\Composer\EchoSkillBotComposer\runtime\azurewebapp\Microsoft.BotFramework.Composer.WebApp.csproj", "{27923BEF-F775-4B8B-8868-A51715817BB1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.BotFramework.Composer.Tests", "Skills\Composer\EchoComposerSkillBot\runtime\tests\Microsoft.BotFramework.Composer.Tests.csproj", "{64B3FAA2-D759-4479-BFA5-AE5E67247FC9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.BotFramework.Composer.Tests", "Skills\Composer\EchoSkillBotComposer\runtime\tests\Microsoft.BotFramework.Composer.Tests.csproj", "{64B3FAA2-D759-4479-BFA5-AE5E67247FC9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WaterfallHostBot", "Consumers\CodeFirst\WaterfallHostBot\WaterfallHostBot.csproj", "{15A946BE-39F9-4945-9895-0019ED3392FC}"
 EndProject

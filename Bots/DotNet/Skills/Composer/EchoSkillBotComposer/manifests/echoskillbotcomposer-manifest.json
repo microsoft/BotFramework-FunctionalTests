@@ -1,6 +1,6 @@
 {
   "$schema": "https://schemas.botframework.com/schemas/skills/skill-manifest-2.0.0.json",
-  "$id": "EchoComposerSkillBot",
+  "$id": "EchoSkillBotComposer",
   "name": "Echo composer skill bot",
   "version": "1.0",
   "description": "This is a skill for echoing what the user sent to the bot.",
@@ -21,9 +21,9 @@
     }
   ],
   "activities": {
-    "echocomposerskillbot": {
+    "echoskillbotcomposer": {
       "type": "event",
-      "name": "echocomposerskillbot"
+      "name": "echoskillbotcomposer"
     },
     "conversationUpdate": {
       "type": "conversationUpdate"

@@ -15,7 +15,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "EchoComposerSkillBotDotNet": {
+    "EchoSkillBotComposerDotNet": {
       "commandName": "Project",
       "launchBrowser": false,
       "applicationUrl": "http://localhost:35410",

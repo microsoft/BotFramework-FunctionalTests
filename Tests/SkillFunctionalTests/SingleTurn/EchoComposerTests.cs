@@ -40,7 +40,7 @@ namespace SkillFunctionalTests.SingleTurn
 
             var targetSkills = new List<string>
             {
-                SkillBotNames.ComposerSkillBotDotNet
+                SkillBotNames.EchoSkillBotComposerDotNet
             };
 
             var scripts = new List<string>

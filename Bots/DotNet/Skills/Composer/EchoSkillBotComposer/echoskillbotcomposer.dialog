@@ -2,7 +2,7 @@
   "$kind": "Microsoft.AdaptiveDialog",
   "$designer": {
     "$designer": {
-      "name": "EchoComposerSkillBot",
+      "name": "EchoSkillBotComposer",
       "description": "",
       "id": "bfLQct"
     }
@@ -94,7 +94,7 @@
     }
   ],
   "$schema": "https://raw.githubusercontent.com/microsoft/BotFramework-Composer/stable/Composer/packages/server/schemas/sdk.schema",
-  "generator": "echocomposerskillbot.lg",
-  "id": "EchoComposerSkillBot",
-  "recognizer": "echocomposerskillbot.lu.qna"
+  "generator": "echoskillbotcomposer.lg",
+  "id": "EchoSkillBotComposer",
+  "recognizer": "echoskillbotcomposer.lu.qna"
 }
