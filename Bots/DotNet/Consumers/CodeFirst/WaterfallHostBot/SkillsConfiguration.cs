@@ -52,7 +52,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot
                 case string id when id.StartsWith("WaterfallSkillBot"):
                     skillDefinition = ObjectPath.Assign<WaterfallSkill>(new WaterfallSkill(), skill);
                     break;
-                case "TeamsWaterfallSkillBot":
+                case string id when id.StartsWith("TeamsWaterfallSkillBot"):
                     skillDefinition = ObjectPath.Assign<TeamsSkill>(new TeamsSkill(), skill);
                     break;
                 default:
