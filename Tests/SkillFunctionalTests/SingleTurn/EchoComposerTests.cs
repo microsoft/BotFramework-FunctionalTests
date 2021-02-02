@@ -35,7 +35,7 @@ namespace SkillFunctionalTests.SingleTurn
             
             var hostBots = new List<HostBot>
             {
-                 HostBot.SimpleComposerHostBotDotNet
+                 HostBot.SimpleHostBotComposerDotNet
             };
 
             var targetSkills = new List<string>

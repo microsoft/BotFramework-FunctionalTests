@@ -2,7 +2,7 @@
   "$kind": "Microsoft.AdaptiveDialog",
   "$designer": {
     "$designer": {
-      "name": "SimpleComposerHostBot",
+      "name": "SimpleHostBotComposer",
       "description": "",
       "id": "zzc07D"
     }
@@ -83,8 +83,8 @@
     }
   ],
   "$schema": "https://raw.githubusercontent.com/microsoft/BotFramework-Composer/stable/Composer/packages/server/schemas/sdk.schema",
-  "generator": "simplecomposerhostbot.lg",
-  "id": "SimpleComposerHostBot",
+  "generator": "simplehostbotcomposer.lg",
+  "id": "SimpleHostBotComposer",
   "recognizer": {
     "$kind": "Microsoft.RegexRecognizer",
     "intents": []

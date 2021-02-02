@@ -36,7 +36,7 @@ namespace SkillFunctionalTests.SingleTurn
 
             var hostBots = new List<HostBot>
             {
-                HostBot.SimpleComposerHostBotDotNet,
+                HostBot.SimpleHostBotComposerDotNet,
                 HostBot.SimpleHostBotDotNet,
                 HostBot.SimpleHostBotDotNet21,
                 HostBot.SimpleHostBotJS,
@@ -62,7 +62,7 @@ namespace SkillFunctionalTests.SingleTurn
             {
                 if (testCase.DeliveryMode == DeliveryModes.ExpectReplies)
                 {
-                    if (testCase.TargetSkill == SkillBotNames.EchoSkillBotDotNetV3 || testCase.TargetSkill == SkillBotNames.EchoSkillBotJSV3 || testCase.HostBot == HostBot.SimpleComposerHostBotDotNet)
+                    if (testCase.TargetSkill == SkillBotNames.EchoSkillBotDotNetV3 || testCase.TargetSkill == SkillBotNames.EchoSkillBotJSV3 || testCase.HostBot == HostBot.SimpleHostBotComposerDotNet)
                     {
                         return true;
                     }

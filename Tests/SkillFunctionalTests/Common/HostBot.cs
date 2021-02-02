@@ -28,7 +28,7 @@ namespace SkillFunctionalTests.Common
         /// <summary>
         /// Simple host implemented using Composer and the dotnet runtime.
         /// </summary>
-        SimpleComposerHostBotDotNet,
+        SimpleHostBotComposerDotNet,
 
         /// <summary>
         /// Host implemented using dotnet and waterfall dialogs.

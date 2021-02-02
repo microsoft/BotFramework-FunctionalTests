@@ -38,8 +38,8 @@ steps:
               configType    = $types.Appsettings
           }
           @{
-              key           = 'SimpleComposerHostBotDotNet'
-              botName       = 'bffnsimplecomposerhostbotdotnet'
+              key           = 'SimpleHostBotComposerDotNet'
+              botName       = 'bffnsimplehostbotcomposerdotnet'
               resourceGroup = $groups.DotNet
               configType    = $types.Composer
           }
@@ -142,7 +142,7 @@ steps:
           @{ 
               name      = 'SingleTurn'; 
               consumers = @(
-                'SimpleComposerHostBotDotNet'
+                'SimpleHostBotComposerDotNet'
               );
               skills    = @(
                 'EchoComposerSkillBotDotNet'

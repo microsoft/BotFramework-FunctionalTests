@@ -31,14 +31,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Composer", "Composer", "{33
 		Skills\Composer\Directory.Build.props = Skills\Composer\Directory.Build.props
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SimpleComposerHostBot", "SimpleComposerHostBot", "{23CD821E-D287-4B8A-8174-15C081B566DA}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SimpleHostBotComposer", "SimpleHostBotComposer", "{23CD821E-D287-4B8A-8174-15C081B566DA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "runtime", "runtime", "{88BD7115-D9EA-4D85-80EF-94594F944231}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "settings", "settings", "{F5187871-1120-4D76-B3B6-53D2F93E3071}"
 	ProjectSection(SolutionItems) = preProject
-		Consumers\Composer\SimpleComposerHostBot\settings\appsettings.Development.json = Consumers\Composer\SimpleComposerHostBot\settings\appsettings.Development.json
-		Consumers\Composer\SimpleComposerHostBot\settings\appsettings.json = Consumers\Composer\SimpleComposerHostBot\settings\appsettings.json
+		Consumers\Composer\SimpleHostBotComposer\settings\appsettings.Development.json = Consumers\Composer\SimpleHostBotComposer\settings\appsettings.Development.json
+		Consumers\Composer\SimpleHostBotComposer\settings\appsettings.json = Consumers\Composer\SimpleHostBotComposer\settings\appsettings.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EchoComposerSkillBot", "EchoComposerSkillBot", "{9FF1FC77-3EBE-4001-864B-59DC0BF5ADDE}"
@@ -54,15 +54,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SsoTeamsHostBot", "Consumer
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TeamsAuthSkillBot", "Skills\CodeFirst\TeamsAuthSkillBot\TeamsAuthSkillBot.csproj", "{990E4DAA-41A9-466C-AAEF-32F019D2DEC8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.BotFramework.Composer.Core", "Consumers\Composer\SimpleComposerHostBot\runtime\core\Microsoft.BotFramework.Composer.Core.csproj", "{0A52815F-A057-43B2-8EDC-6885423298CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.BotFramework.Composer.Core", "Consumers\Composer\SimpleHostBotComposer\runtime\core\Microsoft.BotFramework.Composer.Core.csproj", "{0A52815F-A057-43B2-8EDC-6885423298CF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.BotFramework.Composer.CustomAction", "Consumers\Composer\SimpleComposerHostBot\runtime\customaction\Microsoft.BotFramework.Composer.CustomAction.csproj", "{3675E7C0-A0F1-478D-A374-5AF2A8A2F18F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.BotFramework.Composer.CustomAction", "Consumers\Composer\SimpleHostBotComposer\runtime\customaction\Microsoft.BotFramework.Composer.CustomAction.csproj", "{3675E7C0-A0F1-478D-A374-5AF2A8A2F18F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.BotFramework.Composer.WebApp", "Consumers\Composer\SimpleComposerHostBot\runtime\azurewebapp\Microsoft.BotFramework.Composer.WebApp.csproj", "{47C03D82-D4CA-4BDD-AD14-40E236746816}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.BotFramework.Composer.WebApp", "Consumers\Composer\SimpleHostBotComposer\runtime\azurewebapp\Microsoft.BotFramework.Composer.WebApp.csproj", "{47C03D82-D4CA-4BDD-AD14-40E236746816}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.BotFramework.Composer.Functions", "Consumers\Composer\SimpleComposerHostBot\runtime\azurefunctions\Microsoft.BotFramework.Composer.Functions.csproj", "{59D614CA-7E7F-4AAF-A975-065EC0446300}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.BotFramework.Composer.Functions", "Consumers\Composer\SimpleHostBotComposer\runtime\azurefunctions\Microsoft.BotFramework.Composer.Functions.csproj", "{59D614CA-7E7F-4AAF-A975-065EC0446300}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.BotFramework.Composer.Tests", "Consumers\Composer\SimpleComposerHostBot\runtime\tests\Microsoft.BotFramework.Composer.Tests.csproj", "{605C3D62-5BEF-452C-9CDC-E22A1F71588A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.BotFramework.Composer.Tests", "Consumers\Composer\SimpleHostBotComposer\runtime\tests\Microsoft.BotFramework.Composer.Tests.csproj", "{605C3D62-5BEF-452C-9CDC-E22A1F71588A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "runtime", "runtime", "{01755A2F-A272-4919-9F1E-5CE354065292}"
 EndProject
