@@ -83,7 +83,7 @@ class HostBot extends ActivityHandler {
             await this.activeSkillProperty.delete(context);
 
             // Show status message, text and value returned by the skill.
-            let eocActivityMessage = `Received ${ ActivityTypes.EndOfConversation }.\n\nCode: ${ activity.code }`;
+            let eocActivityMessage = `Received ${ ActivityTypes.EndOfConversation }.\n\nCode: ${ activity.code }.`;
             if (activity.text) {
                 eocActivityMessage += `\n\nText: ${ activity.text }`;
             }

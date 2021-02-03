@@ -37,16 +37,14 @@ namespace SkillFunctionalTests.Sso
             {
                 HostBot.WaterfallHostBotDotNet,
                 HostBot.WaterfallHostBotJS,
-                HostBot.WaterfallHostBotPython,
-                HostBot.ComposerHostBotDotNet
+                HostBot.WaterfallHostBotPython
             };
 
             var targetSkills = new List<string>
             {
                 SkillBotNames.WaterfallSkillBotDotNet,
                 SkillBotNames.WaterfallSkillBotJS,
-                SkillBotNames.WaterfallSkillBotPython,
-                SkillBotNames.ComposerSkillBotDotNet
+                SkillBotNames.WaterfallSkillBotPython
             };
 
             var scripts = new List<string>
