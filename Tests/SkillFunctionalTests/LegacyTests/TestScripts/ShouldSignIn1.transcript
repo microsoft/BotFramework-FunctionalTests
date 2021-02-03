@@ -217,7 +217,7 @@
     },
     "locale": "",
     "text": "Type anything to send to the skill.",
-    "inputHint": "acceptingInput",
+    "inputHint": "expectingInput",
     "attachments": [],
     "entities": [],
     "replyToId": "f3246550-5f3b-11eb-89bb-b7c5b0494641",

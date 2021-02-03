@@ -419,7 +419,7 @@
       "role": "user"
     },
     "locale": "en-US",
-    "text": "Received endOfConversation.\n\nCode: completedSuccessfully\n\nValue: {\"destination\":\"Spain\",\"origin\":\"Italy\",\"travelDate\":\"2020-11-20\"}",
+    "text": "Received endOfConversation.\n\nCode: completedSuccessfully.\n\nValue: {\"destination\":\"Spain\",\"origin\":\"Italy\",\"travelDate\":\"2020-11-20\"}",
     "inputHint": "acceptingInput",
     "attachments": [],
     "entities": [],
