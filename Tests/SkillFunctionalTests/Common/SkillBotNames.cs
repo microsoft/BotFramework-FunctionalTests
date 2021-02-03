@@ -5,6 +5,7 @@ namespace SkillFunctionalTests.Common
 {
     public static class SkillBotNames
     {
+        public const string EchoSkillBotComposerDotNet = "EchoSkillBotComposerDotNet";
         public const string EchoSkillBotDotNet = "EchoSkillBotDotNet";
         public const string EchoSkillBotDotNet21 = "EchoSkillBotDotNet21";
         public const string EchoSkillBotDotNetV3 = "EchoSkillBotDotNetV3";
@@ -15,7 +16,6 @@ namespace SkillFunctionalTests.Common
         public const string WaterfallSkillBotDotNet = "WaterfallSkillBotDotNet";
         public const string WaterfallSkillBotJS = "WaterfallSkillBotJS";
         public const string WaterfallSkillBotPython = "WaterfallSkillBotPython";
-        public const string ComposerSkillBotDotNet = "ComposerSkillBotDotnet";
 
         public const string EchoSkillBot = "EchoSkillBot";
     }

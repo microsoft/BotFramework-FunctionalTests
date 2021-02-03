@@ -12,7 +12,7 @@ server.listen(process.env.port || process.env.PORT || 36407, function () {
 });
 
 // Expose the manifest
-server.get('/manifest/*', restify.plugins.serveStatic({ directory: './manifest', appendRequestPath: false }));
+server.get('/manifests/*', restify.plugins.serveStatic({ directory: './manifests', appendRequestPath: false }));
   
 // Bot Storage: Here we register the state storage for your bot. 
 // Default store: volatile in-memory store - Only for prototyping!

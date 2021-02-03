@@ -83,7 +83,8 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot21.Dialogs
             {
                 Prompt = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput),
                 RetryPrompt = MessageFactory.Text(repromptMessageText, repromptMessageText, InputHints.ExpectingInput),
-                Choices = _skillsConfig.Skills.Select(skill => new Choice(skill.Key)).ToList()
+                Choices = _skillsConfig.Skills.Select(skill => new Choice(skill.Key)).ToList(),
+                Style = ListStyle.SuggestedAction
             };
 
             // Prompt the user to select a skill.
@@ -109,7 +110,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot21.Dialogs
             // Set active skill
             await _activeSkillProperty.SetAsync(stepContext.Context, selectedSkill.Value, cancellationToken);
 
-            var message = MessageFactory.Text("Type anything to send to the skill.");
+            var message = MessageFactory.Text("Type anything to send to the skill.", "Type anything to send to the skill.", InputHints.ExpectingInput);
             await stepContext.Context.SendActivityAsync(message, cancellationToken);
 
             return await stepContext.EndDialogAsync(stepContext.Values, cancellationToken);
