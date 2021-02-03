@@ -176,11 +176,6 @@
     <Content Include="packages.config">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="DeploymentTemplates\new-rg-parameters.json" />
-    <Content Include="DeploymentTemplates\preexisting-rg-parameters.json" />
-    <Content Include="DeploymentTemplates\template-with-new-rg.json" />
-    <Content Include="DeploymentTemplates\template-with-preexisting-rg.json" />
-    <None Include="Properties\PublishProfiles\EricV3SkillsEchoBot - Web Deploy.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -189,7 +184,9 @@
     </None>
     <Content Include="manifests\echoskillbotv3-manifest-1.0.json" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Properties\PublishProfiles\" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
