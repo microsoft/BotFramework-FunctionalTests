@@ -24,10 +24,10 @@ variables:
   # BffnSimpleHostBotDotNetAppSecret: (optional) define in Azure
   # BffnSimpleHostBotDotNet21AppId: (optional) define in Azure
   # BffnSimpleHostBotDotNet21AppSecret: (optional) define in Azure
-  # BffnSimpleComposerHostBotDotNetAppId: (optional) define in Azure
-  # BffnSimpleComposerHostBotDotNetAppSecret: (optional) define in Azure
-  # BffnEchoComposerSkillBotDotNetAppId: (optional) define in Azure
-  # BffnEchoComposerSkillBotDotNetAppSecret: (optional) define in Azure
+  # BffnSimpleHostBotComposerDotNetAppId: (optional) define in Azure
+  # BffnSimpleHostBotComposerDotNetAppSecret: (optional) define in Azure
+  # BffnEchoSkillBotComposerDotNetAppId: (optional) define in Azure
+  # BffnEchoSkillBotComposerDotNetAppSecret: (optional) define in Azure
   # BffnEchoSkillBotDotNetAppId: (optional) define in Azure
   # BffnEchoSkillBotDotNetAppSecret: (optional) define in Azure
   # BffnEchoSkillBotDotNet21AppId: (optional) define in Azure
@@ -154,22 +154,22 @@ stages:
       dependsOn: "Prepare_DotNetGroup"
       resourceGroup: "$(ResourceGroup)-DotNet"
       bots:
-        - name: bffnsimplecomposerhostbotdotnet
+        - name: bffnsimplehostbotcomposerdotnet
           type: 'Host'
           displayName: 'DotNet Simple Composer Host Bot'
-          appId: $env:BffnSimpleComposerHostBotDotNetAppId
-          appSecret: $env:BffnSimpleComposerHostBotDotNetAppSecret
+          appId: $env:BffnSimpleHostBotComposerDotNetAppId
+          appSecret: $env:BffnSimpleHostBotComposerDotNetAppSecret
           project: 
-            directory: 'Bots/DotNet/Consumers/Composer/SimpleComposerHostBot'
+            directory: 'Bots/DotNet/Consumers/Composer/SimpleHostBotComposer'
             netCoreVersion: '3.1.x'
 
-        - name: bffnechocomposerskillbotdotnet
+        - name: bffnechoskillbotcomposerdotnet
           type: 'Skill'
           displayName: 'DotNet Echo Composer Skill Bot'
-          appId: $env:BffnEchoComposerSkillBotDotNetAppId
-          appSecret: $env:BffnEchoComposerSkillBotDotNetAppSecret
+          appId: $env:BffnEchoSkillBotComposerDotNetAppId
+          appSecret: $env:BffnEchoSkillBotComposerDotNetAppSecret
           project: 
-            directory: 'Bots/DotNet/Skills/Composer/EchoComposerSkillBot'
+            directory: 'Bots/DotNet/Skills/Composer/EchoSkillBotComposer'
             netCoreVersion: '3.1.x'
 
 # JS

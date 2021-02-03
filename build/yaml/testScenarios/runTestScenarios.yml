@@ -12,7 +12,7 @@ variables:
   BuildPlatform: 'any cpu'
   # AzureSubscription: define in Azure
   # ResourceGroup: define in Azure
-  # BffnEchoComposerSkillBotDotnetAppId: (optional) define in Azure
+  # BffnEchoSkillBotComposerDotnetAppId: (optional) define in Azure
   # BffnEchoSkillBotDotnetAppId: (optional) define in Azure
   # BffnEchoSkillBot21DotnetAppId: (optional) define in Azure
   # BffnEchoSkillBotV3DotnetAppId: (optional) define in Azure

@@ -187,7 +187,7 @@
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
-    <Content Include="wwwroot\manifests\echoskillbotv3-manifest-1.0.json" />
+    <Content Include="manifests\echoskillbotv3-manifest-1.0.json" />
   </ItemGroup>
   <ItemGroup />
   <PropertyGroup>

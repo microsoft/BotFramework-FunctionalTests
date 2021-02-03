@@ -1,0 +1,28 @@
+[import](common.lg)
+
+
+# SendActivity_1fPEND()
+[Activity
+    Text = Hello and welcome!
+    InputHint = acceptingInput
+]
+# SendActivity_VV7JVt()
+[Activity
+    Text = Me no nothin'. Say "skill" and I'll patch you through
+    InputHint = acceptingInput
+]
+# SendActivity_mb8ZXL()
+[Activity
+    Text = Got it, connecting you to the skill...
+    InputHint = acceptingInput
+]
+# SendActivity_Zkprn3()
+[Activity
+    Text = Received endOfConversation.\n\nCode: ${turn.activity.code}.
+    InputHint = acceptingInput
+]
+# SendActivity_71moHf()
+[Activity
+    Text = Back in the host bot.
+    InputHint = acceptingInput
+]

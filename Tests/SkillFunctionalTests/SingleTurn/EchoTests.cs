@@ -36,17 +36,16 @@ namespace SkillFunctionalTests.SingleTurn
 
             var hostBots = new List<HostBot>
             {
+                HostBot.SimpleHostBotComposerDotNet,
                 HostBot.SimpleHostBotDotNet,
                 HostBot.SimpleHostBotDotNet21,
                 HostBot.SimpleHostBotJS,
                 HostBot.SimpleHostBotPython,
-
-                // TODO: Enable when composer bots support multiple skills.
-                // HostBot.SimpleComposerHostBotDotNet
             };
 
             var targetSkills = new List<string>
             {
+                SkillBotNames.EchoSkillBotComposerDotNet,
                 SkillBotNames.EchoSkillBotDotNet,
                 SkillBotNames.EchoSkillBotDotNet21,
                 SkillBotNames.EchoSkillBotDotNetV3,
@@ -64,7 +63,9 @@ namespace SkillFunctionalTests.SingleTurn
             {
                 if (testCase.DeliveryMode == DeliveryModes.ExpectReplies)
                 {
-                    if (testCase.TargetSkill == SkillBotNames.EchoSkillBotDotNetV3 || testCase.TargetSkill == SkillBotNames.EchoSkillBotJSV3 || testCase.TargetSkill == SkillBotNames.EchoSkillBotPython)
+                    // Note: ExpectReplies is not supported by DotNetV3 and JSV3 skills.
+                    // BUG: ExpectReplies fails for SimpleHostBotComposerDotNet calls (remove the last OR when https://github.com/microsoft/BotFramework-FunctionalTests/issues/279 is fixed).
+                    if (testCase.TargetSkill == SkillBotNames.EchoSkillBotDotNetV3 || testCase.TargetSkill == SkillBotNames.EchoSkillBotJSV3 || testCase.HostBot == HostBot.SimpleHostBotComposerDotNet)
                     {
                         return true;
                     }
@@ -88,7 +89,7 @@ namespace SkillFunctionalTests.SingleTurn
             Logger.LogInformation(JsonConvert.SerializeObject(testCase, Formatting.Indented));
 
             var options = TestClientOptions[testCase.HostBot];
-            
+
             var runner = new XUnitTestRunner(new TestClientFactory(testCase.ClientType, options, Logger).GetTestClient(), TestRequestTimeout, Logger);
 
             var testParams = new Dictionary<string, string>
@@ -96,6 +97,29 @@ namespace SkillFunctionalTests.SingleTurn
                 { "DeliveryMode", testCase.DeliveryMode },
                 { "TargetSkill", testCase.TargetSkill }
             };
+
+            // BUG: Composer skills don't return status code, remove this and related placeholder in script once https://github.com/microsoft/BotFramework-FunctionalTests/issues/278 is fixed
+            if (testCase.TargetSkill == SkillBotNames.EchoSkillBotComposerDotNet)
+            {
+                switch (testCase.HostBot)
+                {
+                    case HostBot.SimpleHostBotJS:
+                        testParams.Add("ExpectedEocCode", "undefined");
+                        break;
+
+                    case HostBot.SimpleHostBotPython:
+                        testParams.Add("ExpectedEocCode", "None");
+                        break;
+
+                    default:
+                        testParams.Add("ExpectedEocCode", string.Empty);
+                        break;
+                }
+            }
+            else
+            {
+                testParams.Add("ExpectedEocCode", "completedSuccessfully");
+            }
 
             await runner.RunTestAsync(Path.Combine(_testScriptsFolder, testCase.Script), testParams);
         }
