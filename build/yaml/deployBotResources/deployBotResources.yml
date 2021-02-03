@@ -11,7 +11,7 @@ pool:
 
 variables:
   BuildConfiguration: 'Debug'
-  BuildPlatform: 'any cpu'
+  BuildPlatform: 'AnyCPU'
   # AppServicePlanGroup: define in Azure
   # AppServicePlanGroupLinux: (python) define in Azure
   # AppServicePlanName: define in Azure
@@ -127,7 +127,7 @@ stages:
           appSecret: $env:BffnEchoSkillBotDotNetV3AppSecret
           project:
             directory: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3'
-            name: 'EchoSkillBot.sln'
+            name: 'EchoSkillBot-v3.csproj'
 
         - name: bffnwaterfallhostbotdotnet
           type: 'Host'
@@ -201,7 +201,7 @@ stages:
           appId: $env:BffnEchoSkillBotJSV3AppId
           appSecret: $env:BffnEchoSkillBotJSV3AppSecret
           project:
-            directory: 'Bots/JavaScript/Skills/CodeFirst/EchoSkillBot-v3/skill'
+            directory: 'Bots/JavaScript/Skills/CodeFirst/EchoSkillBot-v3'
 
 # Python
   - template: python/deploy.yml
