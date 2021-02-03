@@ -18,7 +18,7 @@ steps:
       }
 
       foreach ($package in "${{ parameters.packages }}".Split()) {
-        Invoke-Expression "nuget update ""${{ parameters.project.directory }}/packages.config"" -Id $package $version $source -RepositoryPath ""${{ parameters.project.directory }}/packages"""
+        Invoke-Expression "nuget update ""${{ parameters.project.directory }}/packages.config"" -Id $package $version $source"
       }
       
       write-host "`nPackages:"
