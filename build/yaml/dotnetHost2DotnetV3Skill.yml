@@ -67,6 +67,7 @@ stages:
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
         Parameters.solution: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3/EchoSkillBot-v3.csproj'
         Parameters.packages: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3'
+        SolutionDir: "$(Build.SourcesDirectory)/Bots/DotNet/"
       steps:
       - template: dotnetV3BuildSteps.yml
       - template: dotnetV3TagBotBuilderVersion.yml
@@ -105,6 +106,7 @@ stages:
         Parameters.solution: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3/EchoSkillBot-v3.csproj'
         Parameters.packages: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3'
         Parameters.sourceLocation: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3/'
+        SolutionDir: "$(Build.SourcesDirectory)/Bots/DotNet/"
       steps:
       - template: dotnetV3DeploySteps.yml
 
