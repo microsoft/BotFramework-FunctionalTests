@@ -70,7 +70,7 @@ stages:
         DeployAppSecret: $(JsJsV3SkillAppSecret)
         Registry: $[variables.RegistryUrlSkill]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
-        Parameters.sourceLocation: 'Bots/JavaScript/Skills/CodeFirst/EchoSkillBot-v3/skill'
+        Parameters.sourceLocation: 'Bots/JavaScript/Skills/CodeFirst/EchoSkillBot-v3'
         TemplateLocation: 'Bots/JavaScript/Skills/CodeFirst/EchoSkillBot-v3/skill/deploymentTemplates/template-with-new-rg.json'
       steps:
       - template: javascriptDeploySteps.yml
