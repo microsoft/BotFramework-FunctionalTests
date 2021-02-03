@@ -47,7 +47,7 @@ steps:
               key           = 'WaterfallHostBotDotNet'
               botName       = 'bffnwaterfallhostbotdotnet'
               resourceGroup = $groups.DotNet
-              configType    = $types.DotNet
+              configType    = $types.Appsettings
           }
           @{
               key           = 'SimpleHostBotJS'

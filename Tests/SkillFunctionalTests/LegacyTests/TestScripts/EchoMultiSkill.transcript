@@ -242,7 +242,7 @@
     },
     "locale": "",
     "text": "Type anything to send to the skill.",
-    "inputHint": "acceptingInput",
+    "inputHint": "expectingInput",
     "attachments": [],
     "entities": [],
     "replyToId": "6db1d760-4f58-11eb-80df-41840e87027c",
@@ -401,7 +401,7 @@
       "role": "user"
     },
     "locale": "",
-    "text": "Received endOfConversation.\n\nCode: completedSuccessfully",
+    "text": "Received endOfConversation.\n\nCode: completedSuccessfully.",
     "inputHint": "acceptingInput",
     "attachments": [],
     "entities": [],
