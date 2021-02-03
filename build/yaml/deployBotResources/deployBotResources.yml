@@ -11,7 +11,7 @@ pool:
 
 variables:
   BuildConfiguration: 'Debug'
-  BuildPlatform: 'any cpu'
+  BuildPlatform: 'AnyCPU'
   # AzureSubscription: define in Azure
   # AppServicePlanName: define in Azure
   # AppServicePlanGroup: define in Azure
@@ -126,7 +126,7 @@ stages:
           appSecret: $env:BffnEchoSkillBotDotNetV3AppSecret
           project:
             directory: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3'
-            name: 'EchoSkillBot.sln'
+            name: 'EchoSkillBot-v3.csproj'
 
         - name: bffnwaterfallhostbotdotnet
           type: 'Host'
