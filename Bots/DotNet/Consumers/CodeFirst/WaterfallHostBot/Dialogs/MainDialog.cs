@@ -76,21 +76,8 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs
 
             // Add dialog to prepare SSO on the host and test the SSO skill
             // The waterfall skillDialog created in AddSkillDialogs contains the SSO skill action.
-            var waterfallDialog = Dialogs.Find(Constants.WaterfallSkillBot);
-            if (waterfallDialog != null)
-            {
-                var temp = new SsoDialog(waterfallDialog, configuration);
-                temp.Id = Constants.WaterfallDialog;
-                AddDialog(temp);
-            }
-
-            var teamsWaterfallDialog = Dialogs.Find(Constants.TeamsWaterfallSkillBot);
-            if (teamsWaterfallDialog != null)
-            {
-                var temp = new SsoDialog(teamsWaterfallDialog, configuration);
-                temp.Id = Constants.TeamsWaterfallDialog;
-                AddDialog(temp);
-            }
+            var waterfallDialog = Dialogs.Find("WaterfallSkillBot");
+            AddDialog(new SsoDialog(waterfallDialog, configuration));
 
             // Add main waterfall dialog for this bot.
             var waterfallSteps = new WaterfallStep[]
@@ -221,7 +208,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs
             // Get the skill info based on the selected skill.
             var selectedSkillId = ((FoundChoice)stepContext.Result).Value;
             var deliveryMode = stepContext.Values[_deliveryMode].ToString();
-            var v3Bots = new List<string> { "EchoSkillBotDotNetV3", "EchoSkillBotJSV3" };
+            var v3Bots = new List<string> { "EchoSkillBotV3DotNet", "EchoSkillBotV3JS" };
 
             // Exclude v3 bots from ExpectReplies
             if (deliveryMode == DeliveryModes.ExpectReplies && v3Bots.Contains(selectedSkillId))

@@ -31,7 +31,7 @@
         "groupchat",
         "team"
       ],
-      "supportsFiles": false,
+      "supportsFiles": true,
       "isNotificationOnly": false
     }
   ],
