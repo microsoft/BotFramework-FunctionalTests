@@ -13,6 +13,9 @@ stages:
     dependsOn: '${{ parameters.dependsOn }}'
     jobs:
       - job: 'Deploy'
+        ${{ if eq(bot.type, 'SkillV3') }}:
+          variables:
+            SolutionDir: "$(Build.SourcesDirectory)/Bots/DotNet/"
         displayName: 'Deploy steps'
         steps:
           # Delete Bot Resources
@@ -54,6 +57,7 @@ stages:
               displayName: 'NuGet restore'
               inputs:
                 restoreSolution: '${{ bot.project.directory }}/${{ bot.project.name }}'
+                restoreDirectory: '$(SolutionDir)packages'
 
           # Evaluate dependencies source and version
           - template: evaluateDependenciesVariables.yml
@@ -123,7 +127,7 @@ stages:
                   Microsoft.Bot.Builder.History
 
             # Build bot
-            - task: VSBuild@1
+            - task: MSBuild@1
               displayName: 'Build'
               inputs:
                 solution: '${{ bot.project.directory }}/${{ bot.project.name }}'
@@ -133,7 +137,7 @@ stages:
 
             # Get BotBuilder version
             - powershell: |
-                $result = @(Get-ChildItem "${{ bot.project.directory }}\packages\Microsoft.Bot.Builder.[0-9]*" -directory | Sort LastWriteTime -Descending)
+                $result = @(Get-ChildItem "$(SolutionDir)packages\Microsoft.Bot.Builder.[0-9]*" -directory | Sort LastWriteTime -Descending)
                 $version = $result[0].Name.Replace("Microsoft.Bot.Builder.", "")
                 Write-Host "##vso[task.setvariable variable=BotBuilderVersionNumber]$($version)";
               displayName: 'Get BotBuilder Version'

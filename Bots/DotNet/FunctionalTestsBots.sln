@@ -29,50 +29,55 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Composer", "Composer", "{33
 		Skills\Composer\Directory.Build.props = Skills\Composer\Directory.Build.props
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SimpleComposerHostBot", "SimpleComposerHostBot", "{23CD821E-D287-4B8A-8174-15C081B566DA}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SimpleHostBotComposer", "SimpleHostBotComposer", "{23CD821E-D287-4B8A-8174-15C081B566DA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "runtime", "runtime", "{88BD7115-D9EA-4D85-80EF-94594F944231}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "settings", "settings", "{F5187871-1120-4D76-B3B6-53D2F93E3071}"
 	ProjectSection(SolutionItems) = preProject
-		Consumers\Composer\SimpleComposerHostBot\settings\appsettings.Development.json = Consumers\Composer\SimpleComposerHostBot\settings\appsettings.Development.json
-		Consumers\Composer\SimpleComposerHostBot\settings\appsettings.json = Consumers\Composer\SimpleComposerHostBot\settings\appsettings.json
+		Consumers\Composer\SimpleHostBotComposer\settings\appsettings.json = Consumers\Composer\SimpleHostBotComposer\settings\appsettings.json
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EchoComposerSkillBot", "EchoComposerSkillBot", "{9FF1FC77-3EBE-4001-864B-59DC0BF5ADDE}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EchoSkillBotComposer", "EchoSkillBotComposer", "{9FF1FC77-3EBE-4001-864B-59DC0BF5ADDE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "settings", "settings", "{95708A0E-37E4-4EC0-B381-DC2C440F1A1D}"
 	ProjectSection(SolutionItems) = preProject
-		Skills\Composer\EchoComposerSkillBot\settings\appsettings.json = Skills\Composer\EchoComposerSkillBot\settings\appsettings.json
+		Skills\Composer\EchoSkillBotComposer\settings\appsettings.json = Skills\Composer\EchoSkillBotComposer\settings\appsettings.json
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.BotFramework.Composer.Core", "Consumers\Composer\SimpleComposerHostBot\runtime\core\Microsoft.BotFramework.Composer.Core.csproj", "{0A52815F-A057-43B2-8EDC-6885423298CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TeamsSsoSkillBot", "Skills\CodeFirst\TeamsSsoSkillBot\TeamsSsoSkillBot.csproj", "{148CA3AB-48D0-48F8-A4B7-A3D614132D31}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.BotFramework.Composer.CustomAction", "Consumers\Composer\SimpleComposerHostBot\runtime\customaction\Microsoft.BotFramework.Composer.CustomAction.csproj", "{3675E7C0-A0F1-478D-A374-5AF2A8A2F18F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SsoTeamsHostBot", "Consumers\CodeFirst\SsoTeamsHostBot\SsoTeamsHostBot.csproj", "{A2336381-D247-4DD4-B17E-F8B26CA1141C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.BotFramework.Composer.WebApp", "Consumers\Composer\SimpleComposerHostBot\runtime\azurewebapp\Microsoft.BotFramework.Composer.WebApp.csproj", "{47C03D82-D4CA-4BDD-AD14-40E236746816}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TeamsAuthSkillBot", "Skills\CodeFirst\TeamsAuthSkillBot\TeamsAuthSkillBot.csproj", "{990E4DAA-41A9-466C-AAEF-32F019D2DEC8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.BotFramework.Composer.Functions", "Consumers\Composer\SimpleComposerHostBot\runtime\azurefunctions\Microsoft.BotFramework.Composer.Functions.csproj", "{59D614CA-7E7F-4AAF-A975-065EC0446300}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.BotFramework.Composer.Core", "Consumers\Composer\SimpleHostBotComposer\runtime\core\Microsoft.BotFramework.Composer.Core.csproj", "{0A52815F-A057-43B2-8EDC-6885423298CF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.BotFramework.Composer.Tests", "Consumers\Composer\SimpleComposerHostBot\runtime\tests\Microsoft.BotFramework.Composer.Tests.csproj", "{605C3D62-5BEF-452C-9CDC-E22A1F71588A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.BotFramework.Composer.CustomAction", "Consumers\Composer\SimpleHostBotComposer\runtime\customaction\Microsoft.BotFramework.Composer.CustomAction.csproj", "{3675E7C0-A0F1-478D-A374-5AF2A8A2F18F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.BotFramework.Composer.WebApp", "Consumers\Composer\SimpleHostBotComposer\runtime\azurewebapp\Microsoft.BotFramework.Composer.WebApp.csproj", "{47C03D82-D4CA-4BDD-AD14-40E236746816}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.BotFramework.Composer.Functions", "Consumers\Composer\SimpleHostBotComposer\runtime\azurefunctions\Microsoft.BotFramework.Composer.Functions.csproj", "{59D614CA-7E7F-4AAF-A975-065EC0446300}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.BotFramework.Composer.Tests", "Consumers\Composer\SimpleHostBotComposer\runtime\tests\Microsoft.BotFramework.Composer.Tests.csproj", "{605C3D62-5BEF-452C-9CDC-E22A1F71588A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "runtime", "runtime", "{01755A2F-A272-4919-9F1E-5CE354065292}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.BotFramework.Composer.Core", "Skills\Composer\EchoComposerSkillBot\runtime\core\Microsoft.BotFramework.Composer.Core.csproj", "{90F62AD9-4CFC-47AA-8ABA-AE466F2EC620}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.BotFramework.Composer.Core", "Skills\Composer\EchoSkillBotComposer\runtime\core\Microsoft.BotFramework.Composer.Core.csproj", "{90F62AD9-4CFC-47AA-8ABA-AE466F2EC620}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.BotFramework.Composer.Functions", "Skills\Composer\EchoComposerSkillBot\runtime\azurefunctions\Microsoft.BotFramework.Composer.Functions.csproj", "{91FD58E7-A8CA-4C9B-8998-3F14E48EF49E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.BotFramework.Composer.Functions", "Skills\Composer\EchoSkillBotComposer\runtime\azurefunctions\Microsoft.BotFramework.Composer.Functions.csproj", "{91FD58E7-A8CA-4C9B-8998-3F14E48EF49E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.BotFramework.Composer.CustomAction", "Skills\Composer\EchoComposerSkillBot\runtime\customaction\Microsoft.BotFramework.Composer.CustomAction.csproj", "{85F63552-14ED-40D7-954B-7E79636BCCB1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.BotFramework.Composer.CustomAction", "Skills\Composer\EchoSkillBotComposer\runtime\customaction\Microsoft.BotFramework.Composer.CustomAction.csproj", "{85F63552-14ED-40D7-954B-7E79636BCCB1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.BotFramework.Composer.WebApp", "Skills\Composer\EchoComposerSkillBot\runtime\azurewebapp\Microsoft.BotFramework.Composer.WebApp.csproj", "{27923BEF-F775-4B8B-8868-A51715817BB1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.BotFramework.Composer.WebApp", "Skills\Composer\EchoSkillBotComposer\runtime\azurewebapp\Microsoft.BotFramework.Composer.WebApp.csproj", "{27923BEF-F775-4B8B-8868-A51715817BB1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.BotFramework.Composer.Tests", "Skills\Composer\EchoComposerSkillBot\runtime\tests\Microsoft.BotFramework.Composer.Tests.csproj", "{64B3FAA2-D759-4479-BFA5-AE5E67247FC9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.BotFramework.Composer.Tests", "Skills\Composer\EchoSkillBotComposer\runtime\tests\Microsoft.BotFramework.Composer.Tests.csproj", "{64B3FAA2-D759-4479-BFA5-AE5E67247FC9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WaterfallHostBot", "Consumers\CodeFirst\WaterfallHostBot\WaterfallHostBot.csproj", "{15A946BE-39F9-4945-9895-0019ED3392FC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WaterfallSkillBot", "Skills\CodeFirst\WaterfallSkillBot\WaterfallSkillBot.csproj", "{E3BECBEF-E41F-48D1-9EEB-A4D7E1CD34E3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TeamsWaterfallSkillBot", "Skills\CodeFirst\TeamsWaterfallSkillBot\TeamsWaterfallSkillBot.csproj", "{2E67ED1D-E5F3-4888-BF85-1B0BE9B188B6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EchoSkillBot-v3", "Skills\CodeFirst\EchoSkillBot-v3\EchoSkillBot-v3.csproj", "{41BC9547-FD9E-40E1-B1D9-C3F25BC9A2F3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -144,10 +149,10 @@ Global
 		{E3BECBEF-E41F-48D1-9EEB-A4D7E1CD34E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E3BECBEF-E41F-48D1-9EEB-A4D7E1CD34E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E3BECBEF-E41F-48D1-9EEB-A4D7E1CD34E3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2E67ED1D-E5F3-4888-BF85-1B0BE9B188B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2E67ED1D-E5F3-4888-BF85-1B0BE9B188B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2E67ED1D-E5F3-4888-BF85-1B0BE9B188B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2E67ED1D-E5F3-4888-BF85-1B0BE9B188B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{41BC9547-FD9E-40E1-B1D9-C3F25BC9A2F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{41BC9547-FD9E-40E1-B1D9-C3F25BC9A2F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{41BC9547-FD9E-40E1-B1D9-C3F25BC9A2F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{41BC9547-FD9E-40E1-B1D9-C3F25BC9A2F3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -179,7 +184,7 @@ Global
 		{64B3FAA2-D759-4479-BFA5-AE5E67247FC9} = {01755A2F-A272-4919-9F1E-5CE354065292}
 		{15A946BE-39F9-4945-9895-0019ED3392FC} = {C7A60083-78C8-4CEF-A358-4E53CBF0D12A}
 		{E3BECBEF-E41F-48D1-9EEB-A4D7E1CD34E3} = {6EF38D8C-7953-4D54-BA31-FFF055B7B217}
-		{2E67ED1D-E5F3-4888-BF85-1B0BE9B188B6} = {6EF38D8C-7953-4D54-BA31-FFF055B7B217}
+		{41BC9547-FD9E-40E1-B1D9-C3F25BC9A2F3} = {6EF38D8C-7953-4D54-BA31-FFF055B7B217}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2B77A921-EEA6-4006-ABD2-159C92F9F874}

@@ -50,12 +50,12 @@
     {
       "type": "message",
       "role": "bot",
-      "text": "Received endOfConversation.\n\nCode: completedSuccessfully",
+      "text": "Received endOfConversation.\n\nCode: completedSuccessfully.",
       "assertions": [
         "type == 'message'",
         "from.role == 'bot'",
         "recipient.role == 'user'",
-        "text == 'Received endOfConversation.\n\nCode: completedSuccessfully'",
+        "text == 'Received endOfConversation.\n\nCode: completedSuccessfully.'",
         "inputHint == 'acceptingInput'"
       ]
     },

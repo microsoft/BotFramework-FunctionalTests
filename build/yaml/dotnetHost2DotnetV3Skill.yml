@@ -9,7 +9,7 @@ pr: none
 
 variables:
   BuildConfiguration: 'Debug'
-  BuildPlatform: 'any cpu'
+  BuildPlatform: 'AnyCPU'
   runCodesignValidationInjection: false
   skipComponentGovernanceDetection: true
   # AzureSubscription: define in Azure
@@ -65,7 +65,9 @@ stages:
       variables:
         Registry: $[variables.RegistryUrlSkill]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
-        Parameters.solution: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3/EchoSkillBot.sln'
+        Parameters.solution: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3/EchoSkillBot-v3.csproj'
+        Parameters.packages: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3'
+        SolutionDir: "$(Build.SourcesDirectory)/Bots/DotNet/"
       steps:
       - template: dotnetV3BuildSteps.yml
       - template: dotnetV3TagBotBuilderVersion.yml
@@ -101,8 +103,10 @@ stages:
         DeployAppSecret: $(DotNetDotNetV3SkillAppSecret)
         Registry: $[variables.RegistryUrlSkill]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
-        Parameters.solution: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3/EchoSkillBot.sln'
+        Parameters.solution: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3/EchoSkillBot-v3.csproj'
+        Parameters.packages: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3'
         Parameters.sourceLocation: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3/'
+        SolutionDir: "$(Build.SourcesDirectory)/Bots/DotNet/"
       steps:
       - template: dotnetV3DeploySteps.yml
 

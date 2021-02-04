@@ -136,7 +136,7 @@
       "role": "user"
     },
     "locale": "",
-    "text": "Received endOfConversation.\n\nCode: completedSuccessfully",
+    "text": "Received endOfConversation.\n\nCode: completedSuccessfully.",
     "inputHint": "acceptingInput",
     "attachments": [],
     "entities": [],
