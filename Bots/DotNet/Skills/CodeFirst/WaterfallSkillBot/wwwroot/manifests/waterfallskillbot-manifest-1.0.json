@@ -1,16 +1,14 @@
 {
-  "$schema": "https://schemas.botframework.com/schemas/skills/skill-manifest-2.0.0.json",
-  "$id": "DialogSkillBot",
-  "name": "Skill bot with dialogs",
+  "$schema": "https://schemas.botframework.com/schemas/skills/v2.1/skill-manifest.json",
+  "$id": "WaterfallSkillBotDotNet",
+  "name": "WaterfallSkillBotDotNet",
   "version": "1.0",
-  "description": "This is a sample skill definition for multiple activity types.",
+  "description": "This is a skill definition for multiple activity types (implemented using waterfall dialogs).",
   "publisherName": "Microsoft",
-  "privacyUrl": "https://dialogskillbot.contoso.com/privacy.html",
+  "privacyUrl": "https://microsoft.com/privacy",
   "copyright": "Copyright (c) Microsoft Corporation. All rights reserved.",
-  "license": "",
-  "iconUrl": "https://dialogskillbot.contoso.com/icon.png",
+  "license": "https://github.com/microsoft/BotFramework-FunctionalTests/blob/main/LICENSE",
   "tags": [
-    "sample",
     "travel",
     "weather",
     "luis"
@@ -19,8 +17,8 @@
     {
       "name": "default",
       "protocol": "BotFrameworkV3",
-      "description": "Default endpoint for the skill.",
-      "endpointUrl": "https://dialogskillbot.contoso.com/api/messages",
+      "description": "Localhost endpoint for the skill (on port 35420)",
+      "endpointUrl": "http://localhost:35420/api/messages",
       "msAppId": "00000000-0000-0000-0000-000000000000"
     }
   ],

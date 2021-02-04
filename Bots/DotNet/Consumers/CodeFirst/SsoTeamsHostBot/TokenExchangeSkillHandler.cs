@@ -27,7 +27,7 @@ namespace Microsoft.BotBuilderSamples.RootBot
         private readonly string _botId;
         private readonly string _connectionName;
         private readonly SkillConversationIdFactoryBase _conversationIdFactory;
-        private IExtendedUserTokenProvider _tokenExchangeProvider;
+        private readonly IExtendedUserTokenProvider _tokenExchangeProvider;
 
         public TokenExchangeSkillHandler(
             BotAdapter adapter,

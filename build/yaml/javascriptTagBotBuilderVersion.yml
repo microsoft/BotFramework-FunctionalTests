@@ -3,7 +3,7 @@ steps:
    $version = ""
    $versionTag = ""
    $MyGet = "https://botbuilder.myget.org/F/botbuilder-v4-js-daily/npm/" 
-   $isV3Bot = "$(Parameters.sourceLocation)".Trim().EndsWith("v3/skill")
+   $isV3Bot = "$(Parameters.sourceLocation)".Trim().EndsWith("v3")
 
    if($isV3Bot)
    {

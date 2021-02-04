@@ -9,7 +9,7 @@ pr: none
 
 variables:
   BuildConfiguration: 'Debug'
-  BuildPlatform: 'any cpu'
+  BuildPlatform: 'AnyCPU'
   runCodesignValidationInjection: false
   skipComponentGovernanceDetection: true
   # AzureDeploymentPassword: define in Azure
@@ -49,7 +49,9 @@ stages:
       variables:
         Registry: $[variables.RegistryUrlSkill]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
-        Parameters.solution: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3/EchoSkillBot.sln'
+        Parameters.solution: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3/EchoSkillBot-v3.csproj'
+        Parameters.packages: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3'
+        SolutionDir: "$(Build.SourcesDirectory)/Bots/DotNet/"
       steps:
       - template: dotnetV3BuildSteps.yml
       - template: dotnetV3TagBotBuilderVersion.yml
@@ -85,9 +87,11 @@ stages:
         DeployAppSecret: $(PyDotNetV3SkillAppSecret)
         Registry: $[variables.RegistryUrlSkill]
         BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionSkill]
-        Parameters.solution: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3/EchoSkillBot.sln'
+        Parameters.solution: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3/EchoSkillBot-v3.csproj'
+        Parameters.packages: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3'
         Parameters.sourceLocation: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3/'
         TemplateLocation: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3/DeploymentTemplates/template-with-new-rg.json'
+        SolutionDir: "$(Build.SourcesDirectory)/Bots/DotNet/"
       steps:
       - template: dotnetV3DeploySteps.yml
 
@@ -99,7 +103,6 @@ stages:
       variables:
         HostBotName: $(PyDotNetV3HostBotName)
         Parameters.project: 'Tests/SkillFunctionalTests/SkillFunctionalTests.csproj'
-        Parameters.solution: 'SkillFunctionalTests.sln'
         DefaultTestFilter: ''
         DotNetTestFilter: $[ coalesce( variables['TestFilter'], variables['DefaultTestFilter'] ) ]
       steps:
