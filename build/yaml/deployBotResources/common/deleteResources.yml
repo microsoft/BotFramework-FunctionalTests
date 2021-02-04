@@ -1,0 +1,29 @@
+parameters:
+  resourceGroup: ''
+  resourceName: ''
+
+steps:
+  - task: AzureCLI@2
+    displayName: 'Delete pre-existing bot resources'
+    inputs:
+      azureSubscription: $(AzureSubscription)
+      scriptType: ps
+      scriptLocation: inlineScript
+      inlineScript: |
+        Write-Host "Looking for '${{ parameters.resourceGroup }}'...";
+        if ((az group exists -n "${{ parameters.resourceGroup }}") -eq 'true')
+        {
+            Write-Host "Found pre-existing resource group '${{ parameters.resourceGroup }}'.";
+            Write-Host "Starting resource cleanup...";
+
+            Write-Host ("Deleting '" + "${{ parameters.resourceName }}$($env:BotNamesSuffix)" + "'...")
+            az webapp delete --name "${{ parameters.resourceName }}$($env:BotNamesSuffix)" --resource-group ${{ parameters.resourceGroup }} --keep-empty-plan
+            az bot delete --name "${{ parameters.resourceName }}$($env:BotNamesSuffix)" --resource-group ${{ parameters.resourceGroup }}
+
+            Write-Host "Pre-existing bot resources for '${{ parameters.resourceName }}$($env:BotNamesSuffix)' deleted."
+        }
+        else {
+            Write-Host "Resource group not found."
+            Write-Host "##vso[task.complete result=Failed;]"
+            return;
+        }

@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,7 +29,9 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs
 
         // Constants used for selecting actions on the skill.
         private const string JustForwardTheActivity = "JustForwardTurnContext.Activity";
+        
         private readonly IStatePropertyAccessor<BotFrameworkSkill> _activeSkillProperty;
+        private readonly string _deliveryMode = $"{typeof(MainDialog).FullName}.DeliveryMode";
         private readonly string _selectedSkillKey = $"{typeof(MainDialog).FullName}.SelectedSkillKey";
         private readonly SkillsConfiguration _skillsConfig;
 
@@ -59,6 +62,12 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs
             // Create and add SkillDialog instances for the configured skills.
             AddSkillDialogs(conversationState, conversationIdFactory, skillClient, skillsConfig, botId);
 
+            // Add ChoicePrompt to render available delivery modes.
+            AddDialog(new ChoicePrompt("DeliveryModePrompt"));
+
+            // Add ChoicePrompt to render available types of skill.
+            AddDialog(new ChoicePrompt("SkillTypePrompt"));
+
             // Add ChoicePrompt to render available skills.
             AddDialog(new ChoicePrompt("SkillPrompt"));
 
@@ -67,12 +76,17 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs
 
             // Add dialog to prepare SSO on the host and test the SSO skill
             // The waterfall skillDialog created in AddSkillDialogs contains the SSO skill action.
-            var waterfallDialog = Dialogs.Find("WaterfallSkillBot");
+            var waterfallDialog = Dialogs
+                .GetDialogs()
+                .Where(e => e.Id.StartsWith("WaterfallSkill"))
+                .First();
             AddDialog(new SsoDialog(waterfallDialog, configuration));
 
             // Add main waterfall dialog for this bot.
             var waterfallSteps = new WaterfallStep[]
             {
+                SelectDeliveryModeStepAsync,
+                SelectSkillTypeStepAsync,
                 SelectSkillStepAsync,
                 SelectSkillActionStepAsync,
                 CallSkillActionStepAsync,
@@ -103,7 +117,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs
                 // The SkillDialog automatically sends an EndOfConversation message to the skill to let the
                 // skill know that it needs to end its current dialogs, too.
                 await innerDc.CancelAllDialogsAsync(cancellationToken);
-                return await innerDc.ReplaceDialogAsync(InitialDialogId, "Canceled! \n\n What skill would you like to call?", cancellationToken);
+                return await innerDc.ReplaceDialogAsync(InitialDialogId, "Canceled! \n\n What delivery mode would you like to use?", cancellationToken);
             }
 
             // Sample to test a tangent when in the middle of a skill conversation.
@@ -116,17 +130,75 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs
             return await base.OnContinueDialogAsync(innerDc, cancellationToken);
         }
 
+        // Render a prompt to select the delivery mode to use.
+        private async Task<DialogTurnResult> SelectDeliveryModeStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            // Create the PromptOptions with the delivery modes supported.
+            var messageText = stepContext.Options?.ToString() ?? "What delivery mode would you like to use?";
+            const string rePromptMessageText = "That was not a valid choice, please select a valid delivery mode.";
+            var choices = new List<Choice>
+            {
+                new Choice(DeliveryModes.Normal),
+                new Choice(DeliveryModes.ExpectReplies)
+            };
+            var options = new PromptOptions
+            {
+                Prompt = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput),
+                RetryPrompt = MessageFactory.Text(rePromptMessageText, rePromptMessageText, InputHints.ExpectingInput),
+                Style = ListStyle.SuggestedAction,
+                Choices = choices
+            };
+
+            // Prompt the user to select a delivery mode.
+            return await stepContext.PromptAsync("DeliveryModePrompt", options, cancellationToken);
+        }
+
+        // Render a prompt to select the type of skill to use.
+        private async Task<DialogTurnResult> SelectSkillTypeStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            // Remember the delivery mode selected by the user.
+            stepContext.Values[_deliveryMode] = ((FoundChoice)stepContext.Result).Value;
+
+            // Create the PromptOptions with the types of supported skills.
+            const string messageText = "What type of skill would you like to use?";
+            const string rePromptMessageText = "That was not a valid choice, please select a valid skill type.";
+            var choices = new List<Choice>
+            {
+                new Choice("EchoSkill"),
+                new Choice("WaterfallSkill")
+            };
+            var options = new PromptOptions
+            {
+                Prompt = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput),
+                RetryPrompt = MessageFactory.Text(rePromptMessageText, rePromptMessageText, InputHints.ExpectingInput),
+                Style = ListStyle.SuggestedAction,
+                Choices = choices
+            };
+
+            // Prompt the user to select a type of skill.
+            return await stepContext.PromptAsync("SkillTypePrompt", options, cancellationToken);
+        }
+
         // Render a prompt to select the skill to call.
         private async Task<DialogTurnResult> SelectSkillStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
+            var skillType = ((FoundChoice)stepContext.Result).Value;
+
             // Create the PromptOptions from the skill configuration which contain the list of configured skills.
-            var messageText = stepContext.Options?.ToString() ?? "What skill would you like to call?";
-            var repromptMessageText = "That was not a valid choice, please select a valid skill.";
+            const string messageText = "What skill would you like to call?";
+            const string repromptMessageText = "That was not a valid choice, please select a valid skill.";
+
+            var choices = _skillsConfig.Skills
+                .Where(skill => skill.Key.StartsWith(skillType))
+                .Select(skill => new Choice(skill.Value.Id))
+                .ToList();
+
             var options = new PromptOptions
             {
                 Prompt = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput),
                 RetryPrompt = MessageFactory.Text(repromptMessageText, repromptMessageText, InputHints.ExpectingInput),
-                Choices = _skillsConfig.Skills.Select(skill => new Choice(skill.Value.Id)).ToList()
+                Style = ListStyle.SuggestedAction,
+                Choices = choices
             };
 
             // Prompt the user to select a skill.
@@ -138,6 +210,18 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs
         {
             // Get the skill info based on the selected skill.
             var selectedSkillId = ((FoundChoice)stepContext.Result).Value;
+            var deliveryMode = stepContext.Values[_deliveryMode].ToString();
+            var v3Bots = new List<string> { "EchoSkillBotDotNetV3", "EchoSkillBotJSV3" };
+
+            // Exclude v3 bots from ExpectReplies
+            if (deliveryMode == DeliveryModes.ExpectReplies && v3Bots.Contains(selectedSkillId))
+            {
+                await stepContext.Context.SendActivityAsync(MessageFactory.Text("V3 Bots do not support 'expectReplies' delivery mode."), cancellationToken);
+
+                // Restart setup dialog
+                return await stepContext.ReplaceDialogAsync(InitialDialogId, null, cancellationToken);
+            }
+
             var selectedSkill = _skillsConfig.Skills.FirstOrDefault(keyValuePair => keyValuePair.Value.Id == selectedSkillId).Value;
 
             // Remember the skill selected by the user.
@@ -177,8 +261,12 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs
             // Create the BeginSkillDialogOptions and assign the activity to send.
             var skillDialogArgs = new BeginSkillDialogOptions { Activity = skillActivity };
 
-            // Comment or uncomment this line if you need to enable or disabled buffered replies.
-            // skillDialogArgs.Activity.DeliveryMode = DeliveryModes.ExpectReplies;
+            var deliveryMode = stepContext.Values[_deliveryMode].ToString();
+
+            if (deliveryMode == DeliveryModes.ExpectReplies)
+            {
+                skillDialogArgs.Activity.DeliveryMode = DeliveryModes.ExpectReplies;
+            }
 
             // Save active skill in state.
             await _activeSkillProperty.SetAsync(stepContext.Context, selectedSkill, cancellationToken);
@@ -206,6 +294,9 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs
                 await stepContext.Context.SendActivityAsync(MessageFactory.Text(message, message, inputHint: InputHints.IgnoringInput), cancellationToken: cancellationToken);
             }
 
+            // Clear the delivery mode selected by the user.
+            stepContext.Values[_deliveryMode] = null;
+
             // Clear the skill selected by the user.
             stepContext.Values[_selectedSkillKey] = null;
 
@@ -213,7 +304,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs
             await _activeSkillProperty.DeleteAsync(stepContext.Context, cancellationToken);
 
             // Restart the main dialog with a different message the second time around.
-            return await stepContext.ReplaceDialogAsync(InitialDialogId, $"Done with \"{activeSkill.Id}\". \n\n What skill would you like to call?", cancellationToken);
+            return await stepContext.ReplaceDialogAsync(InitialDialogId, $"Done with \"{activeSkill.Id}\". \n\n What delivery mode would you like to use?", cancellationToken);
         }
 
         // Helper method that creates and adds SkillDialog instances for the configured skills.

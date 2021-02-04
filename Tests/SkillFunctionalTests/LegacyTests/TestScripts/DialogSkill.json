@@ -1,0 +1,158 @@
+[
+  {
+    "type": "conversationUpdate",
+    "role": "user"
+  },
+  {
+    "type": "message",
+    "role": "bot",
+    "text": "Hello and welcome!",
+    "assertions": [
+      "type == 'message'",
+      "from.role == 'bot'",
+      "recipient.role == 'user'",
+      "text == 'Hello and welcome!'",
+      "inputHint == 'acceptingInput'"
+    ]
+  },
+  {
+    "type": "message",
+    "role": "user",
+    "text": "skill"
+  },
+  {
+    "type": "message",
+    "role": "bot",
+    "text": "Got it, connecting you to the skill...",
+    "assertions": [
+      "type == 'message'",
+      "from.role == 'bot'",
+      "recipient.role == 'user'",
+      "text == 'Got it, connecting you to the skill...'",
+      "inputHint == 'acceptingInput'"
+    ]
+  },
+  {
+    "type": "trace",
+    "role": "bot",
+    "assertions": [
+      "type == 'trace'",
+      "from.role == 'bot'",
+      "recipient.role == 'user'",
+      "label == 'Got ActivityType: message'",
+      "name == 'ActivityRouterDialog.ProcessActivityAsync()'"
+    ]
+  },
+  {
+    "type": "trace",
+    "role": "bot",
+    "assertions": [
+      "type == 'trace'",
+      "from.role == 'bot'",
+      "recipient.role == 'user'",
+      "label == 'Text: \"skill\". Value: '",
+      "name == 'ActivityRouterDialog.OnMessageActivityAsync()'"
+    ]
+  },
+  {
+    "type": "message",
+    "role": "bot",
+    "text": "Where would you like to travel to?",
+    "assertions": [
+      "type == 'message'",
+      "from.role == 'bot'",
+      "recipient.role == 'user'",
+      "text == 'Where would you like to travel to?'",
+      "speak == 'Where would you like to travel to?'",
+      "inputHint == 'expectingInput'"
+    ]
+  },
+  {
+    "type": "message",
+    "role": "user",
+    "text": "Spain"
+  },
+  {
+    "type": "message",
+    "role": "bot",
+    "text": "Where are you traveling from?",
+    "assertions": [
+      "type == 'message'",
+      "from.role == 'bot'",
+      "recipient.role == 'user'",
+      "text == 'Where are you traveling from?'",
+      "speak == 'Where are you traveling from?'",
+      "inputHint == 'expectingInput'"
+    ]
+  },
+  {
+    "type": "message",
+    "role": "user",
+    "text": "Italy"
+  },
+  {
+    "type": "message",
+    "role": "bot",
+    "text": "When would you like to travel?",
+    "assertions": [
+      "type == 'message'",
+      "from.role == 'bot'",
+      "recipient.role == 'user'",
+      "text == 'When would you like to travel?'",
+      "speak == 'When would you like to travel?'",
+      "inputHint == 'expectingInput'"
+    ]
+  },
+  {
+    "type": "message",
+    "role": "user",
+    "text": "Tomorrow"
+  },
+  {
+    "type": "message",
+    "role": "bot",
+    "text": "Please confirm, I have you traveling to: Spain from: Italy on: 2020-11-20. Is this correct?",
+    "assertions": [
+      "type == 'message'",
+      "from.role == 'bot'",
+      "recipient.role == 'user'",
+      "text == 'Please confirm, I have you traveling to: Spain from: Italy on: {{tomorrow}}. Is this correct?'",
+      "inputHint == 'expectingInput'",
+      "suggestedActions.actions[0].type == 'imBack'",
+      "suggestedActions.actions[0].title == 'Yes'",
+      "suggestedActions.actions[0].value == 'Yes'",
+      "suggestedActions.actions[1].type == 'imBack'",
+      "suggestedActions.actions[1].title == 'No'",
+      "suggestedActions.actions[1].value == 'No'"
+    ]
+  },
+  {
+    "type": "message",
+    "role": "user",
+    "text": "Yes"
+  },
+  {
+    "type": "message",
+    "role": "bot",
+    "text": "Received endOfConversation.\n\nCode: completedSuccessfully.\n\nValue: {\"destination\":\"Spain\",\"origin\":\"Italy\",\"travelDate\":\"2020-11-20\"}",
+    "assertions": [
+      "type == 'message'",
+      "from.role == 'bot'",
+      "recipient.role == 'user'",
+      "text == 'Received endOfConversation.\n\nCode: completedSuccessfully.\n\nValue: {\"destination\":\"Spain\",\"origin\":\"Italy\",\"travelDate\":\"{{tomorrow}}\"}'",
+      "inputHint == 'acceptingInput'"
+    ]
+  },
+  {
+    "type": "message",
+    "role": "bot",
+    "text": "Back in the host bot. Say \"skill\" and I'll patch you through",
+    "assertions": [
+      "type == 'message'",
+      "from.role == 'bot'",
+      "recipient.role == 'user'",
+      "text == 'Back in the host bot. Say \"skill\" and I\\'ll patch you through'",
+      "inputHint == 'acceptingInput'"
+    ]
+  }
+]

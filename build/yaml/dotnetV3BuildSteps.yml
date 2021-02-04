@@ -9,6 +9,7 @@ steps:
   displayName: 'NuGet restore'
   inputs:
     restoreSolution: '$(Parameters.solution)'
+    restoreDirectory: '$(SolutionDir)packages'
 
 - template: 'dotnetV3InstallPackagesSteps.yml'
 

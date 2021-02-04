@@ -113,7 +113,7 @@ namespace TranscriptTestRunner
             return idMatch.Success;
         }
 
-        private static bool IschannelId(string value)
+        private static bool IsChannelId(string value)
         {
             return value.ToUpper(CultureInfo.InvariantCulture) == "EMULATOR";
         }
@@ -226,7 +226,7 @@ namespace TranscriptTestRunner
                     return false;
                 }
 
-                return IsGuid(value) || IsDateTime(value) || IsId(value) || IsServiceUrl(value) || IschannelId(value);
+                return IsGuid(value) || IsDateTime(value) || IsId(value) || IsServiceUrl(value) || IsChannelId(value);
             });
 
             return token.ToString();
@@ -249,17 +249,17 @@ namespace TranscriptTestRunner
         {
             if (string.IsNullOrWhiteSpace(EmulatorTranscript))
             {
-                throw new Exception($"{nameof(EmulatorTranscript)} property not set");
+                throw new ArgumentException($"{nameof(EmulatorTranscript)} property not set");
             }
 
             if (!File.Exists(EmulatorTranscript))
             {
-                throw new Exception($"{nameof(EmulatorTranscript)}: {EmulatorTranscript} path does not exist");
+                throw new ArgumentException($"{nameof(EmulatorTranscript)}: {EmulatorTranscript} path does not exist");
             }
 
             if (string.IsNullOrWhiteSpace(TestScript))
             {
-                throw new Exception($"{nameof(TestScript)} property not set");
+                throw new ArgumentException($"{nameof(TestScript)} property not set");
             }
 
             var testScriptFolder = Path.GetDirectoryName(TestScript);

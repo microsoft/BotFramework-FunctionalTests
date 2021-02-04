@@ -8,14 +8,29 @@ class SkillsConfiguration {
     constructor() {
         this.skillsData = {};
 
-        // Note: we only have one skill in this sample but we could load more if needed.
-        const botFrameworkSkill = {
-            id: process.env.SkillId,
-            appId: process.env.SkillAppId,
-            skillEndpoint: process.env.SkillEndpoint
-        };
+        var skillVariables = Object.keys(process.env).filter(prop => prop.startsWith('skill_'));
 
-        this.skillsData[botFrameworkSkill.id] = botFrameworkSkill;
+        for (const val of skillVariables) {
+            const names = val.split('_');
+            const id = names[1];
+            const attr = names[2];
+            let propName;
+            if (!(id in this.skillsData)) {
+                this.skillsData[id] = { id: id };
+            }
+            switch (attr.toLowerCase()) {
+            case 'appid':
+                propName = 'appId';
+                break;
+            case 'endpoint':
+                propName = 'skillEndpoint';
+                break;
+            default:
+                throw new Error(`[SkillsConfiguration]: Invalid environment variable declaration ${ val }`);
+            }
+
+            this.skillsData[id][propName] = process.env[val];
+        }
 
         this.skillHostEndpointValue = process.env.SkillHostEndpoint;
         if (!this.skillHostEndpointValue) {

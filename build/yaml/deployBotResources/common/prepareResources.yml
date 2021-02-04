@@ -1,0 +1,22 @@
+parameters:
+  resourceGroups: []
+
+stages:
+- ${{ each resourceGroup in parameters.resourceGroups }}:
+  - stage: '${{ resourceGroup.id }}'
+    displayName: '${{ resourceGroup.displayName }}'
+    dependsOn: [] # Makes this run in parallel
+    jobs:
+      - job: 'Prepare'
+        displayName: 'Prepare steps'
+        steps:
+          - template: ../../common/deleteResourceGroup.yml 
+            parameters:
+              name: '${{ resourceGroup.name }}'
+              
+          - task: AzureCLI@1
+            displayName: 'Create Resource Group'
+            inputs:
+              azureSubscription: $(AzureSubscription)
+              scriptLocation: inlineScript
+              inlineScript: az group create --location westus --name "${{ resourceGroup.name }}"
