@@ -76,8 +76,21 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs
 
             // Add dialog to prepare SSO on the host and test the SSO skill
             // The waterfall skillDialog created in AddSkillDialogs contains the SSO skill action.
-            var waterfallDialog = Dialogs.Find("WaterfallSkillBot");
-            AddDialog(new SsoDialog(waterfallDialog, configuration));
+            var waterfallDialog = Dialogs.Find(Constants.WaterfallSkillBot);
+            if (waterfallDialog != null)
+            {
+                var temp = new SsoDialog(waterfallDialog, configuration);
+                temp.Id = Constants.WaterfallDialog;
+                AddDialog(temp);
+            }
+
+            var teamsWaterfallDialog = Dialogs.Find(Constants.TeamsWaterfallSkillBot);
+            if (teamsWaterfallDialog != null)
+            {
+                var temp = new SsoDialog(teamsWaterfallDialog, configuration);
+                temp.Id = Constants.TeamsWaterfallDialog;
+                AddDialog(temp);
+            }
 
             // Add main waterfall dialog for this bot.
             var waterfallSteps = new WaterfallStep[]

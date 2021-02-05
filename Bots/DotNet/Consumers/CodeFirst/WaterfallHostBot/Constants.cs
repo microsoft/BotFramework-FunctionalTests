@@ -7,7 +7,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot
     {
         public static readonly string TeamsWaterfallDialog = "TeamsWaterfallDialog";
         public static readonly string TeamsWaterfallSkillBot = "TeamsWaterfallSkillBot";
-        public static readonly string WaterfallDialog = "BasicWaterfallDialog";
+        public static readonly string WaterfallDialog = "WaterfallSkillBotDotNet";
         public static readonly string WaterfallSkillBot = "WaterfallSkillBot";
     }
 }
