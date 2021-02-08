@@ -47,7 +47,7 @@ stages:
               botType: '${{ bot.type }}'
 
           # Install dependencies in Microsoft.BotFramework.Composer.WebApp
-          - template: installDependenciesComposer.yml
+          - template: installDependencies.yml
             parameters:
               source: "$(DependenciesSource)"
               version: "$(DependenciesVersionNumber)"
@@ -69,7 +69,7 @@ stages:
                 Microsoft.Bot.Connector
 
           # Install dependencies in Microsoft.BotFramework.Composer.Functions
-          - template: installDependenciesComposer.yml
+          - template: installDependencies.yml
             parameters:
               source: "$(DependenciesSource)"
               version: "$(DependenciesVersionNumber)"
@@ -91,7 +91,7 @@ stages:
                 Microsoft.Bot.Connector
 
           # Install dependencies in Microsoft.BotFramework.Composer.CustomAction
-          - template: installDependenciesComposer.yml
+          - template: installDependencies.yml
             parameters:
               source: "$(DependenciesSource)"
               version: "$(DependenciesVersionNumber)"
@@ -102,7 +102,7 @@ stages:
                 Microsoft.Bot.Builder.Dialogs.Adaptive
 
           # Install dependencies in Microsoft.BotFramework.Composer.Core
-          - template: installDependenciesComposer.yml
+          - template: installDependencies.yml
             parameters:
               source: "$(DependenciesSource)"
               version: "$(DependenciesVersionNumber)"
