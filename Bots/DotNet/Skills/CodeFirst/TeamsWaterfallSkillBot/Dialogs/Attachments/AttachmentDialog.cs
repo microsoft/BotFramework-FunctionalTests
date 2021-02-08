@@ -99,7 +99,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.A
 
         private async Task<DialogTurnResult> HandleAttachmentAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            var card = stepContext.Context.Activity.Text;
+            var card = ((FoundChoice)stepContext.Result).Value.ToLowerInvariant();
             var reply = MessageFactory.Text(string.Empty);
 
             switch (card)
