@@ -15,7 +15,7 @@ stages:
       - job: 'Deploy'
         displayName: 'Deploy steps'
         steps:
-          #  Delete Bot Resources
+          # Delete Bot Resources
           - template: ../common/deleteResources.yml
             parameters:
               resourceGroup: '${{ parameters.resourceGroup }}'
