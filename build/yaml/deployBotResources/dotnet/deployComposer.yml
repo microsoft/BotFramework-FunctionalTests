@@ -15,12 +15,6 @@ stages:
       - job: 'Deploy'
         displayName: 'Deploy steps'
         steps:
-          # Delete Bot Resources
-          - template: ../common/deleteResources.yml
-            parameters:
-              resourceGroup: '${{ parameters.resourceGroup }}'
-              resourceName: '${{ bot.name }}'
-              
           # Gets Bot App Registration credentials from KeyVault or Pipeline Variables
           - template: ../common/getAppRegistration.yml
             parameters:
@@ -34,6 +28,95 @@ stages:
               displayName: 'Use NetCore v${{ bot.project.netCoreVersion }}'
               inputs:
                 version: '${{ bot.project.netCoreVersion }}'
+
+          # Evaluate dependencies source and version
+          - template: evaluateDependenciesVariables.yml
+            parameters:
+              ${{ if eq(bot.type, 'Host') }}:
+                registry: "$env:DependenciesRegistryHosts"
+                version: "$env:DependeciesVersionHosts"
+              ${{ if eq(bot.type, 'Skill') }}:
+                registry: "$env:DependenciesRegistrySkills"
+                version: "$env:DependeciesVersionSkills"
+              botType: '${{ bot.type }}'
+
+          # Install dependencies
+          - template: installDependenciesComposer.yml
+            parameters:
+              source: "$(DependenciesSource)"
+              version: "$(DependenciesVersionNumber)"
+              project: 
+                directory: '${{ bot.project.directory }}/runtime/azurewebapp/'
+                name: 'Microsoft.BotFramework.Composer.WebApp.csproj'
+              packages:
+                Microsoft.Bot.Builder
+                Microsoft.Bot.Builder.AI.Luis
+                Microsoft.Bot.Builder.AI.QnA
+                Microsoft.Bot.Builder.ApplicationInsights
+                Microsoft.Bot.Builder.Azure
+                Microsoft.Bot.Builder.Dialogs.Declarative
+                Microsoft.Bot.Builder.Dialogs.Adaptive
+                Microsoft.Bot.Builder.Dialogs.Debugging
+                Microsoft.Bot.Builder.Integration.ApplicationInsights.Core
+                Microsoft.Bot.Builder.Integration.AspNet.Core
+                Microsoft.Bot.Builder.Dialogs
+                Microsoft.Bot.Connector
+
+          # Install dependencies
+          - template: installDependenciesComposer.yml
+            parameters:
+              source: "$(DependenciesSource)"
+              version: "$(DependenciesVersionNumber)"
+              project: 
+                directory: '${{ bot.project.directory }}/runtime/azurefunctions/'
+                name: 'Microsoft.BotFramework.Composer.Functions.csproj'
+              packages:
+                Microsoft.Bot.Builder
+                Microsoft.Bot.Builder.AI.Luis
+                Microsoft.Bot.Builder.AI.QnA
+                Microsoft.Bot.Builder.ApplicationInsights
+                Microsoft.Bot.Builder.Azure
+                Microsoft.Bot.Builder.Dialogs.Adaptive
+                Microsoft.Bot.Builder.Dialogs.Debugging
+                Microsoft.Bot.Builder.Dialogs.Declarative
+                Microsoft.Bot.Builder.Integration.ApplicationInsights.Core
+                Microsoft.Bot.Builder.Integration.AspNet.Core
+                Microsoft.Bot.Builder.Dialogs
+                Microsoft.Bot.Connector
+
+          # Install dependencies
+          - template: installDependenciesComposer.yml
+            parameters:
+              source: "$(DependenciesSource)"
+              version: "$(DependenciesVersionNumber)"
+              project:
+                directory: '${{ bot.project.directory }}/runtime/customaction/'
+                name: 'Microsoft.BotFramework.Composer.CustomAction.csproj'
+              packages:
+                Microsoft.Bot.Builder.Dialogs.Adaptive
+
+          # Install dependencies
+          - template: installDependenciesComposer.yml
+            parameters:
+              source: "$(DependenciesSource)"
+              version: "$(DependenciesVersionNumber)"
+              project: 
+                directory: '${{ bot.project.directory }}/runtime/core/'
+                name: 'Microsoft.BotFramework.Composer.Core.csproj'
+              packages:
+                Microsoft.Bot.Builder
+                Microsoft.Bot.Builder.AI.Luis
+                Microsoft.Bot.Builder.AI.QnA
+                Microsoft.Bot.Builder.ApplicationInsights
+                Microsoft.Bot.Builder.Azure
+                Microsoft.Bot.Builder.Azure.Blobs
+                Microsoft.Bot.Builder.Dialogs.Adaptive
+                Microsoft.Bot.Builder.Dialogs.Debugging
+                Microsoft.Bot.Builder.Dialogs.Declarative
+                Microsoft.Bot.Builder.Integration.ApplicationInsights.Core
+                Microsoft.Bot.Builder.Integration.AspNet.Core
+                Microsoft.Bot.Builder.Dialogs
+                Microsoft.Bot.Connector
 
           # Prepare composer runtime
           - template: composerPrepare.yml
