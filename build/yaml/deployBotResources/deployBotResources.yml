@@ -10,15 +10,17 @@ pool:
   vmImage: 'windows-2019'
 
 variables:
+  AppInsights: 'bffnappinsights$($env:ResourceSuffix)'
   BuildConfiguration: 'Debug'
   BuildPlatform: 'AnyCPU'
-  # AppServicePlanGroup: define in Azure
-  # AppServicePlanGroupLinux: (python) define in Azure
-  # AppServicePlanName: define in Azure
-  # AppServicePlanNameLinux: (python) define in Azure
-  # AzureDeploymentPassword: (python) define in Azure
-  # AzureDeploymentUser: (python) define in Azure
+  KeyVault: 'bffnbotkeyvault$($env:ResourceSuffix)'
+  # AzureDeploymentPassword: define in Azure
+  # AzureDeploymentUser: define in Azure
   # AzureSubscription: define in Azure
+  # AppServicePlanLinuxResourceGroup: define in Azure
+  # AppServicePlanLinux: define in Azure
+  # AppServicePlanWindowsResourceGroup: define in Azure
+  # AppServicePlanWindows: define in Azure
   # ResourceGroup: define in Azure
   # BffnEchoSkillBotComposerDotNetAppId: (optional) define in Azure
   # BffnEchoSkillBotComposerDotNetAppSecret: (optional) define in Azure
@@ -48,14 +50,14 @@ variables:
   # BffnWaterfallHostBotDotNetAppSecret: (optional) define in Azure
   # BffnWaterfallSkillBotDotNetAppId: (optional) define in Azure
   # BffnWaterfallSkillBotDotNetAppSecret: (optional) define in Azure
-  # BotNamesSuffix: (optional) define in Azure
-  # BotPricingTier: (optional) define in Azure ; Acceptable values are F0 (Default) and S1.
-  # DependeciesVersionHosts: (optional) define in Azure
-  # DependeciesVersionSkills: (optional) define in Azure
-  # DependeciesVersionSkillsV3: (optional) define in Azure
+  # BotPricingTier: (optional) define in Azure
   # DependenciesRegistryHosts: (optional) define in Azure
   # DependenciesRegistrySkills: (optional) define in Azure
   # DependenciesRegistrySkillsV3: (optional) define in Azure
+  # DependenciesVersionHosts: (optional) define in Azure
+  # DependeciesVersionSkills: (optional) define in Azure
+  # DependeciesVersionSkillsV3: (optional) define in Azure
+  # ResourceSuffix: (optional) define in Azure
 
 stages:
 # Resource Groups

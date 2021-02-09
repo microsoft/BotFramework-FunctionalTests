@@ -5,12 +5,12 @@ parameters:
 
 steps:
   - powershell: |
-      git config --global user.name "${{ parameters.botName }}$($env:BotNamesSuffix)"
-      git config --global user.email "${{ parameters.botName }}$($env:BotNamesSuffix)@pipeline.com"
+      git config --global user.name "${{ parameters.botName }}$($env:ResourceSuffix)"
+      git config --global user.email "${{ parameters.botName }}$($env:ResourceSuffix)@pipeline.com"
       git init
       git add .
       git commit -m "cibuildtest"
-      git remote add azure https://$(AzureDeploymentUser):$(AzureDeploymentPassword)@${{ parameters.botName }}$($env:BotNamesSuffix).scm.azurewebsites.net:443/${{ parameters.botName }}$($env:BotNamesSuffix).git
+      git remote add azure https://$(AzureDeploymentUser):$(AzureDeploymentPassword)@${{ parameters.botName }}$($env:ResourceSuffix).scm.azurewebsites.net:443/${{ parameters.botName }}$($env:ResourceSuffix).git
       git push azure master
     workingDirectory: '${{ parameters.project.directory }}'
     displayName: 'Git bot deployment'
@@ -23,7 +23,7 @@ steps:
       scriptLocation: inlineScript
       inlineScript: |
         #Getting logs from Azure
-        az webapp log download --name "${{ parameters.botName }}$($env:BotNamesSuffix)" --resource-group "${{ parameters.resourceGroup }}" --log-file "$(System.DefaultWorkingDirectory)\logs.zip";
+        az webapp log download --name "${{ parameters.botName }}$($env:ResourceSuffix)" --resource-group "${{ parameters.resourceGroup }}" --log-file "$(System.DefaultWorkingDirectory)\logs.zip";
         Expand-Archive "$(System.DefaultWorkingDirectory)\logs.zip" -DestinationPath "$(System.DefaultWorkingDirectory)\logs";
         $file = "$(System.DefaultWorkingDirectory)/logs/deployments/*/log.log"
         $content = Get-Content $file
