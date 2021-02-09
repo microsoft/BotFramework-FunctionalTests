@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-const { Activity } = require('botbuilder');
-const SkillActionMessage = 'Message';
+const { ActivityEx } = require('botbuilder-schema');
+const SKILL_ACTION_MESSAGE = 'Message';
 
 class EchoSkill {
     getActions() {
@@ -10,11 +10,10 @@ class EchoSkill {
     }
 
     createBeginActivity(actionId) {
-        if (actionId === SkillActionMessage) {
-            let activity = Activity.createMessageActivity();
-            activity.name = SkillActionMessage;
+        if (actionId === SKILL_ACTION_MESSAGE) {
+            let activity = ActivityEx.createMessageActivity();
+            activity.name = SKILL_ACTION_MESSAGE;
             activity.text = 'Begin the Echo Skill.';
-
             return activity;
         }
 
