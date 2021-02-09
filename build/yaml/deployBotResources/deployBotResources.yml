@@ -17,10 +17,10 @@ variables:
   # AzureDeploymentPassword: define in Azure
   # AzureDeploymentUser: define in Azure
   # AzureSubscription: define in Azure
-  # AppServicePlanLinuxResourceGroup: define in Azure
-  # AppServicePlanLinux: define in Azure
-  # AppServicePlanWindowsResourceGroup: define in Azure
-  # AppServicePlanWindows: define in Azure
+  # AppServicePlanGroupLinux: define in Azure
+  # AppServicePlanNameLinux: define in Azure
+  # AppServicePlanGroup: define in Azure
+  # AppServicePlanName: define in Azure
   # ResourceGroup: define in Azure
   # BffnEchoSkillBotComposerDotNetAppId: (optional) define in Azure
   # BffnEchoSkillBotComposerDotNetAppSecret: (optional) define in Azure

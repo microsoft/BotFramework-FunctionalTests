@@ -17,7 +17,7 @@ variables:
   KeyVault: 'bffnbotkeyvault$($env:ResourceSuffix)'
   # AzureSubscription: define in Azure
   # KeyVaultObjectId: define in Azure
-  # ResourceGroup: define in Azure
+  # ResourceGroupName: define in Azure
   # AppServicePlanPricingTier: (optional) define in Azure
   # ResourceSuffix: (optional) define in Azure
 
@@ -30,12 +30,12 @@ stages:
       steps:
       - checkout: none
       - task: AzureCLI@2
-        displayName: 'Create $(ResourceGroup)'
+        displayName: 'Create $(ResourceGroupName)'
         inputs:
           azureSubscription: $(AzureSubscription)
           scriptType: ps
           scriptLocation: inlineScript
-          inlineScript: 'az group create --name "$(ResourceGroup)" --location "westus"'
+          inlineScript: 'az group create --name "$(ResourceGroupName)" --location "westus"'
 
 - stage: Create_Resource_Group_Linux
   displayName: Create Resource Group (Linux)
@@ -46,12 +46,12 @@ stages:
       steps:
       - checkout: none
       - task: AzureCLI@2
-        displayName: 'Create $(ResourceGroup)-linux'
+        displayName: 'Create $(ResourceGroupName)-linux'
         inputs:
           azureSubscription: $(AzureSubscription)
           scriptType: ps
           scriptLocation: inlineScript
-          inlineScript: 'az group create --name "$(ResourceGroup)-linux" --location "westus"'
+          inlineScript: 'az group create --name "$(ResourceGroupName)-linux" --location "westus"'
 
 - stage: Create_CosmosDB
   displayName: Create CosmosDB
@@ -66,7 +66,7 @@ stages:
           azureSubscription: $(AzureSubscription)
           scriptType: ps
           scriptLocation: inlineScript
-          inlineScript: 'az deployment group create --name "$(CosmosDB)" --resource-group "$(ResourceGroup)" --template-file build/templates/template-cosmosdb-resources.json --parameters accountName="$(CosmosDB)" databaseName="$(CosmosDB)"'
+          inlineScript: 'az deployment group create --name "$(CosmosDB)" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-cosmosdb-resources.json --parameters accountName="$(CosmosDB)" databaseName="$(CosmosDB)"'
 
 - stage: Create_Key_Vault
   displayName: Create Key Vault
@@ -81,7 +81,7 @@ stages:
           azureSubscription: $(AzureSubscription)
           scriptType: ps
           scriptLocation: inlineScript
-          inlineScript: 'az deployment group create --name "$(KeyVault)" --resource-group "$(ResourceGroup)" --template-file build/templates/template-key-vault-resources.json --parameters keyVaultName="$(KeyVault)" objectId="$(KeyVaultObjectId)"'
+          inlineScript: 'az deployment group create --name "$(KeyVault)" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-key-vault-resources.json --parameters keyVaultName="$(KeyVault)" objectId="$(KeyVaultObjectId)"'
 
 - stage: Create_App_Registrations
   displayName: Create App Registrations
@@ -111,7 +111,7 @@ stages:
           inlineScript: |
             $appServicePlanPricingTier = if($env:AppServicePlanPricingTier) { "newAppServicePlanSku=$env:AppServicePlanPricingTier" };
             
-            az deployment group create --name "$(AppServicePlanWindows)" --resource-group "$(ResourceGroup)" --template-file build/templates/template-service-plan-windows-resources.json --parameters $appServicePlanPricingTier newAppServicePlanName="$(AppServicePlanWindows)"
+            az deployment group create --name "$(AppServicePlanWindows)" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-service-plan-windows-resources.json --parameters $appServicePlanPricingTier newAppServicePlanName="$(AppServicePlanWindows)"
 
 - stage: Create_App_Service_Plan_Linux
   displayName: Create App Service Plan (Linux)
@@ -129,7 +129,7 @@ stages:
           inlineScript: |
             $appServicePlanPricingTier = if($env:AppServicePlanPricingTier) { "newAppServicePlanSku=$env:AppServicePlanPricingTier" };
 
-            az deployment group create --name "$(AppServicePlanLinux)" --resource-group "$(ResourceGroup)-linux" --template-file build/templates/template-service-plan-linux-resources.json --parameters $appServicePlanPricingTier newAppServicePlanName="$(AppServicePlanLinux)"
+            az deployment group create --name "$(AppServicePlanLinux)" --resource-group "$(ResourceGroupName)-linux" --template-file build/templates/template-service-plan-linux-resources.json --parameters $appServicePlanPricingTier newAppServicePlanName="$(AppServicePlanLinux)"
 
 - stage: Create_App_Insights
   displayName: Create App Insights
@@ -144,4 +144,4 @@ stages:
           azureSubscription: $(AzureSubscription)
           scriptType: ps
           scriptLocation: inlineScript
-          inlineScript: 'az deployment group create --name "$(AppInsights)" --resource-group "$(ResourceGroup)" --template-file build/templates/template-app-insights-resources.json --parameters appInsightsName="$(AppInsights)"'
+          inlineScript: 'az deployment group create --name "$(AppInsights)" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-app-insights-resources.json --parameters appInsightsName="$(AppInsights)"'

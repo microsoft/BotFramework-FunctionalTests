@@ -13,7 +13,7 @@ variables:
   CosmosDB: 'bffnbotstatedb$($env:ResourceSuffix)'
   KeyVault: 'bffnbotkeyvault$($env:ResourceSuffix)'
   # AzureSubscription: define in Azure
-  # BotResourceGroup: define in Azure
+  # DeployResourceGroup: define in Azure
   # SharedResourceGroup: define in Azure
   # ResourceSuffix: (optional) define in Azure
 
@@ -30,7 +30,7 @@ stages:
       steps:
         - template: ../common/deleteResourceGroup.yml
           parameters:
-            name: "$(BotResourceGroup)-DotNet"
+            name: "$(DeployResourceGroup)-DotNet"
 
 - stage: 'Delete_JS_Resource_Group'
   displayName: "Delete JS's Resource Group"
@@ -41,7 +41,7 @@ stages:
       steps:
         - template: ../common/deleteResourceGroup.yml
           parameters:
-            name: "$(BotResourceGroup)-JS"
+            name: "$(DeployResourceGroup)-JS"
 
 - stage: 'Delete_App_Service_Plan_Windows'
   displayName: 'Delete App Service Plan (Windows)'
@@ -77,7 +77,7 @@ stages:
       steps:
         - template: ../common/deleteResourceGroup.yml
           parameters:
-            name: "$(BotResourceGroup)-Python"
+            name: "$(DeployResourceGroup)-Python"
 
 - stage: 'Delete_App_Service_Plan_Linux'
   displayName: 'Delete App Service Plan (Linux)'
