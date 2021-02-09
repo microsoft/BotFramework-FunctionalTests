@@ -113,6 +113,11 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot
                             // We need to know what connection name to use for the token exchange so we figure that out here
                             var connectionName = targetSkill.Id == Constants.WaterfallSkillBotDotNet ? _configuration.GetSection("SsoConnectionName").Value : _configuration.GetSection("TeamsSsoConnectionName").Value;
                             
+                            if (string.IsNullOrEmpty(connectionName))
+                            {
+                                throw new ArgumentNullException("The connection name cannot be null.");
+                            }
+
                             // AAD token exchange
                             try
                             {
