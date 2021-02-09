@@ -55,8 +55,8 @@ variables:
   # DependenciesRegistrySkills: (optional) define in Azure
   # DependenciesRegistrySkillsV3: (optional) define in Azure
   # DependenciesVersionHosts: (optional) define in Azure
-  # DependeciesVersionSkills: (optional) define in Azure
-  # DependeciesVersionSkillsV3: (optional) define in Azure
+  # DependenciesVersionSkills: (optional) define in Azure
+  # DependenciesVersionSkillsV3: (optional) define in Azure
   # ResourceSuffix: (optional) define in Azure
 
 stages:
