@@ -2,6 +2,11 @@
 // Licensed under the MIT License.
 
 const { ObjectPath } = require('botbuilder-dialogs');
+const { EchoSkill } = require('./skills/echoSkill');
+const { WaterfallSkill } = require('./skills/waterfallSkill');
+const { TeamsSkill } = require('./skills/teamsSkill');
+const { SkillDefinition } = require('./skills/skillDefinition');
+
 
 /**
  * A helper class that loads Skills information from configuration.
@@ -19,6 +24,7 @@ class SkillsConfiguration {
             let propName;
             if (!(id in this.skillsData)) {
                 this.skillsData[id] = { id: id };
+                this.skillsData[id] = { definition: this.createSkillDefinition(this.skillsData[id]) };
             }
             switch (attr.toLowerCase()) {
             case 'appid':
@@ -52,17 +58,17 @@ class SkillsConfiguration {
         // Note: we hard code this for now, we should dynamically create instances based on the manifests.
         // For now, this code creates a strong typed version of the SkillDefinition and copies the info from
         // settings into it.
-        let skillDefinition;
+        let skillDefinition = new SkillDefinition();
 
-        switch (skill.id) {
-            case id.startsWith('EchoSkillBot'):
-                skillDefinition = ObjectPath.assign(new EchoSkill(), skill);
+        switch (true) {
+            case skill.id.startsWith('EchoSkillBot'):
+                skillDefinition = Object.assign(new EchoSkill(), skill);
                 break;
-            case id.startsWith('WaterfallSkillBot'):
-                skillDefinition = ObjectPath.assign(new WaterfallSkill(), skill);
+            case skill.id.startsWith('WaterfallSkillBot'):
+                skillDefinition = Object.assign(new WaterfallSkill(), skill);
                 break;
-            case id.startsWith('TeamsSkillBot'):
-                skillDefinition = ObjectPath.assign(new TeamsSkill(), skill);
+            case skill.id.startsWith('TeamsSkillBot'):
+                skillDefinition = Object.assign(new TeamsSkill(), skill);
                 break;
             default:
                 throw new Error(`[SkillsConfiguration]: Unable to find definition class for ${ skill.id }`);

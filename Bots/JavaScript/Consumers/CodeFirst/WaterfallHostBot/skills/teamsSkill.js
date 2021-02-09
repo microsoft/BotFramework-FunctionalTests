@@ -1,13 +1,15 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-const { ActivityEx } = require('botbuilder-schema');
+const { ActivityEx } = require('botbuilder-core');
+const { SkillDefinition } = require('./skillDefinition');
+
 const SKILL_ACTION_TEAMS_TASK_MODULE = 'TeamsTaskModule';
 const SKILL_ACTION_TEAMS_CARD_ACTION = 'TeamsCardAction';
 const SKILL_ACTION_TEAMS_CONVERSATION = 'TeamsConversation';
 
 
-class TeamsSkill {
+class TeamsSkill extends SkillDefinition {
     getActions() {
         return [
             SKILL_ACTION_TEAMS_TASK_MODULE,

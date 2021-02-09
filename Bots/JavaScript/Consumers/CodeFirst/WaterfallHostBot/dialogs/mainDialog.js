@@ -134,6 +134,7 @@ class MainDialog extends ComponentDialog {
         return await stepContext.prompt(SKILL_PROMPT, {
             prompt: MessageFactory.text(messageText, messageText, InputHints.ExpectingInput),
             retryPrompt: MessageFactory.text(repromptMessageText, repromptMessageText, InputHints.ExpectingInput),
+            //TODO: show the skills corresponding to the selected skillType 
             choices: ChoiceFactory.toChoices(Object.keys(this.skillsConfig.skills)),
             style: ListStyle.suggestedAction
         });
@@ -163,11 +164,11 @@ class MainDialog extends ComponentDialog {
         }
 
         // Create the PromptOptions with the actions supported by the selected skill.
-        const messageText = `Select an action # to send to **${ selectedSkill.Id }**.\n\nOr just type in a message and it will be forwarded to the skill as a message activity.`;
+        const messageText = `Select an action # to send to **${ selectedSkill.definition.Id }**.\n\nOr just type in a message and it will be forwarded to the skill as a message activity.`;
 
         return await stepContext.prompt(SKILL_ACTION_PROMPT, {
             prompt: MessageFactory.text(messageText, messageText, InputHints.ExpectingInput),
-            choices: ChoiceFactory.toChoices(selectedSkill.getActions()),
+            choices: ChoiceFactory.toChoices(Object.keys((selectedSkill.definition).getActions())),
         });
     }
 
@@ -227,7 +228,7 @@ class MainDialog extends ComponentDialog {
             }
 
             // Add a SkillDialog for the selected skill.
-            this.addDialog(new SkillDialog(skillDialogOptions, skillInfo.id));
+            this.addDialog(new SkillDialog(skillDialogOptions, skillInfo.definition.id));
         });
     }
 

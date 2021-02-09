@@ -1,12 +1,14 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-const { ActivityEx } = require('botbuilder-schema');
+const { ActivityEx } = require('botbuilder-core');
+const { SkillDefinition } = require('./skillDefinition');
+
 const SKILL_ACTION_MESSAGE = 'Message';
 
-class EchoSkill {
+class EchoSkill extends SkillDefinition {
     getActions() {
-        return SkillActionMessage;
+        return SKILL_ACTION_MESSAGE;
     }
 
     createBeginActivity(actionId) {

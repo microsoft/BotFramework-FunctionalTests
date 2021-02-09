@@ -1,7 +1,9 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-const { ActivityEx } = require('botbuilder-schema');
+const { ActivityEx } = require('botbuilder-core');
+const { SkillDefinition } = require('./skillDefinition');
+
 const SKILL_ACTION_CARDS = 'Cards';
 const SKILL_ACTION_PROACTIVE = 'Proactive';
 const SKILL_ACTION_AUTH = 'Auth';
@@ -10,7 +12,7 @@ const SKILL_ACTION_SSO = 'Sso';
 const SKILL_ACTION_FILE_UPLOAD = 'FileUpload';
 const SKILL_ACTION_CALL_ECHO_SKILL = 'Echo';
 
-class WaterfallSkill {
+class WaterfallSkill extends SkillDefinition {
     getActions() {
         return [
             SKILL_ACTION_CARDS,
