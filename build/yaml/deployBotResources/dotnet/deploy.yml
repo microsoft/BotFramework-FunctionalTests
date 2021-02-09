@@ -67,10 +67,10 @@ stages:
                 version: "$env:DependenciesVersionHosts"
               ${{ if eq(bot.type, 'Skill') }}:
                 registry: "$env:DependenciesRegistrySkills"
-                version: "$env:DependeciesVersionSkills"
+                version: "$env:DependenciesVersionSkills"
               ${{ if eq(bot.type, 'SkillV3') }}:
                 registry: "$env:DependenciesRegistrySkillsV3"
-                version: "$env:DependeciesVersionSkillsV3"
+                version: "$env:DependenciesVersionSkillsV3"
               botType: '${{ bot.type }}'
 
           # Start of DotNet Install & Build
