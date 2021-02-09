@@ -24,7 +24,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs.Sso
         public SsoDialog(Dialog skillDialog, IConfiguration configuration)
             : base(nameof(SsoDialog))
         {
-            if (skillDialog.Id == Constants.WaterfallSkillBot)
+            if (skillDialog.Id == Constants.WaterfallSkillBotDotNet)
             {
                 _connectionName = configuration.GetSection("SsoConnectionName")?.Value;
             }
