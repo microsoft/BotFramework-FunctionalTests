@@ -39,19 +39,15 @@ class RootBot extends ActivityHandler {
         });
 
         // this.onTurn(async (turnContext, next) => {
-        //     // Forward all activities except EndOfConversation to the active skill.
-        //     if (turnContext.activity.type !== ActivityTypes.EndOfConversation) {
-        //         // Try to get the active skill
-        //         const activeSkill = await this.activeSkillProperty.get(turnContext);
-
-        //         if (activeSkill) {
-        //             // Send the activity to the skill
-        //             await this.sendToSkill(turnContext, activeSkill);
-        //             return;
-        //         }
+        //     if (turnContext.activity.type === ActivityTypes.ConversationUpdate) {
+        //         // Let the base class handle the activity (this will trigger OnMembersAdded).
+        //         await super.onTurn(turnContext);
+        //     } else {
+        //         // Run the Dialog with the Activity.
+        //         await this.mainDialog.run(turnContext, this.conversationState.createProperty('DialogState'));
         //     }
 
-        //     // Ensure next BotHandler is executed.
+        //     await this.conversationState.saveChanges(turnContext, false);
         //     await next();
         // });
 

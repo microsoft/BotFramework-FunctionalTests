@@ -1,9 +1,10 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-const { ActivityTypes, BeginSkillDialogOptions, DeliveryModes, InputHints, MessageFactory,} = require('botbuilder');
+const { ActivityTypes, DeliveryModes, InputHints, MessageFactory,} = require('botbuilder');
 const { ChoicePrompt, ChoiceFactory, ComponentDialog, DialogSet, FoundChoice, ListStyle, SkillDialog, WaterfallDialog } = require('botbuilder-dialogs');
 const { RootBot } = require('../bots/rootBot');
+const { TangentDialog } = require('./tangentDialog');
 
 const MAIN_DIALOG = 'MainDialog';
 const DELIVERY_PROMPT = 'DeliveryModePrompt';
@@ -11,6 +12,9 @@ const SKILL_TYPE_PROMPT = 'SkillTypePrompt';
 const SKILL_PROMPT = 'SkillPrompt';
 const SKILL_ACTION_PROMPT = 'SkillActionPrompt';
 const WATERFALL_DIALOG = 'WaterfallDialog';
+const TANGENT_DIALOG = 'TangentDialog';
+// Constants used for selecting actions on the skill.
+const JUST_FORWARD_THE_ACTIVITY = "JustForwardTurnContext.Activity";
 
 class MainDialog extends ComponentDialog {
     constructor(conversationState, skillsConfig, skillClient, conversationIdFactory) {
@@ -27,6 +31,10 @@ class MainDialog extends ComponentDialog {
         this.activeSkillProperty = conversationState.createProperty(RootBot.ActiveSkillPropertyName);
         this.skillsConfig = skillsConfig;
         this.deliveryMode = '';
+        this.selectedSkill = '';
+
+        // Register the tangent dialog for testing tangents and resume
+        this.addDialog(new TangentDialog(TANGENT_DIALOG));
 
         // Create and add SkillDialog instances for the configured skills.
         this.addSkillDialogs(conversationState, conversationIdFactory, skillClient, skillsConfig, botId);
@@ -80,7 +88,12 @@ class MainDialog extends ComponentDialog {
             // The SkillDialog automatically sends an EndOfConversation message to the skill to let the
             // skill know that it needs to end its current dialogs, too.
             await innerDc.cancelAllDialogs();
-            return await innerDc.replaceDialog(this.initialDialogId, { text: 'Canceled! \n\n What skill would you like to call?' });
+            return await innerDc.replaceDialog(this.initialDialogId, { text: 'Canceled! \n\n What delivery mode would you like to use?' });
+        }
+        // Sample to test a tangent when in the middle of a skill conversation.
+        if (activeSkill != null && activity.type === ActivityTypes.Message && activity.text.toLowerCase() === 'tangent') {
+            // Start tangent.
+            return await innerDc.beginDialog(TANGENT_DIALOG);
         }
 
         return await super.onContinueDialog(innerDc);
@@ -91,7 +104,7 @@ class MainDialog extends ComponentDialog {
      */
     async selectDeliveryModeStep(stepContext) {
         // Create the PromptOptions with the delivery modes supported.
-        const messageText = 'What delivery mode would you like to use?';
+        const messageText = stepContext.options && stepContext.options.text ? stepContext.options.text : 'What delivery mode would you like to use?';
         const repromptMessageText = 'That was not a valid choice, please select a valid delivery mode.';
 
         return await stepContext.prompt(DELIVERY_PROMPT, {
@@ -134,8 +147,7 @@ class MainDialog extends ComponentDialog {
         return await stepContext.prompt(SKILL_PROMPT, {
             prompt: MessageFactory.text(messageText, messageText, InputHints.ExpectingInput),
             retryPrompt: MessageFactory.text(repromptMessageText, repromptMessageText, InputHints.ExpectingInput),
-            //TODO: show the skills corresponding to the selected skillType 
-            choices: ChoiceFactory.toChoices(Object.keys(this.skillsConfig.skills)),
+            choices: ChoiceFactory.toChoices((Object.keys(this.skillsConfig.skills)).filter(skill => skill.startsWith(skillType))),
             style: ListStyle.suggestedAction
         });
     }
@@ -144,14 +156,14 @@ class MainDialog extends ComponentDialog {
      * Render a prompt to select the begin action for the skill.
      */
     async selectSkillActionStep(stepContext) {
-        const selectedSkill = this.skillsConfig.skills[stepContext.result.value];
+        this.selectedSkill = this.skillsConfig.skills[stepContext.result.value];
         let v3Bots = [ 'EchoSkillBotDotNetV3', 'EchoSkillBotJSV3' ];
 
         // Set active skill
-        await this.activeSkillProperty.set(stepContext.context, selectedSkill);
+        await this.activeSkillProperty.set(stepContext.context, this.selectedSkill);
 
         // Exclude v3 bots from ExpectReplies
-        if (this.deliveryMode === DeliveryModes.ExpectReplies && v3Bots.Contains(selectedSkill))
+        if (this.deliveryMode === DeliveryModes.ExpectReplies && v3Bots.includes(this.selectedSkill.definition.id))
         {
             await stepContext.context.SendActivityAsync(MessageFactory.text("V3 Bots do not support 'expectReplies' delivery mode."));
 
@@ -164,11 +176,11 @@ class MainDialog extends ComponentDialog {
         }
 
         // Create the PromptOptions with the actions supported by the selected skill.
-        const messageText = `Select an action # to send to **${ selectedSkill.definition.Id }**.\n\nOr just type in a message and it will be forwarded to the skill as a message activity.`;
+        const messageText = `Select an action # to send to **${ this.selectedSkill.definition.id }**.\n\nOr just type in a message and it will be forwarded to the skill as a message activity.`;
 
         return await stepContext.prompt(SKILL_ACTION_PROMPT, {
             prompt: MessageFactory.text(messageText, messageText, InputHints.ExpectingInput),
-            choices: ChoiceFactory.toChoices(Object.keys((selectedSkill.definition).getActions())),
+            choices: this.selectedSkill.definition.getActions(),
         });
     }
 
@@ -180,19 +192,19 @@ class MainDialog extends ComponentDialog {
         return true;
     }
 
-    async callSkillActionStep(promptContext) {
+    async callSkillActionStep(stepContext) {
 
-        let skillActivity = CreateBeginActivity(stepContext.context, this.selectedSkill.id, stepContext.result.value);
+        let skillActivity = this.createBeginActivity(stepContext.context, this.selectedSkill.definition, stepContext.result.value);
 
         // Create the BeginSkillDialogOptions and assign the activity to send.
-        let skillDialogArgs = new BeginSkillDialogOptions(Activity = skillActivity);
+        let skillDialogArgs = { activity: skillActivity };
 
         if (this.deliveryMode === DeliveryModes.ExpectReplies) {
-            skillDialogArgs.Activity.DeliveryMode = DeliveryModes.ExpectReplies;
+            skillDialogArgs.activity.deliveryMode = DeliveryModes.ExpectReplies;
         }
 
         // Start the skillDialog instance with the arguments. 
-        return await stepContext.beginDialog(selectedSkill.Id, skillDialogArgs);
+        return await stepContext.beginDialog(this.selectedSkill.definition.id, skillDialogArgs);
     }
 
     /**
@@ -200,7 +212,7 @@ class MainDialog extends ComponentDialog {
      */
     async finalStep(stepContext) {
         if (stepContext.result) {
-            let message = `Skill \"${ this.activeSkill.Id }\" invocation complete.`;
+            let message = `Skill \"${ this.selectedSkill.definition.id }\" invocation complete.`;
             message += ` Result: ${ JSON.SerializeObject(stepContext.result) }`;
             await stepContext.context.sendActivity(message);
         }
@@ -208,9 +220,9 @@ class MainDialog extends ComponentDialog {
         // Forget delivery mode and skill invocation.
         await this.deliveryModeProperty.delete(stepContext.context);
         await this.activeSkillProperty.delete(stepContext.context);
-        
+
         // Restart setup dialog
-        return await stepContext.replaceDialog(this.initialDialogId, `Done with \"${ this.activeSkill.Id }\". \n\n What delivery mode would you like to use?`);
+        return await stepContext.replaceDialog(this.initialDialogId, { text: `Done with \"${ this.selectedSkill.definition.id }\". \n\n What delivery mode would you like to use?` });
     }
 
     // Helper method that creates and adds SkillDialog instances for the configured skills.
@@ -232,6 +244,23 @@ class MainDialog extends ComponentDialog {
         });
     }
 
+    // Helper method to create the activity to be sent to the DialogSkillBot using selected type and values.
+    createBeginActivity(turnContext, skillId, selectedOption) {
+        if (selectedOption === JUST_FORWARD_THE_ACTIVITY) {
+            // Note message activities also support input parameters but we are not using them in this example.
+            // Return a clone of the activity so we don't risk altering the original one.
+            return Object.assign({}, turnContext.activity);
+        }
+        // Get the begin activity from the skill instance.
+        let activity = skillId.createBeginActivity(selectedOption);
+
+        // We are manually creating the activity to send to the skill; ensure we add the ChannelData and Properties 
+        // from the original activity so the skill gets them.
+        // Note: this is not necessary if we are just forwarding the current activity from context. 
+        activity.channelData = turnContext.activity.channelData;
+        activity.properties = turnContext.activity.properties;
+        return activity;
+    }
 }
 
 module.exports.MainDialog = MainDialog;

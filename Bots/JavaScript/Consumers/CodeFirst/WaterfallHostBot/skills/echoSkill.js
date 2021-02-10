@@ -8,7 +8,7 @@ const SKILL_ACTION_MESSAGE = 'Message';
 
 class EchoSkill extends SkillDefinition {
     getActions() {
-        return SKILL_ACTION_MESSAGE;
+        return [SKILL_ACTION_MESSAGE];
     }
 
     createBeginActivity(actionId) {
