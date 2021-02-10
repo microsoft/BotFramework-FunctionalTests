@@ -164,13 +164,13 @@
         },
         {
           "type": "imBack",
-          "title": "EchoSkillBot21DotNet",
-          "value": "EchoSkillBot21DotNet"
+          "title": "EchoSkillBotDotNet21",
+          "value": "EchoSkillBotDotNet21"
         },
 		{
           "type": "imBack",
-          "title": "EchoSkillBotV3DotNet",
-          "value": "EchoSkillBotV3DotNet"
+          "title": "EchoSkillBotDotNetV3",
+          "value": "EchoSkillBotDotNetV3"
         },
         {
           "type": "imBack",
@@ -179,8 +179,8 @@
         },
 		{
           "type": "imBack",
-          "title": "EchoSkillBotV3JS",
-          "value": "EchoSkillBotV3JS"
+          "title": "EchoSkillBotJSV3",
+          "value": "EchoSkillBotJSV3"
         },
 		{
           "type": "imBack",
@@ -242,7 +242,7 @@
     },
     "locale": "",
     "text": "Type anything to send to the skill.",
-    "inputHint": "acceptingInput",
+    "inputHint": "expectingInput",
     "attachments": [],
     "entities": [],
     "replyToId": "6db1d760-4f58-11eb-80df-41840e87027c",

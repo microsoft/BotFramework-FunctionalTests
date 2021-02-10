@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -10,7 +9,6 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SkillFunctionalTests.Common;
 using TranscriptTestRunner;
-using TranscriptTestRunner.TestClients;
 using TranscriptTestRunner.XUnit;
 using Xunit;
 using Xunit.Abstractions;
@@ -38,22 +36,21 @@ namespace SkillFunctionalTests.SingleTurn
 
             var hostBots = new List<HostBot>
             {
+                HostBot.SimpleHostBotComposerDotNet,
                 HostBot.SimpleHostBotDotNet,
                 HostBot.SimpleHostBotDotNet21,
                 HostBot.SimpleHostBotJS,
                 HostBot.SimpleHostBotPython,
-
-                // TODO: Enable when composer bots support multiple skills.
-                // HostBot.SimpleComposerHostBotDotNet
             };
 
             var targetSkills = new List<string>
             {
+                SkillBotNames.EchoSkillBotComposerDotNet,
                 SkillBotNames.EchoSkillBotDotNet,
-                SkillBotNames.EchoSkillBot21DotNet,
-                SkillBotNames.EchoSkillBotV3DotNet,
+                SkillBotNames.EchoSkillBotDotNet21,
+                SkillBotNames.EchoSkillBotDotNetV3,
                 SkillBotNames.EchoSkillBotJS,
-                SkillBotNames.EchoSkillBotV3JS,
+                SkillBotNames.EchoSkillBotJSV3,
                 SkillBotNames.EchoSkillBotPython
             };
 
@@ -66,7 +63,9 @@ namespace SkillFunctionalTests.SingleTurn
             {
                 if (testCase.DeliveryMode == DeliveryModes.ExpectReplies)
                 {
-                    if (testCase.TargetSkill == SkillBotNames.EchoSkillBotV3DotNet || testCase.TargetSkill == SkillBotNames.EchoSkillBotV3JS || testCase.TargetSkill == SkillBotNames.EchoSkillBotPython)
+                    // Note: ExpectReplies is not supported by DotNetV3 and JSV3 skills.
+                    // BUG: ExpectReplies fails for SimpleHostBotComposerDotNet calls (remove the last OR when https://github.com/microsoft/BotFramework-FunctionalTests/issues/279 is fixed).
+                    if (testCase.TargetSkill == SkillBotNames.EchoSkillBotDotNetV3 || testCase.TargetSkill == SkillBotNames.EchoSkillBotJSV3 || testCase.HostBot == HostBot.SimpleHostBotComposerDotNet)
                     {
                         return true;
                     }
@@ -90,7 +89,7 @@ namespace SkillFunctionalTests.SingleTurn
             Logger.LogInformation(JsonConvert.SerializeObject(testCase, Formatting.Indented));
 
             var options = TestClientOptions[testCase.HostBot];
-            
+
             var runner = new XUnitTestRunner(new TestClientFactory(testCase.ClientType, options, Logger).GetTestClient(), TestRequestTimeout, Logger);
 
             var testParams = new Dictionary<string, string>

@@ -102,6 +102,9 @@ namespace TranscriptTestRunner.TestClients
                 Type = activity.Type
             };
 
+            _logger.LogDebug($"{DateTime.Now} Sending activity to conversation {_conversation.ConversationId}");
+            _logger.LogDebug(JsonConvert.SerializeObject(activityPost, Formatting.Indented));
+
             await _dlClient.Conversations.PostActivityAsync(_conversation.ConversationId, activityPost, cancellationToken).ConfigureAwait(false);
         }
 
@@ -174,17 +177,6 @@ namespace TranscriptTestRunner.TestClients
 
         private async Task StartConversationAsync()
         {
-            //// Obtain a token using the Direct Line secret
-            //var tokenInfo = await GetDirectLineTokenAsync().ConfigureAwait(false);
-
-            //// Create directLine client from token and initialize settings.
-            //_dlClient = new DirectLineClient(tokenInfo.Token);
-            //_dlClient.SetRetryPolicy(new RetryPolicy(new HttpStatusCodeErrorDetectionStrategy(), 0));
-
-            //// From now on, we'll add an Origin header in directLine calls, with 
-            //// the trusted origin we sent when acquiring the token as value.
-            //_dlClient.HttpClient.DefaultRequestHeaders.Add(_originHeader.Key, _originHeader.Value);
-
             var tryCount = 0;
             var maxTries = _options.StartConversationMaxAttempts;
             while (tryCount < maxTries && !_activityQueue.Any() && !_futureQueue.Any())

@@ -1,5 +1,4 @@
 {
-  "$schema": "../../../Libraries/TranscriptTestRunner/testscript.schema",
   "items": [
     {
       "type": "message",
@@ -51,24 +50,24 @@
     {
       "type": "message",
       "role": "bot",
-      "text": "Received endOfConversation.\n\nCode: completedSuccessfully",
+      "text": "Received endOfConversation.\n\nCode: completedSuccessfully.",
       "assertions": [
         "type == 'message'",
         "from.role == 'bot'",
         "recipient.role == 'user'",
-        "text == 'Received endOfConversation.\n\nCode: completedSuccessfully'",
+        "text == 'Received endOfConversation.\n\nCode: completedSuccessfully.'",
         "inputHint == 'acceptingInput'"
       ]
     },
     {
       "type": "message",
       "role": "bot",
-      "text": "Back in the host bot. Say \"skill\" and I'll patch you through",
+      "text": "Back in the host bot.",
       "assertions": [
         "type == 'message'",
         "from.role == 'bot'",
         "recipient.role == 'user'",
-        "text == 'Back in the host bot. Say \"skill\" and I\\'ll patch you through'",
+        "text == 'Back in the host bot.'",
         "inputHint == 'acceptingInput'"
       ]
     }

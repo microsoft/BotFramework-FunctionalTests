@@ -23,6 +23,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Dialogs
         private readonly IStatePropertyAccessor<string> _deliveryModeProperty;
         private readonly IStatePropertyAccessor<BotFrameworkSkill> _activeSkillProperty;
         private readonly SkillsConfiguration _skillsConfig;
+        private string _deliveryMode;
 
         public SetupDialog(ConversationState conversationState, SkillsConfiguration skillsConfig)
             : base(nameof(SetupDialog))
@@ -72,6 +73,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Dialogs
         private async Task<DialogTurnResult> SelectSkillStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             // Set delivery mode.
+            _deliveryMode = ((FoundChoice)stepContext.Result).Value;
             await _deliveryModeProperty.SetAsync(stepContext.Context, ((FoundChoice)stepContext.Result).Value, cancellationToken);
 
             // Create the PromptOptions from the skill configuration which contains the list of configured skills.
@@ -81,7 +83,8 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Dialogs
             {
                 Prompt = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput),
                 RetryPrompt = MessageFactory.Text(repromptMessageText, repromptMessageText, InputHints.ExpectingInput),
-                Choices = _skillsConfig.Skills.Select(skill => new Choice(skill.Key)).ToList()
+                Choices = _skillsConfig.Skills.Select(skill => new Choice(skill.Key)).ToList(),
+                Style = ListStyle.SuggestedAction
             };
 
             // Prompt the user to select a skill.
@@ -94,10 +97,20 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Dialogs
             var selectedSkillKey = ((FoundChoice)stepContext.Result).Value;
             var selectedSkill = _skillsConfig.Skills.FirstOrDefault(skill => skill.Key == selectedSkillKey);
 
+            var v3Bots = new List<string> { "EchoSkillBotDotNetV3", "EchoSkillBotJSV3" };
+
+            if (_deliveryMode == DeliveryModes.ExpectReplies && v3Bots.Contains(selectedSkillKey))
+            {
+                await stepContext.Context.SendActivityAsync(MessageFactory.Text("V3 Bots do not support 'expectReplies' delivery mode."), cancellationToken);
+
+                // Restart setup dialog
+                return await stepContext.ReplaceDialogAsync(InitialDialogId, null, cancellationToken);
+            }
+
             // Set active skill
             await _activeSkillProperty.SetAsync(stepContext.Context, selectedSkill.Value, cancellationToken);
 
-            var message = MessageFactory.Text("Type anything to send to the skill.");
+            var message = MessageFactory.Text("Type anything to send to the skill.", "Type anything to send to the skill.", InputHints.ExpectingInput);
             await stepContext.Context.SendActivityAsync(message, cancellationToken);
 
             return await stepContext.EndDialogAsync(stepContext.Values, cancellationToken);

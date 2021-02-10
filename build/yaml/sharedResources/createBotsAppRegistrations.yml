@@ -7,6 +7,7 @@ steps:
     inputs:
       azureSubscription: $(AzureSubscription)
       addSpnToEnvironment: true
+      failOnStandardError: true
       scriptType: ps
       scriptLocation: inlineScript
       inlineScript: |
@@ -62,23 +63,25 @@ steps:
           )
 
           foreach ($secret in $secrets) {
-            az keyvault secret set --vault-name $vaultName --name $secret.name --value $secret.value --output none
+            az keyvault secret set --vault-name $vaultName --name $secret.name --value="$($secret.value)" --output none
           }
         }
 
         $bots = @(
-          @{ appName = "bffnsimplehostbotdotnet"; variables = @{ appId = "BffnSimpleHostBotDotnetAppId"; appSecret = "BffnSimpleHostBotDotnetAppSecret"; objectId = "BffnSimpleHostBotDotnetAppObjectId" }},
-          @{ appName = "bffnsimplehostbot21dotnet"; variables = @{ appId = "BffnSimpleHostBot21DotnetAppId"; appSecret = "BffnSimpleHostBot21DotnetAppSecret"; objectId = "BffnSimpleHostBot21DotnetAppObjectId" }},
-          @{ appName = "bffnechoskillbotdotnet"; variables = @{ appId = "BffnEchoSkillBotDotnetAppId"; appSecret = "BffnEchoSkillBotDotnetAppSecret"; objectId = "BffnEchoSkillBotDotnetAppObjectId" }},
-          @{ appName = "bffnechoskillbot21dotnet"; variables = @{ appId = "BffnEchoSkillBot21DotnetAppId"; appSecret = "BffnEchoSkillBot21DotnetAppSecret"; objectId = "BffnEchoSkillBot21DotnetAppObjectId" }},
-          @{ appName = "bffnechoskillbotv3dotnet"; variables = @{ appId = "BffnEchoSkillBotV3DotnetAppId"; appSecret = "BffnEchoSkillBotV3DotnetAppSecret"; objectId = "BffnEchoSkillBotV3DotnetAppObjectId" }},
-          @{ appName = "bffnsimplecomposerhostbotdotnet"; variables = @{ appId = "BffnSimpleComposerHostBotDotnetAppId"; appSecret = "BffnSimpleComposerHostBotDotnetAppSecret"; objectId = "BffnSimpleComposerHostBotDotnetAppObjectId" }}
-          @{ appName = "bffnechocomposerskillbotdotnet"; variables = @{ appId = "BffnEchoComposerSkillBotDotnetAppId"; appSecret = "BffnEchoComposerSkillBotDotnetAppSecret"; objectId = "BffnEchoComposerSkillBotDotnetAppObjectId" }}
-          @{ appName = "bffnwaterfallhostbotdotnet"; variables = @{ appId = "BffnWaterfallHostBotDotnetAppId"; appSecret = "BffnWaterfallHostBotDotnetAppSecret"; objectId = "BffnWaterfallHostBotDotnetAppObjectId" }}
-          @{ appName = "bffnwaterfallskillbotdotnet"; variables = @{ appId = "BffnWaterfallSkillBotDotnetAppId"; appSecret = "BffnWaterfallSkillBotDotnetAppSecret"; objectId = "BffnWaterfallSkillBotDotnetAppObjectId" }}
-          @{ appName = "bffnsimplehostbotjs"; variables = @{ appId = "BffnSimpleHostBotJsAppId"; appSecret = "BffnSimpleHostBotJsAppSecret"; objectId = "BffnSimpleHostBotJsAppObjectId" }},
-          @{ appName = "bffnechoskillbotjs"; variables = @{ appId = "BffnEchoSkillBotJsAppId"; appSecret = "BffnEchoSkillBotJsAppSecret"; objectId = "BffnEchoSkillBotJsAppObjectId" }},
-          @{ appName = "bffnechoskillbotv3js"; variables = @{ appId = "BffnEchoSkillBotV3JsAppId"; appSecret = "BffnEchoSkillBotV3JsAppSecret"; objectId = "BffnEchoSkillBotV3JsAppObjectId" }}
+          @{ appName = "bffnsimplehostbotdotnet"; variables = @{ appId = "BffnSimpleHostBotDotNetAppId"; appSecret = "BffnSimpleHostBotDotNetAppSecret"; objectId = "BffnSimpleHostBotDotNetAppObjectId" }},
+          @{ appName = "bffnsimplehostbotdotnet21"; variables = @{ appId = "BffnSimpleHostBotDotNet21AppId"; appSecret = "BffnSimpleHostBotDotNet21AppSecret"; objectId = "BffnSimpleHostBotDotNet21AppObjectId" }},
+          @{ appName = "bffnechoskillbotdotnet"; variables = @{ appId = "BffnEchoSkillBotDotNetAppId"; appSecret = "BffnEchoSkillBotDotNetAppSecret"; objectId = "BffnEchoSkillBotDotNetAppObjectId" }},
+          @{ appName = "bffnechoskillbotdotnet21"; variables = @{ appId = "BffnEchoSkillBotDotNet21AppId"; appSecret = "BffnEchoSkillBotDotNet21AppSecret"; objectId = "BffnEchoSkillBotDotNet21AppObjectId" }},
+          @{ appName = "bffnechoskillbotdotnetv3"; variables = @{ appId = "BffnEchoSkillBotDotNetV3AppId"; appSecret = "BffnEchoSkillBotDotNetV3AppSecret"; objectId = "BffnEchoSkillBotDotNetV3AppObjectId" }},
+          @{ appName = "bffnsimplehostbotcomposerdotnet"; variables = @{ appId = "BffnSimpleHostBotComposerDotNetAppId"; appSecret = "BffnSimpleHostBotComposerDotNetAppSecret"; objectId = "BffnSimpleHostBotComposerDotNetAppObjectId" }}
+          @{ appName = "bffnechoskillbotcomposerdotnet"; variables = @{ appId = "BffnEchoSkillBotComposerDotNetAppId"; appSecret = "BffnEchoSkillBotComposerDotNetAppSecret"; objectId = "BffnEchoSkillBotComposerDotNetAppObjectId" }}
+          @{ appName = "bffnwaterfallhostbotdotnet"; variables = @{ appId = "BffnWaterfallHostBotDotNetAppId"; appSecret = "BffnWaterfallHostBotDotNetAppSecret"; objectId = "BffnWaterfallHostBotDotNetAppObjectId" }}
+          @{ appName = "bffnwaterfallskillbotdotnet"; variables = @{ appId = "BffnWaterfallSkillBotDotNetAppId"; appSecret = "BffnWaterfallSkillBotDotNetAppSecret"; objectId = "BffnWaterfallSkillBotDotNetAppObjectId" }}
+          @{ appName = "bffnsimplehostbotjs"; variables = @{ appId = "BffnSimpleHostBotJSAppId"; appSecret = "BffnSimpleHostBotJSAppSecret"; objectId = "BffnSimpleHostBotJSAppObjectId" }},
+          @{ appName = "bffnechoskillbotjs"; variables = @{ appId = "BffnEchoSkillBotJSAppId"; appSecret = "BffnEchoSkillBotJSAppSecret"; objectId = "BffnEchoSkillBotJSAppObjectId" }},
+          @{ appName = "bffnechoskillbotjsv3"; variables = @{ appId = "BffnEchoSkillBotJSV3AppId"; appSecret = "BffnEchoSkillBotJSV3AppSecret"; objectId = "BffnEchoSkillBotJSV3AppObjectId" }},
+          @{ appName = "bffnsimplehostbotpython"; variables = @{ appId = "BffnSimpleHostBotPythonAppId"; appSecret = "BffnSimpleHostBotPythonAppSecret"; objectId = "BffnSimpleHostBotPythonAppObjectId" }},
+          @{ appName = "bffnechoskillbotpython"; variables = @{ appId = "BffnEchoSkillBotPythonAppId"; appSecret = "BffnEchoSkillBotPythonAppSecret"; objectId = "BffnEchoSkillBotPythonAppObjectId" }}
         )
 
         $token = GetToken;

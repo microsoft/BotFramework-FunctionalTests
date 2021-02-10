@@ -6,6 +6,11 @@ namespace SkillFunctionalTests.Common
     public enum HostBot
     {
         /// <summary>
+        /// Simple host implemented using Composer and the dotnet runtime.
+        /// </summary>
+        SimpleHostBotComposerDotNet,
+
+        /// <summary>
         /// Simple host implemented using dotnet 3.1.
         /// </summary>
         SimpleHostBotDotNet,
@@ -26,11 +31,6 @@ namespace SkillFunctionalTests.Common
         SimpleHostBotPython,
 
         /// <summary>
-        /// Simple host implemented using Composer and the dotnet runtime.
-        /// </summary>
-        SimpleComposerHostBotDotNet,
-
-        /// <summary>
         /// Host implemented using dotnet and waterfall dialogs.
         /// </summary>
         WaterfallHostBotDotNet,
@@ -46,8 +46,8 @@ namespace SkillFunctionalTests.Common
         WaterfallHostBotPython,
 
         /// <summary>
-        /// Host implemented using Composer and the dotnet runtime.
+        /// Host implemented for LegacyTests.
         /// </summary>
-        ComposerHostBotDotNet
+        EchoHostBot
     }
 }

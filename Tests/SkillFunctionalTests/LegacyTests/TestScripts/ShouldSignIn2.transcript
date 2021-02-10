@@ -136,7 +136,7 @@
       "role": "user"
     },
     "locale": "",
-    "text": "Received endOfConversation.\n\nCode: completedSuccessfully",
+    "text": "Received endOfConversation.\n\nCode: completedSuccessfully.",
     "inputHint": "acceptingInput",
     "attachments": [],
     "entities": [],
@@ -162,7 +162,7 @@
       "role": "user"
     },
     "locale": "",
-    "text": "Back in the host bot. Say \"skill\" and I'll patch you through",
+    "text": "Back in the host bot.",
     "inputHint": "acceptingInput",
     "attachments": [],
     "entities": [],

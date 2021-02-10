@@ -11,15 +11,16 @@ steps:
       inlineScript: |
         # Type of setting to use for the AppSettings variables.
         $types = @{
-          DotNet = 0
-          Js = 1
+          Appsettings = 0
+          Env = 1
           Composer = 2
         }
 
         # Bots Resource Groups
         $groups = @{
           DotNet = "$(ResourceGroup)-DotNet"
-          Js     = "$(ResourceGroup)-Js"
+          JS     = "$(ResourceGroup)-JS"
+          Python = "$(ResourceGroup)-Python"
         }
 
         # Bots Settings
@@ -28,64 +29,96 @@ steps:
               key           = 'SimpleHostBotDotNet'
               botName       = 'bffnsimplehostbotdotnet'
               resourceGroup = $groups.DotNet
-              configType    = $types.DotNet
+              configType    = $types.Appsettings
           }
           @{
               key           = 'SimpleHostBotDotNet21'
-              botName       = 'bffnsimplehostbot21dotnet'
+              botName       = 'bffnsimplehostbotdotnet21'
               resourceGroup = $groups.DotNet
-              configType    = $types.DotNet
+              configType    = $types.Appsettings
           }
           @{
-              key           = 'SimpleComposerHostBotDotNet'
-              botName       = 'bffnsimplecomposerhostbotdotnet'
+              key           = 'SimpleHostBotComposerDotNet'
+              botName       = 'bffnsimplehostbotcomposerdotnet'
               resourceGroup = $groups.DotNet
               configType    = $types.Composer
           }
           @{
+              key           = 'WaterfallHostBotDotNet'
+              botName       = 'bffnwaterfallhostbotdotnet'
+              resourceGroup = $groups.DotNet
+              configType    = $types.Appsettings
+          }
+          @{
               key           = 'SimpleHostBotJS'
               botName       = 'bffnsimplehostbotjs'
-              resourceGroup = $groups.Js
-              configType    = $types.Js
+              resourceGroup = $groups.JS
+              configType    = $types.Env
+          }
+          @{
+              key           = 'SimpleHostBotPython'
+              botName       = 'bffnsimplehostbotpython'
+              resourceGroup = $groups.Python
+              configType    = $types.Env
           }
         )
 
         $skills = @(
           @{
-              key     = 'EchoSkillBotDotNet'
-              botName = 'bffnechoskillbotdotnet'
-              appId   = '$(BffnEchoSkillBotDotnetAppId)'
+              key           = 'EchoSkillBotDotNet'
+              keyComposer   = 'echoSkillBotDotNet' 
+              botName       = 'bffnechoskillbotdotnet'
+              appId         = "$env:BffnEchoSkillBotDotNetAppId"
               resourceGroup = $groups.DotNet
           }
           @{
-              key     = 'EchoSkillBot21DotNet'
-              botName = 'bffnechoskillbot21dotnet'
-              appId   = '$(BffnEchoSkillBot21DotnetAppId)'
+              key           = 'EchoSkillBotDotNet21'
+              keyComposer   = 'echoSkillBotDotNet21' 
+              botName       = 'bffnechoskillbotdotnet21'
+              appId         = "$env:BffnEchoSkillBotDotNet21AppId"
               resourceGroup = $groups.DotNet
           }
           @{
-              key        = 'EchoSkillBotV3DotNet'
-              botName    = 'bffnechoskillbotv3dotnet'
-              appId      = '$(BffnEchoSkillBotV3DotnetAppId)'
+              key           = 'EchoSkillBotDotNetV3'
+              keyComposer   = 'echoSkillBotDotNetV3' 
+              botName       = 'bffnechoskillbotdotnetv3'
+              appId         = "$env:BffnEchoSkillBotDotNetV3AppId"
               resourceGroup = $groups.DotNet
           }
           @{
-              key        = 'EchoComposerSkillBotDotNet'
-              botName    = 'bffnechocomposerskillbotdotnet'
-              appId      = '$(BffnEchoComposerSkillBotDotnetAppId)'
+              key           = 'EchoSkillBotComposerDotNet'
+              keyComposer   = 'echoSkillBotComposerDotNet' 
+              botName       = 'bffnechoskillbotcomposerdotnet'
+              appId         = "$env:BffnEchoSkillBotComposerDotNetAppId"
               resourceGroup = $groups.DotNet
           }
           @{
-              key     = 'EchoSkillBotJS'
-              botName = 'bffnechoskillbotjs'
-              appId   = '$(BffnEchoSkillBotJSAppId)'
-              resourceGroup = $groups.Js
+              key           = 'WaterfallSkillBotDotNet'
+              keyComposer   = 'waterfallSkillBotDotNet' 
+              botName       = 'bffnwaterfallskillbotdotnet'
+              appId         = "$env:BffnWaterfallSkillBotDotNetAppId"
+              resourceGroup = $groups.DotNet
           }
           @{
-              key        = 'EchoSkillBotV3JS'
-              botName    = 'bffnechoskillbotv3js'
-              appId      = '$(BffnEchoSkillBotV3JSAppId)'
-              resourceGroup = $groups.Js
+              key           = 'EchoSkillBotJS'
+              keyComposer   = 'echoSkillBotJs' 
+              botName       = 'bffnechoskillbotjs'
+              appId         = "$env:BffnEchoSkillBotJSAppId"
+              resourceGroup = $groups.JS
+          }
+          @{
+              key           = 'EchoSkillBotJSV3'
+              keyComposer   = 'echoSkillBotJsV3' 
+              botName       = 'bffnechoskillbotjsv3'
+              appId         = "$env:BffnEchoSkillBotJSV3AppId"
+              resourceGroup = $groups.JS
+          }
+          @{
+              key           = 'EchoSkillBotPython'
+              keyComposer   = 'echoSkillBotPython' 
+              botName       = 'bffnechoskillbotpython'
+              appId         = "$env:BffnEchoSkillBotPythonAppId"
+              resourceGroup = $groups.Python
           }
         )
 
@@ -94,28 +127,42 @@ steps:
           @{ 
               name      = 'SingleTurn'; 
               consumers = @(
+                'SimpleHostBotComposerDotNet'
                 'SimpleHostBotDotNet',
                 'SimpleHostBotDotNet21',
-                'SimpleHostBotJS'
+                'SimpleHostBotJS',
+                'SimpleHostBotPython'
               );
               skills    = @(
+                'EchoSkillBotComposerDotNet',
                 'EchoSkillBotDotNet',
-                'EchoSkillBot21DotNet',
-                'EchoSkillBotV3DotNet',
+                'EchoSkillBotDotNet21',
+                'EchoSkillBotDotNetV3',
                 'EchoSkillBotJS',
-                'EchoSkillBotV3JS'
+                'EchoSkillBotJSV3',
+                'EchoSkillBotPython'
               );
           }
           @{ 
-              name      = 'SingleTurn'; 
+              name      = 'Waterfall'; 
               consumers = @(
-                'SimpleComposerHostBotDotNet'
+                'WaterfallHostBotDotNet'
               );
               skills    = @(
-                'EchoComposerSkillBotDotNet'
+                'WaterfallSkillBotDotNet'
               );
           }
         )
+
+        # Load AppIds from KeyVault
+        foreach ($skill in $skills) {
+          if(-not [string]::IsNullOrEmpty($skill.appId)){
+            continue;
+          }
+          $entry = az keyvault secret list --vault-name "bffnbotkeyvault" --query "[?name == 'Bffn$($skill.key)AppId']" | ConvertFrom-Json;
+          $secretVault = az keyvault secret show --id $entry.id | ConvertFrom-Json;
+          $skill.appId = $secretVault.value;
+        }
 
         $appsettingsPath = "tests/SkillFunctionalTests/appsettings.json"
 
@@ -147,6 +194,10 @@ steps:
               }
 
               # Check if the Consumer bot resource exists.
+              if ((az group exists -n "$($consumerBot.resourceGroup)") -eq 'false') {
+                continue;
+              }
+
               $resource = az webapp list --resource-group $consumerBot.resourceGroup --query "[?name=='$($consumerBot.botName)$($env:BotNamesSuffix)']" | ConvertFrom-Json
 
               if (-not $resource) {
@@ -182,6 +233,11 @@ steps:
                     continue;
                 }
 
+                # Check if the Consumer bot resource exists.
+                if ((az group exists -n "$($skillBot.resourceGroup)") -eq 'false') {
+                  continue;
+                }
+
                 # Check if the Skill bot resource exists.
                 $resource = az webapp list --resource-group $skillBot.resourceGroup --query "[?name=='$($skillBot.botName)$($env:BotNamesSuffix)']" | ConvertFrom-Json
 
@@ -190,19 +246,19 @@ steps:
                 }
 
                 switch ($consumerBot.configType) {
-                    $types.DotNet { 
+                    $types.Appsettings { 
                       $properties += "BotFrameworkSkills:$($index):Id=$($skillBot.key)";
                       $properties += "BotFrameworkSkills:$($index):AppId=$($skillBot.appId)";
                       $properties += "BotFrameworkSkills:$($index):SkillEndpoint=https://$($skillBot.botName)$($env:BotNamesSuffix).azurewebsites.net/api/messages";
                     }
-                    $types.Js { 
+                    $types.Env { 
                       $properties += "skill_$($skillBot.key)_appId=$($skillBot.appId)";
                       $properties += "skill_$($skillBot.key)_endpoint=https://$($skillBot.botName)$($env:BotNamesSuffix).azurewebsites.net/api/messages";
                     }
-                    $types.Composer { 
-                      # NOTE: Currently Composer Host bot only supports one Skill.
-                      $properties += "skill__EchoSkillBot__msAppId=$($skillBot.appId)";
-                      $properties += "skill__EchoSkillBot__endpointUrl=https://$($skillBot.botName)$($env:BotNamesSuffix).azurewebsites.net/api/messages";
+                    $types.Composer {
+                      # NOTE: Composer uses different capitalization for the skill keys.
+                      $properties += "skill__$($skillBot.keyComposer)__msAppId=$($skillBot.appId)";
+                      $properties += "skill__$($skillBot.keyComposer)__endpointUrl=https://$($skillBot.botName)$($env:BotNamesSuffix).azurewebsites.net/api/messages";
                     }
                 }
 

@@ -134,12 +134,12 @@
   {
     "type": "message",
     "role": "bot",
-    "text": "Received endOfConversation.\n\nCode: completedSuccessfully\n\nValue: {\"destination\":\"Spain\",\"origin\":\"Italy\",\"travelDate\":\"2020-11-20\"}",
+    "text": "Received endOfConversation.\n\nCode: completedSuccessfully.\n\nValue: {\"destination\":\"Spain\",\"origin\":\"Italy\",\"travelDate\":\"2020-11-20\"}",
     "assertions": [
       "type == 'message'",
       "from.role == 'bot'",
       "recipient.role == 'user'",
-      "text == 'Received endOfConversation.\n\nCode: completedSuccessfully\n\nValue: {\"destination\":\"Spain\",\"origin\":\"Italy\",\"travelDate\":\"{{tomorrow}}\"}'",
+      "text == 'Received endOfConversation.\n\nCode: completedSuccessfully.\n\nValue: {\"destination\":\"Spain\",\"origin\":\"Italy\",\"travelDate\":\"{{tomorrow}}\"}'",
       "inputHint == 'acceptingInput'"
     ]
   },

@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 const { InputHints, MessageFactory, DeliveryModes } = require('botbuilder');
-const { ChoicePrompt, ComponentDialog, DialogSet, DialogTurnStatus, WaterfallDialog } = require('botbuilder-dialogs');
+const { ChoicePrompt, ComponentDialog, DialogSet, DialogTurnStatus, WaterfallDialog, ListStyle } = require('botbuilder-dialogs');
 const { HostBot } = require('../bots/hostBot');
 
 const SETUP_DIALOG = 'SetupDialog';
@@ -19,6 +19,7 @@ class SetupDialog extends ComponentDialog {
         this.deliveryModeProperty = conversationState.createProperty(HostBot.DeliveryModePropertyName);
         this.activeSkillProperty = conversationState.createProperty(HostBot.ActiveSkillPropertyName);
         this.skillsConfig = skillsConfig;
+        this.deliveryMode = '';
 
         // Define the setup dialog and its related components.
         // Add ChoicePrompt to render available skills.
@@ -72,6 +73,7 @@ class SetupDialog extends ComponentDialog {
      */
     async selectSkillStep(stepContext) {
         // Set delivery mode.
+        this.deliveryMode = stepContext.result.value;
         await this.deliveryModeProperty.set(stepContext.context, stepContext.result.value);
 
         // Create the PromptOptions from the skill configuration which contains the list of configured skills.
@@ -80,7 +82,8 @@ class SetupDialog extends ComponentDialog {
         const options = {
             prompt: MessageFactory.text(messageText, messageText, InputHints.ExpectingInput),
             retryPrompt: MessageFactory.text(repromptMessageText, repromptMessageText, InputHints.ExpectingInput),
-            choices: Object.keys(this.skillsConfig.skills)
+            choices: Object.keys(this.skillsConfig.skills),
+            style: ListStyle.suggestedAction
         };
 
         // Prompt the user to select a skill.
@@ -92,11 +95,24 @@ class SetupDialog extends ComponentDialog {
      */
     async finalStep(stepContext) {
         const selectedSkill = this.skillsConfig.skills[stepContext.result.value];
+        const v3Bots = ['EchoSkillBotDotNetV3', 'EchoSkillBotJSV3'];
 
         // Set active skill
         await this.activeSkillProperty.set(stepContext.context, selectedSkill);
 
-        const message = MessageFactory.text('Type anything to send to the skill.');
+        if (this.deliveryMode === DeliveryModes.ExpectReplies && v3Bots.includes(selectedSkill.id)) {
+            const message = MessageFactory.text("V3 Bots do not support 'expectReplies' delivery mode.");
+            await stepContext.context.sendActivity(message);
+
+            // Forget delivery mode and skill invocation.
+            await this.deliveryModeProperty.delete(stepContext.context);
+            await this.activeSkillProperty.delete(stepContext.context);
+
+            // Restart setup dialog
+            return await stepContext.replaceDialog(this.initialDialogId);
+        }
+
+        const message = MessageFactory.text('Type anything to send to the skill.', 'Type anything to send to the skill.', InputHints.ExpectingInput);
         await stepContext.context.sendActivity(message);
 
         return await stepContext.endDialog();
