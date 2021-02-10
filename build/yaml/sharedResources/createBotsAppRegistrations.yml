@@ -87,7 +87,7 @@ steps:
         $token = GetToken;
 
         foreach ($bot in $bots) {
-          $botName = "$($bot.appName)$($env:BotNamesSuffix)";
+          $botName = "$($bot.appName)$($env:ResourceSuffix)";
           Write-Host "`n[$botName] Starting";
           Write-Host "Creating App Registration ...";
           
