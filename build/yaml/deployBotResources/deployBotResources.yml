@@ -14,13 +14,13 @@ variables:
   BuildConfiguration: 'Debug'
   BuildPlatform: 'AnyCPU'
   KeyVault: 'bffnbotkeyvault$($env:ResourceSuffix)'
+  # AppServicePlanGroup: define in Azure
+  # AppServicePlanGroupLinux: define in Azure
+  # AppServicePlanName: define in Azure
+  # AppServicePlanNameLinux: define in Azure
   # AzureDeploymentPassword: define in Azure
   # AzureDeploymentUser: define in Azure
   # AzureSubscription: define in Azure
-  # AppServicePlanGroupLinux: define in Azure
-  # AppServicePlanNameLinux: define in Azure
-  # AppServicePlanGroup: define in Azure
-  # AppServicePlanName: define in Azure
   # ResourceGroup: define in Azure
   # BffnEchoSkillBotComposerDotNetAppId: (optional) define in Azure
   # BffnEchoSkillBotComposerDotNetAppSecret: (optional) define in Azure
