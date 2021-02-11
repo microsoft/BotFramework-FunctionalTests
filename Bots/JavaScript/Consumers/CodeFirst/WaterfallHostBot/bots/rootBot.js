@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-const { ActivityHandler, ActivityTypes, CardFactory } = require('botbuilder');
+const { ActivityHandler, ActivityTypes, CardFactory, MessageFactory } = require('botbuilder');
 const { runDialog } = require('botbuilder-dialogs');
 const WelcomeCard = require('../cards/welcomeCard.json');
 
@@ -100,7 +100,9 @@ class RootBot extends ActivityHandler {
             for (let cnt = 0; cnt < membersAdded.length; ++cnt) {
                 if (membersAdded[cnt].id !== context.activity.recipient.id) {
                     const welcomeCard = CardFactory.adaptiveCard(WelcomeCard);
-                    await context.sendActivity({ attachments: [welcomeCard] });
+                    const activity = MessageFactory.attachment(welcomeCard);
+                    activity.speak = "Welcome to the waterfall host bot";
+                    await context.sendActivity(activity);
                     await runDialog(this.mainDialog, context, conversationState.createProperty('DialogState'));
                 }
             }

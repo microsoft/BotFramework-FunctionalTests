@@ -83,7 +83,7 @@ class MainDialog extends ComponentDialog {
     async onContinueDialog(innerDc) {
         const activeSkill = await this.activeSkillProperty.get(innerDc.context, () => null);
         const activity = innerDc.context.activity;
-        if (activeSkill != null && activity.type === ActivityTypes.Message && activity.text.toLowerCase() === 'abort') {
+        if (activeSkill != null && activity.type === ActivityTypes.Message && activity.text != null && activity.text.toLowerCase() === 'abort') {
             // Cancel all dialogs when the user says abort.
             // The SkillDialog automatically sends an EndOfConversation message to the skill to let the
             // skill know that it needs to end its current dialogs, too.
@@ -91,7 +91,7 @@ class MainDialog extends ComponentDialog {
             return await innerDc.replaceDialog(this.initialDialogId, { text: 'Canceled! \n\n What delivery mode would you like to use?' });
         }
         // Sample to test a tangent when in the middle of a skill conversation.
-        if (activeSkill != null && activity.type === ActivityTypes.Message && activity.text.toLowerCase() === 'tangent') {
+        if (activeSkill != null && activity.type === ActivityTypes.Message && activity.text != null && activity.text.toLowerCase() === 'tangent') {
             // Start tangent.
             return await innerDc.beginDialog(TANGENT_DIALOG);
         }
