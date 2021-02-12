@@ -96,13 +96,13 @@ namespace TranscriptTestRunner.TestClients
                 }
             }
 
-            List<Attachment> attachments = new List<Attachment>();
+            var attachments = new List<Attachment>();
 
             if (activity.Attachments != null && activity.Attachments.Any())
             {
-                foreach (Microsoft.Bot.Schema.Attachment item in activity.Attachments)
+                foreach (var item in activity.Attachments)
                 {
-                    attachments.Add(new Attachment()
+                    attachments.Add(new Attachment
                     {
                         ContentType = item.ContentType,
                         ContentUrl = item.ContentUrl,

@@ -99,13 +99,13 @@
     {
       "type": "message",
       "role": "bot",
-      "text": "Select an action # to send to **WaterfallSkillBotDotNet**.\n\nOr just type in a message and it will be forwarded to the skill as a message activity.\n\n   1. Cards\n   2. Proactive\n   3. Auth\n   4. MessageWithAttachment\n   5. Sso\n   6. FileUpload\n   7. Echo",
+      "text": "Select an action # to send to **${TargetSkill}**.\n\nOr just type in a message and it will be forwarded to the skill as a message activity.\n\n   1. Cards\n   2. Proactive\n   3. Auth\n   4. MessageWithAttachment\n   5. Sso\n   6. FileUpload\n   7. Echo",
       "assertions": [
         "type == 'message'",
         "from.role == 'bot'",
         "recipient.role == 'user'",
-        "text == 'Select an action # to send to **WaterfallSkillBotDotNet**.\n\nOr just type in a message and it will be forwarded to the skill as a message activity.\n\n   1. Cards\n   2. Proactive\n   3. Auth\n   4. MessageWithAttachment\n   5. Sso\n   6. FileUpload\n   7. Echo'",
-        "speak == 'Select an action # to send to **WaterfallSkillBotDotNet**.\n\nOr just type in a message and it will be forwarded to the skill as a message activity.'",
+        "text == 'Select an action # to send to **${TargetSkill}**.\n\nOr just type in a message and it will be forwarded to the skill as a message activity.\n\n   1. Cards\n   2. Proactive\n   3. Auth\n   4. MessageWithAttachment\n   5. Sso\n   6. FileUpload\n   7. Echo'",
+        "speak == 'Select an action # to send to **${TargetSkill}**.\n\nOr just type in a message and it will be forwarded to the skill as a message activity.'",
         "inputHint == 'expectingInput'"
       ]
     },
