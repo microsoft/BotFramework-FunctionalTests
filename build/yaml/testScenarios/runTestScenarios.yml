@@ -10,6 +10,7 @@ pr: none
 variables:
   BuildConfiguration: 'Debug'
   BuildPlatform: 'any cpu'
+  KeyVault: 'bffnbotkeyvault$($env:ResourceSuffix)'
   # AzureSubscription: define in Azure
   # ResourceGroup: define in Azure
   # BffnEchoSkillBotComposerDotnetAppId: (optional) define in Azure
@@ -20,7 +21,7 @@ variables:
   # BffnEchoSkillBotJSV3AppId: (optional) define in Azure
   # BffnEchoSkillBotPythonAppId: (optional) define in Azure
   # BffnWaterfallSkillBotDotNetAppId: (optional) define in Azure
-  # BotNamesSuffix: (optional) define in Azure
+  # ResourceSuffix: (optional) define in Azure
 
 pool:
   vmImage: 'windows-2019'
