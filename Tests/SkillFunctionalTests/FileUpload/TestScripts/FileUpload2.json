@@ -33,10 +33,13 @@
     {
       "type": "message",
       "role": "bot",
+      "text": "Done with \"${TargetSkill}\". \n\n What delivery mode would you like to use?",
       "assertions": [
         "type == 'message'",
         "from.role == 'bot'",
         "recipient.role == 'user'",
+        "text == 'Done with \"${TargetSkill}\". \n\n What delivery mode would you like to use?'",
+        "speak == 'Done with \"${TargetSkill}\". \n\n What delivery mode would you like to use?'",
         "inputHint == 'expectingInput'",
         "suggestedActions.actions[0].type == 'imBack'",
         "suggestedActions.actions[0].title == 'normal'",
