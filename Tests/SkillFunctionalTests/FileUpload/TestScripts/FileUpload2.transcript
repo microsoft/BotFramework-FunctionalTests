@@ -1,0 +1,124 @@
+[
+  {
+    "type": "message",
+    "serviceUrl": "https://506512dd91f3.ngrok.io",
+    "channelId": "emulator",
+    "from": {
+      "id": "cc657090-60b1-11eb-8abe-e3b86321e5ec",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "conversation": {
+      "id": "ccf941c0-60d5-11eb-8abe-e3b86321e5ec|livechat"
+    },
+    "recipient": {
+      "id": "ff961b1d-815c-4e98-87fd-ac1db5ea78a3",
+      "role": "user"
+    },
+    "locale": "en-US",
+    "text": "Attachment \"architecture-resize.png\" has been received and saved to \"C:\\local\\Temp\\architecture-resize.png\"\r\n",
+    "inputHint": "acceptingInput",
+    "attachments": [],
+    "entities": [],
+    "replyToId": "d8933a40-60d5-11eb-9a74-bb9adba325d2",
+    "id": "d982a350-60d5-11eb-9a74-bb9adba325d2",
+    "localTimestamp": "2021-01-27T16:28:35-03:00",
+    "timestamp": "2021-01-27T19:28:35.845Z"
+  },
+  {
+    "type": "message",
+    "serviceUrl": "https://506512dd91f3.ngrok.io",
+    "channelId": "emulator",
+    "from": {
+      "id": "cc657090-60b1-11eb-8abe-e3b86321e5ec",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "conversation": {
+      "id": "ccf941c0-60d5-11eb-8abe-e3b86321e5ec|livechat"
+    },
+    "recipient": {
+      "id": "ff961b1d-815c-4e98-87fd-ac1db5ea78a3",
+      "role": "user"
+    },
+    "locale": "en-US",
+    "text": "Do you want to upload another file?\n\n   1. Yes\n   2. No",
+    "speak": "Do you want to upload another file?",
+    "inputHint": "expectingInput",
+    "attachments": [],
+    "entities": [],
+    "replyToId": "d8933a40-60d5-11eb-9a74-bb9adba325d2",
+    "id": "d9aa2880-60d5-11eb-9a74-bb9adba325d2",
+    "localTimestamp": "2021-01-27T16:28:36-03:00",
+    "timestamp": "2021-01-27T19:28:36.104Z"
+  },
+  {
+    "channelData": {
+      "clientActivityID": "1611775723994cbdge7399x",
+      "clientTimestamp": "2021-01-27T19:28:43.994Z"
+    },
+    "text": "No",
+    "textFormat": "plain",
+    "type": "message",
+    "channelId": "emulator",
+    "from": {
+      "id": "ff961b1d-815c-4e98-87fd-ac1db5ea78a3",
+      "name": "User",
+      "role": "user"
+    },
+    "locale": "en-US",
+    "timestamp": "2021-01-27T19:28:44.035Z",
+    "conversation": {
+      "id": "ccf941c0-60d5-11eb-8abe-e3b86321e5ec|livechat"
+    },
+    "id": "de645530-60d5-11eb-9a74-bb9adba325d2",
+    "localTimestamp": "2021-01-27T16:28:44-03:00",
+    "recipient": {
+      "id": "cc657090-60b1-11eb-8abe-e3b86321e5ec",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "serviceUrl": "https://506512dd91f3.ngrok.io"
+  },
+  {
+    "type": "message",
+    "serviceUrl": "https://506512dd91f3.ngrok.io",
+    "channelId": "emulator",
+    "from": {
+      "id": "cc657090-60b1-11eb-8abe-e3b86321e5ec",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "conversation": {
+      "id": "ccf941c0-60d5-11eb-8abe-e3b86321e5ec|livechat"
+    },
+    "recipient": {
+      "id": "ff961b1d-815c-4e98-87fd-ac1db5ea78a3",
+      "role": "user"
+    },
+    "locale": "en-US",
+    "text": "Done with \"WaterfallSkillBotDotNet\". \n\n What delivery mode would you like to use?",
+    "speak": "Done with \"WaterfallSkillBotDotNet\". \n\n What delivery mode would you like to use?",
+    "inputHint": "expectingInput",
+    "suggestedActions": {
+      "actions": [
+        {
+          "type": "imBack",
+          "title": "normal",
+          "value": "normal"
+        },
+        {
+          "type": "imBack",
+          "title": "expectReplies",
+          "value": "expectReplies"
+        }
+      ]
+    },
+    "attachments": [],
+    "entities": [],
+    "replyToId": "de645530-60d5-11eb-9a74-bb9adba325d2",
+    "id": "df0e9ef0-60d5-11eb-9a74-bb9adba325d2",
+    "localTimestamp": "2021-01-27T16:28:45-03:00",
+    "timestamp": "2021-01-27T19:28:45.151Z"
+  }
+]

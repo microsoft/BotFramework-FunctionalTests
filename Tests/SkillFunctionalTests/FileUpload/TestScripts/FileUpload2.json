@@ -1,0 +1,50 @@
+{
+  "items": [
+    {
+      "type": "message",
+      "role": "bot",
+      "text": "Attachment \"architecture-resize.png\" has been received and saved to ${FileLocation}\r\n",
+      "assertions": [
+        "type == 'message'",
+        "from.role == 'bot'",
+        "recipient.role == 'user'",
+        "text == 'Attachment \"architecture-resize.png\" has been received and saved to ${FileLocation}\r\n'",
+        "inputHint == 'acceptingInput'"
+      ]
+    },
+    {
+      "type": "message",
+      "role": "bot",
+      "text": "Do you want to upload another file?\n\n   1. Yes\n   2. No",
+      "assertions": [
+        "type == 'message'",
+        "from.role == 'bot'",
+        "recipient.role == 'user'",
+        "text == 'Do you want to upload another file?\n\n   1. Yes\n   2. No'",
+        "speak == 'Do you want to upload another file?'",
+        "inputHint == 'expectingInput'"
+      ]
+    },
+    {
+      "type": "message",
+      "role": "user",
+      "text": "No"
+    },
+    {
+      "type": "message",
+      "role": "bot",
+      "assertions": [
+        "type == 'message'",
+        "from.role == 'bot'",
+        "recipient.role == 'user'",
+        "inputHint == 'expectingInput'",
+        "suggestedActions.actions[0].type == 'imBack'",
+        "suggestedActions.actions[0].title == 'normal'",
+        "suggestedActions.actions[0].value == 'normal'",
+        "suggestedActions.actions[1].type == 'imBack'",
+        "suggestedActions.actions[1].title == 'expectReplies'",
+        "suggestedActions.actions[1].value == 'expectReplies'"
+      ]
+    }
+  ]
+}

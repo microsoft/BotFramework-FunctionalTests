@@ -35,6 +35,7 @@ stages:
             - Attachments
             - CardActions
             - ProactiveMessages
+            - FileUpload
 
         - name: SingleTurn
           testCategories:
