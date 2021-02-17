@@ -2,28 +2,31 @@
 # Creates the shared resources needed for the Skills Functional Tests.
 #
 
-# "name" here defines the build number format. Build number is accessed via $(Build.BuildNumber)
 name: $(Build.BuildId)
 trigger: none
 pr: none
 
-variables:
-  BuildConfiguration: 'Debug'
-  BuildPlatform: 'any cpu'
-  # AzureSubscription: define in Azure
-  # KeyVaultObjectId: define in Azure
-  # ResourceGroupName: define in Azure
-  # AppServicePlanPricingTier: (optional) define in Azure ; Free-F1 (Default).
-  # BotNamesSuffix: (optional) define in Azure
-
 pool:
   vmImage: 'windows-2019'
 
+variables:
+  AppInsights: 'bffnappinsights$($env:ResourceSuffix)'
+  AppServicePlanLinux: 'bffnbotsappservicelinux$($env:ResourceSuffix)'
+  AppServicePlanWindows: 'bffnbotsappservicewin$($env:ResourceSuffix)'
+  CosmosDB: 'bffnbotstatedb$($env:ResourceSuffix)'
+  KeyVault: 'bffnbotkeyvault$($env:ResourceSuffix)'
+  # AzureSubscription: define in Azure
+  # KeyVaultObjectId: define in Azure
+  # ResourceGroupName: define in Azure
+  # AppServicePlanPricingTier: (optional) define in Azure
+  # ResourceSuffix: (optional) define in Azure
+
 stages:
-- stage: Create_Windows_RG
-  displayName: Create Windows Resource Group
+- stage: Create_Resource_Group_Windows
+  displayName: Create Resource Group (Windows)
   jobs:
-    - job: Create_Windows_RG
+    - job: Create_Resource_Group_Windows
+      displayName: 'Create steps'
       steps:
       - checkout: none
       - task: AzureCLI@2
@@ -34,11 +37,12 @@ stages:
           scriptLocation: inlineScript
           inlineScript: 'az group create --name "$(ResourceGroupName)" --location "westus"'
 
-- stage: Create_Linux_RG
-  displayName: Create Linux Resource Groups
+- stage: Create_Resource_Group_Linux
+  displayName: Create Resource Group (Linux)
   dependsOn: []
   jobs:
-    - job: Create_Linux_RG
+    - job: Create_Resource_Group_Linux
+      displayName: 'Create steps'
       steps:
       - checkout: none
       - task: AzureCLI@2
@@ -51,51 +55,55 @@ stages:
 
 - stage: Create_CosmosDB
   displayName: Create CosmosDB
-  dependsOn: Create_Windows_RG
+  dependsOn: Create_Resource_Group_Windows
   jobs:
-    - job: Deploy_bffnbotstatedb
+    - job: Deploy_Cosmos_DB
+      displayName: 'Deploy steps'
       steps:
       - task: AzureCLI@2
-        displayName: 'Create CosmosDB'
+        displayName: 'Deploy CosmosDB'
         inputs:
           azureSubscription: $(AzureSubscription)
           scriptType: ps
           scriptLocation: inlineScript
-          inlineScript: 'az deployment group create --name "bffnbotstatedb" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-cosmosdb-resources.json --parameters accountName="bffnbotstatedb" databaseName="bffnbotstatedb"'
+          inlineScript: 'az deployment group create --name "$(CosmosDB)" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-cosmosdb-resources.json --parameters accountName="$(CosmosDB)" databaseName="$(CosmosDB)"'
 
 - stage: Create_Key_Vault
   displayName: Create Key Vault
-  dependsOn: Create_Windows_RG
+  dependsOn: Create_Resource_Group_Windows
   jobs:
-    - job: Deploy_bffnbotkeyvault
+    - job: Deploy_Key_Vault
+      displayName: 'Deploy steps'
       steps:
       - task: AzureCLI@2
-        displayName: 'Create Key Vault'
+        displayName: 'Deploy Key Vault'
         inputs:
           azureSubscription: $(AzureSubscription)
           scriptType: ps
           scriptLocation: inlineScript
-          inlineScript: 'az deployment group create --name "bffnbotkeyvault" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-key-vault-resources.json --parameters keyVaultName="bffnbotkeyvault" objectId="$(KeyVaultObjectId)"'
+          inlineScript: 'az deployment group create --name "$(KeyVault)" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-key-vault-resources.json --parameters keyVaultName="$(KeyVault)" objectId="$(KeyVaultObjectId)"'
 
-- stage: Create_Bots_App_Registrations
-  displayName: Create Bots App Registrations
+- stage: Create_App_Registrations
+  displayName: Create App Registrations
   dependsOn: Create_Key_Vault
   jobs:
-    - job: Create_Bots_App_Registrations
+    - job: Create_App_Registrations
+      displayName: 'Create steps'
       steps:
       - checkout: none
-      - template: createBotsAppRegistrations.yml
+      - template: createAppRegistrations.yml
         parameters: 
-          keyVault: 'bffnbotkeyvault'
+          keyVault: '$(KeyVault)'
 
-- stage: Create_Service_Plan_windows
-  displayName: Create Windows Service Plan
-  dependsOn: Create_Windows_RG
+- stage: Create_App_Service_Plan_Windows
+  displayName: Create App Service Plan (Windows)
+  dependsOn: Create_Resource_Group_Windows
   jobs:
-    - job: Deploy_bffnbotsappservicewin
+    - job: Deploy_App_Service_Plan_Windows
+      displayName: 'Deploy steps'
       steps:
       - task: AzureCLI@2
-        displayName: 'Create Windows Service Plan'
+        displayName: 'Deploy App Service Plan (Windows)'
         inputs:
           azureSubscription: $(AzureSubscription)
           scriptType: ps
@@ -103,16 +111,17 @@ stages:
           inlineScript: |
             $appServicePlanPricingTier = if($env:AppServicePlanPricingTier) { "newAppServicePlanSku=$env:AppServicePlanPricingTier" };
             
-            az deployment group create --name "bffnbotsappservicewin" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-service-plan-windows-resources.json --parameters $appServicePlanPricingTier newAppServicePlanName="bffnbotsappservicewin"
+            az deployment group create --name "$(AppServicePlanWindows)" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-service-plan-windows-resources.json --parameters $appServicePlanPricingTier newAppServicePlanName="$(AppServicePlanWindows)"
 
-- stage: Create_Service_Plan_Linux
-  displayName: Create Linux Service Plan
-  dependsOn: Create_Linux_RG
+- stage: Create_App_Service_Plan_Linux
+  displayName: Create App Service Plan (Linux)
+  dependsOn: Create_Resource_Group_Linux
   jobs:
-    - job: Deploy_bffnbotsappservicelinux
+    - job: Deploy_App_Service_Plan_Linux
+      displayName: 'Deploy steps'
       steps:
       - task: AzureCLI@2
-        displayName: 'Create Linux Service Plan'
+        displayName: 'Deploy App Service Plan (Linux)'
         inputs:
           azureSubscription: $(AzureSubscription)
           scriptType: ps
@@ -120,18 +129,19 @@ stages:
           inlineScript: |
             $appServicePlanPricingTier = if($env:AppServicePlanPricingTier) { "newAppServicePlanSku=$env:AppServicePlanPricingTier" };
 
-            az deployment group create --name "bffnbotsappservicelinux" --resource-group "$(ResourceGroupName)-linux" --template-file build/templates/template-service-plan-linux-resources.json --parameters $appServicePlanPricingTier newAppServicePlanName="bffnbotsappservicelinux"
+            az deployment group create --name "$(AppServicePlanLinux)" --resource-group "$(ResourceGroupName)-linux" --template-file build/templates/template-service-plan-linux-resources.json --parameters $appServicePlanPricingTier newAppServicePlanName="$(AppServicePlanLinux)"
 
 - stage: Create_App_Insights
   displayName: Create App Insights
-  dependsOn: Create_Windows_RG
+  dependsOn: Create_Resource_Group_Windows
   jobs:
-    - job: Deploy_bffnappinsights
+    - job: Deploy_App_Insights
+      displayName: 'Deploy steps'
       steps:
       - task: AzureCLI@2
-        displayName: 'Create App Insights'
+        displayName: 'Deploy App Insights'
         inputs:
           azureSubscription: $(AzureSubscription)
           scriptType: ps
           scriptLocation: inlineScript
-          inlineScript: 'az deployment group create --name "bffnappinsights" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-app-insights-resources.json --parameters appInsightsName="bffnappinsights"'
+          inlineScript: 'az deployment group create --name "$(AppInsights)" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-app-insights-resources.json --parameters appInsightsName="$(AppInsights)"'
