@@ -19,6 +19,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Auth
         {
             _connectionName = configuration["ConnectionName"];
 
+            // This confirmation dialog should be removed once https://github.com/microsoft/BotFramework-FunctionalTests/issues/299 is resolved (and this class should look like the class in the issue)
             AddDialog(new ConfirmPrompt(nameof(ConfirmPrompt)));
             AddDialog(new OAuthPrompt(
                 nameof(OAuthPrompt),
