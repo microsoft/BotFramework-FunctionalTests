@@ -12,11 +12,11 @@ class SsoSignInDialog extends ComponentDialog {
     constructor(connectionName) {
         super(SSO_SIGNIN_DIALOG);
 
-        this.addDialog(new OAuthPrompt(OAUTH_PROMPT, new OAuthPromptSettings({
+        this.addDialog(new OAuthPrompt(OAUTH_PROMPT, {
             connectionName: connectionName,
             text: 'Sign in to the host bot using AAD for SSO',
             title: 'Sign In'
-        })));
+        }));
 
         this.addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
             this.signInStep.bind(this),
@@ -31,10 +31,10 @@ class SsoSignInDialog extends ComponentDialog {
     }
 
     async displayTokenStep(stepContext) {
-        if (typeof stepContext.result !== 'TokenResponse') {
+        if (!stepContext.result.token) {
             await stepContext.context.sendActivity('No token was provided.');
         } else {
-            await stepContext.context.sendActivity(`Here is your token: ${ result.Token }`);
+            await stepContext.context.sendActivity(`Here is your token: ${ stepContext.result.Token }`);
         }
         return await stepContext.endDialog();
     }

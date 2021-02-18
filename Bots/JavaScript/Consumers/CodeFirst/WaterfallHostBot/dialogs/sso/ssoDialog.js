@@ -1,11 +1,14 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-const { ActivityTypes, BeginSkillDialogOptions, InputHints, MessageFactory } = require('botbuilder');
-const { ComponentDialog, Choice, ChoicePrompt, DialogTurnResult, DialogTurnStatus, WaterfallDialog } = require('botbuilder-dialogs');
+const { ActivityTypes, EndOfConversationCodes, InputHints, MessageFactory } = require('botbuilder');
+const { ComponentDialog, ChoicePrompt, ChoiceFactory, DialogTurnStatus,WaterfallDialog } = require('botbuilder-dialogs');
+const { SsoSignInDialog } = require('./ssoSignInDialog');
 
-const SSO_DIALOG = 'SsoDialog';
 const ACTION_STEP_PROMPT = 'ActionStepPrompt';
+const DELIVERY_PROMPT = 'DeliveryModePrompt';
+const SSO_DIALOG = 'SsoDialog';
+const SSO_SIGNIN_DIALOG = 'SsoSignInDialog'
 const WATERFALL_DIALOG = 'WaterfallDialog';
 
 // Helps prepare the host for SSO operations and provides helpers to check the status and invoke the skill.
@@ -46,27 +49,27 @@ class SsoDialog extends ComponentDialog {
         let token = await adapter.getUserToken(stepContext.context, this.connectionName);
 
         if (!token) {
-            promptChoices.push = new Choice('Login');
-            // Token exchange will fail when the host is not logged on and the skill should 
+            promptChoices.push('Login');
+            // Token exchange will fail when the host is not logged on and the skill should
             // show a regular OAuthPrompt.
-            promptChoices.push = new Choice('Call Skill (without SSO)');
+            promptChoices.push('Call Skill (without SSO)');
         } else {
-            promptChoices.push = new Choice('Logout');
-            promptChoices.push = new Choice('Show token');
-            promptChoices.push = new Choice('Call Skill (with SSO)');
+            promptChoices.push('Logout');
+            promptChoices.push('Show token');
+            promptChoices.push('Call Skill (with SSO)');
         }
 
-        promptChoices.push = new Choice('Back');
+        promptChoices.push('Back');
 
-        return promptChoices;
+        return ChoiceFactory.toChoices(promptChoices);
     }
 
     async handleActionStep(stepContext) {
         const action = stepContext.result.value;
 
-        switch (action) {
+        switch (action.toLowerCase()) {
             case 'login':
-                return await stepContext.beginDialog(SSO_DIALOG);
+                return await stepContext.beginDialog(SSO_SIGNIN_DIALOG);
             case 'logout':
                 const adapter = stepContext.context.adapter;
                 await adapter.signOutUser(stepContext.context, this.connectionName);
@@ -83,12 +86,17 @@ class SsoDialog extends ComponentDialog {
                 return await stepContext.next();
             case 'call skill (with sso)':
             case 'call skill (without sso)':
-                let beginSkillActivity = new Activity();
-                beginSkillActivity.type = ActivityTypes.Event;
-                beginSkillActivity.name = 'Sso';
-                return await stepContext.beginDialog(this.skillDialogId, new BeginSkillDialogOptions( Activity = beginSkillActivity));
+                let beginSkillActivity = {
+                    type: ActivityTypes.Event,
+                    name: 'Sso'
+                }
+                return await stepContext.beginDialog(this.skillDialogId, { activity: beginSkillActivity });
             case 'back':
-                return new DialogTurnResult({status: DialogTurnStatus.complete})
+                await stepContext.context.sendActivity({
+                    type: ActivityTypes.EndOfConversation,
+                    code: EndOfConversationCodes.CompletedSuccessfully
+                })
+                return {status: DialogTurnStatus.complete};
             default:
                 // This should never be hit since the previous prompt validates the choice.
                 throw new Error(`[SsoDialog]: Unrecognized action: ${ action }`);

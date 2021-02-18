@@ -2,8 +2,9 @@
 // Licensed under the MIT License.
 
 const { ActivityTypes, DeliveryModes, InputHints, MessageFactory,} = require('botbuilder');
-const { ChoicePrompt, ChoiceFactory, ComponentDialog, DialogSet, FoundChoice, ListStyle, SkillDialog, WaterfallDialog } = require('botbuilder-dialogs');
+const { ChoicePrompt, ChoiceFactory, ComponentDialog, DialogSet, ListStyle, SkillDialog, WaterfallDialog } = require('botbuilder-dialogs');
 const { RootBot } = require('../bots/rootBot');
+const { SsoDialog } = require('./sso/ssoDialog');
 const { TangentDialog } = require('./tangentDialog');
 
 const MAIN_DIALOG = 'MainDialog';
@@ -11,8 +12,9 @@ const DELIVERY_PROMPT = 'DeliveryModePrompt';
 const SKILL_TYPE_PROMPT = 'SkillTypePrompt';
 const SKILL_PROMPT = 'SkillPrompt';
 const SKILL_ACTION_PROMPT = 'SkillActionPrompt';
-const WATERFALL_DIALOG = 'WaterfallDialog';
+const SSO_DIALOG = 'SsoDialog';
 const TANGENT_DIALOG = 'TangentDialog';
+const WATERFALL_DIALOG = 'WaterfallDialog';
 // Constants used for selecting actions on the skill.
 const JUST_FORWARD_THE_ACTIVITY = "JustForwardTurnContext.Activity";
 
@@ -33,7 +35,7 @@ class MainDialog extends ComponentDialog {
         this.deliveryMode = '';
         this.selectedSkill = '';
 
-        // Register the tangent dialog for testing tangents and resume
+        // Register the tangent dialog for testing tangents and resume.
         this.addDialog(new TangentDialog(TANGENT_DIALOG));
 
         // Create and add SkillDialog instances for the configured skills.
@@ -50,6 +52,11 @@ class MainDialog extends ComponentDialog {
 
         // Add ChoicePrompt to render skill actions.
         this.addDialog(new ChoicePrompt(SKILL_ACTION_PROMPT, this.skillActionPromptValidator));
+
+        // Add dialog to prepare SSO on the host and test the SSO skill
+        // The waterfall skillDialog created in AddSkillDialogs contains the SSO skill action.
+        let waterfallDialog = Object.values(this.dialogs.dialogs).find(e => e.id.startsWith('WaterfallSkill'));
+        this.addDialog(new SsoDialog(waterfallDialog));
 
         this.addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
             this.selectDeliveryModeStep.bind(this),
@@ -159,10 +166,10 @@ class MainDialog extends ComponentDialog {
         this.selectedSkill = this.skillsConfig.skills[stepContext.result.value];
         let v3Bots = [ 'EchoSkillBotDotNetV3', 'EchoSkillBotJSV3' ];
 
-        // Set active skill
+        // Set active skill.
         await this.activeSkillProperty.set(stepContext.context, this.selectedSkill);
 
-        // Exclude v3 bots from ExpectReplies
+        // Exclude v3 bots from ExpectReplies.
         if (this.deliveryMode === DeliveryModes.ExpectReplies && v3Bots.includes(this.selectedSkill.definition.id))
         {
             await stepContext.context.SendActivityAsync(MessageFactory.text("V3 Bots do not support 'expectReplies' delivery mode."));
@@ -171,7 +178,7 @@ class MainDialog extends ComponentDialog {
             await this.deliveryModeProperty.delete(stepContext.context);
             await this.activeSkillProperty.delete(stepContext.context);
             
-            // Restart setup dialog
+            // Restart setup dialog.
             return await stepContext.replaceDialog(this.initialDialogId);
         }
 
@@ -203,7 +210,12 @@ class MainDialog extends ComponentDialog {
             skillDialogArgs.activity.deliveryMode = DeliveryModes.ExpectReplies;
         }
 
-        // Start the skillDialog instance with the arguments. 
+        if (skillActivity.name == "Sso") {
+            // Special case, we start the SSO dialog to prepare the host to call the skill.
+            return await stepContext.beginDialog(SSO_DIALOG);
+        }
+
+        // Start the skillDialog instance with the arguments.
         return await stepContext.beginDialog(this.selectedSkill.definition.id, skillDialogArgs);
     }
 
@@ -254,9 +266,9 @@ class MainDialog extends ComponentDialog {
         // Get the begin activity from the skill instance.
         let activity = skillId.createBeginActivity(selectedOption);
 
-        // We are manually creating the activity to send to the skill; ensure we add the ChannelData and Properties 
+        // We are manually creating the activity to send to the skill; ensure we add the ChannelData and Properties
         // from the original activity so the skill gets them.
-        // Note: this is not necessary if we are just forwarding the current activity from context. 
+        // Note: this is not necessary if we are just forwarding the current activity from context.
         activity.channelData = turnContext.activity.channelData;
         activity.properties = turnContext.activity.properties;
         return activity;
