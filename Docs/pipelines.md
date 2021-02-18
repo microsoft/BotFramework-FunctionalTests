@@ -8,8 +8,8 @@
 
 | Variable Name | Source | Description |
 | - | - | - |
-| **AzureSubscription** | Azure DevOps | Name of the Azure Resource Manager Service Connection configured in the DevOps organization. Click [here](Guides/addARMServiceConnection.md) to see how to set it up. |
-| **KeyVaultObjectId** | Azure | Object ID of the Service Principal configured in the pipeline. Click [here](Guides/getServicePrincipalObjectID.md) to see how to get it. |
+| **AzureSubscription** | Azure DevOps | Name of the Azure Resource Manager Service Connection configured in the DevOps organization. Click [here](./addARMServiceConnection.md) to see how to set it up. |
+| **KeyVaultObjectId** | Azure | Object ID of the Service Principal configured in the pipeline. Click [here](./getServicePrincipalObjectID.md) to see how to get it. |
 | **ResourceGroupName** | User | Name for the two resource groups that will contain the shared resources. |
 | **AppServicePlanPricingTier** | User | (optional) Pricing tier for the App Service Plan. Possible values are: F1 (default), S1. |
 | **ResourceSuffix** | User | (optional) Suffix to add to the resource names to avoid collisions. |
@@ -18,7 +18,7 @@
 
 - Description: Creates the test bot resources to be used in the functional tests, separated in one Resource Group r each language (DotNet, JS, and Python)
 - Schedule: Nightly or on demand.
-- YAML: [build\yaml\deployBotResources\deployBotResources.yml](../build/yaml/deploybotresources/deployBotResources.yml)
+- YAML: [build\yaml\deployBotResources\deployBotResources.yml](../build/yaml/deployBotResources/deployBotResources.yml)
 
 | Variable Name | Source | Description |
 | - | - | - |
@@ -26,9 +26,9 @@
 | **AppServicePlanNameLinux** | Create Shared Resources | Name of the App Service Plan for Python. |
 | **AppServicePlanGroup** | Create Shared Resources | Name of the resource group containing the App Service Plan for DotNet and JS. |
 | **AppServicePlanName** | Create Shared Resources | Name of the App Service Plan for DotNet and JS. |
-| **AzureDeploymentPassword** | [Webapp Deployment User](https://docs.microsoft.com/en-us/cli/azure/webapp/deployment/user?view=azure-cli-latest#az-webapp-deployment-user-set) | Azure Deployment Password, required to deploy Python bots. Click [here](Guides/createWebAppDeploymentCredentials.md) to see how to set it up. |
-| **AzureDeploymentUser** | [Webapp Deployment User](https://docs.microsoft.com/en-us/cli/azure/webapp/deployment/user?view=azure-cli-latest#az-webapp-deployment-user-set) | Azure Deployment User, required to deploy Python bots. Click [here](Guides/createWebAppDeploymentCredentials.md) to see how to how to set it up. |
-| **AzureSubscription** | Azure DevOps | Name of the Azure Resource Manager Service Connection configured in the DevOps organization. Click [here](Guides/addARMServiceConnection.md) to see how to set it up. |
+| **AzureDeploymentPassword** | [Webapp Deployment User](https://docs.microsoft.com/en-us/cli/azure/webapp/deployment/user?view=azure-cli-latest#az-webapp-deployment-user-set) | Azure Deployment Password, required to deploy Python bots. Click [here](./createWebAppDeploymentCredentials.md) to see how to set it up. |
+| **AzureDeploymentUser** | [Webapp Deployment User](https://docs.microsoft.com/en-us/cli/azure/webapp/deployment/user?view=azure-cli-latest#az-webapp-deployment-user-set) | Azure Deployment User, required to deploy Python bots. Click [here](./createWebAppDeploymentCredentials.md) to see how to how to set it up. |
+| **AzureSubscription** | Azure DevOps | Name of the Azure Resource Manager Service Connection configured in the DevOps organization. Click [here](./addARMServiceConnection.md) to see how to set it up. |
 | **ResourceGroup** | User | Prefix of the resource groups where the bots will be deployed. |
 | **[BotName](#botnames) + AppId** | [App Registration Portal](https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade) | (optional) App ID to use. If not configured, will be retrieved from the key vault. |
 | **[BotName](#botnames) + AppSecret** | [App Registration Portal](https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade) | (optional) App Secret to use. If not configured, will be retrieved from the key vault. |
@@ -49,7 +49,7 @@
 
 | Variable Name | Source | Description |
 | - | - | - |
-| **AzureSubscription** | Azure DevOps | Name of the Azure Resource Manager Service Connection configured in the DevOps organization. Click [here](Guides/addARMServiceConnection.md) to see how to set it up. |
+| **AzureSubscription** | Azure DevOps | Name of the Azure Resource Manager Service Connection configured in the DevOps organization. Click [here](./addARMServiceConnection.md) to see how to set it up. |
 | **ResourceGroup** | User | Prefix of the resource groups where the bots are deployed. |
 | **[BotName](#botnames) + AppId** | [App Registration Portal](https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade) | (optional) App ID to use. If not configured, it will be retrieved from the key vault. |
 | **ResourceSuffix** | Create Shared Resources | (optional) Suffix added to the resource names. |
@@ -62,7 +62,7 @@
 
 | Variable Name | Source | Description |
 | - | - | - |
-| **AzureSubscription** | Azure DevOps | Name of the Azure Resource Manager Service Connection configured in the DevOps organization. Click [here](Guides/addARMServiceConnection.md) to see how to set it up. |
+| **AzureSubscription** | Azure DevOps | Name of the Azure Resource Manager Service Connection configured in the DevOps organization. Click [here](./addARMServiceConnection.md) to see how to set it up. |
 | **DeployResourceGroup** | Deploy Bot Resources  | Prefix of the resource groups where the bots were deployed. |
 | **SharedResourceGroup** | Create Shared Resources | Name for the resource groups that contains the shared resources. |
 | **ResourceSuffix** | Create Shared Resources | (optional) Suffix added to the resource names. |
