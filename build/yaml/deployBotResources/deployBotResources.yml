@@ -83,8 +83,8 @@ stages:
         - name: bffnsimplehostbotdotnet
           type: 'Host'
           displayName: 'DotNet Simple Host Bot'
-          appId: $env:BffnSimpleHostBotDotNetAppId
-          appSecret: ${env:BffnSimpleHostBotDotNetAppSecret}
+          appId: BffnSimpleHostBotDotNetAppId
+          appSecret: $(BffnSimpleHostBotDotNetAppSecret)
           project:
             directory: 'Bots/DotNet/Consumers/CodeFirst/SimpleHostBot'
             name: 'SimpleHostBot.csproj'
