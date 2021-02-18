@@ -114,7 +114,7 @@ stages:
           type: 'Skill'
           displayName: 'DotNet Echo Skill Bot 2.1'
           appId: $env:BffnEchoSkillBotDotNet21AppId
-          appSecret: $env:$(BffnEchoSkillBotDotNet21AppSecret)
+          appSecret: $env:$BffnEchoSkillBotDotNet21AppSecret
           project: 
             directory: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot-2.1'
             name: 'EchoSkillBot-2.1.csproj'
