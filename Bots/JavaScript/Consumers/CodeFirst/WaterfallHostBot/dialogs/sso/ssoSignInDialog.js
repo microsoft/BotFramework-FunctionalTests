@@ -34,7 +34,7 @@ class SsoSignInDialog extends ComponentDialog {
         if (!stepContext.result.token) {
             await stepContext.context.sendActivity('No token was provided.');
         } else {
-            await stepContext.context.sendActivity(`Here is your token: ${ stepContext.result.Token }`);
+            await stepContext.context.sendActivity(`Here is your token: ${ stepContext.result.token }`);
         }
         return await stepContext.endDialog();
     }
