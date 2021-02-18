@@ -5,7 +5,7 @@ This repository contains functional tests for the different [Bot Framework SDK](
 - [Skill functional tests](Tests/SkillFunctionalTests) aims to automate the testing of Host and Skill interactions through several scenarios in all available programming languages.
 - [Transcript Test Runner](Libraries/TranscriptTestRunner) aims to simplify complex conversation scenarios against bots starting from a transcript file with a user-bot recorded conversation.
 
-Head to [Docs](../../Docs/) directory for more information.
+Head to [Docs](./Docs/) directory for more information.
 
 ## Contributing
 
