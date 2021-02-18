@@ -103,8 +103,8 @@ stages:
         - name: bffnechoskillbotdotnet
           type: 'Skill'
           displayName: 'DotNet Echo Skill Bot'
-          appId: $env:BffnEchoSkillBotDotNetAppId
-          appSecret: $env:BffnEchoSkillBotDotNetAppSecret
+          appId: $(BffnEchoSkillBotDotNetAppId)
+          appSecret: $(BffnEchoSkillBotDotNetAppSecret)
           project: 
             directory: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot'
             name: 'EchoSkillBot.csproj'
