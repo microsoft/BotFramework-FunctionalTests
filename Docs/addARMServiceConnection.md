@@ -15,10 +15,10 @@ Go to [Service connections](https://docs.microsoft.com/en-us/azure/devops/pipeli
 
 - From your Azure DevOps project, go to `Project settings -> Service Connections -> New Service connection`.
 
-![addARMServiceConnection1](./media/addARMServiceConnection1.png)
+  ![addARMServiceConnection1](./media/addARMServiceConnection1.png)
 
 - Select `Azure Resource Manager -> Service principal (manual)` and fill out the form. Check the `Grant access permission to all pipelines` option. The name you use for the Subscription Name field will be your `AzureSubscription` variable in the pipelines.
 
-![addARMServiceConnection2](./media/addARMServiceConnection2.png)
+  ![addARMServiceConnection2](./media/addARMServiceConnection2.png)
 
 - Click on `Verify and save` when done.

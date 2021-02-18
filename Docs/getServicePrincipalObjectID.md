@@ -11,4 +11,4 @@ The following steps will guide you on how to get the Service Principal's Object 
 - Go to `Azure subscription -> Access control -> Role assignments` and select the service principal used to configure the service connection.
 - Copy the value of the `Object ID`.
 
-![getServicePrincipalObjectID](./media/getServicePrincipalObjectID.png)
+  ![getServicePrincipalObjectID](./media/getServicePrincipalObjectID.png)

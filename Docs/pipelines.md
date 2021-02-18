@@ -11,12 +11,12 @@
 | **AzureSubscription** | Azure DevOps | Name of the Azure Resource Manager Service Connection configured in the DevOps organization. Click [here](./addARMServiceConnection.md) to see how to set it up. |
 | **KeyVaultObjectId** | Azure | Object ID of the Service Principal configured in the pipeline. Click [here](./getServicePrincipalObjectID.md) to see how to get it. |
 | **ResourceGroupName** | User | Name for the two resource groups that will contain the shared resources. |
-| **AppServicePlanPricingTier** | User | (optional) Pricing tier for the App Service Plan. Possible values are: F1 (default), S1. |
+| **AppServicePlanPricingTier** | User | (optional) Pricing tier for the App Service Plan. **Possible values are: F1 (default), S1.** |
 | **ResourceSuffix** | User | (optional) Suffix to add to the resource names to avoid collisions. |
 
 ## Deploy Bot Resources Pipeline
 
-- Description: Creates the test bot resources to be used in the functional tests, separated in one Resource Group r each language (DotNet, JS, and Python)
+- Description: Creates the test bot resources to be used in the functional tests, separated in one Resource Group for each language (DotNet, JS, and Python)
 - Schedule: Nightly or on demand.
 - YAML: [build\yaml\deployBotResources\deployBotResources.yml](../build/yaml/deployBotResources/deployBotResources.yml)
 
@@ -32,13 +32,13 @@
 | **ResourceGroup** | User | Prefix of the resource groups where the bots will be deployed. |
 | **[BotName](#botnames) + AppId** | [App Registration Portal](https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade) | (optional) App ID to use. If not configured, will be retrieved from the key vault. |
 | **[BotName](#botnames) + AppSecret** | [App Registration Portal](https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade) | (optional) App Secret to use. If not configured, will be retrieved from the key vault. |
-| **BotPricingTier** | User | (optional) Pricing tier for the Web App resources.Possible values are: F0 (default), S1. |
-| **DependenciesRegistryHosts** | User | (optional) Source from which the Bot Builder dependencies will be downloaded for all host bots. Possible values are: Artifacts (default), MyGet, NuGet, or specific sources. |
-| **DependenciesRegistrySkills** | User | (optional) Source from which the Bot Builder dependencies will be downloaded for all skill bots. Possible values are: Artifacts (default), MyGet, NuGet, or specific sources. |
-| **DependenciesRegistrySkillsV3** | User | (optional) Source from which the Bot Builder dependencies will be downloaded for all V3 skill bots. Possible values are: Artifacts, MyGet (default), NuGet, or specific sources. |
-| **DependeciesVersionHosts** | User | (optional) Bot Builder dependency version to use for all hosts. Possible values are: Latest (default), Stable, or specific version numbers. |
-| **DependeciesVersionSkills** | User | (optional) Bot Builder dependency version to use for all hosts. Possible values are: Latest (default), Stable, or specific version numbers. |
-| **DependeciesVersionSkillsV3** | User | (optional) Bot Builder dependency version to use for all hosts. Possible values are: Latest (default), Stable, or specific version numbers. |
+| **BotPricingTier** | User | (optional) Pricing tier for the Web App resources. **Possible values are: F0 (default), S1.** |
+| **DependenciesRegistryHosts** | User | (optional) Source from which the Bot Builder dependencies will be downloaded for all host bots. **Possible values are: Artifacts (default), MyGet, NuGet, or specific sources.** |
+| **DependenciesRegistrySkills** | User | (optional) Source from which the Bot Builder dependencies will be downloaded for all skill bots. **Possible values are: Artifacts (default), MyGet, NuGet, or specific sources.** |
+| **DependenciesRegistrySkillsV3** | User | (optional) Source from which the Bot Builder dependencies will be downloaded for all V3 skill bots. **Possible values are: Artifacts, MyGet (default), NuGet, or specific sources.** |
+| **DependeciesVersionHosts** | User | (optional) Bot Builder dependency version to use for all hosts. **Possible values are: Latest (default), Stable, or specific version numbers.** |
+| **DependeciesVersionSkills** | User | (optional) Bot Builder dependency version to use for all hosts. **Possible values are: Latest (default), Stable, or specific version numbers.** |
+| **DependeciesVersionSkillsV3** | User | (optional) Bot Builder dependency version to use for all hosts. **Possible values are: Latest (default), Stable, or specific version numbers.** |
 | **ResourceSuffix** | Create Shared Resources | (optional) Suffix to add to the resource names to avoid collisions. |
 
 ## Run Test Scenarios Pipeline

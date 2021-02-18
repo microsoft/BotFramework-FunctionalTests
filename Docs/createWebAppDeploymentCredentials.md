@@ -13,6 +13,6 @@ Go to [Configure deployment credentials for Azure App Service](https://docs.micr
 
 - From a terminal where [az cli](https://docs.microsoft.com/en-us/cli/azure/) is accessible, run `az login` (in case you're not logged in), then execute the following command:
 
-`az webapp deployment user set --user-name [name] --password [password]`
+  `az webapp deployment user set --user-name [name] --password [password]`
 
-**Note: Special characters at the beginning of the user name will work when creating the credentials, but break later on. We advise to avoid special characters for these credentials altogether.**
+  **Note: Special characters at the beginning of the user name will work when creating the credentials, but break later on. We advise to avoid special characters for these credentials altogether.**
