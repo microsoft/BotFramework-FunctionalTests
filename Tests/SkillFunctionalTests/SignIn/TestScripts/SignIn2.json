@@ -16,6 +16,23 @@
     {
       "type": "message",
       "role": "bot",
+      "text": "Would you like to view your token?",
+      "assertions": [
+        "type == 'message'",
+        "from.role == 'bot'",
+        "recipient.role == 'user'",
+        "text == 'Would you like to view your token?'",
+        "inputHint == 'acceptingInput'"
+      ]
+    },
+    {
+      "type": "message",
+      "role": "user",
+      "text": "yes"
+    },
+    {
+      "type": "message",
+      "role": "bot",
       "assertions": [
         "type == 'message'",
         "from.role == 'bot'",
@@ -40,12 +57,12 @@
     {
       "type": "message",
       "role": "bot",
-	    "text": "Done with \"WaterfallSkillBotDotNet\". \n\n What delivery mode would you like to use?",
+      "text": "Done with \"WaterfallSkillBotDotNet\". \n\n What delivery mode would you like to use?",
       "assertions": [
         "type == 'message'",
         "from.role == 'bot'",
         "recipient.role == 'user'",
-		    "text == 'Done with \"WaterfallSkillBotDotNet\". \n\n What delivery mode would you like to use?'",
+        "text == 'Done with \"WaterfallSkillBotDotNet\". \n\n What delivery mode would you like to use?'",
         "speak == 'Done with \"WaterfallSkillBotDotNet\". \n\n What delivery mode would you like to use?'",
         "inputHint == 'expectingInput'",
         "suggestedActions.actions[0].type == 'imBack'",
