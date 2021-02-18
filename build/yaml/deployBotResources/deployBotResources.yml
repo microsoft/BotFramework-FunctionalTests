@@ -168,7 +168,7 @@ stages:
           type: 'Skill'
           displayName: 'DotNet Echo Composer Skill Bot'
           appId: $env:BffnEchoSkillBotComposerDotNetAppId
-          appSecret: $env:BffnEchoSkillBotComposerDotNetAppSecret
+          appSecret: $env:$(BffnEchoSkillBotComposerDotNetAppSecret)
           project: 
             directory: 'Bots/DotNet/Skills/Composer/EchoSkillBotComposer'
             netCoreVersion: '3.1.x'
