@@ -2,9 +2,9 @@
 
 ## Create Shared Resources Pipeline
 
-- Description: Creates all the long-term resources required.
-- Schedule: Quarterly or on demand.
-- YAML: [build\yaml\sharedResources\createSharedResources.yml](../build/yaml/sharedResources/createSharedResources.yml)
+- **Description**: Creates all the long-term resources required.
+- **Schedule**: Quarterly or on demand.
+- **YAML**: [build\yaml\sharedResources\createSharedResources.yml](../build/yaml/sharedResources/createSharedResources.yml)
 
 | Variable Name | Source | Description |
 | - | - | - |
@@ -16,9 +16,9 @@
 
 ## Deploy Bot Resources Pipeline
 
-- Description: Creates the test bot resources to be used in the functional tests, separated in one Resource Group for each language (DotNet, JS, and Python)
-- Schedule: Nightly or on demand.
-- YAML: [build\yaml\deployBotResources\deployBotResources.yml](../build/yaml/deployBotResources/deployBotResources.yml)
+- **Description:** Creates the test bot resources to be used in the functional tests, separated in one Resource Group for each language (DotNet, JS, and Python)
+- **Schedule**: Nightly or on demand.
+- **YAML**: [build\yaml\deployBotResources\deployBotResources.yml](../build/yaml/deployBotResources/deployBotResources.yml)
 
 | Variable Name | Source | Description |
 | - | - | - |
@@ -43,9 +43,9 @@
 
 ## Run Test Scenarios Pipeline
 
-- Description: Configures and executes the test scenarios.
-- Schedule: Nightly (after Deploy Bot Resources) or on demand.
-- YAML: [build\yaml\testScenarios\runTestScenarios.yml](../build/yaml/testScenarios/runTestScenarios.yml)
+- **Description:** Configures and executes the test scenarios.
+- **Schedule**: Nightly (after Deploy Bot Resources) or on demand.
+- **YAML**: [build\yaml\testScenarios\runTestScenarios.yml](../build/yaml/testScenarios/runTestScenarios.yml)
 
 | Variable Name | Source | Description |
 | - | - | - |
@@ -56,9 +56,9 @@
 
 ## Cleanup Resources Pipeline
 
-- Description: Removes all resources, including all the shared resources, bots, and app registrations.
-- Schedule: Quarterly or on demand.
-- YAML: [build\yaml\cleanupResources\cleanupResources.yml](../build/yaml/cleanupResources/cleanupResources.yml)
+- **Description:** Removes all resources, including all the shared resources, bots, and app registrations.
+- **Schedule**: Quarterly or on demand.
+- **YAML**: [build\yaml\cleanupResources\cleanupResources.yml](../build/yaml/cleanupResources/cleanupResources.yml)
 
 | Variable Name | Source | Description |
 | - | - | - |
