@@ -55,8 +55,10 @@ class MainDialog extends ComponentDialog {
 
         // Add dialog to prepare SSO on the host and test the SSO skill
         // The waterfall skillDialog created in AddSkillDialogs contains the SSO skill action.
-        let waterfallDialog = Object.values(this.dialogs.dialogs).find(e => e.id.startsWith('WaterfallSkill'));
-        this.addDialog(new SsoDialog(waterfallDialog));
+        let waterfallDialogs = Object.values(this.dialogs.dialogs).filter(e => e.id.startsWith('WaterfallSkill'));
+        waterfallDialogs.forEach(waterfallSkill => {
+            this.addDialog(new SsoDialog(waterfallSkill));
+        });
 
         this.addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
             this.selectDeliveryModeStep.bind(this),
@@ -212,7 +214,7 @@ class MainDialog extends ComponentDialog {
 
         if (skillActivity.name == "Sso") {
             // Special case, we start the SSO dialog to prepare the host to call the skill.
-            return await stepContext.beginDialog(SSO_DIALOG);
+            return await stepContext.beginDialog(SSO_DIALOG + this.selectedSkill.definition.id);
         }
 
         // Start the skillDialog instance with the arguments.

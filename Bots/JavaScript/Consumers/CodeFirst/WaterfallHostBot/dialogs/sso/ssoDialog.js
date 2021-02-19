@@ -14,7 +14,7 @@ const WATERFALL_DIALOG = 'WaterfallDialog';
 // Helps prepare the host for SSO operations and provides helpers to check the status and invoke the skill.
 class SsoDialog extends ComponentDialog {
     constructor(skillDialog) {
-        super(SSO_DIALOG);
+        super(SSO_DIALOG + skillDialog.id);
 
         this.connectionName = process.env.SsoConnectionName;
         this.skillDialogId = skillDialog.id;
