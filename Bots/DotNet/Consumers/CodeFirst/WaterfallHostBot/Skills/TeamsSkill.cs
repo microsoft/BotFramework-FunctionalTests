@@ -9,129 +9,37 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Skills
 {
     public class TeamsSkill : SkillDefinition
     {
-        private const string SkillActionTeamsTaskModule = "TeamsTaskModule";
-        private const string SkillActionTeamsCardAction = "TeamsCardAction";
-        private const string SkillActionTeamsConversation = "TeamsConversation";
-        private const string SkillActionTeamsCards = "Cards";
-        private const string SkillActionTeamsProactive = "Proactive";
-        private const string SkillActionTeamsAttachment = "Attachment";
-        private const string SkillActionTeamsAuth = "Auth";
-        private const string SkillActionTeamsSso = "TeamsSso";
-        private const string SkillActionTeamsEcho = "Echo";
-        private const string SkillActionTeamsFileUpload = "FileUpload";
-        private const string SkillActionDelete = "Delete";
-        private const string SkillActionUpdate = "Update";
+        private enum SkillAction
+        {
+            TeamsTaskModule,
+            TeamsCardAction,
+            TeamsConversation,
+            Cards,
+            Proactive,
+            Attachment,
+            Auth,
+            Sso,
+            Echo,
+            FileUpload,
+            Delete,
+            Update,
+        }
 
         public override IList<string> GetActions()
         {
-            return new List<string>
-            {
-                SkillActionTeamsTaskModule,
-                SkillActionTeamsCardAction,
-                SkillActionTeamsConversation,
-                SkillActionTeamsCards,
-                SkillActionTeamsProactive,
-                SkillActionTeamsAttachment,
-                SkillActionTeamsAuth,
-                SkillActionTeamsSso,
-                SkillActionTeamsEcho,
-                SkillActionTeamsFileUpload,
-                SkillActionDelete,
-                SkillActionUpdate
-            };
+            return Enum.GetNames(typeof(SkillAction));
         }
 
         public override Activity CreateBeginActivity(string actionId)
         {
-            Activity activity;
-
-            if (actionId.Equals(SkillActionTeamsTaskModule, StringComparison.CurrentCultureIgnoreCase))
+            if (!Enum.TryParse<SkillAction>(actionId, true, out var skillAction))
             {
-                activity = (Activity)Activity.CreateEventActivity();
-                activity.Name = SkillActionTeamsTaskModule;
-                return activity;
+                throw new InvalidOperationException($"Unable to create begin activity for \"{actionId}\".");
             }
 
-            if (actionId.Equals(SkillActionTeamsCardAction, StringComparison.CurrentCultureIgnoreCase))
-            {
-                activity = (Activity)Activity.CreateEventActivity();
-                activity.Name = SkillActionTeamsCardAction;
-                return activity;
-            }
-
-            if (actionId.Equals(SkillActionTeamsConversation, StringComparison.CurrentCultureIgnoreCase))
-            {
-                activity = (Activity)Activity.CreateEventActivity();
-                activity.Name = SkillActionTeamsConversation;
-                return activity;
-            }
-
-            if (actionId.Equals(SkillActionTeamsCards, StringComparison.CurrentCultureIgnoreCase))
-            {
-                activity = (Activity)Activity.CreateEventActivity();
-                activity.Name = SkillActionTeamsCards;
-                return activity;
-            }
-
-            if (actionId.Equals(SkillActionTeamsProactive, StringComparison.CurrentCultureIgnoreCase))
-            {
-                activity = (Activity)Activity.CreateEventActivity();
-                activity.Name = SkillActionTeamsProactive;
-                return activity;
-            }
-
-            if (actionId.Equals(SkillActionTeamsAttachment, StringComparison.CurrentCultureIgnoreCase))
-            {
-                activity = (Activity)Activity.CreateEventActivity();
-                activity.Name = SkillActionTeamsAttachment;
-                return activity;
-            }
-
-            if (actionId.Equals(SkillActionTeamsAuth, StringComparison.CurrentCultureIgnoreCase))
-            {
-                activity = (Activity)Activity.CreateEventActivity();
-                activity.Name = SkillActionTeamsAuth;
-                return activity;
-            }
-
-            if (actionId.Equals(SkillActionTeamsSso, StringComparison.CurrentCultureIgnoreCase))
-            {
-                activity = (Activity)Activity.CreateEventActivity();
-                activity.Name = SkillActionTeamsSso;
-                return activity;
-            }
-
-            if (actionId.Equals(SkillActionTeamsEcho, StringComparison.CurrentCultureIgnoreCase))
-            {
-                activity = (Activity)Activity.CreateEventActivity();
-                activity.Name = SkillActionTeamsEcho;
-                return activity;
-            }
-
-            if (actionId.Equals(SkillActionTeamsFileUpload, StringComparison.CurrentCultureIgnoreCase))
-            {
-                activity = (Activity)Activity.CreateEventActivity();
-                activity.Name = SkillActionTeamsFileUpload;
-                return activity;
-            }
-
-            // Send an event activity to the skill with "Delete" in the name.
-            if (actionId.Equals(SkillActionDelete, StringComparison.CurrentCultureIgnoreCase))
-            {
-                activity = (Activity)Activity.CreateEventActivity();
-                activity.Name = SkillActionDelete;
-                return activity;
-            }
-
-            // Send an event activity to the skill with "Update" in the name.
-            if (actionId.Equals(SkillActionUpdate, StringComparison.CurrentCultureIgnoreCase))
-            {
-                activity = (Activity)Activity.CreateEventActivity();
-                activity.Name = SkillActionUpdate;
-                return activity;
-            }
-
-            throw new InvalidOperationException($"Unable to create begin activity for \"{actionId}\".");
+            // We don't support special parameters in these skills so a generic event with the right name
+            // will do in this case.
+            return new Activity(ActivityTypes.Event) { Name = skillAction.ToString() };
         }
     }
 }
