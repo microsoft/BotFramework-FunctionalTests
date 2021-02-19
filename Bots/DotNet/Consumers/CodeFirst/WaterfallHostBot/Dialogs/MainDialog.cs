@@ -78,7 +78,6 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs
 
             // Add dialog to prepare SSO on the host and test the SSO skill
             // The waterfall skillDialog created in AddSkillDialogs contains the SSO skill action.
-
             var waterfallDialog = Dialogs
                 .GetDialogs()
                 .Where(e => e.Id.StartsWith("WaterfallSkill"))
@@ -158,7 +157,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs
             {
                 Prompt = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput),
                 RetryPrompt = MessageFactory.Text(rePromptMessageText, rePromptMessageText, InputHints.ExpectingInput),
-                Style = ListStyle.SuggestedAction,
+                Style = stepContext.Context.Activity.ChannelId != Bot.Connector.Channels.Msteams ? ListStyle.SuggestedAction : ListStyle.List,
                 Choices = choices
             };
 
@@ -178,13 +177,14 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs
             var choices = new List<Choice>
             {
                 new Choice("EchoSkill"),
-                new Choice("WaterfallSkill")
+                new Choice("WaterfallSkill"),
+                new Choice("TeamsWaterfallSkill")
             };
             var options = new PromptOptions
             {
                 Prompt = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput),
                 RetryPrompt = MessageFactory.Text(rePromptMessageText, rePromptMessageText, InputHints.ExpectingInput),
-                Style = ListStyle.SuggestedAction,
+                Style = stepContext.Context.Activity.ChannelId != Bot.Connector.Channels.Msteams ? ListStyle.SuggestedAction : ListStyle.List,
                 Choices = choices
             };
 
@@ -210,7 +210,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs
             {
                 Prompt = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput),
                 RetryPrompt = MessageFactory.Text(repromptMessageText, repromptMessageText, InputHints.ExpectingInput),
-                Style = ListStyle.SuggestedAction,
+                Style = stepContext.Context.Activity.ChannelId != Bot.Connector.Channels.Msteams ? ListStyle.SuggestedAction : ListStyle.List,
                 Choices = choices
             };
 

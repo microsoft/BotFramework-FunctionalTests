@@ -38,9 +38,9 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs.Sso
                 PromptFinalStepAsync,
             };
 
-            AddDialog(new WaterfallDialog($"{nameof(WaterfallDialog)}{_skillDialogId}", waterfallSteps));
+            AddDialog(new WaterfallDialog(nameof(WaterfallDialog), waterfallSteps));
 
-            InitialDialogId = $"{nameof(WaterfallDialog)}{_skillDialogId}";
+            InitialDialogId = nameof(WaterfallDialog);
         }
 
         private async Task<DialogTurnResult> PromptActionStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
