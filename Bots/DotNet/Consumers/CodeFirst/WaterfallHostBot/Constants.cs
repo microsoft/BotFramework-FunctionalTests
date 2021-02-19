@@ -5,9 +5,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot
 {
     public static class Constants
     {
-        public static readonly string TeamsWaterfallDialog = "TeamsWaterfallDialog";
-        public static readonly string TeamsWaterfallSkillBot = "TeamsWaterfallSkillBot";
-        public static readonly string WaterfallDialog = "WaterfallSkillBotDotNetDialog";
-        public static readonly string WaterfallSkillBotDotNet = "WaterfallSkillBotDotNet";
+        public static readonly string TeamsWaterfallSkillBot = "TeamsWaterfallSkillBot";  
+        public static readonly string WaterfallSkillBotDotNet = "WaterfallSkillBot";
     }
 }

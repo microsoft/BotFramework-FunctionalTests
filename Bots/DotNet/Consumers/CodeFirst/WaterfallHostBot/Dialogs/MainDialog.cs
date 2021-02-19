@@ -29,7 +29,9 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs
 
         // Constants used for selecting actions on the skill.
         private const string JustForwardTheActivity = "JustForwardTurnContext.Activity";
-        
+        private const string SsoDialog = "SsoDialog";
+        private const string TeamsSsoDialog = "TeamsSsoDialog";
+
         private readonly IStatePropertyAccessor<BotFrameworkSkill> _activeSkillProperty;
         private readonly string _deliveryMode = $"{typeof(MainDialog).FullName}.DeliveryMode";
         private readonly string _selectedSkillKey = $"{typeof(MainDialog).FullName}.SelectedSkillKey";
@@ -76,21 +78,22 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs
 
             // Add dialog to prepare SSO on the host and test the SSO skill
             // The waterfall skillDialog created in AddSkillDialogs contains the SSO skill action.
-            var waterfallDialog = Dialogs.Find(Constants.WaterfallSkillBotDotNet);
-            if (waterfallDialog != null)
-            {
-                var temp = new SsoDialog(waterfallDialog, configuration);
-                temp.Id = Constants.WaterfallDialog;
-                AddDialog(temp);
-            }
 
-            var teamsWaterfallDialog = Dialogs.Find(Constants.TeamsWaterfallSkillBot);
-            if (teamsWaterfallDialog != null)
-            {
-                var temp = new SsoDialog(teamsWaterfallDialog, configuration);
-                temp.Id = Constants.TeamsWaterfallDialog;
-                AddDialog(temp);
-            }
+            var waterfallDialog = Dialogs
+                .GetDialogs()
+                .Where(e => e.Id.StartsWith("WaterfallSkill"))
+                .First();
+
+            var connectionName = configuration.GetSection("SsoConnectionName")?.Value;
+            var t = new SsoDialog(SsoDialog, waterfallDialog, connectionName);
+            AddDialog(t);
+
+            var teamsWaterfallDialog = Dialogs
+                .GetDialogs()
+                .Where(e => e.Id.StartsWith("TeamsWaterfallSkill"))
+                .First();
+            connectionName = configuration.GetSection("TeamsSsoConnectionName")?.Value;
+            AddDialog(new SsoDialog(TeamsSsoDialog, teamsWaterfallDialog, connectionName));
 
             // Add main waterfall dialog for this bot.
             var waterfallSteps = new WaterfallStep[]
@@ -221,7 +224,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs
             // Get the skill info based on the selected skill.
             var selectedSkillId = ((FoundChoice)stepContext.Result).Value;
             var deliveryMode = stepContext.Values[_deliveryMode].ToString();
-            var v3Bots = new List<string> { "EchoSkillBotV3DotNet", "EchoSkillBotV3JS" };
+            var v3Bots = new List<string> { "EchoSkillBotDotNetV3", "EchoSkillBotJSV3" };
 
             // Exclude v3 bots from ExpectReplies
             if (deliveryMode == DeliveryModes.ExpectReplies && v3Bots.Contains(selectedSkillId))
@@ -284,11 +287,11 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs
             if (skillActivity.Name == "Sso")
             {
                 // Special case, we start the SSO dialog to prepare the host to call the skill.
-                return await stepContext.BeginDialogAsync(Constants.WaterfallDialog, cancellationToken: cancellationToken);
+                return await stepContext.BeginDialogAsync(SsoDialog, cancellationToken: cancellationToken);
             }
             else if (skillActivity.Name == "TeamsSso")
             {
-                return await stepContext.BeginDialogAsync(Constants.TeamsWaterfallDialog, cancellationToken: cancellationToken);
+                return await stepContext.BeginDialogAsync(TeamsSsoDialog, cancellationToken: cancellationToken);
             }
             else
             {
