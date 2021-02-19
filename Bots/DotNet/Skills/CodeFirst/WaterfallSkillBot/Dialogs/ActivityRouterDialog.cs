@@ -56,10 +56,6 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs
         private static SkillDialog CreateEchoSkillDialog(ConversationState conversationState, SkillConversationIdFactoryBase conversationIdFactory, SkillHttpClient skillClient, IConfiguration configuration)
         {
             var botId = configuration.GetSection(MicrosoftAppCredentials.MicrosoftAppIdKey)?.Value;
-            if (string.IsNullOrWhiteSpace(botId))
-            {
-                throw new ArgumentException($"{MicrosoftAppCredentials.MicrosoftAppIdKey} is not in configuration");
-            }
 
             var skillHostEndpoint = configuration.GetSection("SkillHostEndpoint")?.Value;
             if (string.IsNullOrWhiteSpace(botId))

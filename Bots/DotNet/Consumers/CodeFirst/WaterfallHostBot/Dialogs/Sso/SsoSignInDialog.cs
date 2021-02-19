@@ -18,7 +18,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs.Sso
                 new OAuthPromptSettings
             {
                 ConnectionName = connectionName,
-                Text = "Sign in to the host bot using AAD for SSO",
+                Text = $"Sign in to the host bot using AAD for SSO and connection {connectionName}",
                 Title = "Sign In",
                 Timeout = 60000
             }));
