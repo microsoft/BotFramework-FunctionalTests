@@ -4,7 +4,7 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:39820/",
+      "applicationUrl": "http://localhost:35430/",
       "sslPort": 0
     }
   },
@@ -19,7 +19,7 @@
     "TeamsWaterfallSkillBot": {
       "commandName": "Project",
       "launchBrowser": true,
-      "applicationUrl": "http://localhost:35420/",
+      "applicationUrl": "http://localhost:35430/",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
