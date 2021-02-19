@@ -111,7 +111,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot
                             context.TurnState.Add<IIdentity>("BotIdentity", claimsIdentity);
 
                             // We need to know what connection name to use for the token exchange so we figure that out here
-                            var connectionName = targetSkill.Id == Constants.WaterfallSkillBotDotNet ? _configuration.GetSection("SsoConnectionName").Value : _configuration.GetSection("TeamsSsoConnectionName").Value;
+                            var connectionName = targetSkill.Id == Constants.WaterfallSkillBotDotNet ? _configuration.GetSection("SsoConnectionName").Value : _configuration.GetSection("SsoConnectionNameTeams").Value;
                             
                             if (string.IsNullOrEmpty(connectionName))
                             {
