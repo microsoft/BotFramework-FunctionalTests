@@ -25,51 +25,53 @@ class WaterfallSkill extends SkillDefinition {
         ];
     }
 
+    /**
+     * @param {string} actionId
+     */
     createBeginActivity(actionId) {
+        const activity = ActivityEx.createEventActivity();
+
+        switch (actionId) {
         // Send an event activity to the skill with "Cards" in the name.
-        if (actionId === SKILL_ACTION_CARDS) {
-            let activity = ActivityEx.createEventActivity();
+        case SKILL_ACTION_CARDS:
             activity.name = SKILL_ACTION_CARDS;
-            return activity;
-        }
-        // Send an event activity to the skill with "Proactive" in the name.
-        if (actionId === SKILL_ACTION_PROACTIVE) {
-            let activity = ActivityEx.createEventActivity();
+            break;
+
+            // Send an event activity to the skill with "Proactive" in the name.
+        case SKILL_ACTION_PROACTIVE:
             activity.name = SKILL_ACTION_PROACTIVE;
-            return activity;
-        }
-        // Send an event activity to the skill with "Auth" in the name.
-        if (actionId === SKILL_ACTION_AUTH) {
-            let activity = ActivityEx.createEventActivity();
+            break;
+
+            // Send an event activity to the skill with "Auth" in the name.
+        case SKILL_ACTION_AUTH:
             activity.name = SKILL_ACTION_AUTH;
-            return activity;
-        }
-        // Send an event activity to the skill with "Attachment" in the name.
-        if (actionId === SKILL_ACTION_MESSAGE_WITH_ATTACHMENT) {
-            let activity = ActivityEx.createEventActivity();
+            break;
+
+            // Send an event activity to the skill with "Attachment" in the name.
+        case SKILL_ACTION_MESSAGE_WITH_ATTACHMENT:
             activity.name = SKILL_ACTION_MESSAGE_WITH_ATTACHMENT;
-            return activity;
-        }
-        // Send an event activity to the skill with "Sso" in the name.
-        if (actionId === SKILL_ACTION_SSO) {
-            let activity = ActivityEx.createEventActivity();
+            break;
+
+            // Send an event activity to the skill with "Sso" in the name.
+        case SKILL_ACTION_SSO:
             activity.name = SKILL_ACTION_SSO;
-            return activity;
-        }
-        // Send an event activity to the skill with "FileUpload" in the name.
-        if (actionId === SKILL_ACTION_FILE_UPLOAD) {
-            let activity = ActivityEx.createEventActivity();
+            break;
+
+            // Send an event activity to the skill with "FileUpload" in the name.
+        case SKILL_ACTION_FILE_UPLOAD:
             activity.name = SKILL_ACTION_FILE_UPLOAD;
-            return activity;
-        }
-        // Send an event activity to the skill with "Echo" in the name.
-        if (actionId === SKILL_ACTION_CALL_ECHO_SKILL) {
-            let activity = ActivityEx.createEventActivity();
+            break;
+
+            // Send an event activity to the skill with "Echo" in the name.
+        case SKILL_ACTION_CALL_ECHO_SKILL:
             activity.name = SKILL_ACTION_CALL_ECHO_SKILL;
-            return activity;
+            break;
+
+        default:
+            throw new Error(`[WaterfallSkill]: Unable to create begin activity for "${ actionId }".`);
         }
 
-        throw new Error(`[WaterfallSkill]: Unable to create begin activity for \"${ actionId }\".`);
+        return activity;
     }
 }
 

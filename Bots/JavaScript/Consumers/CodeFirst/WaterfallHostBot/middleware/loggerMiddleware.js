@@ -12,6 +12,10 @@ class LoggerMiddleware {
         this.logger = logger;
     }
 
+    /**
+     * @param {import('botbuilder').TurnContext} turnContext
+     * @param {Function} next
+     */
     async onTurn(turnContext, next) {
         // Note: Skill responses will show as ContinueConversation events; we don't log those.
         // We only log incoming messages from users.
@@ -27,6 +31,11 @@ class LoggerMiddleware {
         await next();
     }
 
+    /**
+     * @param {import('botbuilder').TurnContext} turnContext
+     * @param {Partial<import('botbuilder').Activity>[]} activities
+     * @param {Function} next
+     */
     async outgoingHandler(turnContext, activities, next) {
         activities.forEach((activity) => {
             const message = `Bot said: "${ activity.text }" Type: "${ activity.type }" Name: "${ activity.name }"`;

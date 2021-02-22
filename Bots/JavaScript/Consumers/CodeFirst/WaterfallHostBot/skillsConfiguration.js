@@ -1,12 +1,10 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-const { ObjectPath } = require('botbuilder-dialogs');
 const { EchoSkill } = require('./skills/echoSkill');
 const { WaterfallSkill } = require('./skills/waterfallSkill');
 const { TeamsSkill } = require('./skills/teamsSkill');
 const { SkillDefinition } = require('./skills/skillDefinition');
-
 
 /**
  * A helper class that loads Skills information from configuration.
@@ -23,8 +21,7 @@ class SkillsConfiguration {
             const attr = names[2];
             let propName;
             if (!(id in this.skillsData)) {
-                this.skillsData[id] = { id: id };
-                this.skillsData[id] = { definition: this.createSkillDefinition(this.skillsData[id]) };
+                this.skillsData[id] = { definition: this.createSkillDefinition({ id }) };
             }
             switch (attr.toLowerCase()) {
             case 'appid':
@@ -61,17 +58,17 @@ class SkillsConfiguration {
         let skillDefinition = new SkillDefinition();
 
         switch (true) {
-            case skill.id.startsWith('EchoSkillBot'):
-                skillDefinition = Object.assign(new EchoSkill(), skill);
-                break;
-            case skill.id.startsWith('WaterfallSkillBot'):
-                skillDefinition = Object.assign(new WaterfallSkill(), skill);
-                break;
-            case skill.id.startsWith('TeamsSkillBot'):
-                skillDefinition = Object.assign(new TeamsSkill(), skill);
-                break;
-            default:
-                throw new Error(`[SkillsConfiguration]: Unable to find definition class for ${ skill.id }`);
+        case skill.id.startsWith('EchoSkillBot'):
+            skillDefinition = Object.assign(new EchoSkill(), skill);
+            break;
+        case skill.id.startsWith('WaterfallSkillBot'):
+            skillDefinition = Object.assign(new WaterfallSkill(), skill);
+            break;
+        case skill.id.startsWith('TeamsSkillBot'):
+            skillDefinition = Object.assign(new TeamsSkill(), skill);
+            break;
+        default:
+            throw new Error(`[SkillsConfiguration]: Unable to find definition class for ${ skill.id }`);
         }
 
         return skillDefinition;

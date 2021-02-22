@@ -1,7 +1,7 @@
 {
   "name": "waterfall-host-bot",
   "version": "1.0.0",
-  "description": "A simple root bot for testing skills",
+  "description": "A simple waterfall root bot for testing skills",
   "author": "Microsoft",
   "license": "MIT",
   "main": "index.js",

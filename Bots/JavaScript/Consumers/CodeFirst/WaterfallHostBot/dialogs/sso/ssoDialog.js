@@ -2,17 +2,22 @@
 // Licensed under the MIT License.
 
 const { ActivityTypes, EndOfConversationCodes, InputHints, MessageFactory } = require('botbuilder');
-const { ComponentDialog, ChoicePrompt, ChoiceFactory, DialogTurnStatus,WaterfallDialog } = require('botbuilder-dialogs');
+const { ComponentDialog, ChoicePrompt, ChoiceFactory, DialogTurnStatus, WaterfallDialog } = require('botbuilder-dialogs');
 const { SsoSignInDialog } = require('./ssoSignInDialog');
 
 const ACTION_STEP_PROMPT = 'ActionStepPrompt';
 const DELIVERY_PROMPT = 'DeliveryModePrompt';
 const SSO_DIALOG = 'SsoDialog';
-const SSO_SIGNIN_DIALOG = 'SsoSignInDialog'
+const SSO_SIGNIN_DIALOG = 'SsoSignInDialog';
 const WATERFALL_DIALOG = 'WaterfallDialog';
 
-// Helps prepare the host for SSO operations and provides helpers to check the status and invoke the skill.
+/**
+ * Helps prepare the host for SSO operations and provides helpers to check the status and invoke the skill.
+ */
 class SsoDialog extends ComponentDialog {
+    /**
+     * @param {*} skillDialog
+     */
     constructor(skillDialog) {
         super(SSO_DIALOG + skillDialog.id);
 
@@ -32,21 +37,27 @@ class SsoDialog extends ComponentDialog {
         this.initialDialogId = WATERFALL_DIALOG;
     }
 
+    /**
+     * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
+     */
     async promptActionStep(stepContext) {
         const messageText = 'What SSO action do you want to perform?';
         const repromptMessageText = 'That was not a valid choice, please select a valid choice.';
 
-        return await stepContext.prompt(DELIVERY_PROMPT, {
+        return stepContext.prompt(DELIVERY_PROMPT, {
             prompt: MessageFactory.text(messageText, messageText, InputHints.ExpectingInput),
             retryPrompt: MessageFactory.text(repromptMessageText, repromptMessageText, InputHints.ExpectingInput),
             choices: await this.getPromptChoices(stepContext)
         });
     }
 
+    /**
+     * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
+     */
     async getPromptChoices(stepContext) {
-        let promptChoices = [];
-        let adapter = stepContext.context.adapter;
-        let token = await adapter.getUserToken(stepContext.context, this.connectionName);
+        const promptChoices = [];
+        const adapter = stepContext.context.adapter;
+        const token = await adapter.getUserToken(stepContext.context, this.connectionName);
 
         if (!token) {
             promptChoices.push('Login');
@@ -64,48 +75,62 @@ class SsoDialog extends ComponentDialog {
         return ChoiceFactory.toChoices(promptChoices);
     }
 
+    /**
+     * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
+     */
     async handleActionStep(stepContext) {
         const action = stepContext.result.value;
 
         switch (action.toLowerCase()) {
-            case 'login':
-                return await stepContext.beginDialog(SSO_SIGNIN_DIALOG);
-            case 'logout':
-                const adapter = stepContext.context.adapter;
-                await adapter.signOutUser(stepContext.context, this.connectionName);
-                await stepContext.context.sendActivity('You have been signed out.');
-                return await stepContext.next();
-            case 'show token':
-                const tokenProvider = stepContext.context.adapter;
-                const token = await tokenProvider.getUserToken(stepContext.context, this.connectionName);
-                if (!token) {
-                    await stepContext.context.sendActivity('User has no cached token.');
-                } else {
-                    await stepContext.context.sendActivity(`Here is your current SSO token: ${ token.token }`);
-                }
-                return await stepContext.next();
-            case 'call skill (with sso)':
-            case 'call skill (without sso)':
-                let beginSkillActivity = {
-                    type: ActivityTypes.Event,
-                    name: 'Sso'
-                }
-                return await stepContext.beginDialog(this.skillDialogId, { activity: beginSkillActivity });
-            case 'back':
-                await stepContext.context.sendActivity({
-                    type: ActivityTypes.EndOfConversation,
-                    code: EndOfConversationCodes.CompletedSuccessfully
-                })
-                return {status: DialogTurnStatus.complete};
-            default:
-                // This should never be hit since the previous prompt validates the choice.
-                throw new Error(`[SsoDialog]: Unrecognized action: ${ action }`);
+        case 'login':
+            return stepContext.beginDialog(SSO_SIGNIN_DIALOG);
+
+        case 'logout': {
+            const adapter = stepContext.context.adapter;
+            await adapter.signOutUser(stepContext.context, this.connectionName);
+            await stepContext.context.sendActivity('You have been signed out.');
+            return stepContext.next();
+        }
+
+        case 'show token': {
+            const tokenProvider = stepContext.context.adapter;
+            const token = await tokenProvider.getUserToken(stepContext.context, this.connectionName);
+            if (!token) {
+                await stepContext.context.sendActivity('User has no cached token.');
+            } else {
+                await stepContext.context.sendActivity(`Here is your current SSO token: ${ token.token }`);
+            }
+            return stepContext.next();
+        }
+
+        case 'call skill (with sso)':
+        case 'call skill (without sso)': {
+            const beginSkillActivity = {
+                type: ActivityTypes.Event,
+                name: 'Sso'
+            };
+            return stepContext.beginDialog(this.skillDialogId, { activity: beginSkillActivity });
+        }
+
+        case 'back':
+            await stepContext.context.sendActivity({
+                type: ActivityTypes.EndOfConversation,
+                code: EndOfConversationCodes.CompletedSuccessfully
+            });
+            return { status: DialogTurnStatus.complete };
+
+        default:
+            // This should never be hit since the previous prompt validates the choice.
+            throw new Error(`[SsoDialog]: Unrecognized action: ${ action }`);
         }
     }
 
+    /**
+     * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
+     */
     async promptFinalStep(stepContext) {
         // Restart the dialog (we will exit when the user says end).
-        return await stepContext.replaceDialog(this.initialDialogId);
+        return stepContext.replaceDialog(this.initialDialogId);
     }
 }
 

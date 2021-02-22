@@ -11,15 +11,23 @@ class EchoSkill extends SkillDefinition {
         return [SKILL_ACTION_MESSAGE];
     }
 
+    /**
+     * @param {string} actionId
+     */
     createBeginActivity(actionId) {
-        if (actionId === SKILL_ACTION_MESSAGE) {
-            let activity = ActivityEx.createMessageActivity();
+        const activity = ActivityEx.createMessageActivity();
+
+        switch (actionId) {
+        case SKILL_ACTION_MESSAGE:
             activity.name = SKILL_ACTION_MESSAGE;
             activity.text = 'Begin the Echo Skill.';
-            return activity;
+            break;
+
+        default:
+            throw new Error(`[EchoSkill]: Unable to create begin activity for "${ actionId }".`);
         }
 
-        throw new Error(`[EchoSkill]: Unable to create begin activity for \"${ actionId }\".`);
+        return activity;
     }
 }
 

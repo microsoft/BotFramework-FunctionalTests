@@ -13,6 +13,9 @@ class SkillConversationIdFactory extends SkillConversationIdFactoryBase {
         this.refs = {};
     }
 
+    /**
+     * @param {import('botbuilder').SkillConversationIdFactoryOptions} options
+     */
     async createSkillConversationIdWithOptions(options) {
         const skillConversationReference = {
             conversationReference: TurnContext.getConversationReference(options.activity),
@@ -24,12 +27,18 @@ class SkillConversationIdFactory extends SkillConversationIdFactoryBase {
         return key;
     }
 
+    /**
+     * @param {string} skillConversationId
+     */
     async getSkillConversationReference(skillConversationId) {
-        if (!skillConversationId) throw new Error ('[SkillConversationIdFactory]: Missing parameter. skillConversationId is required');
+        if (!skillConversationId) throw new Error('[SkillConversationIdFactory]: Missing parameter. skillConversationId is required');
 
         return this.refs[skillConversationId];
     }
 
+    /**
+     * @param {string} skillConversationId
+     */
     async deleteConversationReference(skillConversationId) {
         this.refs[skillConversationId] = undefined;
     }

@@ -8,7 +8,6 @@ const SKILL_ACTION_TEAMS_TASK_MODULE = 'TeamsTaskModule';
 const SKILL_ACTION_TEAMS_CARD_ACTION = 'TeamsCardAction';
 const SKILL_ACTION_TEAMS_CONVERSATION = 'TeamsConversation';
 
-
 class TeamsSkill extends SkillDefinition {
     getActions() {
         return [
@@ -18,26 +17,30 @@ class TeamsSkill extends SkillDefinition {
         ];
     }
 
+    /**
+     * @param {string} actionId
+     */
     createBeginActivity(actionId) {
-        if (actionId === SKILL_ACTION_TEAMS_TASK_MODULE) {
-            let activity = ActivityEx.createEventActivity();
+        const activity = ActivityEx.createEventActivity();
+
+        switch (actionId) {
+        case SKILL_ACTION_TEAMS_TASK_MODULE:
             activity.name = SKILL_ACTION_TEAMS_TASK_MODULE;
-            return activity;
-        }
+            break;
 
-        if (actionId === SKILL_ACTION_TEAMS_CARD_ACTION) {
-            let activity = ActivityEx.createEventActivity();
+        case SKILL_ACTION_TEAMS_CARD_ACTION:
             activity.name = SKILL_ACTION_TEAMS_CARD_ACTION;
-            return activity;
-        }
+            break;
 
-        if (actionId === SKILL_ACTION_TEAMS_CONVERSATION) {
-            let activity = ActivityEx.createEventActivity();
+        case SKILL_ACTION_TEAMS_CONVERSATION:
             activity.name = SKILL_ACTION_TEAMS_CONVERSATION;
-            return activity;
+            break;
+
+        default:
+            throw new Error(`[TeamsSkill]: Unable to create begin activity for "${ actionId }".`);
         }
 
-        throw new Error(`[TeamsSkill]: Unable to create begin activity for \"${ actionId }\".`);
+        return activity;
     }
 }
 

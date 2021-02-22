@@ -6,6 +6,11 @@ const { runDialog } = require('botbuilder-dialogs');
 const WelcomeCard = require('../cards/welcomeCard.json');
 
 class RootBot extends ActivityHandler {
+    /**
+     * @param {import('botbuilder').ConversationState} conversationState
+     * @param {import('botbuilder').SkillHttpClient} skillClient
+     * @param {import('botbuilder-dialogs').Dialog} mainDialog
+     */
     constructor(conversationState, skillClient, mainDialog) {
         super();
         if (!conversationState) throw new Error('[RootBot]: Missing parameter. conversationState is required');
@@ -15,16 +20,6 @@ class RootBot extends ActivityHandler {
         this.skillClient = skillClient;
         this.mainDialog = mainDialog;
         this.botId = process.env.MicrosoftAppId;
-        // if (!this.botId) {
-        //     throw new Error('[RootBot] MicrosoftAppId is not set in configuration');
-        // }
-
-        // We use a single skill in this example.
-        // const targetSkillId = 'EchoSkillBot';
-        // this.targetSkill = skillsConfig.skills[targetSkillId];
-        // if (!this.targetSkill) {
-        //     throw new Error(`[RootBot] Skill with ID "${ targetSkillId }" not found in configuration`);
-        // }
 
         // Create state property to track the active skill
         this.activeSkillProperty = this.conversationState.createProperty(RootBot.ActiveSkillPropertyName);
@@ -38,70 +33,13 @@ class RootBot extends ActivityHandler {
             await next();
         });
 
-        // this.onTurn(async (turnContext, next) => {
-        //     if (turnContext.activity.type === ActivityTypes.ConversationUpdate) {
-        //         // Let the base class handle the activity (this will trigger OnMembersAdded).
-        //         await super.onTurn(turnContext);
-        //     } else {
-        //         // Run the Dialog with the Activity.
-        //         await this.mainDialog.run(turnContext, this.conversationState.createProperty('DialogState'));
-        //     }
-
-        //     await this.conversationState.saveChanges(turnContext, false);
-        //     await next();
-        // });
-
-        // See https://aka.ms/about-bot-activity-message to learn more about the message and other activity types.
-        // this.onMessage(async (context, next) => {
-        //     if (context.activity.text.toLowerCase() === 'skill') {
-        //         await context.sendActivity('Got it, connecting you to the skill...');
-
-        //         // Set active skill
-        //         await this.activeSkillProperty.set(context, this.targetSkill);
-
-        //         // Send the activity to the skill
-        //         await this.sendToSkill(context, this.targetSkill);
-        //     } else {
-        //         await context.sendActivity("Me no nothin'. Say 'skill' and I'll patch you through");
-        //     }
-
-        //     // By calling next() you ensure that the next BotHandler is run.
-        //     await next();
-        // });
-
-        // Handle EndOfConversation returned by the skill.
-        // this.onEndOfConversation(async (context, next) => {
-        //     // Stop forwarding activities to Skill.
-        //     await this.activeSkillProperty.set(context, undefined);
-
-        //     // Show status message, text and value returned by the skill
-        //     let eocActivityMessage = `Received ${ ActivityTypes.EndOfConversation }.\n\nCode: ${ context.activity.code }`;
-        //     if (context.activity.text) {
-        //         eocActivityMessage += `\n\nText: ${ context.activity.text }`;
-        //     }
-
-        //     if (context.activity.value) {
-        //         eocActivityMessage += `\n\nValue: ${ context.activity.value }`;
-        //     }
-        //     await context.sendActivity(eocActivityMessage);
-
-        //     // Restart setup dialog
-        //     await this.mainDialog.run(context, this.dialogStateProperty);
-
-        //     // Save conversation state
-        //     await this.conversationState.saveChanges(context, true);
-
-        //     // By calling next() you ensure that the next BotHandler is run.
-        //     await next();
-        // });
-
         this.onMembersAdded(async (context, next) => {
             const membersAdded = context.activity.membersAdded;
             for (let cnt = 0; cnt < membersAdded.length; ++cnt) {
                 if (membersAdded[cnt].id !== context.activity.recipient.id) {
                     const welcomeCard = CardFactory.adaptiveCard(WelcomeCard);
                     const activity = MessageFactory.attachment(welcomeCard);
-                    activity.speak = "Welcome to the waterfall host bot";
+                    activity.speak = 'Welcome to the waterfall host bot';
                     await context.sendActivity(activity);
                     await runDialog(this.mainDialog, context, conversationState.createProperty('DialogState'));
                 }
@@ -114,6 +52,7 @@ class RootBot extends ActivityHandler {
 
     /**
      * Override the ActivityHandler.run() method to save state changes after the bot logic completes.
+     * @param {import('botbuilder').TurnContext} turnContext
      */
     async run(context) {
         await super.run(context);
@@ -122,6 +61,10 @@ class RootBot extends ActivityHandler {
         await this.conversationState.saveChanges(context, false);
     }
 
+    /**
+     * @param {import('botbuilder').TurnContext} turnContext
+     * @param {*} targetSkill
+     */
     async sendToSkill(context, targetSkill) {
         // NOTE: Always SaveChanges() before calling a skill so that any activity generated by the skill
         // will have access to current accurate state.
