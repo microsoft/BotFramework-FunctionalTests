@@ -10,7 +10,7 @@ namespace SkillFunctionalTests.Common
     {
         public string Description { get; set; }
 
-        public string ClientType { get; set; }
+        public string ChannelId { get; set; }
 
         public string DeliveryMode { get; set; }
 

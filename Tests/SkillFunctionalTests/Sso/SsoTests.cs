@@ -27,7 +27,7 @@ namespace SkillFunctionalTests.Sso
 
         public static IEnumerable<object[]> TestCases()
         {
-            var clientTypes = new List<string> { Channels.Directline };
+            var channelIds = new List<string> { Channels.Directline };
             var deliverModes = new List<string>
             {
                 DeliveryModes.Normal,
@@ -55,7 +55,7 @@ namespace SkillFunctionalTests.Sso
 
             var testCaseBuilder = new TestCaseBuilder();
 
-            var testCases = testCaseBuilder.BuildTestCases(clientTypes, deliverModes, hostBots, targetSkills, scripts);
+            var testCases = testCaseBuilder.BuildTestCases(channelIds, deliverModes, hostBots, targetSkills, scripts);
             foreach (var testCase in testCases)
             {
                 yield return testCase;
@@ -70,7 +70,7 @@ namespace SkillFunctionalTests.Sso
             Logger.LogInformation(JsonConvert.SerializeObject(testCase, Formatting.Indented));
             
             // TODO: Implement tests and scripts
-            //var runner = new XUnitTestRunner(new TestClientFactory(testCase.ClientType).GetTestClient(), Logger);
+            //var runner = new XUnitTestRunner(new TestClientFactory(testCase.ChannelId).GetTestClient(), Logger);
             //await runner.RunTestAsync(Path.Combine(_testScriptsFolder, testCase.Script));
 
             // TODO: remove this line once we implement the test and we change the method to public async task

@@ -29,7 +29,7 @@ namespace SkillFunctionalTests.ProactiveMessages
 
         public static IEnumerable<object[]> TestCases()
         {
-            var clientTypes = new List<string> { Channels.Directline };
+            var channelIds = new List<string> { Channels.Directline };
             var deliverModes = new List<string>
             {
                 DeliveryModes.Normal,
@@ -63,7 +63,7 @@ namespace SkillFunctionalTests.ProactiveMessages
 
             var testCaseBuilder = new TestCaseBuilder();
 
-            var testCases = testCaseBuilder.BuildTestCases(clientTypes, deliverModes, hostBots, targetSkills, scripts);
+            var testCases = testCaseBuilder.BuildTestCases(channelIds, deliverModes, hostBots, targetSkills, scripts);
             foreach (var testCase in testCases)
             {
                 yield return testCase;
@@ -81,7 +81,7 @@ namespace SkillFunctionalTests.ProactiveMessages
             Logger.LogInformation(JsonConvert.SerializeObject(testCase, Formatting.Indented));
 
             var options = TestClientOptions[testCase.HostBot];
-            var runner = new XUnitTestRunner(new TestClientFactory(testCase.ClientType, options, Logger).GetTestClient(), TestRequestTimeout, Logger);
+            var runner = new XUnitTestRunner(new TestClientFactory(testCase.ChannelId, options, Logger).GetTestClient(), TestRequestTimeout, Logger);
             
             var testParamsStart = new Dictionary<string, string>
             {
