@@ -16,11 +16,11 @@ steps:
             Write-Host "Found pre-existing resource group '${{ parameters.resourceGroup }}'.";
             Write-Host "Starting resource cleanup...";
 
-            Write-Host ("Deleting '" + "${{ parameters.resourceName }}$($env:BotNamesSuffix)" + "'...")
-            az webapp delete --name "${{ parameters.resourceName }}$($env:BotNamesSuffix)" --resource-group ${{ parameters.resourceGroup }} --keep-empty-plan
-            az bot delete --name "${{ parameters.resourceName }}$($env:BotNamesSuffix)" --resource-group ${{ parameters.resourceGroup }}
+            Write-Host ("Deleting '" + "${{ parameters.resourceName }}$($env:ResourceSuffix)" + "'...")
+            az webapp delete --name "${{ parameters.resourceName }}$($env:ResourceSuffix)" --resource-group ${{ parameters.resourceGroup }} --keep-empty-plan
+            az bot delete --name "${{ parameters.resourceName }}$($env:ResourceSuffix)" --resource-group ${{ parameters.resourceGroup }}
 
-            Write-Host "Pre-existing bot resources for '${{ parameters.resourceName }}$($env:BotNamesSuffix)' deleted."
+            Write-Host "Pre-existing bot resources for '${{ parameters.resourceName }}$($env:ResourceSuffix)' deleted."
         }
         else {
             Write-Host "Resource group not found."

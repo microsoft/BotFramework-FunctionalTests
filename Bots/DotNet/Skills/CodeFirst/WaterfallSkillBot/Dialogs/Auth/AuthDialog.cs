@@ -19,6 +19,8 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Auth
         {
             _connectionName = configuration["ConnectionName"];
 
+            // This confirmation dialog should be removed once https://github.com/microsoft/BotFramework-FunctionalTests/issues/299 is resolved (and this class should look like the class in the issue)
+            AddDialog(new ConfirmPrompt(nameof(ConfirmPrompt)));
             AddDialog(new OAuthPrompt(
                 nameof(OAuthPrompt),
                 new OAuthPromptSettings
@@ -29,7 +31,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Auth
                     Timeout = 300000 // User has 5 minutes to login (1000 * 60 * 5)
                 }));
 
-            AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[] { PromptStepAsync, LoginStepAsync }));
+            AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[] { PromptStepAsync, LoginStepAsync, DisplayTokenAsync }));
 
             // The initial child Dialog to run.
             InitialDialogId = nameof(WaterfallDialog);
@@ -46,23 +48,35 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Auth
             var tokenResponse = (TokenResponse)stepContext.Result;
             if (tokenResponse != null)
             {
+                stepContext.Values["Token"] = tokenResponse.Token;
+
                 // Show the token
                 var loggedInMessage = "You are now logged in.";
                 await stepContext.Context.SendActivityAsync(MessageFactory.Text(loggedInMessage, loggedInMessage, InputHints.IgnoringInput), cancellationToken);
-                var showTokenMessage = "Here is your token:";
-                await stepContext.Context.SendActivityAsync(MessageFactory.Text($"{showTokenMessage} {tokenResponse.Token}", showTokenMessage, InputHints.IgnoringInput), cancellationToken);
 
-                // Sign out
-                var botAdapter = (BotFrameworkAdapter)stepContext.Context.Adapter;
-                await botAdapter.SignOutUserAsync(stepContext.Context, _connectionName, null, cancellationToken);
-                var signOutMessage = "I have signed you out.";
-                await stepContext.Context.SendActivityAsync(MessageFactory.Text(signOutMessage, signOutMessage, inputHint: InputHints.IgnoringInput), cancellationToken);
-
-                return await stepContext.EndDialogAsync(cancellationToken: cancellationToken);
+                return await stepContext.PromptAsync(nameof(ConfirmPrompt), new PromptOptions { Prompt = MessageFactory.Text("Would you like to view your token?") }, cancellationToken);
             }
 
             var tryAgainMessage = "Login was not successful please try again.";
             await stepContext.Context.SendActivityAsync(MessageFactory.Text(tryAgainMessage, tryAgainMessage, InputHints.IgnoringInput), cancellationToken);
+            return await stepContext.ReplaceDialogAsync(InitialDialogId, cancellationToken: cancellationToken);
+        }
+
+        private async Task<DialogTurnResult> DisplayTokenAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            var result = (bool)stepContext.Result;
+            if (result)
+            {
+                var showTokenMessage = "Here is your token:";
+                await stepContext.Context.SendActivityAsync(MessageFactory.Text($"{showTokenMessage} {stepContext.Values["Token"]}", showTokenMessage, InputHints.IgnoringInput), cancellationToken);
+            }
+
+            // Sign out
+            var botAdapter = (BotFrameworkAdapter)stepContext.Context.Adapter;
+            await botAdapter.SignOutUserAsync(stepContext.Context, _connectionName, null, cancellationToken);
+            var signOutMessage = "I have signed you out.";
+            await stepContext.Context.SendActivityAsync(MessageFactory.Text(signOutMessage, signOutMessage, inputHint: InputHints.IgnoringInput), cancellationToken);
+
             return await stepContext.EndDialogAsync(cancellationToken: cancellationToken);
         }
     }
