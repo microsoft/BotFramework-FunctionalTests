@@ -9,7 +9,7 @@ namespace SkillFunctionalTests.Common
 {
     public class TestCaseBuilder
     {
-        public IEnumerable<object[]> BuildTestCases(List<ClientType> clientTypes, List<string> deliveryModes, List<HostBot> hostBots, List<string> targetSkills, List<string> scripts, Func<TestCase, bool> shouldExclude = null)
+        public IEnumerable<object[]> BuildTestCases(List<string> clientTypes, List<string> deliveryModes, List<HostBot> hostBots, List<string> targetSkills, List<string> scripts, Func<TestCase, bool> shouldExclude = null)
         {
             var testCases = new List<object[]>();
             var count = 1;
