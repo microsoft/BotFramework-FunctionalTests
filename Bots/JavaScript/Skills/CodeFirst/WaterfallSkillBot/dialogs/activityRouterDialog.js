@@ -69,8 +69,8 @@ class ActivityRouterDialog extends ComponentDialog {
             skillEndpoint: configuration.EchoSkillInfo_skillEndpoint
         };
 
-        if (!skill.id || !skill.appId || !skill.skillEndpoint) {
-            throw new Error('EchoSkillInfo_id, EchoSkillInfo_appId and EchoSkillInfo_skillEndpoint are not set in configuration');
+        if (!skill.id || !skill.skillEndpoint) {
+            throw new Error('EchoSkillInfo_id and EchoSkillInfo_skillEndpoint are not set in configuration');
         }
 
         return new SkillDialog({
