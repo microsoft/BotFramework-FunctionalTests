@@ -39,7 +39,6 @@ class MainDialog extends ComponentDialog {
         this.activeSkillProperty = conversationState.createProperty(RootBot.ActiveSkillPropertyName);
         this.skillsConfig = skillsConfig;
         this.deliveryMode = '';
-        this.selectedSkill = {};
 
         // Register the tangent dialog for testing tangents and resume.
         this.addDialog(new TangentDialog(TANGENT_DIALOG));
@@ -179,14 +178,14 @@ class MainDialog extends ComponentDialog {
      * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
      */
     async selectSkillActionStep(stepContext) {
-        this.selectedSkill = this.skillsConfig.skills[stepContext.result.value];
+        const selectedSkill = this.skillsConfig.skills[stepContext.result.value];
         const v3Bots = ['EchoSkillBotDotNetV3', 'EchoSkillBotJSV3'];
 
         // Set active skill.
-        await this.activeSkillProperty.set(stepContext.context, this.selectedSkill);
+        await this.activeSkillProperty.set(stepContext.context, selectedSkill);
 
         // Exclude v3 bots from ExpectReplies.
-        if (this.deliveryMode === DeliveryModes.ExpectReplies && v3Bots.includes(this.selectedSkill.definition.id)) {
+        if (this.deliveryMode === DeliveryModes.ExpectReplies && v3Bots.includes(selectedSkill.definition.id)) {
             await stepContext.context.SendActivityAsync(MessageFactory.text("V3 Bots do not support 'expectReplies' delivery mode."));
 
             // Forget delivery mode and skill invocation.
@@ -198,11 +197,11 @@ class MainDialog extends ComponentDialog {
         }
 
         // Create the PromptOptions with the actions supported by the selected skill.
-        const messageText = `Select an action # to send to **${ this.selectedSkill.definition.id }**.\n\nOr just type in a message and it will be forwarded to the skill as a message activity.`;
+        const messageText = `Select an action # to send to **${ selectedSkill.definition.id }**.\n\nOr just type in a message and it will be forwarded to the skill as a message activity.`;
 
         return stepContext.prompt(SKILL_ACTION_PROMPT, {
             prompt: MessageFactory.text(messageText, messageText, InputHints.ExpectingInput),
-            choices: this.selectedSkill.definition.getActions()
+            choices: selectedSkill.definition.getActions()
         });
     }
 
@@ -221,7 +220,8 @@ class MainDialog extends ComponentDialog {
      * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
      */
     async callSkillActionStep(stepContext) {
-        const skillActivity = this.createBeginActivity(stepContext.context, this.selectedSkill.definition, stepContext.result.value);
+        const activeSkill = await this.activeSkillProperty.get(stepContext.context);
+        const skillActivity = this.createBeginActivity(stepContext.context, activeSkill.definition.id, stepContext.result.value);
 
         // Create the BeginSkillDialogOptions and assign the activity to send.
         const skillDialogArgs = { activity: skillActivity };
@@ -232,11 +232,11 @@ class MainDialog extends ComponentDialog {
 
         if (skillActivity.name === 'Sso') {
             // Special case, we start the SSO dialog to prepare the host to call the skill.
-            return stepContext.beginDialog(SSO_DIALOG + this.selectedSkill.definition.id);
+            return stepContext.beginDialog(SSO_DIALOG + activeSkill.definition.id);
         }
 
         // Start the skillDialog instance with the arguments.
-        return stepContext.beginDialog(this.selectedSkill.definition.id, skillDialogArgs);
+        return stepContext.beginDialog(activeSkill.definition.id, skillDialogArgs);
     }
 
     /**
@@ -244,8 +244,10 @@ class MainDialog extends ComponentDialog {
      * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
      */
     async finalStep(stepContext) {
+        const activeSkill = await this.activeSkillProperty.get(stepContext.context);
+
         if (stepContext.result) {
-            let message = `Skill "${ this.selectedSkill.definition.id }" invocation complete.`;
+            let message = `Skill "${ activeSkill.definition.id }" invocation complete.`;
             message += ` Result: ${ JSON.SerializeObject(stepContext.result) }`;
             await stepContext.context.sendActivity(message);
         }
@@ -255,7 +257,7 @@ class MainDialog extends ComponentDialog {
         await this.activeSkillProperty.delete(stepContext.context);
 
         // Restart setup dialog
-        return stepContext.replaceDialog(this.initialDialogId, { text: `Done with "${ this.selectedSkill.definition.id }". \n\n What delivery mode would you like to use?` });
+        return stepContext.replaceDialog(this.initialDialogId, { text: `Done with "${ activeSkill.definition.id }". \n\n What delivery mode would you like to use?` });
     }
 
     /**
@@ -294,17 +296,18 @@ class MainDialog extends ComponentDialog {
     /**
      * Helper method to create the activity to be sent to the DialogSkillBot using selected type and values.
      * @param {import('botbuilder').TurnContext} turnContext
-     * @param {import('../skills/skillDefinition').SkillDefinition} skillDefinition
+     * @param {string} skillId
      * @param {*} selectedOption
      */
-    createBeginActivity(turnContext, skillDefinition, selectedOption) {
+    createBeginActivity(turnContext, skillId, selectedOption) {
         if (selectedOption === JUST_FORWARD_THE_ACTIVITY) {
             // Note message activities also support input parameters but we are not using them in this example.
             // Return a clone of the activity so we don't risk altering the original one.
             return Object.assign({}, turnContext.activity);
         }
+
         // Get the begin activity from the skill instance.
-        const activity = skillDefinition.createBeginActivity(selectedOption);
+        const activity = this.skillsConfig.skills[skillId].definition.createBeginActivity(selectedOption);
 
         // We are manually creating the activity to send to the skill; ensure we add the ChannelData and Properties
         // from the original activity so the skill gets them.
