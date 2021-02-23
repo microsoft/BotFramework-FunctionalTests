@@ -80,6 +80,8 @@ steps:
           @{ appName = "bffnsimplehostbotjs"; variables = @{ appId = "BffnSimpleHostBotJSAppId"; appSecret = "BffnSimpleHostBotJSAppSecret"; objectId = "BffnSimpleHostBotJSAppObjectId" }},
           @{ appName = "bffnechoskillbotjs"; variables = @{ appId = "BffnEchoSkillBotJSAppId"; appSecret = "BffnEchoSkillBotJSAppSecret"; objectId = "BffnEchoSkillBotJSAppObjectId" }},
           @{ appName = "bffnechoskillbotjsv3"; variables = @{ appId = "BffnEchoSkillBotJSV3AppId"; appSecret = "BffnEchoSkillBotJSV3AppSecret"; objectId = "BffnEchoSkillBotJSV3AppObjectId" }},
+          @{ appName = "bffnwaterfallhostbotjs"; variables = @{ appId = "BffnWaterfallHostBotJSAppId"; appSecret = "BffnWaterfallHostBotJSAppSecret"; objectId = "BffnWaterfallHostBotJSAppObjectId" }}
+          @{ appName = "bffnwaterfallskillbotjs"; variables = @{ appId = "BffnWaterfallSkillBotJSAppId"; appSecret = "BffnWaterfallSkillBotJSAppSecret"; objectId = "BffnWaterfallSkillBotJSAppObjectId" }}
           @{ appName = "bffnsimplehostbotpython"; variables = @{ appId = "BffnSimpleHostBotPythonAppId"; appSecret = "BffnSimpleHostBotPythonAppSecret"; objectId = "BffnSimpleHostBotPythonAppObjectId" }},
           @{ appName = "bffnechoskillbotpython"; variables = @{ appId = "BffnEchoSkillBotPythonAppId"; appSecret = "BffnEchoSkillBotPythonAppSecret"; objectId = "BffnEchoSkillBotPythonAppObjectId" }}
         )
