@@ -47,7 +47,7 @@ class SkillBot extends ActivityHandler {
 
     /**
      * Override the ActivityHandler.run() method to save state changes after the bot logic completes.
-     * @param {import('botbuilder').TurnContext} turnContext
+     * @param {import('botbuilder').TurnContext} context
      */
     async run(context) {
         await super.run(context);
