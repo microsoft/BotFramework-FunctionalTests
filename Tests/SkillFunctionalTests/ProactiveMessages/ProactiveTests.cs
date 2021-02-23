@@ -38,19 +38,19 @@ namespace SkillFunctionalTests.ProactiveMessages
             var hostBots = new List<HostBot>
             {
                 HostBot.WaterfallHostBotDotNet,
+                HostBot.WaterfallHostBotJS,
 
                 // TODO: Enable these when the ports to JS, Python and composer are ready
-                //HostBotNames.WaterfallHostBotJS,
-                //HostBotNames.WaterfallHostBotPython,
-                //HostBotNames.ComposerHostBotDotNet
+                //HostBot.WaterfallHostBotPython,
+                //HostBot.ComposerHostBotDotNet
             };
 
             var targetSkills = new List<string>
             {
                 SkillBotNames.WaterfallSkillBotDotNet,
+                SkillBotNames.WaterfallSkillBotJS,
 
                 // TODO: Enable these when the ports to JS, Python and composer are ready
-                //SkillBotNames.WaterfallSkillBotJS,
                 //SkillBotNames.WaterfallSkillBotPython,
                 //SkillBotNames.ComposerSkillBotDotNet
             };
@@ -62,7 +62,15 @@ namespace SkillFunctionalTests.ProactiveMessages
 
             var testCaseBuilder = new TestCaseBuilder();
 
-            var testCases = testCaseBuilder.BuildTestCases(clientTypes, deliverModes, hostBots, targetSkills, scripts);
+            // This local function is used to exclude cases with WaterfallSkillJS bot.
+            static bool ShouldExclude(TestCase testCase)
+            {
+                // Note: WaterfallSkillJS is not supporting proactive messages.
+                // BUG: Proactive messages fails with WaterfallSkillBotJS due to malformed url (Related: https://github.com/restify/node-restify/issues/1029).
+                return testCase.TargetSkill == SkillBotNames.WaterfallSkillBotJS;
+            }
+
+            var testCases = testCaseBuilder.BuildTestCases(clientTypes, deliverModes, hostBots, targetSkills, scripts, ShouldExclude);
             foreach (var testCase in testCases)
             {
                 yield return testCase;

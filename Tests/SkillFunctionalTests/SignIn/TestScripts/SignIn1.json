@@ -52,7 +52,7 @@
     {
       "type": "message",
       "role": "user",
-      "text": "normal"
+      "text": "${DeliveryMode}"
     },
     {
       "type": "message",
@@ -95,7 +95,7 @@
     {
       "type": "message",
       "role": "user",
-	  "text": "WaterfallSkillBotDotNet"
+      "text": "${TargetSkill}"
     },
     {
       "type": "message",
