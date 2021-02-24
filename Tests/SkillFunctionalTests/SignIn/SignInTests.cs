@@ -40,7 +40,7 @@ namespace SkillFunctionalTests.SignIn
                 HostBot.WaterfallHostBotDotNet,
                 HostBot.WaterfallHostBotJS,
 
-                // TODO: Enable these when the ports to JS, Python and composer are ready
+                // TODO: Enable these when the ports to Python and composer are ready
                 //HostBot.WaterfallHostBotPython,
                 //HostBot.ComposerHostBotDotNet
             };
@@ -50,7 +50,7 @@ namespace SkillFunctionalTests.SignIn
                 SkillBotNames.WaterfallSkillBotDotNet,
                 SkillBotNames.WaterfallSkillBotJS,
                 
-                // TODO: Enable these when the ports to JS, Python and composer are ready
+                // TODO: Enable these when the ports to Python and composer are ready
                 //SkillBotNames.WaterfallSkillBotPython,
                 //SkillBotNames.ComposerSkillBotDotNet
             };
