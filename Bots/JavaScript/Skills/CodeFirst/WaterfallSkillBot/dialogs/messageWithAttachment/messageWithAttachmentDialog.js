@@ -97,9 +97,9 @@ class MessageWithAttachmentDialog extends ComponentDialog {
      * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
      */
     async finalStep(stepContext) {
-        const selectedSkillId = stepContext.result.value.toLowerCase();
+        const selectedChoice = stepContext.result.value.toLowerCase();
 
-        if (selectedSkillId === 'yes') {
+        if (selectedChoice === 'yes') {
             return stepContext.replaceDialog(this.initialDialogId);
         }
 

@@ -42,9 +42,9 @@ class WaitForProactiveDialog extends Dialog {
      */
     async continueDialog(dc) {
         const { activity } = dc.context;
-        if (activity.type === ActivityTypes.Event && dc.context.activity.name === ActivityEventNames.ContinueConversation) {
+        if (activity.type === ActivityTypes.Event && activity.name === ActivityEventNames.ContinueConversation) {
             // We continued the conversation, forget the proactive reference.
-            this.continuationParametersStore[dc.context.activity.from.id] = undefined;
+            this.continuationParametersStore[activity.from.id] = undefined;
 
             // The continue conversation activity comes from the ProactiveController when the notification is received
             await dc.context.sendActivity('We received a proactive message, ending the dialog');
@@ -58,7 +58,7 @@ class WaitForProactiveDialog extends Dialog {
         }
 
         // Keep waiting for a call to the ProactiveController.
-        await dc.context.sendActivity(`We are waiting for a proactive message. ${ this.notifyMessage(this.serverUrl, dc.context.activity.from.id) }`);
+        await dc.context.sendActivity(`We are waiting for a proactive message. ${ this.notifyMessage(this.serverUrl, activity.from.id) }`);
 
         return Dialog.EndOfTurn;
     }

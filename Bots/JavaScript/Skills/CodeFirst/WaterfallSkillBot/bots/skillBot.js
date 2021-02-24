@@ -28,9 +28,10 @@ class SkillBot extends ActivityHandler {
         });
 
         this.onMembersAdded(async (turnContext, next) => {
+            const text = 'Welcome to the waterfall skill bot. \n\nThis is a skill, you will need to call it from another bot to use it.';
+
             for (const member of turnContext.activity.membersAdded) {
                 if (member.id !== turnContext.activity.recipient.id) {
-                    const text = 'Welcome to the waterfall skill bot. \n\nThis is a skill, you will need to call it from another bot to use it.';
                     await turnContext.sendActivity({
                         type: ActivityTypes.Message,
                         text,

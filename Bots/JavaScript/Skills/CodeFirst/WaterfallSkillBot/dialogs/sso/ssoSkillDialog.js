@@ -22,9 +22,9 @@ class SsoSkillDialog extends ComponentDialog {
         this.addDialog(new SsoSkillSignInDialog(SSO_SKILL_DIALOG, this.connectionName))
             .addDialog(new ChoicePrompt(ACTION_PROMPT))
             .addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
-                this.promptActionStepAsync.bind(this),
-                this.handleActionStepAsync.bind(this),
-                this.promptFinalStepAsync.bind(this)
+                this.promptActionStep.bind(this),
+                this.handleActionStep.bind(this),
+                this.promptFinalStep.bind(this)
             ]));
 
         this.initialDialogId = WATERFALL_DIALOG;
@@ -33,7 +33,7 @@ class SsoSkillDialog extends ComponentDialog {
     /**
      * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
      */
-    async promptActionStepAsync(stepContext) {
+    async promptActionStep(stepContext) {
         const messageText = 'What SSO action would you like to perform on the skill?';
         const repromptMessageText = 'That was not a valid choice, please select a valid choice.';
 
@@ -66,7 +66,7 @@ class SsoSkillDialog extends ComponentDialog {
     /**
      * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
      */
-    async handleActionStepAsync(stepContext) {
+    async handleActionStep(stepContext) {
         const action = stepContext.result.value.toLowerCase();
 
         switch (action) {
@@ -94,7 +94,7 @@ class SsoSkillDialog extends ComponentDialog {
             return { status: DialogTurnStatus.complete };
 
         default:
-            // This should never be hit since the previous prompt validates the choice
+            // This should never be hit since the previous prompt validates the choice.
             throw new Error(`Unrecognized action: ${ action }`);
         }
     }
@@ -102,8 +102,8 @@ class SsoSkillDialog extends ComponentDialog {
     /**
      * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
      */
-    async promptFinalStepAsync(stepContext) {
-        // Restart the dialog (we will exit when the user says end)
+    async promptFinalStep(stepContext) {
+        // Restart the dialog (we will exit when the user says end).
         return stepContext.replaceDialog(this.initialDialogId);
     }
 }

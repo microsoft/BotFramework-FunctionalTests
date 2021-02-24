@@ -27,8 +27,8 @@ class AuthDialog extends ComponentDialog {
             }));
 
         this.addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
-            this.promptStepAsync.bind(this),
-            this.loginStepAsync.bind(this),
+            this.promptStep.bind(this),
+            this.loginStep.bind(this),
             this.displayToken.bind(this)
         ]));
 
@@ -39,14 +39,14 @@ class AuthDialog extends ComponentDialog {
     /**
      * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
      */
-    promptStepAsync(stepContext) {
+    promptStep(stepContext) {
         return stepContext.beginDialog(OAUTH_PROMPT);
     }
 
     /**
      * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
      */
-    async loginStepAsync(stepContext) {
+    async loginStep(stepContext) {
         // Get the token from the previous step.
         const tokenResponse = stepContext.result;
 

@@ -14,8 +14,6 @@ class SsoSkillSignInDialog extends ComponentDialog {
     constructor(dialogId, connectionName) {
         super(dialogId);
 
-        this.connectionName = connectionName;
-
         this.addDialog(new OAuthPrompt(OAUTH_PROMPT, {
             connectionName: connectionName,
             text: 'Sign in to the Skill using AAD',

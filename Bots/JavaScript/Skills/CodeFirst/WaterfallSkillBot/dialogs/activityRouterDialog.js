@@ -56,8 +56,6 @@ class ActivityRouterDialog extends ComponentDialog {
      * @param {Object} configuration
      */
     createEchoSkillDialog(dialogId, conversationState, conversationIdFactory, skillClient, configuration) {
-        const botId = configuration.MicrosoftAppId;
-
         const skillHostEndpoint = configuration.SkillHostEndpoint;
         if (!skillHostEndpoint) {
             throw new Error('SkillHostEndpoint is not in configuration');
@@ -74,7 +72,7 @@ class ActivityRouterDialog extends ComponentDialog {
         }
 
         return new SkillDialog({
-            botId,
+            botId: configuration.MicrosoftAppId,
             conversationIdFactory,
             skillClient,
             skillHostEndpoint,
