@@ -1,19 +1,35 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
+#
+# Replaces the classic BotBuilder-DotNet-master-CI-PR-(MacLinux)
+#
 
-trigger:
-- main
+# "name" here defines the build number format. Build number is accessed via $(Build.BuildNumber)
+name: $(Build.BuildId)
 
 pool:
-  vmImage: ubuntu-latest
+    vmImage: 'macOS-10.14'
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+trigger: none # ci trigger is set in ADO
+pr: none # pr trigger is set in ADO
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+variables:
+  BuildConfiguration: debug
+stages:
+- stage: Build
+  dependsOn: []    # makes this run in parallel
+  jobs:
+    - job: Validate_Host_NetCore_Version
+      variables:
+        Parameters.netCoreSdkVersion: $(NetCoreSdkVersionHost)
+      steps:
+      - template: dotnetValidateNetCoreSdkVersion.yml
+
+    - job: Build_Host_Bot
+      variables:
+        Registry: $[variables.RegistryUrlHost]
+        BotBuilderPackageVersion: $[variables.BotBuilderPackageVersionHost]
+        BotType: Host
+      steps:
+      - template: dotnetSetPaths.yml
+      - template: dotnetInstallPackagesSteps.yml
+      - template: dotnetBuildSteps.yml
+      - template: dotnetTagBotBuilderVersion.yml
