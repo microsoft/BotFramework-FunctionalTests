@@ -2,7 +2,7 @@
 jobs:
 - job: Build
   pool:
-    vmImage: 'macOS-10.14'
+    vmImage: 'ubuntu-18.04'
 
   steps:
   - template: 'SkillFunctionalTestsbuild.yml'
