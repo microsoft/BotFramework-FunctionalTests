@@ -17,6 +17,11 @@ stages:
 - stage: Build
   dependsOn: []    # makes this run in parallel
   jobs:
+    - job: Validate_Host_NetCore_Version
+      variables:
+        Parameters.netCoreSdkVersion: $(NetCoreSdkVersionHost)
+      steps:
+      - template: dotnetValidateNetCoreSdkVersion.yml
     - job: Build_Host_Bot
       variables:
         Registry: $[variables.RegistryUrlHost]
