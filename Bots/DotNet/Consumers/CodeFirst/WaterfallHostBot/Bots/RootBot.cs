@@ -65,12 +65,6 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Bots
             }
         }
 
-        protected override async Task OnTokenResponseEventAsync(ITurnContext<IEventActivity> turnContext, CancellationToken cancellationToken)
-        {
-            await _conversationState.LoadAsync(turnContext, true, cancellationToken);
-            await _mainDialog.RunAsync(turnContext, _conversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
-        }
-
         protected override async Task OnEndOfConversationActivityAsync(ITurnContext<IEndOfConversationActivity> turnContext, CancellationToken cancellationToken)
         {
             // forget skill invocation
