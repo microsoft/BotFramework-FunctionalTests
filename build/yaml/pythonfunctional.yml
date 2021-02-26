@@ -1,0 +1,39 @@
+# Variable 'python.version' was defined in the Variables tab
+# Multi-job configuration must be converted to matrix strategy: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/phases?view=azure-devops&tabs=yaml#multi-job-configuration
+  # Container registry service connection established during pipeline creation
+
+name: $(Build.BuildId)
+trigger: none
+pr: none
+
+jobs:
+- job: Build
+  pool:
+    vmImage: macos-10.14
+  steps:
+  - task: UsePythonVersion@0
+    displayName: Use Python version
+    inputs:
+      versionSpec: '3.7.x'
+
+  - task: CmdLine@2
+    displayName: Install dependencies
+    inputs:
+      script: >
+        python -m pip install --upgrade pip
+
+        pip install -r Bots/Python/Consumers/CodeFirst/SimpleGovHostBot/requirements.txt
+
+        pip install -r Bots/Python/Consumers/CodeFirst/SimpleHostBot/requirements.txt
+
+        pip install -r Bots/Python/Skills/CodeFirst/CardSkillBot/requirements.txt
+
+        pip install -r Bots/Python/Skills/CodeFirst/EchoSkillBot/requirements.txt
+
+        pip install -r Bots/Python/Skills/CodeFirst/MultiturnSkillBot/requirements.txt
+
+        pip install -r Bots/Python/Skills/CodeFirst/ProactiveSkillBot/requirements.txt
+
+
+      failOnStderr: true
+
