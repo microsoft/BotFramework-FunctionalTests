@@ -19,7 +19,7 @@ steps:
     command: 'restore'
     restoreSolution: 'Bots/DotNet/FunctionalTestsBots.sln'
     feedsToUse: 'config'
-    nugetConfigPath: 'Bots/DotNet/FunctionalTestsBots.sln'
+    nugetConfigPath: 'Bots/DotNet/nuget.config'
 
 
 - task: DotNetCoreCLI@2
