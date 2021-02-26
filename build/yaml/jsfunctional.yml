@@ -1,14 +1,4 @@
-#
-  steps:
-  - task: PowerShell@2
-    displayName: Create .npmrc for npmjs feed - https://www.npmjs.com/
-    inputs:
-      targetType: inline
-      script: >
-        Set-Location -Path "$(SampleRootPath)"
 
-
-        New-Item -Path . -Name ".npmrc" -ItemType "file" -Value "registry=https://registry.npmjs.com/"
   - task: Npm@1
     displayName: npm install Host Bot
     inputs:
