@@ -14,4 +14,3 @@ stages:
             template: pythonfunctional.yml
           - 
             template: jsfunctional.yml
- ---
