@@ -1,15 +1,4 @@
-# Variable 'python.version' was defined in the Variables tab
-# Multi-job configuration must be converted to matrix strategy: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/phases?view=azure-devops&tabs=yaml#multi-job-configuration
-  # Container registry service connection established during pipeline creation
-
-name: $(Build.BuildId)
-trigger: none
-pr: none
-
-jobs:
-- job: Build
-  pool:
-    vmImage: macos-10.14
+#
   steps:
     clean: true
   - task: PowerShell@2
