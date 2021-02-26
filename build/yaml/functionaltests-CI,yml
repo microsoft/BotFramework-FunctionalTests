@@ -2,9 +2,6 @@
 
 name: $(Build.BuildId)
 
-pool:
-  vmImage: 'macos-10.14'
-
 stages:
 - stage: Build
   jobs:
