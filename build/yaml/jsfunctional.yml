@@ -1,6 +1,5 @@
 #
   steps:
-    clean: true
   - task: PowerShell@2
     displayName: Create .npmrc for npmjs feed - https://www.npmjs.com/
     inputs:
