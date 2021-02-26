@@ -7,6 +7,9 @@ pool:
 
 jobs:
 - template: 'SkillFunctionalTestsbuild.yml'
+
 - template: 'FunctionalTestsBotsbuild.yml'
+
 - template: 'pythonfunctional.yml'
+
 - template: 'jsfunctional.yml'
