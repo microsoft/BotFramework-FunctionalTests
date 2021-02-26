@@ -32,7 +32,7 @@ steps:
 - task: NuGetCommand@2
   inputs:
     command: 'restore'
-    restoreSolution: 'Bots/DotNet/SkillFunctionalTests-standard.sln'
+    restoreSolution: Bots/DotNet/SkillFunctionalTests-standard.sln
 
 
 - task: DotNetCoreCLI@2
