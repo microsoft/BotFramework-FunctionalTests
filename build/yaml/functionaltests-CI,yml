@@ -1,13 +1,17 @@
-# This runs under Functionaltests-PR-CI-yaml. 
-
+--- 
 name: $(Build.BuildId)
-
-stages:
-- stage: Build
-  jobs:
-  - job:
-    steps:
-    - template: SkillFunctionalTestsbuild.yml
-    - template: FunctionalTestsBotsbuild.yml
-    - template: pythonfunctional.yml
-    - template: jsfunctional.yml
+stages: 
+  - 
+    jobs: 
+      - 
+        job: ~
+        steps: 
+          - 
+            template: SkillFunctionalTestsbuild.yml
+          - 
+            template: FunctionalTestsBotsbuild.yml
+          - 
+            template: pythonfunctional.yml
+          - 
+            template: jsfunctional.yml
+    stage: Build
