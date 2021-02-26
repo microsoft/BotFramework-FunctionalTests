@@ -1,5 +1,3 @@
-variables:
-  BuildConfiguration: debug
 steps:
 # Note: Template ci-build-steps.yml is not supported in macOS because it calls VSBuild@1 in order to build the Windows-only ASP.NET Desktop assemblies.
 - task: UseDotNet@2
