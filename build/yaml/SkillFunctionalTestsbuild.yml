@@ -1,16 +1,3 @@
-#
-# Replaces the classic BotBuilder-DotNet-master-CI-PR-(MacLinux)
-#
-
-# "name" here defines the build number format. Build number is accessed via $(Build.BuildNumber)
-name: $(Build.BuildId)
-
-pool:
-    vmImage: 'macOS-10.14'
-
-trigger: none # ci trigger is set in ADO
-pr: none # pr trigger is set in ADO
-
 variables:
   BuildConfiguration: debug
 steps:
