@@ -32,13 +32,13 @@ steps:
 - task: NuGetCommand@2
   inputs:
     command: 'restore'
-    restoreSolution: Bots/DotNet/SkillFunctionalTests-standard.sln
+    restoreSolution: SkillFunctionalTests-standard.sln
 
 
 - task: DotNetCoreCLI@2
   displayName: 'dotnet build'
   inputs:
-    projects: Bots/DotNet/SkillFunctionalTests.sln
+    projects: SkillFunctionalTests.sln
 
 
 - task: PublishBuildArtifacts@1
