@@ -18,12 +18,15 @@ steps:
   inputs:
     command: 'restore'
     restoreSolution: 'Bots/DotNet/FunctionalTestsBots.sln'
+    feedsToUse: 'config'
+    nugetConfigPath: 'Bots/DotNet/FunctionalTestsBots.sln'
 
 
 - task: DotNetCoreCLI@2
-  displayName: 'dotnet build'
   inputs:
-    projects: Bots/DotNet/FunctionalTestsBots.sln
+    command: 'build'
+    projects: 'Bots/DotNet/FunctionalTestsBots.sln'
+    workingDirectory: 'Bots/DotNet'
 
 
 - task: PublishBuildArtifacts@1
