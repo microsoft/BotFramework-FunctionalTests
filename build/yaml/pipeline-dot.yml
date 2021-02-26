@@ -31,14 +31,12 @@ steps:
         <activePackageSource>
           <add key="All" value="(Aggregate source)" />
         </activePackageSource>
-        </configuration>
-
-        "@;
-
-
-        New-Item -Path $file -ItemType "file" -Value $content;
-
-         '-------------'; get-content "$file"; '==================='
+      </configuration>
+      "@;
+      
+      New-Item -Path $file -ItemType "file" -Value $content;
+      
+       '-------------'; get-content "$file"; '==================='
 - task: UseDotNet@2
   displayName: 'Use .Net Core sdk 2.1.x'
   inputs:
