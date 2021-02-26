@@ -7,4 +7,4 @@ jobs:
   steps:
   - template: 'SkillFunctionalTestsbuild.yml'
   
-  -template:  'pythonfunctional.yml'
+  - template: 'pythonfunctional.yml'
