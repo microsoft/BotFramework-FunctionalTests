@@ -1,0 +1,16 @@
+# This runs under Functionaltests-PR-CI-yaml. 
+
+name: $(Build.BuildId)
+
+pool:
+  vmImage: 'macos-10.14'
+
+stages:
+- stage: Build
+  jobs:
+  - job:
+    steps:
+    - template: SkillFunctionalTestsbuild.yml
+    - template: FunctionalTestsBotsbuild.yml
+    - template: pythonfunctional.yml
+    - template: jsfunctional.yml
