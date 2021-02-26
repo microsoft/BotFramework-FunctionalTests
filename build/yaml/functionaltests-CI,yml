@@ -7,8 +7,8 @@ jobs:
   steps:
   - template: 'SkillFunctionalTestsbuild.yml'
   
-  - #template: 'FunctionalTestsBotsbuild.yml'
+  - template: 'jsfunctional.yml'
 
   - template: 'pythonfunctional.yml'
 
-  - template: 'jsfunctional.yml'
+  - template: 'FunctionalTestsBotsbuild.yml'
