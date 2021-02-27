@@ -1,14 +1,20 @@
 # This runs under BotBuilder-Js-CI-yaml. Replaces classic build BotBuilder-JS-master-CI-node12.
+
 jobs:
-- job: Build
-  pool:
+    - job: SkillFunctionalTestsbuild
+      steps:
+      - template: SkillFunctionalTestsbuild.yml
+
+    - job: jsfunctional
+      steps:
+      - template: jsfunctional.yml
+
+    - job: pythonfunctional
+      steps:
+      - template: pythonfunctional.yml
+
+    - job: FunctionalTestsBotsbuild
+      steps:
+      - template: FunctionalTestsBotsbuild.yml
+pool:
     vmImage: 'ubuntu-18.04'
-
-  steps:
-  - template: 'SkillFunctionalTestsbuild.yml'
-  
-  - template: 'jsfunctional.yml'
-
-  - template: 'pythonfunctional.yml'
-
-  - template: 'FunctionalTestsBotsbuild.yml'
