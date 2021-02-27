@@ -4,19 +4,11 @@
     displayName: Use Python version
     inputs:
       versionSpec: '3.7.x'
-  - powershell:
-     $allHostRequirementsFiles=Get-ChildItem -Path 'Bots/Python/Consumers' -Recurse -Include requirements.txt
-      $allHostRequirementsFiles
-      $allSkillRequirementsFiles=Get-ChildItem -Path Bots/Python/Skills -Include requirements.txt -Recursive
-      $allSkillRequirementsFiles
-      python -m pip install --upgrade pip
-      foreach($hostBot in $allHostRequirementsFiles)
-      {
-          pip install -r $hostBot.fullName
-      }
-      foreach($skillBot in $allSkillRequirementsFiles)
-      {
-          pip install -r $skillBot.fullName
-      }
-
-
+  - task: CmdLine@2
+    displayName: Install dependencies
+    inputs:
+      script: >
+        
+        python -m pip install --upgrade pip
+        for /R Bots/Python/Consumers/ %%f in (requirements.txt) do pip install
+        for /R Bots/Python/Skills/ %%f in (requirements.txt) do pip install
