@@ -5,14 +5,18 @@
     inputs:
       versionSpec: '3.7.x'
   - powershell:
-      $allHostRequirementsFiles=get-ChildItem -path Bots/Python/Consumers -include requirements.txt -recursive
-      $allSkillRequirementsFiles=get-ChildItem -path Bots/Python/Skills -include requirements.txt -recursive
+     $allHostRequirementsFiles=Get-ChildItem -Path 'Bots/Python/Consumers' -Recurse -Include requirements.txt
+      $allHostRequirementsFiles
+      $allSkillRequirementsFiles=Get-ChildItem -Path Bots/Python/Skills -Include requirements.txt -Recursive
+      $allSkillRequirementsFiles
       python -m pip install --upgrade pip
       foreach($hostBot in $allHostRequirementsFiles)
       {
-        pip install -r $hostBot.fullName
+          pip install -r $hostBot.fullName
       }
       foreach($skillBot in $allSkillRequirementsFiles)
       {
-        pip install -r $skillBot.fullName
+          pip install -r $skillBot.fullName
       }
+
+
