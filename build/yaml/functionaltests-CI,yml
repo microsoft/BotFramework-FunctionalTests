@@ -17,4 +17,4 @@ jobs:
       steps:
       - template: FunctionalTestsBotsbuild.yml
 pool:
-    vmImage: 'ubuntu-18.04'
+    vmImage: 'windows-2019'
