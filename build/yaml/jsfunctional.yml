@@ -1,8 +1,4 @@
 steps:
-  - task: NodeTool@0
-    displayName: 'Use Node 10.x'
-    inputs:
-      versionSpec: '10.15.1'
   - task: Npm@1
     displayName: npm install Host Bot
     inputs:
