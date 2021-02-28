@@ -8,13 +8,6 @@
     displayName: Install dependencies
     inputs:
       script: >
-          - task: CmdLine@2
-    displayName: Install dependencies
-    inputs:
-  - task: CmdLine@2
-    displayName: Install dependencies
-    inputs:
-      script: >
         python -m pip install --upgrade pip
         pip install -r Bots/Python/Consumers/CodeFirst/SimpleGovHostBot/requirements.txt
         pip install -r Bots/Python/Consumers/CodeFirst/SimpleHostBot/requirements.txt
