@@ -8,7 +8,16 @@
     displayName: Install dependencies
     inputs:
       script: >
+          - task: CmdLine@2
+    displayName: Install dependencies
+    inputs:
+      script: >
         python -m pip install --upgrade pip
-        for /R "Bots/Python/Consumers" %f in (requirements.txt) do pip install -r %f
+        pip install -r Bots/Python/Consumers/CodeFirst/SimpleGovHostBot/requirements.txt
+        pip install -r Bots/Python/Consumers/CodeFirst/SimpleHostBot/requirements.txt
+        pip install -r Bots/Python/Skills/CodeFirst/CardSkillBot/requirements.txt
+        pip install -r Bots/Python/Skills/CodeFirst/EchoSkillBot/requirements.txt
+        pip install -r Bots/Python/Skills/CodeFirst/MultiturnSkillBot/requirements.txt
+        pip install -r Bots/Python/Skills/CodeFirst/ProactiveSkillBot/requirements.txt
       failOnStderr: true
 
