@@ -3,7 +3,7 @@
   "manifestVersion": "1.7",
   "version": "1.0.0",
   "id": "",
-  "packageName": "com.microsoft.botframeworkfunctionaltests.teamswaterfallhost",
+  "packageName": "com.microsoft.botframeworkfunctionaltests.teamswaterfall",
   "developer": {
     "name": "Microsoft",
     "websiteUrl": "https://example.azurewebsites.net",
@@ -15,12 +15,12 @@
     "outline": "icon-outline.png"
   },
   "name": {
-    "short": "Teams Waterfall Host",
-    "full": "Teams Waterfall Host"
+    "short": "Teams Waterfall",
+    "full": "Teams Waterfall"
   },
   "description": {
-    "short": "Teams Waterfall Host",
-    "full": "Teams Waterfall Host"
+    "short": "Teams Waterfall",
+    "full": "Teams Waterfall"
   },
   "accentColor": "#FFFFFF",
   "bots": [

@@ -90,7 +90,6 @@ namespace Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot
                     endpoints.MapControllers();
                 });
 
-            // Uncomment this to support HTTPS.
             app.UseHttpsRedirection();
         }
     }

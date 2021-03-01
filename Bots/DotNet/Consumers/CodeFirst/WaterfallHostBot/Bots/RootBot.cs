@@ -16,19 +16,14 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Bots
     public class RootBot<T> : ActivityHandler
         where T : Dialog
     {
-        public const string ActiveSkillPropertyName = "activeSkillProperty";
-
         private readonly IStatePropertyAccessor<BotFrameworkSkill> _activeSkillProperty;
         private readonly ConversationState _conversationState;
         private readonly Dialog _mainDialog;
 
-        public RootBot(ConversationState conversationState, T mainDialog, UserState userState)
+        public RootBot(ConversationState conversationState, T mainDialog)
         {
             _conversationState = conversationState;
             _mainDialog = mainDialog;
-
-            // Create state property to track the active skill
-            _activeSkillProperty = _conversationState.CreateProperty<BotFrameworkSkill>(ActiveSkillPropertyName);
         }
 
         public override async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default)
@@ -63,15 +58,6 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Bots
                     await _mainDialog.RunAsync(turnContext, _conversationState.CreateProperty<DialogState>("DialogState"), cancellationToken);
                 }
             }
-        }
-
-        protected override async Task OnEndOfConversationActivityAsync(ITurnContext<IEndOfConversationActivity> turnContext, CancellationToken cancellationToken)
-        {
-            // forget skill invocation
-            await _activeSkillProperty.DeleteAsync(turnContext, cancellationToken);
-
-            await _conversationState.LoadAsync(turnContext, true, cancellationToken);
-            await _mainDialog.RunAsync(turnContext, _conversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
         }
 
         // Load attachment from embedded resource.
