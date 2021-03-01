@@ -1,0 +1,96 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+
+import tempfile
+import os
+import urllib.request
+import shutil
+from botbuilder.core import MessageFactory
+from botbuilder.dialogs import (
+    ComponentDialog,
+    DialogTurnResult,
+    DialogTurnStatus,
+    WaterfallDialog,
+    WaterfallStepContext,
+    Choice,
+    ListStyle,
+)
+from botbuilder.dialogs.prompts import ChoicePrompt, PromptOptions, AttachmentPrompt
+from botbuilder.schema import (
+    InputHints,
+    Activity,
+    ActivityTypes,
+    EndOfConversationCodes,
+)
+
+
+class FileUploadDialog(ComponentDialog):
+    def __init__(self):
+        super().__init__(FileUploadDialog.__name__)
+
+        self.add_dialog(AttachmentPrompt(AttachmentPrompt.__name__))
+        self.add_dialog(ChoicePrompt(ChoicePrompt.__name__))
+        self.add_dialog(
+            WaterfallDialog(
+                WaterfallDialog.__name__,
+                [self.prompt_upload_step, self.handle_attachment_step, self.final_step],
+            )
+        )
+
+        self.initial_dialog_id = WaterfallDialog.__name__
+
+    async def prompt_upload_step(self, step_context: WaterfallStepContext):
+        return await step_context.prompt(
+            AttachmentPrompt.__name__,
+            PromptOptions(
+                prompt=MessageFactory.text(
+                    "Please upload a file to continue.", InputHints.accepting_input
+                ),
+                retry_prompt=MessageFactory.text("You must upload a file."),
+            ),
+        )
+
+    async def handle_attachment_step(self, step_context: WaterfallStepContext):
+        file_text = ""
+
+        for file in step_context.context.activity.attachments:
+            remote_file_url = file.content_url
+            local_file_name = os.path.join(tempfile.gettempdir(), file.name)
+            with urllib.request.urlopen(remote_file_url) as response, open(
+                local_file_name, "wb"
+            ) as out_file:
+                shutil.copyfileobj(response, out_file)
+
+            file_text += f'Attachment "${ file.name }" has been received and saved to "${ local_file_name }"\r\n'
+
+        await step_context.context.send_activity(MessageFactory.text(file_text))
+
+        message_text = "Do you want to upload another file?"
+        reprompt_message_text = 'You must select "Yes" or "No".'
+
+        options = PromptOptions(
+            prompt=MessageFactory.text(
+                message_text, message_text, InputHints.expecting_input
+            ),
+            retry_prompt=MessageFactory.text(
+                reprompt_message_text, reprompt_message_text, InputHints.expecting_input
+            ),
+            choices=[Choice("Yes"), Choice("No")],
+            style=ListStyle.list_style,
+        )
+
+        return await step_context.prompt(ChoicePrompt.__name__, options)
+
+    async def final_step(self, step_context: WaterfallStepContext):
+        choice = str(step_context.result.value).lower()
+
+        if choice == "yes":
+            return await step_context.replace_dialog(self.initial_dialog_id)
+
+        await step_context.context.send_activity(
+            Activity(
+                type=ActivityTypes.end_of_conversation,
+                code=EndOfConversationCodes.completed_successfully,
+            )
+        )
+        return DialogTurnResult(DialogTurnStatus.Complete)
