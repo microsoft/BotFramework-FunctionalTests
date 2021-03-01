@@ -18,15 +18,12 @@ steps:
   inputs:
     command: 'restore'
     restoreSolution: 'Bots/DotNet/FunctionalTestsBots.sln'
-    feedsToUse: 'config'
-    nugetConfigPath: 'Bots/DotNet/nuget.config'
 
 
 - task: DotNetCoreCLI@2
+  displayName: 'dotnet build'
   inputs:
-    command: 'build'
-    projects: 'Bots/DotNet/FunctionalTestsBots.sln'
-    workingDirectory: 'Bots/DotNet'
+    projects: Bots/DotNet/FunctionalTestsBots.sln
 
 
 - task: PublishBuildArtifacts@1
@@ -41,3 +38,4 @@ steps:
   displayName: 'Dir workspace'
   continueOnError: true
   condition: succeededOrFailed()
+
