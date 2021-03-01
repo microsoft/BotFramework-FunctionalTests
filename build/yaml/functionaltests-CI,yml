@@ -17,4 +17,4 @@ jobs:
       steps:
       - template: FunctionalTestsBotsbuild.yml
 pool:
-    vmImage: 'windows-2019'
+    vmImage: 'macOS-10.14'
