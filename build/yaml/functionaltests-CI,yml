@@ -14,7 +14,11 @@ jobs:
       - template: pythonfunctional.yml
 
     - job: FunctionalTestsBotsbuild
+      variables:
+        SolutionDir: '$(Build.SourcesDirectory)/Bots/DotNet/'
+        BuildConfiguration: 'Debug'
+        BuildPlatform: 'Any CPU'
       steps:
       - template: FunctionalTestsBotsbuild.yml
 pool:
-    vmImage: 'macOS-10.14'
+    vmImage: 'windows-2019'

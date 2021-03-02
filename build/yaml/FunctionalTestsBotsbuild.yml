@@ -18,13 +18,18 @@ steps:
   inputs:
     command: 'restore'
     restoreSolution: 'Bots/DotNet/FunctionalTestsBots.sln'
+    restoreDirectory: '$(SolutionDir)packages'
+    feedsToUse: config
+    nugetConfigPath: Bots/DotNet/nuget.config
 
 
-- task: DotNetCoreCLI@2
-  displayName: 'dotnet build'
+- task: MSBuild@1
+  displayName: 'Build'
   inputs:
-    projects: Bots/DotNet/FunctionalTestsBots.sln
-
+    solution: 'Bots/DotNet/FunctionalTestsBots.sln'
+    vsVersion: 16.0
+    platform: '$(BuildPlatform)'
+    configuration: '$(BuildConfiguration)'
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: build folder'
