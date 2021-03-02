@@ -1,6 +1,6 @@
 # Pipelines
 
-## Create Shared Resources Pipeline
+## 01 - Create Shared Resources Pipeline
 
 - **Description**: Creates all the long-term resources required.
 - **Schedule**: Quarterly or on demand.
@@ -14,7 +14,7 @@
 | **AppServicePlanPricingTier** | User | (optional) Pricing tier for the App Service Plan. **Possible values are: F1 (default), S1.** |
 | **ResourceSuffix** | User | (optional) Suffix to add to the resource names to avoid collisions. |
 
-## Deploy Bot Resources Pipeline
+## 02 - Deploy Bot Resources Pipeline
 
 - **Description:** Creates the test bot resources to be used in the functional tests, separated in one Resource Group for each language (DotNet, JS, and Python)
 - **Schedule**: Nightly or on demand.
@@ -41,7 +41,7 @@
 | **DependeciesVersionSkillsV3** | User | (optional) Bot Builder dependency version to use for all hosts. **Possible values are: Latest (default), Stable, or specific version numbers.** |
 | **ResourceSuffix** | Create Shared Resources | (optional) Suffix to add to the resource names to avoid collisions. |
 
-## Run Test Scenarios Pipeline
+## 03 - Run Test Scenarios Pipeline
 
 - **Description:** Configures and executes the test scenarios.
 - **Schedule**: Nightly (after Deploy Bot Resources) or on demand.
@@ -54,7 +54,7 @@
 | **[BotName](#botnames) + AppId** | [App Registration Portal](https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade) | (optional) App ID to use. If not configured, it will be retrieved from the key vault. |
 | **ResourceSuffix** | Create Shared Resources | (optional) Suffix added to the resource names. |
 
-## Cleanup Resources Pipeline
+## 04 - Cleanup Resources Pipeline
 
 - **Description:** Removes all resources, including all the shared resources, bots, and app registrations.
 - **Schedule**: Quarterly or on demand.
