@@ -9,6 +9,8 @@ const { FileUploadDialog } = require('./fileUpload/fileUploadDialog');
 const { MessageWithAttachmentDialog } = require('./messageWithAttachment/messageWithAttachmentDialog');
 const { WaitForProactiveDialog } = require('./proactive/waitForProactiveDialog');
 const { SsoSkillDialog } = require('./sso/ssoSkillDialog');
+const { DeleteDialog } = require('./delete/deleteDialog');
+const { UpdateDialog } = require('./update/updateDialog');
 
 const MAIN_DIALOG = 'ActivityRouterDialog';
 const WATERFALL_DIALOG = 'WaterfallDialog';
@@ -19,6 +21,8 @@ const AUTH_DIALOG = 'Auth';
 const SSO_DIALOG = 'Sso';
 const FILE_UPLOAD_DIALOG = 'FileUpload';
 const ECHO_DIALOG = 'Echo';
+const DELETE_DIALOG = 'Delete';
+const UPDATE_DIALOG = 'Update';
 
 /**
  * A root dialog that can route activities sent to the skill to different sub-dialogs.
@@ -40,6 +44,8 @@ class ActivityRouterDialog extends ComponentDialog {
             .addDialog(new AuthDialog(AUTH_DIALOG, process.env))
             .addDialog(new SsoSkillDialog(SSO_DIALOG, process.env))
             .addDialog(new FileUploadDialog(FILE_UPLOAD_DIALOG))
+            .addDialog(new DeleteDialog(DELETE_DIALOG))
+            .addDialog(new UpdateDialog(UPDATE_DIALOG))
             .addDialog(this.createEchoSkillDialog(ECHO_DIALOG, conversationState, conversationIdFactory, skillClient, process.env))
             .addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
                 this.processActivity.bind(this)
@@ -129,6 +135,8 @@ class ActivityRouterDialog extends ComponentDialog {
         case AUTH_DIALOG:
         case SSO_DIALOG:
         case FILE_UPLOAD_DIALOG:
+        case DELETE_DIALOG:
+        case UPDATE_DIALOG:
             return stepContext.beginDialog(activity.name);
 
         case ECHO_DIALOG: {
