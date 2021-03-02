@@ -263,11 +263,11 @@ class CardSampleHelper:
         section = O365ConnectorCardSection(
             title="**section title**",
             text="section text",
-            activityTitle="activity title",
-            activitySubtitle="activity subtitle",
-            activityText="activity text",
-            activityImage="http://connectorsdemo.azurewebsites.net/images/MSC12_Oscar_002.jpg",
-            activityImageType="avatar",
+            activity_title="activity title",
+            activity_subtitle="activity subtitle",
+            activity_text="activity text",
+            activity_image="http://connectorsdemo.azurewebsites.net/images/MSC12_Oscar_002.jpg",
+            activity_image_type="avatar",
             markdown=True,
             facts=[
                 O365ConnectorCardFact(name="Fact name 1", value="Fact value 1"),
@@ -296,7 +296,7 @@ class CardSampleHelper:
             id="card-1",
             inputs=[
                 O365ConnectorCardMultichoiceInput(
-                    type="multichoiceInput",
+                    type="MultichoiceInput",
                     id="list-1",
                     is_required=True,
                     title="Pick multiple options",
@@ -315,7 +315,7 @@ class CardSampleHelper:
                     is_multi_select=True,
                 ),
                 O365ConnectorCardMultichoiceInput(
-                    type="multichoiceInput",
+                    type="MultichoiceInput",
                     id="list-2",
                     is_required=True,
                     title="Pick multiple options",
@@ -334,7 +334,7 @@ class CardSampleHelper:
                     is_multi_select=True,
                 ),
                 O365ConnectorCardMultichoiceInput(
-                    type="multichoiceInput",
+                    type="MultichoiceInput",
                     id="list-3",
                     is_required=False,
                     title="Pick an option",
@@ -353,7 +353,7 @@ class CardSampleHelper:
                     is_multi_select=False,
                 ),
                 O365ConnectorCardMultichoiceInput(
-                    type="multichoiceInput",
+                    type="MultichoiceInput",
                     id="list-4",
                     is_required=False,
                     title="Pick an option",
@@ -389,21 +389,21 @@ class CardSampleHelper:
             id="card-2",
             inputs=[
                 O365ConnectorCardTextInput(
-                    type="textInput",
+                    type="TextInput",
                     id="text-1",
                     is_required=False,
                     title="multiline, no maxLength",
                     is_multiline=True,
                 ),
                 O365ConnectorCardTextInput(
-                    type="textInput",
+                    type="TextInput",
                     id="text-2",
                     is_required=False,
                     title="single line, no maxLength",
                     is_multiline=False,
                 ),
                 O365ConnectorCardTextInput(
-                    type="textInput",
+                    type="TextInput",
                     id="text-3",
                     is_required=True,
                     title="multiline, max len = 10, isRequired",
@@ -411,7 +411,7 @@ class CardSampleHelper:
                     max_length=10,
                 ),
                 O365ConnectorCardTextInput(
-                    type="textInput",
+                    type="TextInput",
                     id="text-4",
                     is_required=True,
                     title="single line, max len = 10, isRequired",
@@ -436,14 +436,14 @@ class CardSampleHelper:
             id="card-3",
             inputs=[
                 O365ConnectorCardDateInput(
-                    type="dateInput",
+                    type="DateInput",
                     id="date-1",
                     is_required=True,
                     title="date with time",
                     include_time=True,
                 ),
                 O365ConnectorCardDateInput(
-                    type="dateInput",
+                    type="DateInput",
                     id="date-2",
                     is_required=False,
                     title="date only",
@@ -471,10 +471,13 @@ class CardSampleHelper:
                 action_card2,
                 action_card3,
                 O365ConnectorCardViewAction(
-                    type="ViewAction", target=["http://microsoft.com"]
+                    type="ViewAction",
+                    name="View Action",
+                    target=["http://microsoft.com"]
                 ),
                 O365ConnectorCardOpenUri(
-                    type="Open Uri",
+                    type="OpenUri",
+                    name="Open Uri",
                     id="open-uri",
                     targets=[
                         O365ConnectorCardOpenUriTarget(
@@ -494,7 +497,10 @@ class CardSampleHelper:
             ],
         )
 
-        return Attachment(card)
+        return Attachment(
+            content=card,
+            content_type=ContentType.O365_CONNECTOR_CARD
+        )
 
     @staticmethod
     def create_teams_file_consent_card(file_name: str):
