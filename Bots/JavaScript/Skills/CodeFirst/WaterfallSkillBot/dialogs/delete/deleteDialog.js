@@ -1,34 +1,23 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-const { MessageFactory, InputHints } = require('botbuilder');
-const { ComponentDialog, AttachmentPrompt, ChoicePrompt, WaterfallDialog, ListStyle, ChoiceFactory, DialogTurnStatus } = require('botbuilder-dialogs');
-const fs = require('fs');
-const fetch = require('node-fetch');
-const os = require('os');
-const path = require('path');
-const stream = require('stream');
-const util = require('util');
+const { MessageFactory } = require('botbuilder');
+const { ComponentDialog, WaterfallDialog, DialogTurnStatus } = require('botbuilder-dialogs');
+const { Channels} = require('botbuilder-core');
 
-const streamPipeline = util.promisify(stream.pipeline);
-
-const ATTACHMENT_PROMPT = 'AttachmentPrompt';
-const CHOICE_PROMPT = 'ChoicePrompt';
+const SLEEP_TIMER = 5000;
 const WATERFALL_DIALOG = 'WaterfallDialog';
+const DELETE_UNSUPPORTED = new Set([Channels.Emulator, Channels.Facebook, Channels.Webchat]);
 
-class FileUploadDialog extends ComponentDialog {
+class DeleteDialog extends ComponentDialog {
     /**
      * @param {string} dialogId
      */
     constructor(dialogId) {
         super(dialogId);
 
-        this.addDialog(new AttachmentPrompt(ATTACHMENT_PROMPT))
-            .addDialog(new ChoicePrompt(CHOICE_PROMPT))
-            .addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
-                this.promptUploadStep.bind(this),
-                this.handleAttachmentStep.bind(this),
-                this.finalStep.bind(this)
+        this.addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
+                this.HandleDeleteDialog.bind(this)
             ]));
 
         this.initialDialogId = WATERFALL_DIALOG;
@@ -37,52 +26,29 @@ class FileUploadDialog extends ComponentDialog {
     /**
      * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
      */
-    async promptUploadStep(stepContext) {
-        return stepContext.prompt(ATTACHMENT_PROMPT, {
-            prompt: MessageFactory.text('Please upload a file to continue.'),
-            retryPrompt: MessageFactory.text('You must upload a file.')
-        });
-    }
+    async HandleDeleteDialog(stepContext) {
+        let channel = stepContext.context.activity.channelId;
 
-    /**
-     * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
-     */
-    async handleAttachmentStep(stepContext) {
-        let filetext = '';
-
-        for (const file of stepContext.context.activity.attachments) {
-            const localFileName = path.resolve(os.tmpdir(), file.name);
-            const tempFile = fs.createWriteStream(localFileName);
-            fetch(file.contentUrl).then(response => streamPipeline(response.body, tempFile));
-
-            filetext += `Attachment "${ file.name }" has been received and saved to "${ localFileName }"\r\n`;
+        if (DeleteDialog.isDeleteSupported(channel)){
+            var id = await stepContext.context.sendActivity(MessageFactory.text("I will delete this message in 5 seconds"));
+            DeleteDialog.sleep();
+            await stepContext.context.deleteActivity(id.id);
+        }
+        else{
+            await stepContext.context.sendActivity(MessageFactory.text(`Delete is not supported in the ${channel} channel.`))
         }
 
-        await stepContext.context.sendActivity(MessageFactory.text(filetext));
-
-        const messageText = 'Do you want to upload another file?';
-        const repromptMessageText = 'You must select "Yes" or "No".';
-
-        return stepContext.prompt(CHOICE_PROMPT, {
-            prompt: MessageFactory.text(messageText, messageText, InputHints.ExpectingInput),
-            retryPrompt: MessageFactory.text(repromptMessageText, repromptMessageText, InputHints.ExpectingInput),
-            choices: ChoiceFactory.toChoices(['Yes', 'No']),
-            style: ListStyle.list
-        });
+        return { status: DialogTurnStatus.complete };
     }
 
-    /**
-     * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
-     */
-    async finalStep(stepContext) {
-        const choice = stepContext.result.value.toLowerCase();
+    static sleep() {
+        var e = new Date().getTime() + SLEEP_TIMER;
+        while (new Date().getTime() <= e){}
+    }
 
-        if (choice === 'yes') {
-            return stepContext.replaceDialog(this.initialDialogId);
-        } else {
-            return { status: DialogTurnStatus.complete };
-        }
+    static isDeleteSupported(channel) {
+        return !DELETE_UNSUPPORTED.has(channel);
     }
 }
 
-module.exports.FileUploadDialog = FileUploadDialog;
+module.exports.DeleteDialog = DeleteDialog
