@@ -11,6 +11,8 @@ const SKILL_ACTION_MESSAGE_WITH_ATTACHMENT = 'MessageWithAttachment';
 const SKILL_ACTION_SSO = 'Sso';
 const SKILL_ACTION_FILE_UPLOAD = 'FileUpload';
 const SKILL_ACTION_CALL_ECHO_SKILL = 'Echo';
+const SKILL_ACTION_CALL_DELETE_SKILL = 'Delete';
+const SKILL_ACTION_CALL_UPDATE_SKILL = 'Update';
 
 class WaterfallSkill extends SkillDefinition {
     getActions() {
@@ -21,7 +23,9 @@ class WaterfallSkill extends SkillDefinition {
             SKILL_ACTION_MESSAGE_WITH_ATTACHMENT,
             SKILL_ACTION_SSO,
             SKILL_ACTION_FILE_UPLOAD,
-            SKILL_ACTION_CALL_ECHO_SKILL
+            SKILL_ACTION_CALL_ECHO_SKILL,
+            SKILL_ACTION_CALL_DELETE_SKILL,
+            SKILL_ACTION_CALL_UPDATE_SKILL,
         ];
     }
 
@@ -65,6 +69,14 @@ class WaterfallSkill extends SkillDefinition {
             // Send an event activity to the skill with "Echo" in the name.
         case SKILL_ACTION_CALL_ECHO_SKILL:
             activity.name = SKILL_ACTION_CALL_ECHO_SKILL;
+            break;
+        
+        case SKILL_ACTION_CALL_DELETE_SKILL:
+            activity.name = SKILL_ACTION_CALL_DELETE_SKILL;
+            break;
+
+        case SKILL_ACTION_CALL_UPDATE_SKILL:
+            activity.name = SKILL_ACTION_CALL_UPDATE_SKILL;
             break;
 
         default:
