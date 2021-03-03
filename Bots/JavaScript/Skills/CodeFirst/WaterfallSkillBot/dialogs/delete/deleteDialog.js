@@ -1,12 +1,13 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-const { MessageFactory } = require('botbuilder');
-const { ComponentDialog, WaterfallDialog, DialogTurnStatus } = require('botbuilder-dialogs');
+const { MessageFactory, InputHints } = require('botbuilder');
+const { ChoiceFactory, ChoicePrompt, ComponentDialog, WaterfallDialog, DialogTurnStatus, ListStyle } = require('botbuilder-dialogs');
 const { Channels } = require('botbuilder-core');
 
 const SLEEP_TIMER = 5000;
 const WATERFALL_DIALOG = 'WaterfallDialog';
+const CHOICE_PROMPT = 'ChoicePrompt';
 const DELETE_UNSUPPORTED = new Set([Channels.Emulator, Channels.Facebook, Channels.Webchat]);
 
 class DeleteDialog extends ComponentDialog {
@@ -16,8 +17,10 @@ class DeleteDialog extends ComponentDialog {
     constructor(dialogId) {
         super(dialogId);
 
-        this.addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
-                this.HandleDeleteDialog.bind(this)
+        this//.addDialog(new ChoicePrompt(CHOICE_PROMPT))
+            .addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
+                this.HandleDeleteDialog.bind(this),
+                //this.FinalStep.bind(this)
             ]));
 
         this.initialDialogId = WATERFALL_DIALOG;
@@ -29,21 +32,44 @@ class DeleteDialog extends ComponentDialog {
     async HandleDeleteDialog(stepContext) {
         let channel = stepContext.context.activity.channelId;
 
-        if (DeleteDialog.isDeleteSupported(channel)){
+        if (DeleteDialog.isDeleteSupported(channel))
+        {
             var id = await stepContext.context.sendActivity(MessageFactory.text("I will delete this message in 5 seconds"));
-            DeleteDialog.sleep();
+            await DeleteDialog.sleep(SLEEP_TIMER);
             await stepContext.context.deleteActivity(id.id);
         }
-        else{
+        else
+        {
             await stepContext.context.sendActivity(MessageFactory.text(`Delete is not supported in the ${channel} channel.`))
-        }
+        }    
 
-        return { status: DialogTurnStatus.complete };
+        return stepContext.endDialog();
+
+        // const messageText = 'Do you want to delete again?';
+        // const repromptMessageText = 'You must select "Yes" or "No".';
+
+        // return stepContext.prompt(CHOICE_PROMPT, {
+        //     prompt: MessageFactory.text(messageText, messageText, InputHints.ExpectingInput),
+        //     retryPrompt: MessageFactory.text(repromptMessageText, repromptMessageText, InputHints.ExpectingInput),
+        //     choices: ChoiceFactory.toChoices(['Yes', 'No']),
+        //     style: ListStyle.list
+        // });
     }
 
-    static sleep() {
-        var e = new Date().getTime() + SLEEP_TIMER;
-        while (new Date().getTime() <= e){}
+    // async FinalStep(stepContext) {
+    //     const choice = stepContext.result.value.toLowerCase();
+
+    //     if (choice === 'yes') {
+    //         return stepContext.replaceDialog(this.initialDialogId);
+    //     } else {
+    //         return { status: DialogTurnStatus.complete };
+    //     }
+    // }
+
+    static sleep(milliseconds) {
+        return new Promise(resolve => {
+            setTimeout(resolve, milliseconds);
+        });
     }
 
     static isDeleteSupported(channel) {
