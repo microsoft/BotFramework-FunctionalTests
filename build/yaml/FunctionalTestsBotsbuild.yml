@@ -11,25 +11,211 @@ steps:
     version: 3.1.x
 
 - task: NuGetToolInstaller@1
-  inputs:
-    versionSpec: 
+  displayName: 'Use NuGet'
 
+# Start of Restore & Build excluding Composer and V3
+- task: DotNetCoreCLI@2
+  displayName: Restore bots
+  inputs:
+    command: restore
+    projects: |
+      Bots/DotNet/**/*.csproj
+      !Bots/DotNet/**/Composer/**/*.csproj
+      !Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3/EchoSkillBot-v3.csproj
+    feedsToUse: 'select'
+    includeNuGetOrg: true
+
+- task: DotNetCoreCLI@2
+  displayName: Build bots
+  inputs:
+    command: build
+    projects: |
+      Bots/DotNet/**/*.csproj
+      !Bots/DotNet/**/Composer/**/*.csproj
+      !Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3/EchoSkillBot-v3.csproj
+    feedsToUse: 'select'
+    includeNuGetOrg: true
+# End of Restore & Build excluding Composer and V3
+
+# Start of Restore & Build for Composer
+- template: deployBotResources/dotnet/evaluateDependenciesVariables.yml
+  parameters:
+    botType: "Host"
+
+- template: deployBotResources/dotnet/installDependencies.yml
+  parameters:
+    source: "$(DependenciesSource)"
+    version: "$(DependenciesVersionNumber)"
+    project: 
+      directory: 'Bots/DotNet/Consumers/Composer/SimpleHostBotComposer/runtime/azurewebapp/'
+      name: 'Microsoft.BotFramework.Composer.WebApp.csproj'
+    packages:
+      Microsoft.Bot.Builder
+      Microsoft.Bot.Builder.AI.Luis
+      Microsoft.Bot.Builder.AI.QnA
+      Microsoft.Bot.Builder.ApplicationInsights
+      Microsoft.Bot.Builder.Azure
+      Microsoft.Bot.Builder.Dialogs.Declarative
+      Microsoft.Bot.Builder.Dialogs.Adaptive
+      Microsoft.Bot.Builder.Dialogs.Debugging
+      Microsoft.Bot.Builder.Integration.ApplicationInsights.Core
+      Microsoft.Bot.Builder.Integration.AspNet.Core
+      Microsoft.Bot.Builder.Dialogs
+      Microsoft.Bot.Connector
+
+- template: deployBotResources/dotnet/installDependencies.yml
+  parameters:
+    source: "$(DependenciesSource)"
+    version: "$(DependenciesVersionNumber)"
+    project: 
+      directory: 'Bots/DotNet/Consumers/Composer/SimpleHostBotComposer/runtime/azurefunctions/'
+      name: 'Microsoft.BotFramework.Composer.Functions.csproj'
+    packages:
+      Microsoft.Bot.Builder
+      Microsoft.Bot.Builder.AI.Luis
+      Microsoft.Bot.Builder.AI.QnA
+      Microsoft.Bot.Builder.ApplicationInsights
+      Microsoft.Bot.Builder.Azure
+      Microsoft.Bot.Builder.Dialogs.Adaptive
+      Microsoft.Bot.Builder.Dialogs.Debugging
+      Microsoft.Bot.Builder.Dialogs.Declarative
+      Microsoft.Bot.Builder.Integration.ApplicationInsights.Core
+      Microsoft.Bot.Builder.Integration.AspNet.Core
+      Microsoft.Bot.Builder.Dialogs
+      Microsoft.Bot.Connector
+
+- template: deployBotResources/dotnet/installDependencies.yml
+  parameters:
+    source: "$(DependenciesSource)"
+    version: "$(DependenciesVersionNumber)"
+    project:
+      directory: 'Bots/DotNet/Consumers/Composer/SimpleHostBotComposer/runtime/customaction/'
+      name: 'Microsoft.BotFramework.Composer.CustomAction.csproj'
+    packages:
+      Microsoft.Bot.Builder.Dialogs.Adaptive
+
+- template: deployBotResources/dotnet/installDependencies.yml
+  parameters:
+    source: "$(DependenciesSource)"
+    version: "$(DependenciesVersionNumber)"
+    project: 
+      directory: 'Bots/DotNet/Consumers/Composer/SimpleHostBotComposer/runtime/core/'
+      name: 'Microsoft.BotFramework.Composer.Core.csproj'
+    packages:
+      Microsoft.Bot.Builder
+      Microsoft.Bot.Builder.AI.Luis
+      Microsoft.Bot.Builder.AI.QnA
+      Microsoft.Bot.Builder.ApplicationInsights
+      Microsoft.Bot.Builder.Azure
+      Microsoft.Bot.Builder.Azure.Blobs
+      Microsoft.Bot.Builder.Dialogs.Adaptive
+      Microsoft.Bot.Builder.Dialogs.Debugging
+      Microsoft.Bot.Builder.Dialogs.Declarative
+      Microsoft.Bot.Builder.Integration.ApplicationInsights.Core
+      Microsoft.Bot.Builder.Integration.AspNet.Core
+      Microsoft.Bot.Builder.Dialogs
+      Microsoft.Bot.Connector
+
+- template: deployBotResources/dotnet/installDependencies.yml
+  parameters:
+    source: "$(DependenciesSource)"
+    version: "$(DependenciesVersionNumber)"
+    project: 
+      directory: 'Bots/DotNet/Skills/Composer/EchoSkillBotComposer/runtime/azurewebapp/'
+      name: 'Microsoft.BotFramework.Composer.WebApp.csproj'
+    packages:
+      Microsoft.Bot.Builder
+      Microsoft.Bot.Builder.AI.Luis
+      Microsoft.Bot.Builder.AI.QnA
+      Microsoft.Bot.Builder.ApplicationInsights
+      Microsoft.Bot.Builder.Azure
+      Microsoft.Bot.Builder.Dialogs.Declarative
+      Microsoft.Bot.Builder.Dialogs.Adaptive
+      Microsoft.Bot.Builder.Dialogs.Debugging
+      Microsoft.Bot.Builder.Integration.ApplicationInsights.Core
+      Microsoft.Bot.Builder.Integration.AspNet.Core
+      Microsoft.Bot.Builder.Dialogs
+      Microsoft.Bot.Connector
+
+- template: deployBotResources/dotnet/installDependencies.yml
+  parameters:
+    source: "$(DependenciesSource)"
+    version: "$(DependenciesVersionNumber)"
+    project: 
+      directory: 'Bots/DotNet/Skills/Composer/EchoSkillBotComposer/runtime/azurefunctions/'
+      name: 'Microsoft.BotFramework.Composer.Functions.csproj'
+    packages:
+      Microsoft.Bot.Builder
+      Microsoft.Bot.Builder.AI.Luis
+      Microsoft.Bot.Builder.AI.QnA
+      Microsoft.Bot.Builder.ApplicationInsights
+      Microsoft.Bot.Builder.Azure
+      Microsoft.Bot.Builder.Dialogs.Adaptive
+      Microsoft.Bot.Builder.Dialogs.Debugging
+      Microsoft.Bot.Builder.Dialogs.Declarative
+      Microsoft.Bot.Builder.Integration.ApplicationInsights.Core
+      Microsoft.Bot.Builder.Integration.AspNet.Core
+      Microsoft.Bot.Builder.Dialogs
+      Microsoft.Bot.Connector
+
+- template: deployBotResources/dotnet/installDependencies.yml
+  parameters:
+    source: "$(DependenciesSource)"
+    version: "$(DependenciesVersionNumber)"
+    project:
+      directory: 'Bots/DotNet/Skills/Composer/EchoSkillBotComposer/runtime/customaction/'
+      name: 'Microsoft.BotFramework.Composer.CustomAction.csproj'
+    packages:
+      Microsoft.Bot.Builder.Dialogs.Adaptive
+
+- template: deployBotResources/dotnet/installDependencies.yml
+  parameters:
+    source: "$(DependenciesSource)"
+    version: "$(DependenciesVersionNumber)"
+    project: 
+      directory: 'Bots/DotNet/Skills/Composer/EchoSkillBotComposer/runtime/core/'
+      name: 'Microsoft.BotFramework.Composer.Core.csproj'
+    packages:
+      Microsoft.Bot.Builder
+      Microsoft.Bot.Builder.AI.Luis
+      Microsoft.Bot.Builder.AI.QnA
+      Microsoft.Bot.Builder.ApplicationInsights
+      Microsoft.Bot.Builder.Azure
+      Microsoft.Bot.Builder.Azure.Blobs
+      Microsoft.Bot.Builder.Dialogs.Adaptive
+      Microsoft.Bot.Builder.Dialogs.Debugging
+      Microsoft.Bot.Builder.Dialogs.Declarative
+      Microsoft.Bot.Builder.Integration.ApplicationInsights.Core
+      Microsoft.Bot.Builder.Integration.AspNet.Core
+      Microsoft.Bot.Builder.Dialogs
+      Microsoft.Bot.Connector
+
+- task: DotNetCoreCLI@2
+  displayName: 'Build composer bots'
+  inputs:
+    command: publish
+    publishWebProjects: false
+    projects: |
+      Bots/DotNet/**/Composer/**/runtime/azurewebapp/Microsoft.BotFramework.Composer.WebApp.csproj
+    modifyOutputPath: false
+    zipAfterPublish: false
+# End of Restore & Build for Composer
+
+# Start of Restore & Build for V3
 - task: NuGetCommand@2
+  displayName: 'Restore V3 bot'
   inputs:
-    command: 'restore'
-    restoreSolution: 'Bots/DotNet/FunctionalTestsBots.sln'
+    restoreSolution: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3/EchoSkillBot-v3.csproj'
     restoreDirectory: '$(SolutionDir)packages'
-    feedsToUse: config
-    nugetConfigPath: Bots/DotNet/nuget.config
-
 
 - task: MSBuild@1
-  displayName: 'Build'
+  displayName: 'Build V3 bot'
   inputs:
-    solution: 'Bots/DotNet/FunctionalTestsBots.sln'
+    solution: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3/EchoSkillBot-v3.csproj'
     vsVersion: 16.0
     platform: '$(BuildPlatform)'
     configuration: '$(BuildConfiguration)'
+# End of Restore & Build for V3
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: build folder'
@@ -43,4 +229,3 @@ steps:
   displayName: 'Dir workspace'
   continueOnError: true
   condition: succeededOrFailed()
-
