@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.Bot.Connector;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -28,7 +29,7 @@ namespace SkillFunctionalTests.LegacyTests
 
         public static IEnumerable<object[]> TestCases()
         {
-            var clientTypes = new List<ClientType> { ClientType.DirectLine };
+            var channelIds = new List<string> { Channels.Directline };
             var deliverModes = new List<string>
             {
                 DeliveryModes.Normal
@@ -62,7 +63,7 @@ namespace SkillFunctionalTests.LegacyTests
                 return false;
             }
 
-            var testCases = testCaseBuilder.BuildTestCases(clientTypes, deliverModes, hostBots, targetSkills, scripts, ShouldExclude);
+            var testCases = testCaseBuilder.BuildTestCases(channelIds, deliverModes, hostBots, targetSkills, scripts, ShouldExclude);
             foreach (var testCase in testCases)
             {
                 yield return testCase;
@@ -78,7 +79,7 @@ namespace SkillFunctionalTests.LegacyTests
 
             var options = TestClientOptions[testCase.HostBot];
 
-            var runner = new XUnitTestRunner(new TestClientFactory(testCase.ClientType, options, Logger).GetTestClient(), TestRequestTimeout, Logger);
+            var runner = new XUnitTestRunner(new TestClientFactory(testCase.ChannelId, options, Logger).GetTestClient(), TestRequestTimeout, Logger);
 
             var testParams = new Dictionary<string, string>
             {

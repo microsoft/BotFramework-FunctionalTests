@@ -3,6 +3,7 @@
 
 using System;
 using System.ComponentModel;
+using Microsoft.Bot.Connector;
 using Microsoft.Extensions.Logging;
 using TranscriptTestRunner.TestClients;
 
@@ -18,26 +19,26 @@ namespace TranscriptTestRunner
         /// <summary>
         /// Initializes a new instance of the <see cref="TestClientFactory"/> class.
         /// </summary>
-        /// <param name="client">The type of client to create.</param>
+        /// <param name="channel">The type of channel to create based on the <see cref="Channels"/> class.</param>
         /// <param name="options">The options to create the client.</param>
         /// <param name="logger">An optional <see cref="ILogger"/> instance.</param>
-        public TestClientFactory(ClientType client, DirectLineTestClientOptions options, ILogger logger)
+        public TestClientFactory(string channel, DirectLineTestClientOptions options, ILogger logger)
         {
-            switch (client)
+            switch (channel)
             {
-                case ClientType.DirectLine:
+                case Channels.Directline:
                     _testClientBase = new DirectLineTestClient(options, logger);
                     break;
-                case ClientType.Emulator:
+                case Channels.Emulator:
                     break;
-                case ClientType.Teams:
+                case Channels.Msteams:
                     break;
-                case ClientType.Facebook:
+                case Channels.Facebook:
                     break;
-                case ClientType.Slack:
+                case Channels.Slack:
                     break;
                 default:
-                    throw new InvalidEnumArgumentException($"Invalid client type ({client})");
+                    throw new InvalidEnumArgumentException($"Invalid client type ({channel})");
             }
         }
 
