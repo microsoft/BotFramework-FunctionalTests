@@ -23,7 +23,6 @@ const { SkillConversationIdFactory } = require('./skillConversationIdFactory');
 // Create HTTP server
 const server = restify.createServer({ maxParamLength: 1000 });
 server.use(restify.plugins.queryParser());
-
 server.listen(process.env.port || process.env.PORT || 36420, () => {
     console.log(`\n${ server.name } listening to ${ server.url }`);
     console.log('\nGet Bot Framework Emulator: https://aka.ms/botframework-emulator');

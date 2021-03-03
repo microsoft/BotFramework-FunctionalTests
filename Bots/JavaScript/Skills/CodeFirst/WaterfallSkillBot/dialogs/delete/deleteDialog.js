@@ -3,7 +3,7 @@
 
 const { MessageFactory } = require('botbuilder');
 const { ComponentDialog, WaterfallDialog, DialogTurnStatus } = require('botbuilder-dialogs');
-const { Channels} = require('botbuilder-core');
+const { Channels } = require('botbuilder-core');
 
 const SLEEP_TIMER = 5000;
 const WATERFALL_DIALOG = 'WaterfallDialog';
