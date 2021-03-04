@@ -17,6 +17,7 @@ using Xunit.Abstractions;
 
 namespace SkillFunctionalTests.SignIn
 {
+    [Trait("TestCategory", "SignIn")]
     public class SignInTests : ScriptTestBase
     {
         private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/SignIn/TestScripts";
@@ -38,20 +39,20 @@ namespace SkillFunctionalTests.SignIn
             var hostBots = new List<HostBot>
             {
                 HostBot.WaterfallHostBotDotNet,
+                HostBot.WaterfallHostBotPython,
 
-                // TODO: Enable these when the ports to JS, Python and composer are ready
-                //HostBotNames.WaterfallHostBotJS,
-                //HostBotNames.WaterfallHostBotPython,
-                //HostBotNames.ComposerHostBotDotNet
+                // TODO: Enable these when the ports to JS, and composer are ready
+                //HostBot.WaterfallHostBotJS,
+                //HostBot.ComposerHostBotDotNet
             };
 
             var targetSkills = new List<string>
             {
                 SkillBotNames.WaterfallSkillBotDotNet,
+                SkillBotNames.WaterfallSkillBotPython,
                 
-                // TODO: Enable these when the ports to JS, Python and composer are ready
+                // TODO: Enable these when the ports to JS, and composer are ready
                 //SkillBotNames.WaterfallSkillBotJS,
-                //SkillBotNames.WaterfallSkillBotPython,
                 //SkillBotNames.ComposerSkillBotDotNet
             };
 
@@ -80,8 +81,14 @@ namespace SkillFunctionalTests.SignIn
             var options = TestClientOptions[testCase.HostBot];
             var runner = new XUnitTestRunner(new TestClientFactory(testCase.ChannelId, options, Logger).GetTestClient(), TestRequestTimeout, Logger);
 
+            var testParams = new Dictionary<string, string>
+            {
+                { "DeliveryMode", testCase.DeliveryMode },
+                { "TargetSkill", testCase.TargetSkill }
+            };
+
             // Execute the first part of the conversation.
-            await runner.RunTestAsync(Path.Combine(_testScriptsFolder, testCase.Script));
+            await runner.RunTestAsync(Path.Combine(_testScriptsFolder, testCase.Script), testParams);
 
             await runner.AssertReplyAsync(activity =>
             {
@@ -98,7 +105,7 @@ namespace SkillFunctionalTests.SignIn
             await runner.ClientSignInAsync(signInUrl);
 
             // Execute the rest of the conversation passing the messageId.
-            await runner.RunTestAsync(Path.Combine(_testScriptsFolder, "SignIn2.json"));
+            await runner.RunTestAsync(Path.Combine(_testScriptsFolder, "SignIn2.json"), testParams);
         }
     }
 }
