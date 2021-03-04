@@ -73,15 +73,17 @@ steps:
           @{ appName = "bffnechoskillbotdotnet"; variables = @{ appId = "BffnEchoSkillBotDotNetAppId"; appSecret = "BffnEchoSkillBotDotNetAppSecret"; objectId = "BffnEchoSkillBotDotNetAppObjectId" }},
           @{ appName = "bffnechoskillbotdotnet21"; variables = @{ appId = "BffnEchoSkillBotDotNet21AppId"; appSecret = "BffnEchoSkillBotDotNet21AppSecret"; objectId = "BffnEchoSkillBotDotNet21AppObjectId" }},
           @{ appName = "bffnechoskillbotdotnetv3"; variables = @{ appId = "BffnEchoSkillBotDotNetV3AppId"; appSecret = "BffnEchoSkillBotDotNetV3AppSecret"; objectId = "BffnEchoSkillBotDotNetV3AppObjectId" }},
-          @{ appName = "bffnsimplehostbotcomposerdotnet"; variables = @{ appId = "BffnSimpleHostBotComposerDotNetAppId"; appSecret = "BffnSimpleHostBotComposerDotNetAppSecret"; objectId = "BffnSimpleHostBotComposerDotNetAppObjectId" }}
-          @{ appName = "bffnechoskillbotcomposerdotnet"; variables = @{ appId = "BffnEchoSkillBotComposerDotNetAppId"; appSecret = "BffnEchoSkillBotComposerDotNetAppSecret"; objectId = "BffnEchoSkillBotComposerDotNetAppObjectId" }}
-          @{ appName = "bffnwaterfallhostbotdotnet"; variables = @{ appId = "BffnWaterfallHostBotDotNetAppId"; appSecret = "BffnWaterfallHostBotDotNetAppSecret"; objectId = "BffnWaterfallHostBotDotNetAppObjectId" }}
-          @{ appName = "bffnwaterfallskillbotdotnet"; variables = @{ appId = "BffnWaterfallSkillBotDotNetAppId"; appSecret = "BffnWaterfallSkillBotDotNetAppSecret"; objectId = "BffnWaterfallSkillBotDotNetAppObjectId" }}
+          @{ appName = "bffnsimplehostbotcomposerdotnet"; variables = @{ appId = "BffnSimpleHostBotComposerDotNetAppId"; appSecret = "BffnSimpleHostBotComposerDotNetAppSecret"; objectId = "BffnSimpleHostBotComposerDotNetAppObjectId" }},
+          @{ appName = "bffnechoskillbotcomposerdotnet"; variables = @{ appId = "BffnEchoSkillBotComposerDotNetAppId"; appSecret = "BffnEchoSkillBotComposerDotNetAppSecret"; objectId = "BffnEchoSkillBotComposerDotNetAppObjectId" }},
+          @{ appName = "bffnwaterfallhostbotdotnet"; variables = @{ appId = "BffnWaterfallHostBotDotNetAppId"; appSecret = "BffnWaterfallHostBotDotNetAppSecret"; objectId = "BffnWaterfallHostBotDotNetAppObjectId" }},
+          @{ appName = "bffnwaterfallskillbotdotnet"; variables = @{ appId = "BffnWaterfallSkillBotDotNetAppId"; appSecret = "BffnWaterfallSkillBotDotNetAppSecret"; objectId = "BffnWaterfallSkillBotDotNetAppObjectId" }},
           @{ appName = "bffnsimplehostbotjs"; variables = @{ appId = "BffnSimpleHostBotJSAppId"; appSecret = "BffnSimpleHostBotJSAppSecret"; objectId = "BffnSimpleHostBotJSAppObjectId" }},
           @{ appName = "bffnechoskillbotjs"; variables = @{ appId = "BffnEchoSkillBotJSAppId"; appSecret = "BffnEchoSkillBotJSAppSecret"; objectId = "BffnEchoSkillBotJSAppObjectId" }},
           @{ appName = "bffnechoskillbotjsv3"; variables = @{ appId = "BffnEchoSkillBotJSV3AppId"; appSecret = "BffnEchoSkillBotJSV3AppSecret"; objectId = "BffnEchoSkillBotJSV3AppObjectId" }},
           @{ appName = "bffnsimplehostbotpython"; variables = @{ appId = "BffnSimpleHostBotPythonAppId"; appSecret = "BffnSimpleHostBotPythonAppSecret"; objectId = "BffnSimpleHostBotPythonAppObjectId" }},
-          @{ appName = "bffnechoskillbotpython"; variables = @{ appId = "BffnEchoSkillBotPythonAppId"; appSecret = "BffnEchoSkillBotPythonAppSecret"; objectId = "BffnEchoSkillBotPythonAppObjectId" }}
+          @{ appName = "bffnechoskillbotpython"; variables = @{ appId = "BffnEchoSkillBotPythonAppId"; appSecret = "BffnEchoSkillBotPythonAppSecret"; objectId = "BffnEchoSkillBotPythonAppObjectId" }},
+          @{ appName = "bffnwaterfallhostbotpython"; variables = @{ appId = "BffnWaterfallHostBotPythonAppId"; appSecret = "BffnWaterfallHostBotPythonAppSecret"; objectId = "BffnWaterfallHostBotPythonAppObjectId" }},
+          @{ appName = "bffnwaterfallskillbotpython"; variables = @{ appId = "BffnWaterfallSkillBotPythonAppId"; appSecret = "BffnWaterfallSkillBotPythonAppSecret"; objectId = "BffnWaterfallSkillBotPythonAppObjectId" }}
         )
 
         $token = GetToken;
