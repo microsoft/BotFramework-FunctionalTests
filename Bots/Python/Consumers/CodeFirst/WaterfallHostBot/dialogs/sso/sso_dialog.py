@@ -64,7 +64,7 @@ class SsoDialog(ComponentDialog):
             choices=await self.get_prompt_choices(step_context),
         )
 
-        # Prompt the user to select a skill.
+        # Prompt the user to select an SSO action.
         return await step_context.prompt(ChoicePrompt.__name__, options)
 
     async def get_prompt_choices(self, step_context: WaterfallStepContext):

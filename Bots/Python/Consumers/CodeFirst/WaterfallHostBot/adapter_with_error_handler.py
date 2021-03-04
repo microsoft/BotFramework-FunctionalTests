@@ -1,5 +1,6 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License.
+
 import sys
 import traceback
 
@@ -121,7 +122,7 @@ class AdapterWithErrorHandler(BotFrameworkAdapter):
     async def _clear_conversation_state(self, turn_context: TurnContext):
         try:
             # Delete the conversationState for the current conversation to prevent the
-            # bot from getting stuck in a error-loop caused by being in a bad state.
+            # bot from getting stuck in an error-loop caused by being in a bad state.
             # ConversationState should be thought of as similar to "cookie-state" for a Web page.
             await self._conversation_state.delete(turn_context)
         except Exception as exception:

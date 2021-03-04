@@ -29,9 +29,7 @@ class SkillsConfiguration:
     Bot Skills Configuration
     """
 
-    SKILL_HOST_ENDPOINT = os.getenv(
-        "SkillHostEndpoint", "https://5f5db3951030.ngrok.io/api/skills"
-    )
+    SKILL_HOST_ENDPOINT = os.getenv("SkillHostEndpoint")
     SKILLS: Dict[str, SkillDefinition]
 
     def __init__(self):

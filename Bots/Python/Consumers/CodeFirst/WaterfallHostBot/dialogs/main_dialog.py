@@ -91,7 +91,7 @@ class MainDialog(ComponentDialog):
             ACTIVE_SKILL_PROPERTY_NAME
         )
 
-        # Register the tangent dialog for testing tangents and resume
+        # Register the tangent dialog for testing tangents and resume.
         self.add_dialog(TangentDialog())
 
         # Add ChoicePrompt to render available delivery modes.
@@ -108,8 +108,8 @@ class MainDialog(ComponentDialog):
             ChoicePrompt(SKILL_ACTION_PROMPT, self._skill_action_prompt_validator)
         )
 
-        # Add dialog to prepare SSO on the host and test the SSO skill
-        # The waterfall skillDialog created in AddSkillDialogs contains the SSO skill action.
+        # Add dialog to prepare SSO on the host and test the SSO skill.
+        # The waterfall skillDialog created in add_skill_dialogs contains the SSO skill action.
         waterfall_skills = [
             skill_dialog
             for skill_dialog in self._dialogs._dialogs.values()
