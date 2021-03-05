@@ -58,7 +58,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs
             var botId = configuration.GetSection(MicrosoftAppCredentials.MicrosoftAppIdKey)?.Value;
 
             var skillHostEndpoint = configuration.GetSection("SkillHostEndpoint")?.Value;
-            if (string.IsNullOrWhiteSpace(botId))
+            if (string.IsNullOrWhiteSpace(skillHostEndpoint))
             {
                 throw new ArgumentException("SkillHostEndpoint is not in configuration");
             }
