@@ -150,7 +150,7 @@ class MainDialog extends ComponentDialog {
             prompt: MessageFactory.text(messageText, messageText, InputHints.ExpectingInput),
             retryPrompt: MessageFactory.text(repromptMessageText, repromptMessageText, InputHints.ExpectingInput),
             choices: ChoiceFactory.toChoices(['EchoSkill', 'WaterfallSkill']),
-            style: ListStyle.suggestedAction
+            style: ListStyle.list
         });
     }
 
@@ -169,7 +169,7 @@ class MainDialog extends ComponentDialog {
             prompt: MessageFactory.text(messageText, messageText, InputHints.ExpectingInput),
             retryPrompt: MessageFactory.text(repromptMessageText, repromptMessageText, InputHints.ExpectingInput),
             choices: ChoiceFactory.toChoices((Object.keys(this.skillsConfig.skills)).filter(skill => skill.startsWith(skillType))),
-            style: ListStyle.suggestedAction
+            style: ListStyle.list
         });
     }
 

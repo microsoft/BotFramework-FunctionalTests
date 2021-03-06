@@ -3,7 +3,7 @@
 
 const { MessageFactory, InputHints } = require('botbuilder');
 const { ChoiceFactory, ChoicePrompt, ComponentDialog, WaterfallDialog, DialogTurnStatus, ListStyle } = require('botbuilder-dialogs');
-const { Channels } = require('botbuilder-core');
+const { Channels, TurnContext } = require('botbuilder-core');
 
 const SLEEP_TIMER = 5000;
 const WATERFALL_DIALOG = 'WaterfallDialog';
@@ -32,11 +32,14 @@ class DeleteDialog extends ComponentDialog {
     async HandleDeleteDialog(stepContext) {
         let channel = stepContext.context.activity.channelId;
 
-        if (DeleteDialog.isDeleteSupported(channel))
+        if (!DeleteDialog.isDeleteSupported(channel))
         {
-            var id = await stepContext.context.sendActivity(MessageFactory.text("I will delete this message in 5 seconds"));
+            var activity = MessageFactory.text("I will delete this message in 5 seconds");
+            TurnContext.applyConversationReference(activity, TurnContext.getConversationReference(stepContext.context.activity));
+            var id = await stepContext.context.sendActivity(activity);
+            activity.id = id.id;
             await DeleteDialog.sleep(SLEEP_TIMER);
-            await stepContext.context.deleteActivity(id.id);
+            await stepContext.context.deleteActivity(TurnContext.getConversationReference(activity));
         }
         else
         {

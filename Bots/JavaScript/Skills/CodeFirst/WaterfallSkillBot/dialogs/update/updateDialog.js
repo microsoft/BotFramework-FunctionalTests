@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-const { InputHints, MessageFactory } = require('botbuilder');
+const { InputHints, MessageFactory, TurnContext } = require('botbuilder');
 const { ChoiceFactory, ChoicePrompt, ComponentDialog, ListStyle, WaterfallDialog, DialogTurnStatus } = require('botbuilder-dialogs');
 const { Channels } = require('botbuilder-core');
 
@@ -34,21 +34,23 @@ class UpdateDialog extends ComponentDialog {
     async HandleUpdateDialog(stepContext) {
         let channel = stepContext.context.activity.channelId;
 
-        if (UpdateDialog.isUpdateSupported(channel)){
+        if (!UpdateDialog.isUpdateSupported(channel)){
             const conversationId = stepContext.context.activity.conversation.id;
 
             if (conversationId in this.updateTracker) {
                 var tuple = this.updateTracker[conversationId];
-                var activity = MessageFactory.text(`This message has been updated ${tuple[1]} time(s).`)
-                activity.id = tuple[0];
-                tuple[1]++;
+                var activity = tuple["activity"];
+                activity.text = `This message has been updated ${tuple["count"]} time(s).`;
+                tuple["count"]++;
                 this.updateTracker[conversationId] = tuple;
                 await stepContext.context.updateActivity(activity);
             }
             else
             {
-                var id = await stepContext.context.sendActivity(MessageFactory.text("Here is the original activity"));
-                this.updateTracker[conversationId] = [id.id, 1];
+                var activity = MessageFactory.text("Here is the original activity");
+                var id = await stepContext.context.sendActivity(activity);
+                activity.id = id.id;
+                this.updateTracker[conversationId] = {"activity": activity, "count": 1};
             }
         }
         else
