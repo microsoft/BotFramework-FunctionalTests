@@ -8,11 +8,11 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Delete
 {
     public class DeleteSupportedInChannel
     {
-        private static readonly HashSet<string> DeleteUnsupported = new HashSet<string>
-        {            
-                Channels.Emulator,
-                Channels.Facebook,
-                Channels.Webchat,
+        private static readonly HashSet<string> DeleteSupported = new HashSet<string>
+        {
+            Channels.Msteams,
+            Channels.Slack,
+            Channels.Telegram
         };
 
         /// <summary>
@@ -22,7 +22,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Delete
         /// <returns>A bool if the card is supported in the channel.</returns>
         public static bool IsDeleteSupported(string channel)
         {
-            return DeleteUnsupported.Contains(channel.ToString()) ? false : true;
+            return DeleteSupported.Contains(channel.ToString());
         }
     }
 }

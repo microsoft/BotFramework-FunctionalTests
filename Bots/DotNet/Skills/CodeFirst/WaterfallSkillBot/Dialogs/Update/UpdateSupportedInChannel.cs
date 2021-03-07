@@ -8,11 +8,11 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Update
 {
     public class UpdateSupportedInChannel
     {
-        private static readonly HashSet<string> UpdateUnsupported = new HashSet<string>
+        private static readonly HashSet<string> UpdateSupported = new HashSet<string>
         {
-            Channels.Emulator,
-            Channels.Webchat,
-            Channels.Facebook
+            Channels.Msteams,
+            Channels.Slack,
+            Channels.Telegram
         };
 
         /// <summary>
@@ -22,7 +22,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Update
         /// <returns>A bool if the card is supported in the channel.</returns>
         public static bool IsSupported(string channel)
         {
-            return UpdateUnsupported.Contains(channel.ToString()) ? false : true;
+            return UpdateSupported.Contains(channel.ToString());
         }
     }
 }
