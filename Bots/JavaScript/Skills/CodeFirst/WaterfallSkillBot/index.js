@@ -175,3 +175,20 @@ server.get('/api/notify', async (req, res) => {
     res.write(`<html><body><h1>Proactive messages have been sent</h1> <br/> Timestamp: ${ new Date().toISOString() } <br /> Exception: ${ error || '' }</body></html>`);
     res.end();
 });
+
+// Listen for Upgrade requests for Streaming.
+server.on('upgrade', (req, socket, head) => {
+    // Create an adapter scoped to this WebSocket connection to allow storing session data.
+    const streamingAdapter = new BotFrameworkAdapter({
+        appId: process.env.MicrosoftAppId,
+        appPassword: process.env.MicrosoftAppPassword
+    });
+    // Set onTurnError for the BotFrameworkAdapter created for each connection.
+    streamingAdapter.onTurnError = onTurnErrorHandler;
+
+    adapter.useWebSocket(req, socket, head, async (context) => {
+        // After connecting via WebSocket, run this logic for every request sent over
+        // the WebSocket connection.
+        await bot.run(context);
+    });
+});
