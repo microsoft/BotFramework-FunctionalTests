@@ -1,5 +1,9 @@
 # This runs under BotBuilder-Js-CI-yaml. Replaces classic build BotBuilder-JS-master-CI-node12.
 
+variables:
+  BuildConfiguration: 'Debug'
+  BuildPlatform: 'Any CPU'
+
 jobs:
     - job: SkillFunctionalTestsbuild
       steps:
@@ -14,7 +18,9 @@ jobs:
       - template: pythonfunctional.yml
 
     - job: FunctionalTestsBotsbuild
+      variables:
+        SolutionDir: '$(Build.SourcesDirectory)/Bots/DotNet/'
       steps:
       - template: FunctionalTestsBotsbuild.yml
 pool:
-    vmImage: 'macOS-10.14'
+    vmImage: 'windows-2019'

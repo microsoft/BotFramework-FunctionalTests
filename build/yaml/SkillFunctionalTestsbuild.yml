@@ -17,7 +17,7 @@ steps:
 - task: NuGetCommand@2
   inputs:
     command: 'restore'
-    restoreSolution: SkillFunctionalTests-standard.sln
+    restoreSolution: SkillFunctionalTests.sln
 
 
 - task: DotNetCoreCLI@2
