@@ -24,6 +24,7 @@ steps:
       !Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3/EchoSkillBot-v3.csproj
     feedsToUse: 'select'
     includeNuGetOrg: true
+    arguments: '--no-build'
 
 - task: DotNetCoreCLI@2
   displayName: Build bots
@@ -35,6 +36,7 @@ steps:
       !Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3/EchoSkillBot-v3.csproj
     feedsToUse: 'select'
     includeNuGetOrg: true
+    arguments: '-v n --configuration $(BuildConfiguration) -p:Platform="$(BuildPlatform)" --no-restore'
 # End of Restore & Build excluding Composer and V3
 
 # Start of Restore & Build for Composer
@@ -213,7 +215,7 @@ steps:
   inputs:
     solution: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3/EchoSkillBot-v3.csproj'
     vsVersion: 16.0
-    platform: '$(BuildPlatform)'
+    platform: 'AnyCPU'
     configuration: '$(BuildConfiguration)'
 # End of Restore & Build for V3
 

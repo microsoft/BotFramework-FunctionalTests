@@ -2,7 +2,7 @@
 
 variables:
   BuildConfiguration: 'Debug'
-  BuildPlatform: 'AnyCPU'
+  BuildPlatform: 'Any CPU'
 
 jobs:
     - job: SkillFunctionalTestsbuild
