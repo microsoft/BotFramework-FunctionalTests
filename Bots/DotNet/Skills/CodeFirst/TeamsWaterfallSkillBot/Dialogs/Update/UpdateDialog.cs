@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Choices;
+using Microsoft.Bot.Connector;
 using Microsoft.Bot.Schema;
 
 namespace Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Update
@@ -16,6 +17,12 @@ namespace Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.U
     public class UpdateDialog : ComponentDialog
     {
         private Dictionary<string, (string, int)> _updateTracker;
+        private readonly HashSet<string> _updateSupported = new HashSet<string>
+        {
+            Channels.Msteams,
+            Channels.Slack,
+            Channels.Telegram
+        };
 
         public UpdateDialog()
              : base(nameof(UpdateDialog))
@@ -29,7 +36,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.U
         private async Task<DialogTurnResult> HandleUpdateDialog(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             var channel = stepContext.Context.Activity.ChannelId;
-            if (UpdateSupportedInChannel.IsSupported(channel))
+            if (_updateSupported.Contains(channel))
             {
                 if (_updateTracker.ContainsKey(stepContext.Context.Activity.Conversation.Id))
                 {
