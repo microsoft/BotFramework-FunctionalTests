@@ -6,13 +6,13 @@ import os
 from botbuilder.core.skills import BotFrameworkSkill
 from dotenv import load_dotenv
 
+load_dotenv()
+
 
 class DefaultConfig:
     """
     Bot Configuration
     """
-
-    load_dotenv()
 
     SERVER_URL = ""  # pylint: disable=invalid-name
     PORT = os.getenv("Port", "37420")
