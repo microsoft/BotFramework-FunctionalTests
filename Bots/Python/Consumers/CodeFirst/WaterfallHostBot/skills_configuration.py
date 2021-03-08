@@ -12,6 +12,8 @@ from skills.waterfall_skill import WaterfallSkill
 from skills.echo_skill import EchoSkill
 from skills.teams_skill import TeamsSkill
 
+load_dotenv()
+
 
 class DefaultConfig:
     """
@@ -33,8 +35,6 @@ class SkillsConfiguration:
     SKILLS: Dict[str, SkillDefinition]
 
     def __init__(self):
-        load_dotenv()
-
         skills_data = dict()
         skill_variable = [x for x in os.environ if x.lower().startswith("skill_")]
 
