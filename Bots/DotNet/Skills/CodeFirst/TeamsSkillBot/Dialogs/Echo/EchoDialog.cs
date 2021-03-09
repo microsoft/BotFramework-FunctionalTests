@@ -9,7 +9,7 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Choices;
 using Microsoft.Bot.Schema;
 
-namespace Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Echo
+namespace Microsoft.BotFrameworkFunctionalTests.TeamsSkillBot.Dialogs.Echo
 {
     public class EchoDialog : ComponentDialog
     {

@@ -8,15 +8,15 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.BotFramework;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Connector.Authentication;
-using Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Authentication;
-using Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Bots;
-using Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs;
-using Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Proactive;
+using Microsoft.BotFrameworkFunctionalTests.TeamsSkillBot.Authentication;
+using Microsoft.BotFrameworkFunctionalTests.TeamsSkillBot.Bots;
+using Microsoft.BotFrameworkFunctionalTests.TeamsSkillBot.Dialogs;
+using Microsoft.BotFrameworkFunctionalTests.TeamsSkillBot.Dialogs.Proactive;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot
+namespace Microsoft.BotFrameworkFunctionalTests.TeamsSkillBot
 {
     public class Startup
     {

@@ -10,19 +10,19 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.TraceExtensions;
 using Microsoft.Bot.Schema;
-using Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Attachments;
-using Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Auth;
-using Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Cards;
-using Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Delete;
-using Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Echo;
-using Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.FileUpload;
-using Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Proactive;
-using Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Sso;
-using Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Update;
+using Microsoft.BotFrameworkFunctionalTests.TeamsSkillBot.Dialogs.Attachments;
+using Microsoft.BotFrameworkFunctionalTests.TeamsSkillBot.Dialogs.Auth;
+using Microsoft.BotFrameworkFunctionalTests.TeamsSkillBot.Dialogs.Cards;
+using Microsoft.BotFrameworkFunctionalTests.TeamsSkillBot.Dialogs.Delete;
+using Microsoft.BotFrameworkFunctionalTests.TeamsSkillBot.Dialogs.Echo;
+using Microsoft.BotFrameworkFunctionalTests.TeamsSkillBot.Dialogs.FileUpload;
+using Microsoft.BotFrameworkFunctionalTests.TeamsSkillBot.Dialogs.Proactive;
+using Microsoft.BotFrameworkFunctionalTests.TeamsSkillBot.Dialogs.Sso;
+using Microsoft.BotFrameworkFunctionalTests.TeamsSkillBot.Dialogs.Update;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
-namespace Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs
+namespace Microsoft.BotFrameworkFunctionalTests.TeamsSkillBot.Dialogs
 {
     /// <summary>
     /// A root dialog that can route activities sent to the skill to different sub-dialogs.

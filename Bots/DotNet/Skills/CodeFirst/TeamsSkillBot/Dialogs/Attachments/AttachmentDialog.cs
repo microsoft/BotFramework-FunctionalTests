@@ -12,7 +12,7 @@ using Microsoft.Bot.Builder.Dialogs.Choices;
 using Microsoft.Bot.Connector;
 using Microsoft.Bot.Schema;
 
-namespace Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Attachments
+namespace Microsoft.BotFrameworkFunctionalTests.TeamsSkillBot.Dialogs.Attachments
 {
     public class AttachmentDialog : ComponentDialog
     {

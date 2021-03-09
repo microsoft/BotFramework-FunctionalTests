@@ -8,7 +8,7 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
 
-namespace Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Delete
+namespace Microsoft.BotFrameworkFunctionalTests.TeamsSkillBot.Dialogs.Delete
 {
     public class DeleteDialog : ComponentDialog
     {

@@ -7,7 +7,7 @@ using Microsoft.Bot.Schema;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Cards
+namespace Microsoft.BotFrameworkFunctionalTests.TeamsSkillBot.Dialogs.Cards
 {
     public static class AdaptiveCardExtensions
     {

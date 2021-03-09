@@ -8,7 +8,7 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Configuration;
 
-namespace Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Auth
+namespace Microsoft.BotFrameworkFunctionalTests.TeamsSkillBot.Dialogs.Auth
 {
     public class AuthDialog : ComponentDialog
     {
