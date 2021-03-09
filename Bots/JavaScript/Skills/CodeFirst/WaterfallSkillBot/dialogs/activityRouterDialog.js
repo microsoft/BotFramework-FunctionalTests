@@ -99,11 +99,9 @@ class ActivityRouterDialog extends ComponentDialog {
             label: `Got activityType: ${ stepContext.context.activity.type }`
         });
 
-        switch (stepContext.context.activity.type) {
-        case ActivityTypes.Event:
+        if (stepContext.context.activity.type === ActivityTypes.Event) {
             return this.onEventActivity(stepContext);
-
-        default:
+        } else {
             // We didn't get an activity type we can handle.
             await stepContext.context.sendActivity(
                 `Unrecognized ActivityType: "${ stepContext.context.activity.type }".`,

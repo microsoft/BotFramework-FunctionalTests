@@ -70,7 +70,7 @@ class CardDialog extends ComponentDialog {
                 await stepContext.context.sendActivity(MessageFactory.attachment(CardSampleHelper.createAdaptiveCardTaskModule()));
                 break;
 
-            case CardOptions.AdaptiveCardSumbitAction:
+            case CardOptions.AdaptiveCardSubmitAction:
                 await stepContext.context.sendActivity(MessageFactory.attachment(CardSampleHelper.createAdaptiveCardSubmit()));
                 break;
 

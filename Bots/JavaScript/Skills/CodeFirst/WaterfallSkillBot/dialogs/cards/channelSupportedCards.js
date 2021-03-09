@@ -22,9 +22,9 @@ class ChannelSupportedCards {
      * @returns A bool if the card is supported in the channel.
      */
     static isCardSupported(channel, type) {
-        const unsuportedChannel = unsupportedChannelCards[channel];
-        if (unsuportedChannel) {
-            return !unsuportedChannel.includes(type);
+        const unsupportedChannel = unsupportedChannelCards[channel];
+        if (unsupportedChannel) {
+            return !unsupportedChannel.includes(type);
         }
 
         return true;

@@ -47,7 +47,7 @@ class UpdateDialog extends ComponentDialog {
             }
             else
             {
-                var id = await stepContext.context.sendActivity(MessageFactory.text("Here is the original activity"));
+                const id = await stepContext.context.sendActivity(MessageFactory.text("Here is the original activity"));
                 this.updateTracker[conversationId] = [id.id, 1];
             }
         }

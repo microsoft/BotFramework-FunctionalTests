@@ -13,7 +13,7 @@ module.exports.CardOptions = {
     /**
      * Adaptive card - Submit action
      */
-    AdaptiveCardSumbitAction: 'AdaptiveCardSumbitAction',
+    AdaptiveCardSubmitAction: 'AdaptiveCardSubmitAction',
     /**
      * Hero cards
      */

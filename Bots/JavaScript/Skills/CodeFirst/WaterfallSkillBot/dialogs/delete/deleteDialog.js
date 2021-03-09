@@ -30,11 +30,11 @@ class DeleteDialog extends ComponentDialog {
      * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
      */
     async HandleDeleteDialog(stepContext) {
-        let channel = stepContext.context.activity.channelId;
+        const channel = stepContext.context.activity.channelId;
 
         if (DeleteDialog.isDeleteSupported(channel))
         {
-            var id = await stepContext.context.sendActivity(MessageFactory.text("I will delete this message in 5 seconds"));
+            const id = await stepContext.context.sendActivity(MessageFactory.text("I will delete this message in 5 seconds"));
             await DeleteDialog.sleep(SLEEP_TIMER);
             await stepContext.context.deleteActivity(id.id);
         }

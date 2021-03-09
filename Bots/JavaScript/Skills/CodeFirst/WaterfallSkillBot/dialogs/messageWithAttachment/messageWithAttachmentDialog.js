@@ -72,7 +72,7 @@ class MessageWithAttachmentDialog extends ComponentDialog {
 
             // reply.text = 'This is an uploaded attachment.';
             // Get the uploaded attachment.
-            // var uploadedAttachment = await this.getUploadedAttachment(stepContext, stepContext.context.activity.serviceUrl, stepContext.context.activity.conversation.id);
+            // const uploadedAttachment = await this.getUploadedAttachment(stepContext, stepContext.context.activity.serviceUrl, stepContext.context.activity.conversation.id);
             // reply.attachments = [uploadedAttachment];
             break;
 
