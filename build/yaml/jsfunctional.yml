@@ -1,12 +1,12 @@
 steps:
   - task: Npm@1
-    displayName: npm install Host Bot
+    displayName: npm install SimpleHostBot
     inputs:
       workingDir: Bots/JavaScript/Consumers/CodeFirst/SimpleHostBot
       verbose: false
       customFeed: b99a003e-8342-4082-978b-613db93df5b9
   - task: Npm@1
-    displayName: npm pack HostBot
+    displayName: npm pack SimpleHostBot
     inputs:
       command: custom
       workingDir: Bots/JavaScript/Consumers/CodeFirst/SimpleHostBot
