@@ -19,7 +19,7 @@
     "WaterfallSkillBotDotNet": {
       "commandName": "Project",
       "launchBrowser": true,
-      "applicationUrl": "http://localhost:35420/;http://localhost:35420/",
+      "applicationUrl": "http://localhost:35420/",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
