@@ -28,11 +28,6 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Middleware
         {
             // Note: skill responses will show as ContinueConversation events; we don't log those.
             // We only log incoming messages from users.
-            if (turnContext.Activity.ChannelId == Bot.Connector.Channels.Msteams && turnContext.Activity.Type == ActivityTypes.Message)
-            {
-                turnContext.Activity.Text = turnContext.Activity.Text.Replace("\r", string.Empty).Replace("\n", string.Empty);
-            }
-
             if (!(turnContext.Activity.Type == ActivityTypes.Event && turnContext.Activity.Name == ActivityEventNames.ContinueConversation))
             {
                 var message = $"User said: {turnContext.Activity.Text} Type: \"{turnContext.Activity.Type}\" Name: \"{turnContext.Activity.Name}\"";
