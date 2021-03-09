@@ -12,7 +12,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Delete
 {
     public class DeleteDialog : ComponentDialog
     {
-        private readonly HashSet<string> _deleteSupported = new HashSet<string>
+        private readonly List<string> _deleteSupported = new List<string>
         {
             Channels.Msteams,
             Channels.Slack,
@@ -20,7 +20,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Delete
         };
 
         public DeleteDialog()
-             : base(nameof(DeleteDialog))
+            : base(nameof(DeleteDialog))
         {
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[] { HandleDeleteDialog }));
             InitialDialogId = nameof(WaterfallDialog);
@@ -32,7 +32,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Delete
             if (_deleteSupported.Contains(channel))
             {
                 var id = await stepContext.Context.SendActivityAsync(MessageFactory.Text("I will delete this message in 5 seconds"), cancellationToken);
-                Thread.Sleep(5000);
+                await Task.Delay(5000, cancellationToken);
                 await stepContext.Context.DeleteActivityAsync(id.Id, cancellationToken);
             }
             else

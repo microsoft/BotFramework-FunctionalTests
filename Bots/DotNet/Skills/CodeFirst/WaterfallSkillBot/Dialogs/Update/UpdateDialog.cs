@@ -1,35 +1,31 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
-using Microsoft.Bot.Builder.Dialogs.Choices;
 using Microsoft.Bot.Connector;
-using Microsoft.Bot.Schema;
 
 namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Update
 {
     public class UpdateDialog : ComponentDialog
     {
-        private readonly HashSet<string> _updateSupported = new HashSet<string>
+        private readonly List<string> _updateSupported = new List<string>
         {
             Channels.Msteams,
             Channels.Slack,
             Channels.Telegram
         };
 
-        private Dictionary<string, (string, int)> _updateTracker;
+        private readonly Dictionary<string, (string, int)> _updateTracker;
 
         public UpdateDialog()
-             : base(nameof(UpdateDialog))
+            : base(nameof(UpdateDialog))
         {
             _updateTracker = new Dictionary<string, (string, int)>();
-            AddDialog(new ChoicePrompt("ChoicePrompt"));
+            AddDialog(new ConfirmPrompt(nameof(ConfirmPrompt)));
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[] { HandleUpdateDialog, FinalStepAsync }));
             InitialDialogId = nameof(WaterfallDialog);
         }
@@ -42,7 +38,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Update
                 if (_updateTracker.ContainsKey(stepContext.Context.Activity.Conversation.Id))
                 {
                     var conversationId = stepContext.Context.Activity.Conversation.Id;
-                    (string, int) tuple = _updateTracker[conversationId];
+                    var tuple = _updateTracker[conversationId];
                     var activity = MessageFactory.Text($"This message has been updated {tuple.Item2} time(s).");
                     tuple.Item2 += 1;
                     activity.Id = tuple.Item1;
@@ -61,34 +57,29 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Update
                 return new DialogTurnResult(DialogTurnStatus.Complete);
             }
 
-            // Create the PromptOptions from the skill configuration which contain the list of configured skills.
+            // Ask if we want to update the activity again.
             var messageText = "Do you want to update the activity again??";
             var repromptMessageText = "Please select a valid answer";
             var options = new PromptOptions
             {
                 Prompt = MessageFactory.Text(messageText, messageText),
                 RetryPrompt = MessageFactory.Text(repromptMessageText, repromptMessageText),
-                Choices = new List<Choice> { new Choice("Yes"), new Choice("No") },
-                Style = ListStyle.List
             };
 
             // Ask the user to enter their name.
-            return await stepContext.PromptAsync("ChoicePrompt", options, cancellationToken);
+            return await stepContext.PromptAsync(nameof(ConfirmPrompt), options, cancellationToken);
         }
 
         private async Task<DialogTurnResult> FinalStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            var choice = ((FoundChoice)stepContext.Result).Value.ToLowerInvariant();
+            var tryAnother = (bool)stepContext.Result;
+            if (tryAnother)
+            {
+                return await stepContext.ReplaceDialogAsync(InitialDialogId, cancellationToken: cancellationToken);
+            }
 
-            if (choice == "yes")
-            {
-                return await stepContext.ReplaceDialogAsync(InitialDialogId, "Do you want to update the activity?", cancellationToken);
-            }
-            else
-            {
-                _updateTracker.Remove(stepContext.Context.Activity.Conversation.Id);
-                return new DialogTurnResult(DialogTurnStatus.Complete);
-            }
+            _updateTracker.Remove(stepContext.Context.Activity.Conversation.Id);
+            return new DialogTurnResult(DialogTurnStatus.Complete);
         }
     }
 }
