@@ -336,7 +336,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs
             }
 
             connectionName = configuration.GetSection("SsoConnectionNameTeams")?.Value;
-            foreach (var ssoSkillDialog in Dialogs.GetDialogs().Where(dialog => dialog.Id.StartsWith("TeamsWaterfallSkillBot")).ToList())
+            foreach (var ssoSkillDialog in Dialogs.GetDialogs().Where(dialog => dialog.Id.StartsWith("TeamsSkillBot")).ToList())
             {
                 AddDialog(new SsoDialog($"{SsoDialogPrefix}{ssoSkillDialog.Id}", ssoSkillDialog, connectionName));
             }
