@@ -3,6 +3,7 @@
 
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.Bot.Connector;
 using SkillFunctionalTests.Common;
 using TranscriptTestRunner;
 using TranscriptTestRunner.XUnit;
@@ -25,7 +26,7 @@ namespace SkillFunctionalTests.LegacyTests
         [Fact(Skip = "Skipped until DialogSkillBot is supported.")]
         public async Task DialogSkillShouldConnect()
         {
-            var runner = new XUnitTestRunner(new TestClientFactory(ClientType.DirectLine, TestClientOptions[HostBot.EchoHostBot], Logger).GetTestClient(), TestRequestTimeout, Logger);
+            var runner = new XUnitTestRunner(new TestClientFactory(Channels.Directline, TestClientOptions[HostBot.EchoHostBot], Logger).GetTestClient(), TestRequestTimeout, Logger);
             await runner.RunTestAsync(Path.Combine(_testScriptsFolder, "DialogSkill.json"));
         }
     }
