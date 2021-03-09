@@ -3,8 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <LangVersion>latest</LangVersion>
-    <AssemblyName>Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot</AssemblyName>
-    <RootNamespace>Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot</RootNamespace>
+    <AssemblyName>Microsoft.BotFrameworkFunctionalTests.TeamsSkillBot</AssemblyName>
+    <RootNamespace>Microsoft.BotFrameworkFunctionalTests.TeamsSkillBot</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

@@ -71,7 +71,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WaterfallHostBot", "Consume
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WaterfallSkillBot", "Skills\CodeFirst\WaterfallSkillBot\WaterfallSkillBot.csproj", "{E3BECBEF-E41F-48D1-9EEB-A4D7E1CD34E3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TeamsWaterfallSkillBot", "Skills\CodeFirst\TeamsWaterfallSkillBot\TeamsWaterfallSkillBot.csproj", "{0E60F83F-3F32-40FF-8EF0-DB75C1B48B18}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TeamsSkillBot", "Skills\CodeFirst\TeamsSkillBot\TeamsSkillBot.csproj", "{0E60F83F-3F32-40FF-8EF0-DB75C1B48B18}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
