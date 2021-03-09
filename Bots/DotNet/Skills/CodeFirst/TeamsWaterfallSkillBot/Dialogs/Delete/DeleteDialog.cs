@@ -1,15 +1,24 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Connector;
 
 namespace Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.Delete
 {
     public class DeleteDialog : ComponentDialog
     {
+        private readonly HashSet<string> _deleteSupported = new HashSet<string>
+        {
+            Channels.Msteams,
+            Channels.Slack,
+            Channels.Telegram
+        };
+
         public DeleteDialog()
              : base(nameof(DeleteDialog))
         {
@@ -20,7 +29,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.TeamsWaterfallSkillBot.Dialogs.D
         private async Task<DialogTurnResult> HandleDeleteDialog(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             var channel = stepContext.Context.Activity.ChannelId;
-            if (DeleteSupportedInChannel.IsDeleteSupported(channel))
+            if (_deleteSupported.Contains(channel))
             {
                 var id = await stepContext.Context.SendActivityAsync(MessageFactory.Text("I will delete this message in 5 seconds"), cancellationToken);
                 Thread.Sleep(5000);
