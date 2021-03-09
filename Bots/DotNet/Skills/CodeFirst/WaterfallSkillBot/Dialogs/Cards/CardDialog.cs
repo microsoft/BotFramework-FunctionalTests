@@ -115,7 +115,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
                         case CardOptions.AdaptiveCardTeamsTaskModule:
                             await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeAdaptiveCard("taskmodule").ToAttachment()), cancellationToken);
                             break;
-                        case CardOptions.AdaptiveCardSumbitAction:
+                        case CardOptions.AdaptiveCardSubmitAction:
                             await stepContext.Context.SendActivityAsync(MessageFactory.Attachment(MakeAdaptiveCard("submitaction").ToAttachment()), cancellationToken);
                             break;
                         case CardOptions.Hero:
@@ -335,11 +335,6 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
         {
             var url = new MediaUrl(url: $"{_serverUrl}api/music");
             return new AudioCard(title: "Audio Card", media: new[] { url }, autoloop: true);
-        }
-
-        private bool DoesChannelSupportCard()
-        {
-            return true;
         }
     }
 }

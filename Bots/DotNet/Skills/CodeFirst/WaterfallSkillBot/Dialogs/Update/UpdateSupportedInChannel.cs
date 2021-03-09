@@ -22,7 +22,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Update
         /// <returns>A bool if the card is supported in the channel.</returns>
         public static bool IsSupported(string channel)
         {
-            return UpdateUnsupported.Contains(channel.ToString()) ? false : true;
+            return !UpdateUnsupported.Contains(channel);
         }
     }
 }
