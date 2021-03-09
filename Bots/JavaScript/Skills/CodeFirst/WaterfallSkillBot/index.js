@@ -132,6 +132,12 @@ server.post('/api/skills/v3/conversations/:conversationId/activities/:activityId
 
                 const newActivity = TurnContext.applyConversationReference(activity, ref.conversationReference);
 
+                if (newActivity.type === ActivityTypes.EndOfConversation) {
+                    await handler.conversationIdFactory.deleteConversationReference(req.params.conversationId);
+                    SkillHandler.applyEoCToTurnContextActivity(context, newActivity);
+                    resolve(await bot.run(context));
+                }
+
                 resolve(await context.sendActivity(newActivity));
             });
         });
