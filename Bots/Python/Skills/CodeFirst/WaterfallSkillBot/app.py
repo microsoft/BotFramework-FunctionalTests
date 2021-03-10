@@ -128,7 +128,7 @@ async def notify(req: Request) -> Response:
             continuation_parameters.conversation_reference,
             callback,
             CONFIG.APP_ID,
-            continuation_parameters.claims_dentity,
+            continuation_parameters.claims_identity,
             continuation_parameters.oauth_scope,
         )
     except Exception as err:

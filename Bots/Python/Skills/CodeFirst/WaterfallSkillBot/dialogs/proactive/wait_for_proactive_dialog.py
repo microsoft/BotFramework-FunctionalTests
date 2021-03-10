@@ -77,7 +77,7 @@ class WaitForProactiveDialog(Dialog):
         self.continuation_parameters_store[
             context.activity.from_property.id
         ] = ContinuationParameters(
-            claims_dentity=context.turn_state.get(BotAdapter.BOT_IDENTITY_KEY),
+            claims_identity=context.turn_state.get(BotAdapter.BOT_IDENTITY_KEY),
             conversation_reference=TurnContext.get_conversation_reference(
                 context.activity
             ),
