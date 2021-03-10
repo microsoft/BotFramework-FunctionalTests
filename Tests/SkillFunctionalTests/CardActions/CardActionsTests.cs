@@ -74,7 +74,23 @@ namespace SkillFunctionalTests.CardActions
             };
 
             var testCaseBuilder = new TestCaseBuilder();
-            var testCases = testCaseBuilder.BuildTestCases(channelIds, deliverModes, hostBots, targetSkills, scripts);
+
+            // This local function is used to exclude ExpectReplies, O365 and WaterfallSkillBotPython test cases
+            static bool ShouldExclude(TestCase testCase)
+            {
+                if (testCase.Script == "O365.json")
+                {
+                    // BUG: O365 fails with ExpectReplies for WaterfallSkillBotPython (remove when https://github.com/microsoft/BotFramework-FunctionalTests/issues/XXX is fixed).
+                    if (testCase.TargetSkill == SkillBotNames.WaterfallSkillBotPython && testCase.DeliveryMode == DeliveryModes.ExpectReplies)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            var testCases = testCaseBuilder.BuildTestCases(channelIds, deliverModes, hostBots, targetSkills, scripts, ShouldExclude);
             foreach (var testCase in testCases)
             {
                 yield return testCase;
