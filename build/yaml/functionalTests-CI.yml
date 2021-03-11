@@ -7,20 +7,20 @@ variables:
 jobs:
     - job: skillFunctionalTestsBuild
       steps:
-      - template: skillFunctionalTestsBuild.yml
+      - template: dotnetBotsBuild-CI.yml
 
-    - job: functionalTestJs
+    - job: Build JS bots
       steps:
-      - template: functionalTestJs.yml
+      - template: jsBotsBuild-CI.yml
 
-    - job: functionalTestPython
+    - job: Build Python bots
       steps:
-      - template: functionalTestPython.yml
+      - template: pythonBotsBuild-CI.yml
 
-    - job: functionalTestsBotsBuild
+    - job: Build dotnet bots
       variables:
         SolutionDir: '$(Build.SourcesDirectory)/Bots/DotNet/'
       steps:
-      - template: functionalTestsBotsBuild.yml
+      - template: dotnetBotsUpdateDependencies-CI.yml
 pool:
     vmImage: 'windows-2019'
