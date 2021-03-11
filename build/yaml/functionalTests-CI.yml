@@ -6,7 +6,7 @@ variables:
 jobs:
     -  job: "BuildJSbots"
        steps: 
-       - template: jsBotsBuild-CI.yml
+       - template: jsBotsBuildCI.yml
     -  job: "BuildPythonbots"
        steps: 
        - template: pythonBotsBuild-CI.yml
