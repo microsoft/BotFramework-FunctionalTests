@@ -5,9 +5,10 @@ variables:
   BuildPlatform: 'Any CPU'
 
 jobs:
-    - job: skillFunctionalTestsBuild
+    - job: Build dotnet bots
       steps:
       - template: dotnetBotsBuild-CI.yml
+      - template: dotnetBotsUpdateDependencies-CI.yml
 
     - job: Build JS bots
       steps:
@@ -17,10 +18,5 @@ jobs:
       steps:
       - template: pythonBotsBuild-CI.yml
 
-    - job: Build dotnet bots
-      variables:
-        SolutionDir: '$(Build.SourcesDirectory)/Bots/DotNet/'
-      steps:
-      - template: dotnetBotsUpdateDependencies-CI.yml
 pool:
     vmImage: 'windows-2019'
