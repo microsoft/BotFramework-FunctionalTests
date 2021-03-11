@@ -13,9 +13,12 @@ jobs:
       steps:
       - template: pythonBotsBuild-CI.yml
       
-    - job: Build dotnet bots
+    - job: Build Dependencies dotnet bots
       steps:
       - template: dotnetBotsUpdateDependencies-CI.yml
+  
+    - job: Build dotnet bots
+      steps:
       - template: dotnetBotsBuild-CI.yml
       
      
