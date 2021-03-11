@@ -2,7 +2,7 @@
   - task: UsePythonVersion@0
     displayName: Use Python version
     inputs:
-      versionSpec: '3.7.x'
+      versionSpec: '3.8.x'
 
   - task: CmdLine@2
     displayName: Install dependencies
