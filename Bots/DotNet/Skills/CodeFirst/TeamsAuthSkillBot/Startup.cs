@@ -35,7 +35,7 @@ namespace Microsoft.BotFrameworkFunctionalTest.TeamsAuthBot
             services.AddSingleton<IBotFrameworkHttpAdapter, SkillAdapterWithErrorHandler>();
 
             // Register AuthConfiguration to enable custom claim validation.
-            services.AddSingleton(sp => new AuthenticationConfiguration { ClaimsValidator = new AllowedCallersClaimsValidator(sp.GetService<IConfiguration>()) });
+            services.AddSingleton(sp => new AuthenticationConfiguration { ClaimsValidator = new Microsoft.BotFrameworkFunctionalTest.TeamsAuthBot.Authentication.AllowedCallersClaimsValidator(sp.GetService<IConfiguration>()) });
 
             // Create the storage we'll be using for User and Conversation state. (Memory is great for testing purposes.)
             services.AddSingleton<IStorage, MemoryStorage>();
