@@ -18,9 +18,9 @@ steps:
 
         # Bots Resource Groups
         $groups = @{
-          DotNet = "$(ResourceGroup)-DotNet"
-          JS     = "$(ResourceGroup)-JS"
-          Python = "$(ResourceGroup)-Python"
+          DotNet = "$(InternalResourceGroupName)-DotNet"
+          JS     = "$(InternalResourceGroupName)-JS"
+          Python = "$(InternalResourceGroupName)-Python"
         }
 
         # Bots Settings
@@ -159,7 +159,7 @@ steps:
           if(-not [string]::IsNullOrEmpty($skill.appId)){
             continue;
           }
-          $entry = az keyvault secret list --vault-name "$(KeyVault)" --query "[?name == 'Bffn$($skill.key)AppId']" | ConvertFrom-Json;
+          $entry = az keyvault secret list --vault-name "$(InternalKeyVaultName)" --query "[?name == 'Bffn$($skill.key)AppId']" | ConvertFrom-Json;
           $secretVault = az keyvault secret show --id $entry.id | ConvertFrom-Json;
           $skill.appId = $secretVault.value;
         }
