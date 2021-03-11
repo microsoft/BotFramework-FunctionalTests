@@ -70,7 +70,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Proact
                 OAuthScope = turnContext.TurnState.Get<string>(BotAdapter.OAuthScopeKey)
             };
 
-            _continuationParametersStore.AddOrUpdate(turnContext.Activity.From.Id, continuationParameters, (_, _) => continuationParameters);
+            _continuationParametersStore.AddOrUpdate(turnContext.Activity.From.Id, continuationParameters, (_, __) => continuationParameters);
         }
     }
 }
