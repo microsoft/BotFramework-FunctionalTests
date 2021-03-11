@@ -9,160 +9,110 @@ using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Choices;
-using Microsoft.Bot.Connector;
 using Microsoft.Bot.Schema;
 
-namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Attachments
+namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.MessageWithAttachment
 {
     public class MessageWithAttachmentDialog : ComponentDialog
     {
         private const string Picture = "architecture-resize.png";
+        private readonly Uri _serverUrl;
 
-        public MessageWithAttachmentDialog()
-             : base(nameof(MessageWithAttachmentDialog))
+        public MessageWithAttachmentDialog(Uri serverUrl)
+            : base(nameof(MessageWithAttachmentDialog))
         {
-            AddDialog(new ChoicePrompt("AttachmentTypePrompt"));
-            AddDialog(new ChoicePrompt("EndPrompt"));
-            AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[] { SelectAttachmentAsync, HandleAttachmentAsync, FinalStepAsync }));
+            _serverUrl = serverUrl;
+            AddDialog(new ChoicePrompt(nameof(ChoicePrompt)));
+            AddDialog(new ConfirmPrompt(nameof(ConfirmPrompt)));
+            AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[] { SelectAttachmentTypeAsync, SendActivityWithAttachmentAsync, FinalStepAsync }));
             InitialDialogId = nameof(WaterfallDialog);
         }
 
-        private static Attachment GetInlineAttachment()
+        private async Task<DialogTurnResult> SelectAttachmentTypeAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            var imagePath = Path.Combine(Environment.CurrentDirectory, "Dialogs", "MessageWithAttachment", "Files", Picture);
+            const string messageText = "What attachment type do you want?";
+            const string repromptMessageText = "That was not a valid choice, please select a valid card type.";
+            var options = new PromptOptions
+            {
+                Prompt = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput),
+                RetryPrompt = MessageFactory.Text(repromptMessageText, repromptMessageText, InputHints.ExpectingInput),
+                Choices = new List<Choice>
+                {
+                    new Choice("Inline"),
+                    new Choice("Internet")
+                }
+            };
+
+            // Ask the user to enter their name.
+            return await stepContext.PromptAsync(nameof(ChoicePrompt), options, cancellationToken);
+        }
+
+        private async Task<DialogTurnResult> SendActivityWithAttachmentAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            var attachmentType = ((FoundChoice)stepContext.Result).Value.ToLowerInvariant();
+            var reply = new Activity(ActivityTypes.Message) { InputHint = InputHints.IgnoringInput };
+            switch (attachmentType)
+            {
+                case "inline":
+                    reply.Text = "This is an inline attachment.";
+                    reply.Attachments = new List<Attachment> { GetInlineAttachment() };
+                    break;
+
+                case "internet":
+                    reply.Text = "This is an attachment from a HTTP URL.";
+                    reply.Attachments = new List<Attachment> { GetInternetAttachment() };
+                    break;
+
+                default:
+                    throw new InvalidOperationException($"Invalid card type {attachmentType}");
+            }
+
+            await stepContext.Context.SendActivityAsync(reply, cancellationToken);
+
+            // Ask to submit another or end.
+            const string messageText = "Do you want another type of attachment?";
+            const string repromptMessageText = "That's an invalid choice.";
+            var options = new PromptOptions
+            {
+                Prompt = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput),
+                RetryPrompt = MessageFactory.Text(repromptMessageText, repromptMessageText, InputHints.ExpectingInput),
+            };
+
+            return await stepContext.PromptAsync(nameof(ConfirmPrompt), options, cancellationToken);
+        }
+
+        private async Task<DialogTurnResult> FinalStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            var tryAnother = (bool)stepContext.Result;
+            if (tryAnother)
+            {
+                return await stepContext.ReplaceDialogAsync(InitialDialogId, cancellationToken: cancellationToken);
+            }
+
+            return new DialogTurnResult(DialogTurnStatus.Complete);
+        }
+
+        private Attachment GetInlineAttachment()
+        {
+            var imagePath = Path.Combine(Environment.CurrentDirectory, "wwwroot", "images", Picture);
             var imageData = Convert.ToBase64String(File.ReadAllBytes(imagePath));
 
             return new Attachment
             {
-                Name = @$"Files\{Picture}",
+                Name = $"Files/{Picture}",
                 ContentType = "image/png",
                 ContentUrl = $"data:image/png;base64,{imageData}",
             };
         }
 
-        private static Attachment GetInternetAttachment()
+        private Attachment GetInternetAttachment()
         {
-            // ContentUrl must be HTTPS.
             return new Attachment
             {
-                Name = @$"Files\{Picture}",
+                Name = $"Files/{Picture}",
                 ContentType = "image/png",
-                ContentUrl = "https://docs.microsoft.com/en-us/bot-framework/media/how-it-works/architecture-resize.png",
+                ContentUrl = $"{_serverUrl}images/{Picture}",
             };
-        }
-
-        private static async Task<Attachment> GetUploadedAttachmentAsync(WaterfallStepContext stepContext, string serviceUrl, string conversationId, CancellationToken cancellationToken)
-        {
-            if (string.IsNullOrWhiteSpace(serviceUrl))
-            {
-                throw new ArgumentNullException(nameof(serviceUrl));
-            }
-
-            if (string.IsNullOrWhiteSpace(conversationId))
-            {
-                throw new ArgumentNullException(nameof(conversationId));
-            }
-
-            var imagePath = Path.Combine(Environment.CurrentDirectory, "Files", Picture);
-            
-            var connector = stepContext.Context.TurnState.Get<IConnectorClient>() as ConnectorClient;
-            var attachments = new Bot.Connector.Attachments(connector);
-            var response = await attachments.Client.Conversations.UploadAttachmentAsync(
-                conversationId,
-                new AttachmentData
-                {
-                    Name = $@"Files\{Picture}",
-                    OriginalBase64 = await File.ReadAllBytesAsync(imagePath, cancellationToken),
-                    Type = "image/png",
-                },
-                cancellationToken);
-
-            var attachmentUri = attachments.GetAttachmentUri(response.Id);
-
-            return new Attachment
-            {
-                Name = $@"Files\{Picture}",
-                ContentType = "image/png",
-                ContentUrl = attachmentUri,
-            };
-        }
-
-        private async Task<DialogTurnResult> SelectAttachmentAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
-        {
-            // Create the PromptOptions from the skill configuration which contain the list of configured skills.
-            var messageText = "What card do you want?";
-            var repromptMessageText = "That was not a valid choice, please select a valid card type.";
-            var options = new PromptOptions
-            {
-                Prompt = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput),
-                RetryPrompt = MessageFactory.Text(repromptMessageText, repromptMessageText, InputHints.ExpectingInput),
-                Choices = new List<Choice> { new Choice("Inline"), new Choice("Internet") } 
-                
-                // This is currently excluded since Attachments endpoint isn't currently implemented in the ChannelServiceHandler
-                // new Choice("Upload")} 
-            };
-
-            // Ask the user to enter their name.
-            return await stepContext.PromptAsync("AttachmentTypePrompt", options, cancellationToken);
-        }
-
-        private async Task<DialogTurnResult> HandleAttachmentAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
-        {
-            var card = stepContext.Context.Activity.Text;
-            var reply = MessageFactory.Text(string.Empty);
-
-            switch (card)
-            {
-                case "Inline":
-                    reply.Text = "This is an inline attachment.";
-                    reply.Attachments = new List<Attachment>() { GetInlineAttachment() };
-                    break;
-
-                case "Internet":
-                    reply.Text = "This is an attachment from a HTTP URL.";
-                    reply.Attachments = new List<Attachment>() { GetInternetAttachment() };
-                    break;
-
-                case "Upload":
-                    break;
-                    
-                    // Commenting this out since the Attachments endpoint isn't currently implemented in the ChannelService Handler
-                    //reply.Text = "This is an uploaded attachment.";
-
-                    //// Get the uploaded attachment.
-                    //var uploadedAttachment = await GetUploadedAttachmentAsync(stepContext, stepContext.Context.Activity.ServiceUrl, stepContext.Context.Activity.Conversation.Id, cancellationToken);
-                    //reply.Attachments = new List<Attachment>() { uploadedAttachment };
-
-                default:
-                    reply.Text = "Invalid choice";
-                    break;
-            }
-
-            await stepContext.Context.SendActivityAsync(reply, cancellationToken);
-
-            var messageText = "Do you want another type of attachment?";
-            var repromptMessageText = "That's an invalid choice.";
-
-            var options = new PromptOptions
-            {
-                Prompt = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput),
-                RetryPrompt = MessageFactory.Text(repromptMessageText, repromptMessageText, InputHints.ExpectingInput),
-                Choices = new List<Choice> { new Choice("Yes"), new Choice("No") }
-            };
-
-            return await stepContext.PromptAsync("EndPrompt", options, cancellationToken);
-        }
-
-        private async Task<DialogTurnResult> FinalStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
-        {
-            var selectedSkillId = ((FoundChoice)stepContext.Result).Value.ToLower();
-
-            if (selectedSkillId == "yes")
-            {
-                return await stepContext.ReplaceDialogAsync(InitialDialogId, "What attachment type do you want?", cancellationToken);
-            }
-
-            return new DialogTurnResult(DialogTurnStatus.Complete);
         }
     }
 }
