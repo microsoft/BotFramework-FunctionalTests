@@ -207,14 +207,18 @@ steps:
   displayName: 'Restore V3 bot'
   inputs:
     restoreSolution: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3/EchoSkillBot-v3.csproj'
-    feedsToUse: 'select'
     restoreDirectory: '$(SolutionDir)packages'
+    feedsToUse: 'select'
+    includeNuGetOrg: true
+    
 
 - task: MSBuild@1
   displayName: 'Build V3 bot'
   inputs:
     solution: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3/EchoSkillBot-v3.csproj'
-    vsVersion: 16.0
+    feedsToUse: 'select'
+    includeNuGetOrg: true
+    #vsVersion: 16.0
     platform: 'AnyCPU'
     configuration: '$(BuildConfiguration)'
 # End of Restore & Build for V3
