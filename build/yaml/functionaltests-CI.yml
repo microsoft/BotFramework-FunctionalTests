@@ -16,11 +16,7 @@ jobs:
     - job: Build Dependencies dotnet bots
       steps:
       - template: dotnetBotsUpdateDependencies-CI.yml
-  
-    - job: Build dotnet bots
-      steps:
       - template: dotnetBotsBuild-CI.yml
-      
      
 pool:
     vmImage: 'windows-2019'
