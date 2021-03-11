@@ -58,7 +58,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.TeamsSkillBot.Dialogs.Update
             }
 
             // Create the PromptOptions from the skill configuration which contain the list of configured skills.
-            var messageText = "Do you want to update the activity again??";
+            var messageText = "Do you want to update the activity again?";
             var repromptMessageText = "Please select a valid answer";
             var options = new PromptOptions
             {

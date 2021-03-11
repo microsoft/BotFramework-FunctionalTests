@@ -30,8 +30,8 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Messag
 
         private async Task<DialogTurnResult> SelectAttachmentTypeAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            var messageText = "What attachment type do you want?";
-            var repromptMessageText = "That was not a valid choice, please select a valid card type.";
+            const string messageText = "What attachment type do you want?";
+            const string repromptMessageText = "That was not a valid choice, please select a valid card type.";
             var options = new PromptOptions
             {
                 Prompt = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput),
@@ -70,8 +70,8 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Messag
             await stepContext.Context.SendActivityAsync(reply, cancellationToken);
 
             // Ask to submit another or end.
-            var messageText = "Do you want another type of attachment?";
-            var repromptMessageText = "That's an invalid choice.";
+            const string messageText = "Do you want another type of attachment?";
+            const string repromptMessageText = "That's an invalid choice.";
             var options = new PromptOptions
             {
                 Prompt = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput),

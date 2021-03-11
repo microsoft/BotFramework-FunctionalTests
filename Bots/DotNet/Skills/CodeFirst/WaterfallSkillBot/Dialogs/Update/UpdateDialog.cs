@@ -58,8 +58,8 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Update
             }
 
             // Ask if we want to update the activity again.
-            var messageText = "Do you want to update the activity again??";
-            var repromptMessageText = "Please select a valid answer";
+            const string messageText = "Do you want to update the activity again?";
+            const string repromptMessageText = "Please select a valid answer";
             var options = new PromptOptions
             {
                 Prompt = MessageFactory.Text(messageText, messageText),

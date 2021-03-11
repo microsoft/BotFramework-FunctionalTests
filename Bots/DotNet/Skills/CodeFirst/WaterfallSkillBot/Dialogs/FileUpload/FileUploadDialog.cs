@@ -53,8 +53,8 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.FileUp
             await stepContext.Context.SendActivityAsync(MessageFactory.Text(fileText), cancellationToken);
 
             // Ask to upload another file or end.
-            var messageText = "Do you want to upload another file?";
-            var repromptMessageText = "That's an invalid choice.";
+            const string messageText = "Do you want to upload another file?";
+            const string repromptMessageText = "That's an invalid choice.";
             var options = new PromptOptions
             {
                 Prompt = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput),
