@@ -25,14 +25,16 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot
     /// </summary>
     public class TokenExchangeSkillHandler : SkillHandler
     {
+        private const string WaterfallSkillBot = "WaterfallSkillBot";
+
         private readonly BotAdapter _adapter;
         private readonly SkillsConfiguration _skillsConfig;
         private readonly SkillHttpClient _skillClient;
         private readonly string _botId;
-        private readonly string _connectionName;
         private readonly SkillConversationIdFactoryBase _conversationIdFactory;
         private readonly ILogger _logger;
         private readonly IExtendedUserTokenProvider _tokenExchangeProvider;
+        private readonly IConfiguration _configuration;
 
         public TokenExchangeSkillHandler(
             BotAdapter adapter,
@@ -54,13 +56,12 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot
                 throw new ArgumentException($"{nameof(adapter)} does not support token exchange");
             }
 
+            _configuration = configuration;
             _skillsConfig = skillsConfig;
             _skillClient = skillClient;
             _conversationIdFactory = conversationIdFactory;
             _logger = logger ?? NullLogger<TokenExchangeSkillHandler>.Instance;
-
             _botId = configuration.GetSection(MicrosoftAppCredentials.MicrosoftAppIdKey)?.Value;
-            _connectionName = configuration.GetSection("SsoConnectionName")?.Value;
         }
 
         protected override async Task<ResourceResponse> OnSendToConversationAsync(ClaimsIdentity claimsIdentity, string conversationId, Activity activity, CancellationToken cancellationToken = default(CancellationToken))
@@ -111,12 +112,20 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot
                         {
                             context.TurnState.Add<IIdentity>("BotIdentity", claimsIdentity);
 
+                            // We need to know what connection name to use for the token exchange so we figure that out here
+                            var connectionName = targetSkill.Id == WaterfallSkillBot ? _configuration.GetSection("SsoConnectionName").Value : _configuration.GetSection("SsoConnectionNameTeams").Value;
+                            
+                            if (string.IsNullOrEmpty(connectionName))
+                            {
+                                throw new ArgumentNullException("The connection name cannot be null.");
+                            }
+
                             // AAD token exchange
                             try
                             {
                                 var result = await _tokenExchangeProvider.ExchangeTokenAsync(
                                     context,
-                                    _connectionName,
+                                    connectionName,
                                     activity.Recipient.Id,
                                     new TokenExchangeRequest() { Uri = oauthCard.TokenExchangeResource.Uri }).ConfigureAwait(false);
 

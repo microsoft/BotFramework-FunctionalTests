@@ -13,11 +13,14 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs.Sso
         public SsoSignInDialog(string connectionName)
             : base(nameof(SsoSignInDialog))
         {
-            AddDialog(new OAuthPrompt(nameof(OAuthPrompt), new OAuthPromptSettings
+            AddDialog(new OAuthPrompt(
+                nameof(OAuthPrompt), 
+                new OAuthPromptSettings
             {
                 ConnectionName = connectionName,
-                Text = "Sign in to the host bot using AAD for SSO",
-                Title = "Sign In"
+                Text = $"Sign in to the host bot using AAD for SSO and connection {connectionName}",
+                Title = "Sign In",
+                Timeout = 60000
             }));
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[] { SignInStepAsync, DisplayTokenAsync }));
             InitialDialogId = nameof(WaterfallDialog);

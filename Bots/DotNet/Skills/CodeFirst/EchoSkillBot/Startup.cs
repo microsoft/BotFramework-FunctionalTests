@@ -40,7 +40,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot
             services.AddSingleton<ConversationState>((s) => new ConversationState(new MemoryStorage()));
 
             // Register AuthConfiguration to enable custom claim validation.
-            services.AddSingleton(sp => new AuthenticationConfiguration { ClaimsValidator = new AllowedCallersClaimsValidator(sp.GetService<IConfiguration>()) });
+            services.AddSingleton(sp => new AuthenticationConfiguration { ClaimsValidator = new Microsoft.BotFrameworkFunctionalTests.EchoSkillBot.Authentication.AllowedCallersClaimsValidator(sp.GetService<IConfiguration>()) });
 
             // Create the Bot Framework Adapter with error handling enabled.
             services.AddSingleton<IBotFrameworkHttpAdapter, SkillAdapterWithErrorHandler>();
