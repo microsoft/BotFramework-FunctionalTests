@@ -9,11 +9,11 @@ namespace SkillFunctionalTests.Common
 {
     public class TestCaseBuilder
     {
-        public IEnumerable<object[]> BuildTestCases(List<ClientType> clientTypes, List<string> deliveryModes, List<HostBot> hostBots, List<string> targetSkills, List<string> scripts, Func<TestCase, bool> shouldExclude = null)
+        public IEnumerable<object[]> BuildTestCases(List<string> channelIds, List<string> deliveryModes, List<HostBot> hostBots, List<string> targetSkills, List<string> scripts, Func<TestCase, bool> shouldExclude = null)
         {
             var testCases = new List<object[]>();
             var count = 1;
-            foreach (var clientType in clientTypes)
+            foreach (var channelId in channelIds)
             {
                 foreach (var script in scripts)
                 {
@@ -25,8 +25,8 @@ namespace SkillFunctionalTests.Common
                             {
                                 var testCase = new TestCase
                                 {
-                                    Description = $"{script}, {hostBot}, {targetSkill}, {clientType}, {deliveryMode}",
-                                    ClientType = clientType,
+                                    Description = $"{script}, {hostBot}, {targetSkill}, {channelId}, {deliveryMode}",
+                                    ChannelId = channelId,
                                     DeliveryMode = deliveryMode,
                                     HostBot = hostBot,
                                     TargetSkill = targetSkill,
