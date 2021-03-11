@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using Microsoft.Bot.Connector;
 using TranscriptTestRunner;
 
 namespace SkillFunctionalTests.Common
@@ -9,7 +10,7 @@ namespace SkillFunctionalTests.Common
     {
         public string Description { get; set; }
 
-        public ClientType ClientType { get; set; }
+        public string ChannelId { get; set; }
 
         public string DeliveryMode { get; set; }
 
