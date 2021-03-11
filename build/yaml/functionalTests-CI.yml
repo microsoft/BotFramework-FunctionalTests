@@ -5,22 +5,22 @@ variables:
   BuildPlatform: 'Any CPU'
 
 jobs:
-    - job: SkillFunctionalTestsbuild
+    - job: skillFunctionalTestsBuild
       steps:
-      - template: SkillFunctionalTestsbuild.yml
+      - template: skillFunctionalTestsBuild.yml
 
-    - job: jsfunctional
+    - job: functionalTestJs
       steps:
-      - template: jsfunctional.yml
+      - template: functionalTestJs.yml
 
-    - job: pythonfunctional
+    - job: functionalTestPython
       steps:
-      - template: pythonfunctional.yml
+      - template: functionalTestPython.yml
 
-    - job: FunctionalTestsBotsbuild
+    - job: functionalTestsBotsBuild
       variables:
         SolutionDir: '$(Build.SourcesDirectory)/Bots/DotNet/'
       steps:
-      - template: FunctionalTestsBotsbuild.yml
+      - template: functionalTestsBotsBuild.yml
 pool:
     vmImage: 'windows-2019'
