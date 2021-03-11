@@ -155,7 +155,7 @@ namespace Microsoft.BotFramework.Composer.WebAppTemplates
             //ComponentRegistration.Add(new CustomActionComponentRegistration());
 
             // Register the skills client and skills request handler.
-            services.AddSingleton<SkillConversationIdFactoryBase, SkillConversationIdFactory>();
+            services.AddSingleton<SkillConversationIdFactoryBase, Microsoft.BotFramework.Composer.Core.SkillConversationIdFactory>();
             services.AddHttpClient<BotFrameworkClient, SkillHttpClient>();
             services.AddSingleton<ChannelServiceHandler, SkillHandler>();
 
