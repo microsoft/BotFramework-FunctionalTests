@@ -13,12 +13,14 @@ using Microsoft.Bot.Builder.Skills;
 using Microsoft.Bot.Builder.TraceExtensions;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Bot.Schema;
-using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Attachments;
 using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Auth;
 using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards;
+using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Delete;
 using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.FileUpload;
+using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.MessageWithAttachment;
 using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Proactive;
 using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Sso;
+using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Update;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
@@ -35,11 +37,13 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs
             : base(nameof(ActivityRouterDialog))
         {
             AddDialog(new CardDialog(httpContextAccessor));
+            AddDialog(new MessageWithAttachmentDialog(new Uri($"{httpContextAccessor.HttpContext.Request.Scheme}://{httpContextAccessor.HttpContext.Request.Host.Value}")));    
             AddDialog(new WaitForProactiveDialog(httpContextAccessor, continuationParametersStore));
-            AddDialog(new MessageWithAttachmentDialog());
             AddDialog(new AuthDialog(configuration));
             AddDialog(new SsoSkillDialog(configuration));
             AddDialog(new FileUploadDialog());
+            AddDialog(new DeleteDialog());
+            AddDialog(new UpdateDialog());
 
             AddDialog(CreateEchoSkillDialog(conversationState, conversationIdFactory, skillClient, configuration));
 
@@ -52,13 +56,9 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs
         private static SkillDialog CreateEchoSkillDialog(ConversationState conversationState, SkillConversationIdFactoryBase conversationIdFactory, SkillHttpClient skillClient, IConfiguration configuration)
         {
             var botId = configuration.GetSection(MicrosoftAppCredentials.MicrosoftAppIdKey)?.Value;
-            if (string.IsNullOrWhiteSpace(botId))
-            {
-                throw new ArgumentException($"{MicrosoftAppCredentials.MicrosoftAppIdKey} is not in configuration");
-            }
 
             var skillHostEndpoint = configuration.GetSection("SkillHostEndpoint")?.Value;
-            if (string.IsNullOrWhiteSpace(botId))
+            if (string.IsNullOrWhiteSpace(skillHostEndpoint))
             {
                 throw new ArgumentException("SkillHostEndpoint is not in configuration");
             }
@@ -129,6 +129,12 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs
                     var messageActivity = MessageFactory.Text("I'm the echo skill bot");
                     messageActivity.DeliveryMode = stepContext.Context.Activity.DeliveryMode;
                     return await stepContext.BeginDialogAsync(FindDialog(_echoSkill).Id, new BeginSkillDialogOptions { Activity = messageActivity }, cancellationToken);
+
+                case "Delete":
+                    return await stepContext.BeginDialogAsync(FindDialog(nameof(DeleteDialog)).Id, cancellationToken: cancellationToken);
+
+                case "Update":
+                    return await stepContext.BeginDialogAsync(FindDialog(nameof(UpdateDialog)).Id, cancellationToken: cancellationToken);
 
                 default:
                     // We didn't get an event name we can handle.

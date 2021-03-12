@@ -44,7 +44,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot
             }
 
             // Register AuthConfiguration to enable custom claim validation.
-            services.AddSingleton(sp => new AuthenticationConfiguration { ClaimsValidator = new AllowedCallersClaimsValidator(sp.GetService<IConfiguration>()) });
+            services.AddSingleton(sp => new AuthenticationConfiguration { ClaimsValidator = new Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Authentication.AllowedCallersClaimsValidator(sp.GetService<IConfiguration>()) });
 
             // Register the Bot Framework Adapter with error handling enabled.
             // Note: some classes use the base BotAdapter so we add an extra registration that pulls the same instance.
