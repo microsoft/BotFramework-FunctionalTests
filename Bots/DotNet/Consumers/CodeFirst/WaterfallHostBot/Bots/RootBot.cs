@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Builder.Skills;
 using Microsoft.Bot.Schema;
 using Newtonsoft.Json;
 
@@ -15,6 +16,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Bots
     public class RootBot<T> : ActivityHandler
         where T : Dialog
     {
+        private readonly IStatePropertyAccessor<BotFrameworkSkill> _activeSkillProperty;
         private readonly ConversationState _conversationState;
         private readonly Dialog _mainDialog;
 

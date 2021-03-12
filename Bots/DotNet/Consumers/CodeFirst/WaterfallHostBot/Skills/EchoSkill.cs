@@ -9,24 +9,29 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Skills
 {
     public class EchoSkill : SkillDefinition
     {
-        private const string SkillActionMessage = "Message";
+        private enum SkillAction
+        {
+            Message
+        }
 
         public override IList<string> GetActions()
         {
-            return new List<string> { SkillActionMessage };
+            return new List<string> { SkillAction.Message.ToString() };
         }
 
         public override Activity CreateBeginActivity(string actionId)
         {
-            if (actionId.Equals(SkillActionMessage, StringComparison.CurrentCultureIgnoreCase))
+            if (!Enum.TryParse<SkillAction>(actionId, true, out _))
             {
-                var activity = (Activity)Activity.CreateMessageActivity();
-                activity.Name = SkillActionMessage;
-                activity.Text = "Begin the Echo Skill.";
-                return activity;
+                throw new InvalidOperationException($"Unable to create begin activity for \"{actionId}\".");
             }
 
-            throw new InvalidOperationException($"Unable to create begin activity for \"{actionId}\".");
+            // We only support one activity for Echo so no further checks are needed
+            return new Activity(ActivityTypes.Message)
+            {
+                Name = SkillAction.Message.ToString(),
+                Text = "Begin the Echo Skill."
+            };
         }
     }
 }
