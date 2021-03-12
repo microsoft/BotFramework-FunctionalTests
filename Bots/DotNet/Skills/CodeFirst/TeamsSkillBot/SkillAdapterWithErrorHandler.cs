@@ -8,6 +8,7 @@ using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Builder.TraceExtensions;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Bot.Schema;
+using Microsoft.BotFrameworkFunctionalTests.TeamsSkillBot.Middleware;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
@@ -15,13 +16,18 @@ namespace Microsoft.BotFrameworkFunctionalTests.TeamsSkillBot
 {
     public class SkillAdapterWithErrorHandler : BotFrameworkHttpAdapter
     {
+        private readonly ConversationState _conversationState;
         private readonly ILogger _logger;
 
-        public SkillAdapterWithErrorHandler(IConfiguration configuration, ICredentialProvider credentialProvider, AuthenticationConfiguration authConfig, ILogger<BotFrameworkHttpAdapter> logger)
+        public SkillAdapterWithErrorHandler(IConfiguration configuration, ICredentialProvider credentialProvider, AuthenticationConfiguration authConfig, ILogger<BotFrameworkHttpAdapter> logger, ConversationState conversationState)
             : base(configuration, credentialProvider, authConfig, logger: logger)
         {
+            _conversationState = conversationState ?? throw new ArgumentNullException(nameof(conversationState));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             OnTurnError = HandleTurnError;
+
+            // Add autosave middleware for SSO. 
+            Use(new SsoSaveStateMiddleware(_conversationState));
         }
 
         private async Task HandleTurnError(ITurnContext turnContext, Exception exception)
@@ -31,6 +37,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.TeamsSkillBot
 
             await SendErrorMessageAsync(turnContext, exception);
             await SendEoCToParentAsync(turnContext, exception);
+            await ClearConversationStateAsync(turnContext);
         }
 
         private async Task SendErrorMessageAsync(ITurnContext turnContext, Exception exception)
@@ -39,7 +46,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.TeamsSkillBot
             {
                 // Send a message to the user.
                 var errorMessageText = "The skill encountered an error or bug.";
-                var errorMessage = MessageFactory.Text(errorMessageText, errorMessageText, InputHints.IgnoringInput);
+                var errorMessage = MessageFactory.Text(errorMessageText + Environment.NewLine + exception, errorMessageText, InputHints.IgnoringInput);
                 await turnContext.SendActivityAsync(errorMessage);
 
                 errorMessageText = "To continue to run this bot, please fix the bot source code.";
@@ -71,6 +78,21 @@ namespace Microsoft.BotFrameworkFunctionalTests.TeamsSkillBot
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Exception caught in SendEoCToParentAsync : {ex}");
+            }
+        }
+
+        private async Task ClearConversationStateAsync(ITurnContext turnContext)
+        {
+            try
+            {
+                // Delete the conversationState for the current conversation to prevent the
+                // bot from getting stuck in a error-loop caused by being in a bad state.
+                // ConversationState should be thought of as similar to "cookie-state" for a Web page.
+                await _conversationState.DeleteAsync(turnContext);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Exception caught on attempting to Delete ConversationState : {ex}");
             }
         }
     }

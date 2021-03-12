@@ -9,7 +9,6 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Choices;
 using Microsoft.Bot.Schema;
-using Microsoft.Extensions.Configuration;
 
 namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs.Sso
 {
@@ -21,15 +20,15 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs.Sso
         private readonly string _connectionName;
         private readonly string _skillDialogId;
 
-        public SsoDialog(Dialog skillDialog, IConfiguration configuration)
-            : base(nameof(SsoDialog))
+        public SsoDialog(string dialogId, Dialog ssoSkillDialog, string connectionName)
+            : base(dialogId)
         {
-            _connectionName = configuration.GetSection("SsoConnectionName")?.Value;
-            _skillDialogId = skillDialog.Id;
+            _connectionName = connectionName;
+            _skillDialogId = ssoSkillDialog.Id;
 
             AddDialog(new ChoicePrompt("ActionStepPrompt"));
             AddDialog(new SsoSignInDialog(_connectionName));
-            AddDialog(skillDialog);
+            AddDialog(ssoSkillDialog);
 
             var waterfallSteps = new WaterfallStep[]
             {
@@ -68,7 +67,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs.Sso
             if (token == null)
             {
                 promptChoices.Add(new Choice("Login"));
-                
+
                 // Token exchange will fail when the host is not logged on and the skill should 
                 // show a regular OAuthPrompt
                 promptChoices.Add(new Choice("Call Skill (without SSO)"));
