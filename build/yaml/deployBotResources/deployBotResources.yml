@@ -226,3 +226,26 @@ stages:
           appSecret: $(BffnEchoSkillBotPythonAppSecret)
           project: 
             directory: 'Bots/Python/Skills/CodeFirst/EchoSkillBot'
+
+# Publish variables
+  - stage: 'Publish_Variables'
+    displayName: 'Publish Variables'
+    dependsOn: []
+    jobs:
+      - job: 'Publish_Variables'
+        displayName: 'Publish Variables'
+        steps:
+          - powershell: |
+              $variables = @{
+                deploymentBuildSuffix = "$(Build.BuildId)"
+              }
+              Write-Host $variables
+              New-Item -Path "$(System.DefaultWorkingDirectory)" -Name "variables" -ItemType "directory"
+              $variables | ConvertTo-Json | Out-File "$(System.DefaultWorkingDirectory)/Variables/variables.json"
+            displayName: 'Create Variables file'
+
+          - task: PublishPipelineArtifact@1
+            displayName: 'Publish Variables as artifact'
+            inputs:
+              targetPath: $(System.DefaultWorkingDirectory)/variables
+              artifactName: Variables
