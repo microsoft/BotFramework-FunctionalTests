@@ -6,11 +6,13 @@ stages:
     - stage: "${{ scenario.name }}"
       displayName: "Test ${{ scenario.name }} Scenario"
       ${{ if eq(scenario.dependsOn, '') }}:
-        dependsOn: []
+        dependsOn: "Download_Variables"
       ${{ if ne(scenario.dependsOn, '') }}:
-        dependsOn: "${{ scenario.dependsOn }}"
+        dependsOn: ["Download_Variables", "${{ scenario.dependsOn }}"]
       jobs:
         - job: Test
+          variables:
+            DeploymentBuildSuffix: $[ stageDependencies.Download_Variables.Download_Variables.outputs['Set_Variables.DeploymentBuildSuffix'] ]
           steps:
             - template: configureConsumers.yml
               parameters:
