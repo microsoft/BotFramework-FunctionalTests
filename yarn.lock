@@ -190,7 +190,6 @@ __metadata:
   resolution: "botframework-functional-tests@workspace:."
   dependencies:
     semistandard: ^16.0.0
-    standard: ^16.0.3
   languageName: unknown
   linkType: soft
 
@@ -467,18 +466,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-config-standard@npm:16.0.2":
-  version: 16.0.2
-  resolution: "eslint-config-standard@npm:16.0.2"
-  peerDependencies:
-    eslint: ^7.12.1
-    eslint-plugin-import: ^2.22.1
-    eslint-plugin-node: ^11.1.0
-    eslint-plugin-promise: ^4.2.1
-  checksum: 9db750eab1fb190deed50cd1b52df94f517142b6bc73edc38d22dc1ccb28ee628d969028017536d65301fbd15daf1487d7b7420f7c2689477f73bb213f6a25fc
-  languageName: node
-  linkType: hard
-
 "eslint-import-resolver-node@npm:^0.3.4":
   version: 0.3.4
   resolution: "eslint-import-resolver-node@npm:0.3.4"
@@ -664,53 +651,6 @@ __metadata:
   bin:
     eslint: bin/eslint.js
   checksum: b3d11ea516d2932db5854ea942a546b711e6ee8735306627042bb9e2539e96844cc62cdb5826039f5d0509202936045c2cd7b84b457004c891a326f8eccae333
-  languageName: node
-  linkType: hard
-
-"eslint@npm:~7.13.0":
-  version: 7.13.0
-  resolution: "eslint@npm:7.13.0"
-  dependencies:
-    "@babel/code-frame": ^7.0.0
-    "@eslint/eslintrc": ^0.2.1
-    ajv: ^6.10.0
-    chalk: ^4.0.0
-    cross-spawn: ^7.0.2
-    debug: ^4.0.1
-    doctrine: ^3.0.0
-    enquirer: ^2.3.5
-    eslint-scope: ^5.1.1
-    eslint-utils: ^2.1.0
-    eslint-visitor-keys: ^2.0.0
-    espree: ^7.3.0
-    esquery: ^1.2.0
-    esutils: ^2.0.2
-    file-entry-cache: ^5.0.1
-    functional-red-black-tree: ^1.0.1
-    glob-parent: ^5.0.0
-    globals: ^12.1.0
-    ignore: ^4.0.6
-    import-fresh: ^3.0.0
-    imurmurhash: ^0.1.4
-    is-glob: ^4.0.0
-    js-yaml: ^3.13.1
-    json-stable-stringify-without-jsonify: ^1.0.1
-    levn: ^0.4.1
-    lodash: ^4.17.19
-    minimatch: ^3.0.4
-    natural-compare: ^1.4.0
-    optionator: ^0.9.1
-    progress: ^2.0.0
-    regexpp: ^3.1.0
-    semver: ^7.2.1
-    strip-ansi: ^6.0.0
-    strip-json-comments: ^3.1.0
-    table: ^5.2.3
-    text-table: ^0.2.0
-    v8-compile-cache: ^2.0.3
-  bin:
-    eslint: bin/eslint.js
-  checksum: 6ea6c763f1b1e484ec5da67e10125cc9b6ccef5c355470cb71a2e29c70b24c0ef325dd45e775800dd78dbcfba2a9c85b9096f438cdb468b32b6680c2ddebb459
   languageName: node
   linkType: hard
 
@@ -1830,7 +1770,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"standard-engine@npm:^14.0.0, standard-engine@npm:^14.0.1":
+"standard-engine@npm:^14.0.0":
   version: 14.0.1
   resolution: "standard-engine@npm:14.0.1"
   dependencies:
@@ -1839,24 +1779,6 @@ __metadata:
     pkg-conf: ^3.1.0
     xdg-basedir: ^4.0.0
   checksum: 671824cd48a890936e2815757284c138da3aa49b9743f88726add53866b67fc97200e6a7f8ce72dfeb8111208feaefcdd05b6d3c5ddc1b38f4221589f9f8eb67
-  languageName: node
-  linkType: hard
-
-"standard@npm:^16.0.3":
-  version: 16.0.3
-  resolution: "standard@npm:16.0.3"
-  dependencies:
-    eslint: ~7.13.0
-    eslint-config-standard: 16.0.2
-    eslint-config-standard-jsx: 10.0.0
-    eslint-plugin-import: ~2.22.1
-    eslint-plugin-node: ~11.1.0
-    eslint-plugin-promise: ~4.2.1
-    eslint-plugin-react: ~7.21.5
-    standard-engine: ^14.0.1
-  bin:
-    standard: bin/cmd.js
-  checksum: 224c840344a94af26511194acf7a647d2eeba344f54ca1bf358edceb7bc07b798b44f4ad8e6544560382e33af50ea21c9aa7d3aaf4ac6ba97c4820aff9eb5bce
   languageName: node
   linkType: hard
 
