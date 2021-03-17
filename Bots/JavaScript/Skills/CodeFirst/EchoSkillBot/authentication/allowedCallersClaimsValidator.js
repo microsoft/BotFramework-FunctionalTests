@@ -16,14 +16,14 @@ const allowedCallers = process.env.AllowedCallers ? process.env.AllowedCallers.s
  * @param claims An array of Claims decoded from the HTTP request's auth header
  */
 const allowedCallersClaimsValidator = async (claims) => {
-    // If allowedCallers is undefined we allow all calls
-    if (allowedCallers && SkillValidation.isSkillClaim(claims)) {
-        // Check that the appId claim in the skill request is in the list of skills configured for this bot.
-        const appId = JwtTokenValidation.getAppIdFromClaims(claims);
-        if (!allowedCallers.includes(appId)) {
-            throw new Error(`Received a request from a bot with an app ID of "${ appId }". To enable requests from this caller, add the app ID to your configuration file.`);
-        }
+  // If allowedCallers is undefined we allow all calls
+  if (allowedCallers && SkillValidation.isSkillClaim(claims)) {
+    // Check that the appId claim in the skill request is in the list of skills configured for this bot.
+    const appId = JwtTokenValidation.getAppIdFromClaims(claims);
+    if (!allowedCallers.includes(appId)) {
+      throw new Error(`Received a request from a bot with an app ID of "${appId}". To enable requests from this caller, add the app ID to your configuration file.`);
     }
+  }
 };
 
 module.exports.allowedCallersClaimsValidator = allowedCallersClaimsValidator;
