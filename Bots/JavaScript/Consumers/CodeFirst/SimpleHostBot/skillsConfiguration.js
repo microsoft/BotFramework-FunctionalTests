@@ -5,46 +5,46 @@
  * A helper class that loads Skills information from configuration.
  */
 class SkillsConfiguration {
-    constructor() {
-        this.skillsData = {};
+  constructor () {
+    this.skillsData = {};
 
-        var skillVariables = Object.keys(process.env).filter(prop => prop.startsWith('skill_'));
+    const skillVariables = Object.keys(process.env).filter(prop => prop.startsWith('skill_'));
 
-        for (const val of skillVariables) {
-            const names = val.split('_');
-            const id = names[1];
-            const attr = names[2];
-            let propName;
-            if (!(id in this.skillsData)) {
-                this.skillsData[id] = { id: id };
-            }
-            switch (attr.toLowerCase()) {
-            case 'appid':
-                propName = 'appId';
-                break;
-            case 'endpoint':
-                propName = 'skillEndpoint';
-                break;
-            default:
-                throw new Error(`[SkillsConfiguration]: Invalid environment variable declaration ${ val }`);
-            }
+    for (const val of skillVariables) {
+      const names = val.split('_');
+      const id = names[1];
+      const attr = names[2];
+      let propName;
+      if (!(id in this.skillsData)) {
+        this.skillsData[id] = { id: id };
+      }
+      switch (attr.toLowerCase()) {
+        case 'appid':
+          propName = 'appId';
+          break;
+        case 'endpoint':
+          propName = 'skillEndpoint';
+          break;
+        default:
+          throw new Error(`[SkillsConfiguration]: Invalid environment variable declaration ${val}`);
+      }
 
-            this.skillsData[id][propName] = process.env[val];
-        }
-
-        this.skillHostEndpointValue = process.env.SkillHostEndpoint;
-        if (!this.skillHostEndpointValue) {
-            throw new Error('[SkillsConfiguration]: Missing configuration parameter. SkillHostEndpoint is required');
-        }
+      this.skillsData[id][propName] = process.env[val];
     }
 
-    get skills() {
-        return this.skillsData;
+    this.skillHostEndpointValue = process.env.SkillHostEndpoint;
+    if (!this.skillHostEndpointValue) {
+      throw new Error('[SkillsConfiguration]: Missing configuration parameter. SkillHostEndpoint is required');
     }
+  }
 
-    get skillHostEndpoint() {
-        return this.skillHostEndpointValue;
-    }
+  get skills () {
+    return this.skillsData;
+  }
+
+  get skillHostEndpoint () {
+    return this.skillHostEndpointValue;
+  }
 }
 
 module.exports.SkillsConfiguration = SkillsConfiguration;
