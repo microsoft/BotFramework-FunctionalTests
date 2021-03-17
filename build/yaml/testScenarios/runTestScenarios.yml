@@ -11,6 +11,7 @@ variables:
   BuildConfiguration: 'Debug'
   BuildPlatform: 'any cpu'
   KeyVault: 'bffnbotkeyvault$($env:ResourceSuffix)'
+  DeployBotResourcesDefaultGuid: '02 - Deploy Bot Resources'
   # AzureSubscription: define in Azure
   # ResourceGroup: define in Azure
   # BffnEchoSkillBotComposerDotnetAppId: (optional) define in Azure
@@ -21,12 +22,43 @@ variables:
   # BffnEchoSkillBotJSV3AppId: (optional) define in Azure
   # BffnEchoSkillBotPythonAppId: (optional) define in Azure
   # BffnWaterfallSkillBotDotNetAppId: (optional) define in Azure
+  # DeployBotResourcesGuid: (optional) define in Azure
   # ResourceSuffix: (optional) define in Azure
 
 pool:
   vmImage: 'windows-2019'
-  
+
 stages:
+  - stage: 'Download_Variables'
+    displayName: 'Download Variables'
+    jobs:
+      - job: 'Download_Variables'
+        displayName: 'Download Variables'
+        steps:
+          - powershell: |
+              $pipelineGuid = if ([string]::IsNullOrEmpty("$env:DeployBotResourcesGuid")) { "$(DeployBotResourcesDefaultGuid)" } else { "$(DeployBotResourcesGuid)" }
+              Write-Host "Deploy Bot Resources Pipeline GUID: " $pipelineGuid
+              Write-Host "##vso[task.setvariable variable=PipelineGuid]$pipelineGuid"
+            displayName: 'Set Deploy Bot Resources GUID'
+
+          - task: DownloadPipelineArtifact@2
+            displayName: 'Download Variables artifact'
+            inputs:
+              source: 'specific'
+              project: '$(System.TeamProject)'
+              pipeline: '$(PipelineGuid)'
+              allowPartiallySucceededBuilds: true
+              allowFailedBuilds: true
+              artifact: 'Variables'
+              path: '$(System.DefaultWorkingDirectory)/Variables/'
+
+          - powershell: |
+              $deploymentBuildSuffix = (Get-Content -Path "$(System.DefaultWorkingDirectory)/Variables/variables.json" | ConvertFrom-Json).deploymentBuildSuffix
+              Write-Host "Deployment Build Suffix: " $deploymentBuildSuffix
+              Write-Host "##vso[task.setvariable variable=DeploymentBuildSuffix;isOutput=true]$deploymentBuildSuffix"
+            displayName: 'Set variables'
+            name: 'Set_Variables'
+
   - template: runScenario.yml
     parameters:
       scenarios:

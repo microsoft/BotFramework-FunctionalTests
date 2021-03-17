@@ -25,9 +25,9 @@ const server = restify.createServer({ maxParamLength: 1000 });
 server.use(restify.plugins.queryParser());
 
 server.listen(process.env.port || process.env.PORT || 36420, () => {
-    console.log(`\n${ server.name } listening to ${ server.url }`);
-    console.log('\nGet Bot Framework Emulator: https://aka.ms/botframework-emulator');
-    console.log('\nTo talk to your bot, open the emulator select "Open Bot"');
+  console.log(`\n${server.name} listening to ${server.url}`);
+  console.log('\nGet Bot Framework Emulator: https://aka.ms/botframework-emulator');
+  console.log('\nTo talk to your bot, open the emulator select "Open Bot"');
 });
 
 const authConfig = new AuthenticationConfiguration([], allowedCallersClaimsValidator);
@@ -35,38 +35,38 @@ const authConfig = new AuthenticationConfiguration([], allowedCallersClaimsValid
 // Create adapter.
 // See https://aka.ms/about-bot-adapter to learn more about how bots work.
 const adapter = new BotFrameworkAdapter({
-    appId: process.env.MicrosoftAppId,
-    appPassword: process.env.MicrosoftAppPassword,
-    authConfig
+  appId: process.env.MicrosoftAppId,
+  appPassword: process.env.MicrosoftAppPassword,
+  authConfig
 });
 
 // Catch-all for errors.
 adapter.onTurnError = async (context, error) => {
-    // This check writes out errors to console log .vs. app insights.
-    // NOTE: In production environment, you should consider logging this to Azure application insights.
-    console.error(`\n [onTurnError] unhandled error: ${ error }`);
+  // This check writes out errors to console log .vs. app insights.
+  // NOTE: In production environment, you should consider logging this to Azure application insights.
+  console.error(`\n [onTurnError] unhandled error: ${error}`);
 
-    // Send a message to the user
-    let onTurnErrorMessage = 'The skill encountered an error or bug.';
-    await context.sendActivity(`${ onTurnErrorMessage }\n${ error }`, onTurnErrorMessage, InputHints.IgnoringInput);
-    onTurnErrorMessage = 'To continue to run this bot, please fix the bot source code.';
-    await context.sendActivity(onTurnErrorMessage, onTurnErrorMessage, InputHints.ExpectingInput);
+  // Send a message to the user
+  let onTurnErrorMessage = 'The skill encountered an error or bug.';
+  await context.sendActivity(`${onTurnErrorMessage}\n${error}`, onTurnErrorMessage, InputHints.IgnoringInput);
+  onTurnErrorMessage = 'To continue to run this bot, please fix the bot source code.';
+  await context.sendActivity(onTurnErrorMessage, onTurnErrorMessage, InputHints.ExpectingInput);
 
-    // Send a trace activity, which will be displayed in Bot Framework Emulator
-    await context.sendTraceActivity(
-        'OnTurnError Trace',
-        `${ error }`,
+  // Send a trace activity, which will be displayed in Bot Framework Emulator
+  await context.sendTraceActivity(
+    'OnTurnError Trace',
+        `${error}`,
         'https://www.botframework.com/schemas/error',
         'TurnError'
-    );
+  );
 
-    // Send and EndOfConversation activity to the skill caller with the error to end the conversation
-    // and let the caller decide what to do.
-    await context.sendActivity({
-        type: ActivityTypes.EndOfConversation,
-        code: 'SkillError',
-        text: error
-    });
+  // Send and EndOfConversation activity to the skill caller with the error to end the conversation
+  // and let the caller decide what to do.
+  await context.sendActivity({
+    type: ActivityTypes.EndOfConversation,
+    code: 'SkillError',
+    text: error
+  });
 };
 
 const continuationParametersStore = {};
@@ -101,10 +101,10 @@ server.get('/manifests/*', restify.plugins.serveStatic({ directory: './manifests
 
 // Listen for incoming requests.
 server.post('/api/messages', (req, res) => {
-    adapter.processActivity(req, res, async (context) => {
-        // Route to main dialog.
-        await bot.run(context);
-    });
+  adapter.processActivity(req, res, async (context) => {
+    // Route to main dialog.
+    await bot.run(context);
+  });
 });
 
 // Create and initialize the skill classes.
@@ -119,35 +119,35 @@ server.post('/api/messages', (req, res) => {
 // Remove this when resolved
 const handler = new SkillHandler(adapter, bot, conversationIdFactory, credentialProvider, authConfig);
 server.post('/api/skills/v3/conversations/:conversationId/activities/:activityId', async (req, res) => {
-    try {
-        const authHeader = req.headers.authorization || req.headers.Authorization || '';
-        const activity = await ChannelServiceRoutes.readActivity(req);
-        const ref = await handler.conversationIdFactory.getSkillConversationReference(req.params.conversationId);
-        const claimsIdentity = await handler.authenticate(authHeader);
+  try {
+    const authHeader = req.headers.authorization || req.headers.Authorization || '';
+    const activity = await ChannelServiceRoutes.readActivity(req);
+    const ref = await handler.conversationIdFactory.getSkillConversationReference(req.params.conversationId);
+    const claimsIdentity = await handler.authenticate(authHeader);
 
-        const response = await new Promise(resolve => {
-            return adapter.continueConversation(ref.conversationReference, ref.oAuthScope, async (context) => {
-                context.turnState.set(adapter.BotIdentityKey, claimsIdentity);
-                context.turnState.set(adapter.SkillConversationReferenceKey, ref);
+    const response = await new Promise(resolve => {
+      return adapter.continueConversation(ref.conversationReference, ref.oAuthScope, async (context) => {
+        context.turnState.set(adapter.BotIdentityKey, claimsIdentity);
+        context.turnState.set(adapter.SkillConversationReferenceKey, ref);
 
-                const newActivity = TurnContext.applyConversationReference(activity, ref.conversationReference);
+        const newActivity = TurnContext.applyConversationReference(activity, ref.conversationReference);
 
-                if (newActivity.type === ActivityTypes.EndOfConversation) {
-                    await handler.conversationIdFactory.deleteConversationReference(req.params.conversationId);
-                    SkillHandler.applyEoCToTurnContextActivity(context, newActivity);
-                    resolve(await bot.run(context));
-                }
+        if (newActivity.type === ActivityTypes.EndOfConversation) {
+          await handler.conversationIdFactory.deleteConversationReference(req.params.conversationId);
+          SkillHandler.applyEoCToTurnContextActivity(context, newActivity);
+          resolve(await bot.run(context));
+        }
 
-                resolve(await context.sendActivity(newActivity));
-            });
-        });
+        resolve(await context.sendActivity(newActivity));
+      });
+    });
 
-        res.status(200);
-        res.send(response);
-        res.end();
-    } catch (error) {
-        ChannelServiceRoutes.handleError(error, res);
-    }
+    res.status(200);
+    res.send(response);
+    res.end();
+  } catch (error) {
+    ChannelServiceRoutes.handleError(error, res);
+  }
 });
 
 // Listen for incoming requests.
@@ -155,30 +155,30 @@ server.get('/api/music', restify.plugins.serveStatic({ directory: 'dialogs/cards
 
 // Listen for incoming notifications and send proactive messages to users.
 server.get('/api/notify', async (req, res) => {
-    let error;
-    const { user } = req.query;
+  let error;
+  const { user } = req.query;
 
-    const continuationParameters = continuationParametersStore[user];
+  const continuationParameters = continuationParametersStore[user];
 
-    if (!continuationParameters) {
-        res.setHeader('Content-Type', 'text/html');
-        res.writeHead(200);
-        res.write(`<html><body><h1>No messages sent</h1> <br/>There are no conversations registered to receive proactive messages for ${ user }.</body></html>`);
-        res.end();
-        return;
-    }
-
-    try {
-        adapter.continueConversation(continuationParameters.conversationReference, continuationParameters.oAuthScope, async context => {
-            await context.sendActivity(`Got proactive message for user: ${ user }`);
-            await bot.run(context);
-        });
-    } catch (err) {
-        error = err;
-    }
-
+  if (!continuationParameters) {
     res.setHeader('Content-Type', 'text/html');
     res.writeHead(200);
-    res.write(`<html><body><h1>Proactive messages have been sent</h1> <br/> Timestamp: ${ new Date().toISOString() } <br /> Exception: ${ error || '' }</body></html>`);
+    res.write(`<html><body><h1>No messages sent</h1> <br/>There are no conversations registered to receive proactive messages for ${user}.</body></html>`);
     res.end();
+    return;
+  }
+
+  try {
+    adapter.continueConversation(continuationParameters.conversationReference, continuationParameters.oAuthScope, async context => {
+      await context.sendActivity(`Got proactive message for user: ${user}`);
+      await bot.run(context);
+    });
+  } catch (err) {
+    error = err;
+  }
+
+  res.setHeader('Content-Type', 'text/html');
+  res.writeHead(200);
+  res.write(`<html><body><h1>Proactive messages have been sent</h1> <br/> Timestamp: ${new Date().toISOString()} <br /> Exception: ${error || ''}</body></html>`);
+  res.end();
 });
