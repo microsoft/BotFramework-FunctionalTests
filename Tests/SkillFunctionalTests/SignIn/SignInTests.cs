@@ -80,8 +80,14 @@ namespace SkillFunctionalTests.SignIn
             var options = TestClientOptions[testCase.HostBot];
             var runner = new XUnitTestRunner(new TestClientFactory(testCase.ChannelId, options, Logger).GetTestClient(), TestRequestTimeout, Logger);
 
+            var testParamsStart = new Dictionary<string, string>
+            {
+                { "DeliveryMode", testCase.DeliveryMode },
+                { "TargetSkill", testCase.TargetSkill }
+            };
+
             // Execute the first part of the conversation.
-            await runner.RunTestAsync(Path.Combine(_testScriptsFolder, testCase.Script));
+            await runner.RunTestAsync(Path.Combine(_testScriptsFolder, testCase.Script), testParamsStart);
 
             await runner.AssertReplyAsync(activity =>
             {

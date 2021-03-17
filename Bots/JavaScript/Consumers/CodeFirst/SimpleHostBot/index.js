@@ -26,65 +26,65 @@ const { SetupDialog } = require('./dialogs/setupDialog');
 // Create adapter.
 // See https://aka.ms/about-bot-adapter to learn more about adapters.
 const adapter = new BotFrameworkAdapter({
-    appId: process.env.MicrosoftAppId,
-    appPassword: process.env.MicrosoftAppPassword,
-    authConfig: new AuthenticationConfiguration([], allowedSkillsClaimsValidator)
+  appId: process.env.MicrosoftAppId,
+  appPassword: process.env.MicrosoftAppPassword,
+  authConfig: new AuthenticationConfiguration([], allowedSkillsClaimsValidator)
 });
 
 // Catch-all for errors.
 adapter.onTurnError = async (context, error) => {
-    // This check writes out errors to console log .vs. app insights.
-    // NOTE: In production environment, you should consider logging this to Azure
-    //       application insights.
-    console.error(`\n [onTurnError] unhandled error: ${ error }`);
+  // This check writes out errors to console log .vs. app insights.
+  // NOTE: In production environment, you should consider logging this to Azure
+  //       application insights.
+  console.error(`\n [onTurnError] unhandled error: ${error}`);
 
-    try {
-        // Send a message to the user
-        let onTurnErrorMessage = 'The bot encountered an error or bug.';
-        await context.sendActivity(onTurnErrorMessage, onTurnErrorMessage, InputHints.IgnoringInput);
-        onTurnErrorMessage = 'To continue to run this bot, please fix the bot source code.';
-        await context.sendActivity(onTurnErrorMessage, onTurnErrorMessage, InputHints.ExpectingInput);
+  try {
+    // Send a message to the user
+    let onTurnErrorMessage = 'The bot encountered an error or bug.';
+    await context.sendActivity(onTurnErrorMessage, onTurnErrorMessage, InputHints.IgnoringInput);
+    onTurnErrorMessage = 'To continue to run this bot, please fix the bot source code.';
+    await context.sendActivity(onTurnErrorMessage, onTurnErrorMessage, InputHints.ExpectingInput);
 
-        // Send a trace activity, which will be displayed in Bot Framework Emulator
-        await context.sendTraceActivity(
-            'OnTurnError Trace',
-            `${ error }`,
+    // Send a trace activity, which will be displayed in Bot Framework Emulator
+    await context.sendTraceActivity(
+      'OnTurnError Trace',
+            `${error}`,
             'https://www.botframework.com/schemas/error',
             'TurnError'
-        );
-    } catch (err) {
-        console.error(`\n [onTurnError] Exception caught in SendErrorMessageAsync : ${ err }`);
+    );
+  } catch (err) {
+    console.error(`\n [onTurnError] Exception caught in SendErrorMessageAsync : ${err}`);
+  }
+
+  try {
+    // Inform the active skill that the conversation is ended so that it has
+    // a chance to clean up.
+    // Note: ActiveSkillPropertyName is set by the RooBot while messages are being
+    // forwarded to a Skill.
+    const activeSkill = await conversationState.createProperty(HostBot.ActiveSkillPropertyName).get(context);
+    if (activeSkill) {
+      const botId = process.env.MicrosoftAppId;
+
+      let endOfConversation = {
+        type: ActivityTypes.EndOfConversation,
+        code: 'RootSkillError'
+      };
+      endOfConversation = TurnContext.applyConversationReference(
+        endOfConversation, TurnContext.getConversationReference(context.activity), true);
+
+      await conversationState.saveChanges(context, true);
+      await skillClient.postToSkill(botId, activeSkill, skillsConfig.skillHostEndpoint, endOfConversation);
     }
+  } catch (err) {
+    console.error(`\n [onTurnError] Exception caught on attempting to send EndOfConversation : ${err}`);
+  }
 
-    try {
-        // Inform the active skill that the conversation is ended so that it has
-        // a chance to clean up.
-        // Note: ActiveSkillPropertyName is set by the RooBot while messages are being
-        // forwarded to a Skill.
-        const activeSkill = await conversationState.createProperty(HostBot.ActiveSkillPropertyName).get(context);
-        if (activeSkill) {
-            const botId = process.env.MicrosoftAppId;
-
-            let endOfConversation = {
-                type: ActivityTypes.EndOfConversation,
-                code: 'RootSkillError'
-            };
-            endOfConversation = TurnContext.applyConversationReference(
-                endOfConversation, TurnContext.getConversationReference(context.activity), true);
-
-            await conversationState.saveChanges(context, true);
-            await skillClient.postToSkill(botId, activeSkill, skillsConfig.skillHostEndpoint, endOfConversation);
-        }
-    } catch (err) {
-        console.error(`\n [onTurnError] Exception caught on attempting to send EndOfConversation : ${ err }`);
-    }
-
-    try {
-        // Clear out state
-        await conversationState.delete(context);
-    } catch (err) {
-        console.error(`\n [onTurnError] Exception caught on attempting to Delete ConversationState : ${ err }`);
-    }
+  try {
+    // Clear out state
+    await conversationState.delete(context);
+  } catch (err) {
+    console.error(`\n [onTurnError] Exception caught on attempting to Delete ConversationState : ${err}`);
+  }
 };
 
 // Define a state store for your bot. See https://aka.ms/about-bot-state to learn more about using MemoryStorage.
@@ -114,19 +114,19 @@ const bot = new HostBot(dialog, conversationState, skillsConfig, skillClient);
 
 // Create HTTP server
 const server = restify.createServer();
-server.listen(process.env.port || process.env.PORT || 36000, function() {
-    console.log(`\n${ server.name } listening to ${ server.url }`);
-    console.log('\nGet Bot Framework Emulator: https://aka.ms/botframework-emulator');
-    console.log('\nTo talk to your bot, open the emulator select "Open Bot"');
+server.listen(process.env.port || process.env.PORT || 36000, function () {
+  console.log(`\n${server.name} listening to ${server.url}`);
+  console.log('\nGet Bot Framework Emulator: https://aka.ms/botframework-emulator');
+  console.log('\nTo talk to your bot, open the emulator select "Open Bot"');
 });
 
 // Listen for incoming activities and route them to your bot main dialog.
 server.post('/api/messages', (req, res) => {
-    // Route received a request to adapter for processing
-    adapter.processActivity(req, res, async (turnContext) => {
-        // route to bot activity handler.
-        await bot.run(turnContext);
-    });
+  // Route received a request to adapter for processing
+  adapter.processActivity(req, res, async (turnContext) => {
+    // route to bot activity handler.
+    await bot.run(turnContext);
+  });
 });
 
 // Create and initialize the skill classes
