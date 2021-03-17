@@ -5,9 +5,9 @@ const filesDir = 'files';
 const teamsLogoFileName = 'teams-logo.png';
 
 module.exports = {
-    adaptiveCardSchemaUrl,
-    botFrameworkIconUrl,
-    cardButtonUrl,
-    filesDir,
-    teamsLogoFileName
-}
+  adaptiveCardSchemaUrl,
+  botFrameworkIconUrl,
+  cardButtonUrl,
+  filesDir,
+  teamsLogoFileName
+};

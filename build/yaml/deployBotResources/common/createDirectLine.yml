@@ -10,4 +10,4 @@ steps:
     scriptType: ps
     scriptLocation: inlineScript
     inlineScript: |
-      az bot directline create -n "${{ parameters.botName }}$($env:ResourceSuffix)" -g "${{ parameters.botGroup }}"
+      az bot directline create -n "${{ parameters.botName }}$($env:ResourceSuffix)-$(Build.BuildId)" -g "${{ parameters.botGroup }}"

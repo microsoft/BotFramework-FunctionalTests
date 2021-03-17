@@ -1,0 +1,10 @@
+{
+  "name": "botframework-functional-tests",
+  "private": true,
+  "devDependencies": {
+    "semistandard": "^16.0.0"
+  },
+  "scripts": {
+    "lint": "semistandard"
+  }
+}

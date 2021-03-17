@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
 using System;
@@ -141,7 +141,7 @@ namespace Microsoft.BotFramework.Composer.WebAppTemplates
             services.AddSingleton<BotAdapter>(sp => (BotFrameworkHttpAdapter)sp.GetService<IBotFrameworkHttpAdapter>());
 
             // Register AuthConfiguration to enable custom claim validation for skills.
-            services.AddSingleton(sp => new AuthenticationConfiguration { ClaimsValidator = new AllowedCallersClaimsValidator(settings.SkillConfiguration) });
+            services.AddSingleton(sp => new AuthenticationConfiguration { ClaimsValidator = new Microsoft.BotFramework.Composer.WebAppTemplates.Authorization.AllowedCallersClaimsValidator(settings.SkillConfiguration) });
 
             // register components.
             ComponentRegistration.Add(new DialogsComponentRegistration());
@@ -155,7 +155,7 @@ namespace Microsoft.BotFramework.Composer.WebAppTemplates
             //ComponentRegistration.Add(new CustomActionComponentRegistration());
 
             // Register the skills client and skills request handler.
-            services.AddSingleton<SkillConversationIdFactoryBase, SkillConversationIdFactory>();
+            services.AddSingleton<SkillConversationIdFactoryBase, Microsoft.BotFramework.Composer.Core.SkillConversationIdFactory>();
             services.AddHttpClient<BotFrameworkClient, SkillHttpClient>();
             services.AddSingleton<ChannelServiceHandler, SkillHandler>();
 
