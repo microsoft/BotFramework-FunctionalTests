@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -167,6 +168,12 @@ namespace TranscriptTestRunner.TestClients
         {
             Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        /// <inheritdoc/>
+        public override async Task UploadAsync(Stream file, CancellationToken cancellationToken)
+        {
+            await _dlClient.Conversations.UploadAsync(_conversation.ConversationId, file, _user, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>

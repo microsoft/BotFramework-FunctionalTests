@@ -104,6 +104,19 @@ namespace TranscriptTestRunner
         }
 
         /// <summary>
+        /// Uploads a file through the test client.
+        /// </summary>
+        /// <param name="file">The file to upload.</param>
+        /// <param name="cancellationToken">Optional. A <see cref="CancellationToken"/> that can be used by other objects
+        /// or threads to receive notice of cancellation.</param>
+        /// <returns>A task that represents the work queued to execute.</returns>
+        public async Task UploadAsync(Stream file, CancellationToken cancellationToken = default)
+        {
+            _logger.LogInformation("Elapsed Time: {Elapsed}, Uploading file", Stopwatch.Elapsed);
+            await _testClient.UploadAsync(file, cancellationToken).ConfigureAwait(false);
+        }
+
+        /// <summary>
         /// Gets the next reply <see cref="Activity"/> from the bot through the test client.
         /// </summary>
         /// <param name="cancellationToken">Optional. A <see cref="CancellationToken"/> that can be used by other objects
