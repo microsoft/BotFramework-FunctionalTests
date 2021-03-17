@@ -366,3 +366,12 @@ appsettings.Development.json
 
 # PyCharm settings
 .idea/
+
+# Ignore correct yarn files (no zero install support)
+.yarn/*
+!.yarn/patches
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
