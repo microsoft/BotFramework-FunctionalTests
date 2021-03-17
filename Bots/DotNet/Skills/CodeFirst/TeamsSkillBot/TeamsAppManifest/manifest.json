@@ -1,26 +1,26 @@
 {
-  "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.5/MicrosoftTeams.schema.json",
-  "manifestVersion": "1.5",
+  "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.7/MicrosoftTeams.schema.json",
+  "manifestVersion": "1.7",
   "version": "1.0.0",
   "id": "",
-  "packageName": "com.botframework.skill.teamsskillbot",
+  "packageName": "com.microsoft.botframeworkfunctionaltests.teamwaterfallskillbot",
   "developer": {
-    "name": "TeamsSkillBot",
-    "websiteUrl": "https://www.microsoft.com",
-    "privacyUrl": "https://www.teams.com/privacy",
-    "termsOfUseUrl": "https://www.teams.com/termsofuser"
+    "name": "Microsoft",
+    "websiteUrl": "https://example.azurewebsites.net",
+    "privacyUrl": "https://example.azurewebsites.net/privacy",
+    "termsOfUseUrl": "https://example.azurewebsites.net/termsofuse"
   },
   "icons": {
-    "outline": "icon-outline.png",
-    "color": "icon-color.png"
+    "color": "icon-color.png",
+    "outline": "icon-outline.png"
   },
   "name": {
-    "short": "TeamsSkillBot",
-    "full": "TeamsSkillBot"
+    "short": "Teams Waterfall Skill",
+    "full": "Teams Waterfall Skill"
   },
   "description": {
-    "short": "TeamsSkillBot",
-    "full": "TeamsSkillBot"
+    "short": "Teams Waterfall Skill",
+    "full": "Teams Waterfall Skill"
   },
   "accentColor": "#FFFFFF",
   "bots": [
@@ -31,64 +31,16 @@
         "groupchat",
         "team"
       ],
-      "supportsFiles": false,
-      "isNotificationOnly": false,
-      "commandLists": [
-        {
-          "scopes": [
-            "personal",
-            "groupchat",
-            "team"
-          ],
-          "commands": [
-            {
-              "title": "MentionMe",
-              "description": "Sends message with @mention of the sender"
-            },
-            {
-              "title": "Show Welcome",
-              "description": "Shows the welcome card"
-            },
-            {
-              "title": "MessageAllMembers",
-              "description": "Send 1 to 1 message to all members of the current conversation"
-            }
-          ]
-        }
-      ]
-    }
-  ],
-  "composeExtensions": [
-    {
-      "botId": "",
-      "canUpdateConfiguration": false,
-      "commands": [
-        {
-          "id": "loginCommand",
-          "type": "action",
-          "title": "Log In",
-          "description": "Bot Service Auth flow in a Messaging Extension",
-          "initialRun": false,
-          "fetchTask": true,
-          "context": [
-            "commandBox",
-            "compose",
-            "message"
-          ],
-          "parameters": [
-            {
-              "name": "param",
-              "title": "param",
-              "description": ""
-            }
-          ]
-        }
-      ]
+      "supportsFiles": true,
+      "isNotificationOnly": false
     }
   ],
   "permissions": [
     "identity",
     "messageTeamMembers"
   ],
-  "validDomains": []
+  "validDomains": [
+    "token.botframework.com",
+    "ngrok.io"
+  ]
 }

@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Bot.Builder.Dialogs;
-using Microsoft.Bot.Builder.Skills;
 using Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Skills;
 using Microsoft.Extensions.Configuration;
 
@@ -13,12 +12,16 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot
     /// <summary>
     /// A helper class that loads Skills information from configuration.
     /// </summary>
+    /// <remarks>
+    /// This class loads the skill settings from config and casts them into derived types of <see cref="SkillDefinition"/>
+    /// so we can render prompts with the skills and in their groups.
+    /// </remarks>
     public class SkillsConfiguration
     {
         public SkillsConfiguration(IConfiguration configuration)
         {
             var section = configuration?.GetSection("BotFrameworkSkills");
-            var skills = section?.Get<BotFrameworkSkill[]>();
+            var skills = section?.Get<SkillDefinition[]>();
             if (skills != null)
             {
                 foreach (var skill in skills)
@@ -38,21 +41,21 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot
 
         public Dictionary<string, SkillDefinition> Skills { get; } = new Dictionary<string, SkillDefinition>();
 
-        private static SkillDefinition CreateSkillDefinition(BotFrameworkSkill skill)
+        private static SkillDefinition CreateSkillDefinition(SkillDefinition skill)
         {
             // Note: we hard code this for now, we should dynamically create instances based on the manifests.
-            // For now, this code creates a strong typed version of the SkillDefinition and copies the info from
-            // settings into it. 
+            // For now, this code creates a strong typed version of the SkillDefinition based on the skill group
+            // and copies the info from settings into it. 
             SkillDefinition skillDefinition;
-            switch (skill.Id)
+            switch (skill.Group)
             {
-                case string id when id.StartsWith("EchoSkillBot"):
+                case "Echo":
                     skillDefinition = ObjectPath.Assign<EchoSkill>(new EchoSkill(), skill);
                     break;
-                case string id when id.StartsWith("WaterfallSkillBot"):
+                case "Waterfall":
                     skillDefinition = ObjectPath.Assign<WaterfallSkill>(new WaterfallSkill(), skill);
                     break;
-                case string id when id.StartsWith("TeamsSkillBot"):
+                case "Teams":
                     skillDefinition = ObjectPath.Assign<TeamsSkill>(new TeamsSkill(), skill);
                     break;
                 default:
