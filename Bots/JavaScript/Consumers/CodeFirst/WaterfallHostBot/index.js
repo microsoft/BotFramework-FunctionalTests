@@ -54,6 +54,9 @@ async function sendErrorMessage(context, error) {
         let onTurnErrorMessage = 'The bot encountered an error or bug.';
         await context.sendActivity(onTurnErrorMessage, onTurnErrorMessage, InputHints.IgnoringInput);
 
+        await context.sendActivity(`Exception: ${ error.message }`);
+        await context.sendActivity(error.stack);
+
         onTurnErrorMessage = 'To continue to run this bot, please fix the bot source code.';
         await context.sendActivity(onTurnErrorMessage, onTurnErrorMessage, InputHints.ExpectingInput);
 

@@ -19,8 +19,9 @@ class SsoSignInDialog extends ComponentDialog {
 
         this.addDialog(new OAuthPrompt(OAUTH_PROMPT, {
             connectionName: connectionName,
-            text: 'Sign in to the host bot using AAD for SSO',
-            title: 'Sign In'
+            text: `Sign in to the host bot using AAD for SSO and connection ${ connectionName }`,
+            title: 'Sign In',
+            timeout: 60000
         }));
 
         this.addDialog(new WaterfallDialog(WATERFALL_DIALOG, [

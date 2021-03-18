@@ -2,21 +2,19 @@
 // Licensed under the MIT License.
 
 const { ActivityTypes, DeliveryModes, InputHints, MessageFactory } = require('botbuilder');
-const { ChoicePrompt, ChoiceFactory, ComponentDialog, DialogSet, ListStyle, SkillDialog, WaterfallDialog, DialogTurnStatus } = require('botbuilder-dialogs');
+const { ChoicePrompt, ChoiceFactory, ComponentDialog, DialogSet, SkillDialog, WaterfallDialog, DialogTurnStatus, ListStyle } = require('botbuilder-dialogs');
 const { RootBot } = require('../bots/rootBot');
 const { SsoDialog } = require('./sso/ssoDialog');
 const { TangentDialog } = require('./tangentDialog');
 
 const MAIN_DIALOG = 'MainDialog';
 const DELIVERY_PROMPT = 'DeliveryModePrompt';
-const SKILL_TYPE_PROMPT = 'SkillTypePrompt';
+const SKILL_GROUP_PROMPT = 'SkillGroupPrompt';
 const SKILL_PROMPT = 'SkillPrompt';
 const SKILL_ACTION_PROMPT = 'SkillActionPrompt';
-const SSO_DIALOG = 'SsoDialog';
 const TANGENT_DIALOG = 'TangentDialog';
 const WATERFALL_DIALOG = 'WaterfallDialog';
-// Constants used for selecting actions on the skill.
-const JUST_FORWARD_THE_ACTIVITY = 'JustForwardTurnContext.Activity';
+const SSO_DIALOG_PREFIX = 'Sso';
 
 class MainDialog extends ComponentDialog {
     /**
@@ -49,26 +47,21 @@ class MainDialog extends ComponentDialog {
         // Add ChoicePrompt to render available delivery modes.
         this.addDialog(new ChoicePrompt(DELIVERY_PROMPT));
 
-        // Add ChoicePrompt to render available types of skill.
-        this.addDialog(new ChoicePrompt(SKILL_TYPE_PROMPT));
+        // Add ChoicePrompt to render available groups of skills.
+        this.addDialog(new ChoicePrompt(SKILL_GROUP_PROMPT));
 
         // Add ChoicePrompt to render available skills.
         this.addDialog(new ChoicePrompt(SKILL_PROMPT));
 
         // Add ChoicePrompt to render skill actions.
-        this.addDialog(new ChoicePrompt(SKILL_ACTION_PROMPT, this.skillActionPromptValidator));
+        this.addDialog(new ChoicePrompt(SKILL_ACTION_PROMPT));
 
-        // Add dialog to prepare SSO on the host and test the SSO skill
-        // The waterfall skillDialog created in AddSkillDialogs contains the SSO skill action.
-        Object.values(this.dialogs.dialogs)
-            .filter(e => e.id.startsWith('WaterfallSkill'))
-            .forEach(waterfallSkill => {
-                this.addDialog(new SsoDialog(waterfallSkill));
-            });
+        // Special case: register SSO dialogs for skills that support SSO actions.
+        this.addSsoDialogs();
 
         this.addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
             this.selectDeliveryModeStep.bind(this),
-            this.selectSkillTypeStep.bind(this),
+            this.selectSkillGroupStep.bind(this),
             this.selectSkillStep.bind(this),
             this.selectSkillActionStep.bind(this),
             this.callSkillActionStep.bind(this),
@@ -124,33 +117,38 @@ class MainDialog extends ComponentDialog {
     async selectDeliveryModeStep(stepContext) {
         // Create the PromptOptions with the delivery modes supported.
         const messageText = stepContext.options && stepContext.options.text ? stepContext.options.text : 'What delivery mode would you like to use?';
-        const repromptMessageText = 'That was not a valid choice, please select a valid delivery mode.';
+        const retryMessageText = 'That was not a valid choice, please select a valid delivery mode.';
 
         return stepContext.prompt(DELIVERY_PROMPT, {
             prompt: MessageFactory.text(messageText, messageText, InputHints.ExpectingInput),
-            retryPrompt: MessageFactory.text(repromptMessageText, repromptMessageText, InputHints.ExpectingInput),
+            retryPrompt: MessageFactory.text(retryMessageText, retryMessageText, InputHints.ExpectingInput),
             choices: ChoiceFactory.toChoices([DeliveryModes.Normal, DeliveryModes.ExpectReplies])
         });
     }
 
     /**
-     * Render a prompt to select the type of skill to use.
+     * Render a prompt to select the group of skills to use.
      * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
      */
-    async selectSkillTypeStep(stepContext) {
+    async selectSkillGroupStep(stepContext) {
         // Set delivery mode.
         this.deliveryMode = stepContext.result.value;
         await this.deliveryModeProperty.set(stepContext.context, stepContext.result.value);
 
-        const messageText = 'What type of skill would you like to use?';
-        const repromptMessageText = 'That was not a valid choice, please select a valid skill type.';
+        const messageText = 'What group of skills would you like to use?';
+        const retryMessageText = 'That was not a valid choice, please select a valid skill group.';
+
+        // Get a list of the groups for the skills in skillsConfig.
+        const groups = Object.values(this.skillsConfig.skills)
+            .map(skill => skill.group);
+        // Remove duplicates
+        const choices = [...new Set(groups)];
 
         // Create the PromptOptions from the skill configuration which contains the list of configured skills.
-        return stepContext.prompt(SKILL_TYPE_PROMPT, {
+        return stepContext.prompt(SKILL_GROUP_PROMPT, {
             prompt: MessageFactory.text(messageText, messageText, InputHints.ExpectingInput),
-            retryPrompt: MessageFactory.text(repromptMessageText, repromptMessageText, InputHints.ExpectingInput),
-            choices: ChoiceFactory.toChoices(['EchoSkill', 'WaterfallSkill']),
-            style: ListStyle.suggestedAction
+            retryPrompt: MessageFactory.text(retryMessageText, retryMessageText, InputHints.ExpectingInput),
+            choices: ChoiceFactory.toChoices(choices)
         });
     }
 
@@ -159,16 +157,21 @@ class MainDialog extends ComponentDialog {
      * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
      */
     async selectSkillStep(stepContext) {
-        const skillType = stepContext.result.value;
+        const skillGroup = stepContext.result.value;
 
         // Create the PromptOptions from the skill configuration which contains the list of configured skills.
         const messageText = 'What skill would you like to call?';
-        const repromptMessageText = 'That was not a valid choice, please select a valid skill.';
+        const retryMessageText = 'That was not a valid choice, please select a valid skill.';
+
+        // Get skills for the selected group.
+        const choices = Object.entries(this.skillsConfig.skills)
+            .filter(([, skill]) => skill.group === skillGroup)
+            .map(([id]) => id);
 
         return stepContext.prompt(SKILL_PROMPT, {
             prompt: MessageFactory.text(messageText, messageText, InputHints.ExpectingInput),
-            retryPrompt: MessageFactory.text(repromptMessageText, repromptMessageText, InputHints.ExpectingInput),
-            choices: ChoiceFactory.toChoices((Object.keys(this.skillsConfig.skills)).filter(skill => skill.startsWith(skillType))),
+            retryPrompt: MessageFactory.text(retryMessageText, retryMessageText, InputHints.ExpectingInput),
+            choices: ChoiceFactory.toChoices(choices),
             style: ListStyle.suggestedAction
         });
     }
@@ -185,7 +188,7 @@ class MainDialog extends ComponentDialog {
         await this.activeSkillProperty.set(stepContext.context, selectedSkill);
 
         // Exclude v3 bots from ExpectReplies.
-        if (this.deliveryMode === DeliveryModes.ExpectReplies && v3Bots.includes(selectedSkill.definition.id)) {
+        if (this.deliveryMode === DeliveryModes.ExpectReplies && v3Bots.includes(selectedSkill.id)) {
             await stepContext.context.SendActivityAsync(MessageFactory.text("V3 Bots do not support 'expectReplies' delivery mode."));
 
             // Forget delivery mode and skill invocation.
@@ -196,32 +199,44 @@ class MainDialog extends ComponentDialog {
             return stepContext.replaceDialog(this.initialDialogId);
         }
 
+        const skillActionChoices = selectedSkill.getActions();
+
+        if (skillActionChoices && skillActionChoices.length === 1) {
+            // The skill only supports one action (e.g. Echo), skip the prompt.
+            return stepContext.next({ value: skillActionChoices[0] });
+        }
+
         // Create the PromptOptions with the actions supported by the selected skill.
-        const messageText = `Select an action # to send to **${ selectedSkill.definition.id }**.\n\nOr just type in a message and it will be forwarded to the skill as a message activity.`;
+        const messageText = `Select an action to send to **${ selectedSkill.id }**.`;
 
         return stepContext.prompt(SKILL_ACTION_PROMPT, {
             prompt: MessageFactory.text(messageText, messageText, InputHints.ExpectingInput),
-            choices: selectedSkill.definition.getActions()
+            choices: ChoiceFactory.toChoices(skillActionChoices)
         });
-    }
-
-    /**
-     * @param {import('botbuilder-dialogs').PromptValidatorContext<import('botbuilder-dialogs').FoundChoice>} promptContext
-     */
-    async skillActionPromptValidator(promptContext) {
-        if (!promptContext.recognized.succeeded) {
-            // Assume the user wants to send a message if an item in the list is not selected.
-            promptContext.recognized.value = { value: JUST_FORWARD_THE_ACTIVITY };
-        }
-        return true;
     }
 
     /**
      * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
      */
     async callSkillActionStep(stepContext) {
-        const activeSkill = await this.activeSkillProperty.get(stepContext.context);
-        const skillActivity = this.createBeginActivity(stepContext.context, activeSkill.definition.id, stepContext.result.value);
+        const selectedSkill = await this.activeSkillProperty.get(stepContext.context);
+
+        // Save active skill in state.
+        await this.activeSkillProperty.set(stepContext.context, selectedSkill);
+
+        // Create the initial activity to call the skill.
+        const skillActivity = this.skillsConfig.skills[selectedSkill.id].createBeginActivity(stepContext.result.value);
+
+        if (skillActivity.name === 'Sso') {
+            // Special case, we start the SSO dialog to prepare the host to call the skill.
+            return stepContext.beginDialog(`${ SSO_DIALOG_PREFIX }${ selectedSkill.Id }`);
+        }
+
+        // We are manually creating the activity to send to the skill; ensure we add the ChannelData and Properties
+        // from the original activity so the skill gets them.
+        // Note: this is not necessary if we are just forwarding the current activity from context.
+        skillActivity.channelData = stepContext.context.activity.channelData;
+        skillActivity.properties = stepContext.context.activity.properties;
 
         // Create the BeginSkillDialogOptions and assign the activity to send.
         const skillDialogArgs = { activity: skillActivity };
@@ -230,13 +245,8 @@ class MainDialog extends ComponentDialog {
             skillDialogArgs.activity.deliveryMode = DeliveryModes.ExpectReplies;
         }
 
-        if (skillActivity.name === 'Sso') {
-            // Special case, we start the SSO dialog to prepare the host to call the skill.
-            return stepContext.beginDialog(SSO_DIALOG + activeSkill.definition.id);
-        }
-
         // Start the skillDialog instance with the arguments.
-        return stepContext.beginDialog(activeSkill.definition.id, skillDialogArgs);
+        return stepContext.beginDialog(selectedSkill.id, skillDialogArgs);
     }
 
     /**
@@ -247,7 +257,7 @@ class MainDialog extends ComponentDialog {
         const activeSkill = await this.activeSkillProperty.get(stepContext.context);
 
         if (stepContext.result) {
-            let message = `Skill "${ activeSkill.definition.id }" invocation complete.`;
+            let message = `Skill "${ activeSkill.id }" invocation complete.`;
             message += ` Result: ${ JSON.SerializeObject(stepContext.result) }`;
             await stepContext.context.sendActivity(message);
         }
@@ -257,15 +267,8 @@ class MainDialog extends ComponentDialog {
         await this.activeSkillProperty.delete(stepContext.context);
 
         // Restart setup dialog
-        return stepContext.replaceDialog(this.initialDialogId, { text: `Done with "${ activeSkill.definition.id }". \n\n What delivery mode would you like to use?` });
+        return stepContext.replaceDialog(this.initialDialogId, { text: `Done with "${ activeSkill.id }". \n\n What delivery mode would you like to use?` });
     }
-
-    /**
-     * @param {import('botbuilder').ConversationState} conversationState
-     * @param {import('../skillsConfiguration').SkillsConfiguration} skillsConfig
-     * @param {import('botbuilder').SkillHttpClient} skillClient
-     * @param {import('../skillConversationIdFactory').SkillConversationIdFactory} conversationIdFactory
-     */
 
     /**
      * Helper method that creates and adds SkillDialog instances for the configured skills.
@@ -289,32 +292,22 @@ class MainDialog extends ComponentDialog {
             };
 
             // Add a SkillDialog for the selected skill.
-            this.addDialog(new SkillDialog(skillDialogOptions, skillInfo.definition.id));
+            this.addDialog(new SkillDialog(skillDialogOptions, skillInfo.id));
         });
     }
 
     /**
-     * Helper method to create the activity to be sent to the DialogSkillBot using selected type and values.
-     * @param {import('botbuilder').TurnContext} turnContext
-     * @param {string} skillId
-     * @param {*} selectedOption
+     * Special case.
+     * SSO needs a dialog in the host to allow the user to sign in.
+     * We create and several SsoDialog instances for each skill that supports SSO.
      */
-    createBeginActivity(turnContext, skillId, selectedOption) {
-        if (selectedOption === JUST_FORWARD_THE_ACTIVITY) {
-            // Note message activities also support input parameters but we are not using them in this example.
-            // Return a clone of the activity so we don't risk altering the original one.
-            return Object.assign({}, turnContext.activity);
-        }
+    addSsoDialogs() {
+        const addDialogs = (name, connectionName) => Object.values(this.dialogs.dialogs)
+            .filter(({ id }) => id.startsWith(name))
+            .forEach(skill => this.addDialog(new SsoDialog(`${ SSO_DIALOG_PREFIX }${ skill.Id }`, skill, connectionName)));
 
-        // Get the begin activity from the skill instance.
-        const activity = this.skillsConfig.skills[skillId].definition.createBeginActivity(selectedOption);
-
-        // We are manually creating the activity to send to the skill; ensure we add the ChannelData and Properties
-        // from the original activity so the skill gets them.
-        // Note: this is not necessary if we are just forwarding the current activity from context.
-        activity.channelData = turnContext.activity.channelData;
-        activity.properties = turnContext.activity.properties;
-        return activity;
+        addDialogs('WaterfallSkillBot', process.env.SsoConnectionName);
+        addDialogs('TeamsSkillBot', process.env.SsoConnectionNameTeams);
     }
 }
 

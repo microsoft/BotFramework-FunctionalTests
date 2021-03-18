@@ -7,7 +7,6 @@ const { SsoSignInDialog } = require('./ssoSignInDialog');
 
 const ACTION_STEP_PROMPT = 'ActionStepPrompt';
 const DELIVERY_PROMPT = 'DeliveryModePrompt';
-const SSO_DIALOG = 'SsoDialog';
 const SSO_SIGNIN_DIALOG = 'SsoSignInDialog';
 const WATERFALL_DIALOG = 'WaterfallDialog';
 
@@ -16,17 +15,19 @@ const WATERFALL_DIALOG = 'WaterfallDialog';
  */
 class SsoDialog extends ComponentDialog {
     /**
-     * @param {*} skillDialog
+     * @param {string} dialogId
+     * @param {*} ssoSkillDialog
+     * @param {string} connectionName
      */
-    constructor(skillDialog) {
-        super(SSO_DIALOG + skillDialog.id);
+    constructor(dialogId, ssoSkillDialog, connectionName) {
+        super(dialogId);
 
-        this.connectionName = process.env.SsoConnectionName;
-        this.skillDialogId = skillDialog.id;
+        this.connectionName = connectionName;
+        this.skillDialogId = ssoSkillDialog.id;
 
         this.addDialog(new ChoicePrompt(ACTION_STEP_PROMPT));
         this.addDialog(new SsoSignInDialog(this.connectionName));
-        this.addDialog(skillDialog);
+        this.addDialog(ssoSkillDialog);
 
         this.addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
             this.promptActionStep.bind(this),
