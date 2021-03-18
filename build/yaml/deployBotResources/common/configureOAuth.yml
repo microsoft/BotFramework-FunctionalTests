@@ -12,5 +12,11 @@ steps:
       scriptType: ps
       scriptLocation: inlineScript
       inlineScript: |
+        $connectionName = if([string]::IsNullOrEmpty($env:ConnectionName)) { "TestOAuthProvider" } Else { $env:ConnectionName };
+
+        # Create OAuth Connection.
         az bot show -g "${{ parameters.botGroup }}" -n "${{ parameters.botName }}$($env:ResourceSuffix)-$(Build.BuildId)"
-        az bot authsetting create -g "${{ parameters.botGroup }}" -n "${{ parameters.botName }}$($env:ResourceSuffix)-$(Build.BuildId)" -c TestOAuthProvider --client-id="${{ parameters.appId }}" --client-secret="${{ parameters.appSecret }}" --service "oauth2" --provider-scope-string '""' --parameters authorizationUrl=https://webjobs.botframework.com/api/testauthprovider/authorize tokenUrl=https://webjobs.botframework.com/api/testauthprovider/token refreshUrl=https://webjobs.botframework.com/api/testauthprovider/refresh clientId="${{ parameters.appId }}" clientSecret="${{ parameters.appSecret }}"
+        az bot authsetting create -g "${{ parameters.botGroup }}" -n "${{ parameters.botName }}$($env:ResourceSuffix)-$(Build.BuildId)" -c $connectionName --client-id="${{ parameters.appId }}" --client-secret="${{ parameters.appSecret }}" --service "oauth2" --provider-scope-string '""' --parameters authorizationUrl=https://webjobs.botframework.com/api/testauthprovider/authorize tokenUrl=https://webjobs.botframework.com/api/testauthprovider/token refreshUrl=https://webjobs.botframework.com/api/testauthprovider/refresh clientId="${{ parameters.appId }}" clientSecret="${{ parameters.appSecret }}"
+
+        # Add ConnectionName to Azure AppSettings.
+        az webapp config appsettings set --name "${{ parameters.botName }}$($env:ResourceSuffix)" --resource-group ${{ parameters.botGroup }} --settings "ConnectionName=$connectionName" --output none
