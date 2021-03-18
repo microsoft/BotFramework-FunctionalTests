@@ -132,6 +132,7 @@ steps:
               botName       = 'bffnwaterfallskillbotjs'
               appId         = "$env:BffnWaterfallSkillBotJSAppId"
               resourceGroup = $groups.JS
+              group = 'Waterfall'
           }
           @{
               key           = 'EchoSkillBotPython'
