@@ -60,7 +60,7 @@
         "newAppServicePlanLocation": {
             "type": "string",
             "metadata": {
-                "description": "The location of the App Service Plan. Defaults to \"westus\"."
+                "description": "The location of the App Service Plan. Defaults to \"westus2\"."
             }
         },
         "newWebAppName": {

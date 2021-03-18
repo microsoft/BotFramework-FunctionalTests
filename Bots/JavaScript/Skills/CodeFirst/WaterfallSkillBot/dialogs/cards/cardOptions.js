@@ -2,64 +2,64 @@
 // Licensed under the MIT License.
 
 module.exports.CardOptions = {
-    /**
+  /**
      * Adaptive card - Bot action
      */
-    AdaptiveCardBotAction: 'AdaptiveCardBotAction',
-    /**
+  AdaptiveCardBotAction: 'AdaptiveCardBotAction',
+  /**
      * Adaptive card - Task module
      */
-    AdaptiveCardTaskModule: 'AdaptiveCardTaskModule',
-    /**
+  AdaptiveCardTaskModule: 'AdaptiveCardTaskModule',
+  /**
      * Adaptive card - Submit action
      */
-    AdaptiveCardSubmitAction: 'AdaptiveCardSubmitAction',
-    /**
+  AdaptiveCardSubmitAction: 'AdaptiveCardSubmitAction',
+  /**
      * Hero cards
      */
-    Hero: 'Hero',
-    /**
+  Hero: 'Hero',
+  /**
      * Thumbnail cards
      */
-    Thumbnail: 'Thumbnail',
-    /**
+  Thumbnail: 'Thumbnail',
+  /**
      * Receipt cards
      */
-    Receipt: 'Receipt',
-    /**
+  Receipt: 'Receipt',
+  /**
      * Signin cards
      */
-    Signin: 'Signin',
-    /**
+  Signin: 'Signin',
+  /**
      * Carousel cards
      */
-    Carousel: 'Carousel',
-    /**
+  Carousel: 'Carousel',
+  /**
      * List cards
      */
-    List: 'List',
-    /**
+  List: 'List',
+  /**
      * O365 cards
      */
-    O365: 'O365',
-    /**
+  O365: 'O365',
+  /**
      * File cards
      */
-    TeamsFileConsent: 'TeamsFileConsent',
-    /**
+  TeamsFileConsent: 'TeamsFileConsent',
+  /**
      * Animation cards
      */
-    Animation: 'Animation',
-    /**
+  Animation: 'Animation',
+  /**
      * Audio cards
      */
-    Audio: 'Audio',
-    /**
+  Audio: 'Audio',
+  /**
      * Video cards
      */
-    Video: 'Video',
-    /**
+  Video: 'Video',
+  /**
      * Ends the card selection dialog
      */
-    End: 'End'
+  End: 'End'
 };
