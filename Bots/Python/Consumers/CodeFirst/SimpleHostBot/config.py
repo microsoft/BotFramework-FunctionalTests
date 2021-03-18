@@ -28,7 +28,7 @@ class DefaultConfig:
     @staticmethod
     def configure_skills():
         skills = list()
-        env_skills = [x for x in os.environ if x.lower().startswith("skill_")]
+        env_skills = [x for x in os.environ if ((x.lower().startswith("skill_")) and ('group' not in x.lower()))]
 
         for envKey in env_skills:
             keys = envKey.split("_")
@@ -44,8 +44,6 @@ class DefaultConfig:
                 attr = "app_id"
             elif key.lower() == "endpoint":
                 attr = "skill_endpoint"
-            elif key.lower() == "group":
-                pass
             else:
                 raise ValueError(
                     f"[SkillsConfiguration]: Invalid environment variable declaration {key}"
