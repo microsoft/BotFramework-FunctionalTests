@@ -5,29 +5,29 @@ const { ActivityEx } = require('botbuilder-core');
 const { SkillDefinition } = require('./skillDefinition');
 
 const SkillAction = {
-    Message: 'Message'
+  Message: 'Message'
 };
 
 class EchoSkill extends SkillDefinition {
-    getActions() {
-        return Object.values(SkillAction);
+  getActions () {
+    return Object.values(SkillAction);
+  }
+
+  /**
+   * @param {string} actionId
+   */
+  createBeginActivity (actionId) {
+    if (!this.getActions().includes(actionId)) {
+      throw new Error(`[EchoSkill]: Unable to create begin activity for "${actionId}".`);
     }
 
-    /**
-     * @param {string} actionId
-     */
-    createBeginActivity(actionId) {
-        if (!this.getActions().includes(actionId)) {
-            throw new Error(`[EchoSkill]: Unable to create begin activity for "${ actionId }".`);
-        }
+    // We only support one activity for Echo so no further checks are needed
+    const activity = ActivityEx.createMessageActivity();
+    activity.name = actionId;
+    activity.text = 'Begin the Echo Skill.';
 
-        // We only support one activity for Echo so no further checks are needed
-        const activity = ActivityEx.createMessageActivity();
-        activity.name = actionId;
-        activity.text = 'Begin the Echo Skill.';
-
-        return activity;
-    }
+    return activity;
+  }
 }
 
 module.exports.EchoSkill = EchoSkill;
