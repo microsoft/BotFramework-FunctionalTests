@@ -15,7 +15,7 @@ steps:
     inlineScript: |
      Set-PSDebug -Trace 1;
      # set up resource group, bot channels registration, app service, app service plan
-     az deployment sub create --name "$(BotName)$(Build.BuildId)" --template-file "build\templates\template-bot-resources-legacy.json" --location "westus" --parameters appId="$(DeployAppId)" appSecret="$(DeployAppSecret)" botId="$(BotName)" botSku=S1 newAppServicePlanName="$(BotName)" newWebAppName="$(BotName)-$(Build.BuildId)" groupName="$(BotGroup)" groupLocation="westus" newAppServicePlanLocation="westus"
+     az deployment sub create --name "$(BotName)$(Build.BuildId)" --template-file "build\templates\template-bot-resources-legacy.json" --location "westus2" --parameters appId="$(DeployAppId)" appSecret="$(DeployAppSecret)" botId="$(BotName)" botSku=S1 newAppServicePlanName="$(BotName)" newWebAppName="$(BotName)-$(Build.BuildId)" groupName="$(BotGroup)" groupLocation="westus2" newAppServicePlanLocation="westus2"
      Set-PSDebug -Trace 0;
 
 - task: AzureCLI@1
