@@ -13,13 +13,13 @@ const allowedSkills = Object.values(skillsConfig.skills).map(skill => skill.appI
  * and checks that responses are coming from configured skills.
  */
 const allowedSkillsClaimsValidator = async (claims) => {
-    if (SkillValidation.isSkillClaim(claims)) {
-        // Check that the appId claim in the skill request is in the list of skills configured for this bot.
-        const appId = JwtTokenValidation.getAppIdFromClaims(claims);
-        if (!allowedSkills.includes(appId)) {
-            throw new Error(`Received a request from an application with an appID of "${ appId }". To enable requests from this skill, add the skill to your configuration file.`);
-        }
+  if (SkillValidation.isSkillClaim(claims)) {
+    // Check that the appId claim in the skill request is in the list of skills configured for this bot.
+    const appId = JwtTokenValidation.getAppIdFromClaims(claims);
+    if (!allowedSkills.includes(appId)) {
+      throw new Error(`Received a request from an application with an appID of "${appId}". To enable requests from this skill, add the skill to your configuration file.`);
     }
+  }
 };
 
 module.exports.allowedSkillsClaimsValidator = allowedSkillsClaimsValidator;

@@ -12,5 +12,5 @@ steps:
       scriptType: ps
       scriptLocation: inlineScript
       inlineScript: |
-        az bot show -g "${{ parameters.botGroup }}" -n "${{ parameters.botName }}$($env:ResourceSuffix)"
-        az bot authsetting create -g "${{ parameters.botGroup }}" -n "${{ parameters.botName }}$($env:ResourceSuffix)" -c TestOAuthProvider --client-id="${{ parameters.appId }}" --client-secret="${{ parameters.appSecret }}" --service "oauth2" --provider-scope-string '""' --parameters authorizationUrl=https://webjobs.botframework.com/api/testauthprovider/authorize tokenUrl=https://webjobs.botframework.com/api/testauthprovider/token refreshUrl=https://webjobs.botframework.com/api/testauthprovider/refresh clientId="${{ parameters.appId }}" clientSecret="${{ parameters.appSecret }}"
+        az bot show -g "${{ parameters.botGroup }}" -n "${{ parameters.botName }}$($env:ResourceSuffix)-$(Build.BuildId)"
+        az bot authsetting create -g "${{ parameters.botGroup }}" -n "${{ parameters.botName }}$($env:ResourceSuffix)-$(Build.BuildId)" -c TestOAuthProvider --client-id="${{ parameters.appId }}" --client-secret="${{ parameters.appSecret }}" --service "oauth2" --provider-scope-string '""' --parameters authorizationUrl=https://webjobs.botframework.com/api/testauthprovider/authorize tokenUrl=https://webjobs.botframework.com/api/testauthprovider/token refreshUrl=https://webjobs.botframework.com/api/testauthprovider/refresh clientId="${{ parameters.appId }}" clientSecret="${{ parameters.appSecret }}"
