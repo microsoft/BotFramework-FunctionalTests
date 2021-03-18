@@ -44,6 +44,8 @@ class DefaultConfig:
                 attr = "app_id"
             elif key.lower() == "endpoint":
                 attr = "skill_endpoint"
+            elif key.lower() == "group":
+                pass
             else:
                 raise ValueError(
                     f"[SkillsConfiguration]: Invalid environment variable declaration {key}"
