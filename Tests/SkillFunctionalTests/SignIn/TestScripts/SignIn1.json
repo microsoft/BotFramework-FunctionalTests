@@ -91,7 +91,7 @@
     {
       "type": "message",
       "role": "user",
-      "text": "WaterfallSkillBotDotNet"
+      "text": "${TargetSkill}"
     },
     {
       "type": "message",
