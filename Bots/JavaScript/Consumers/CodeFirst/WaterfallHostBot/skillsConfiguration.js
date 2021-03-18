@@ -4,75 +4,56 @@
 const { EchoSkill } = require('./skills/echoSkill');
 const { WaterfallSkill } = require('./skills/waterfallSkill');
 const { TeamsSkill } = require('./skills/teamsSkill');
-const { SkillDefinition } = require('./skills/skillDefinition');
 
 /**
  * A helper class that loads Skills information from configuration.
  */
 class SkillsConfiguration {
-    constructor() {
-        this.skillsData = {};
-
-        var skillVariables = Object.keys(process.env).filter(prop => prop.startsWith('skill_'));
-
-        for (const val of skillVariables) {
-            const names = val.split('_');
-            const id = names[1];
-            const attr = names[2];
-            let propName;
-            if (!(id in this.skillsData)) {
-                this.skillsData[id] = { definition: this.createSkillDefinition({ id }) };
-            }
-            switch (attr.toLowerCase()) {
-            case 'appid':
-                propName = 'appId';
-                break;
-            case 'endpoint':
-                propName = 'skillEndpoint';
-                break;
-            default:
-                throw new Error(`[SkillsConfiguration]: Invalid environment variable declaration ${ val }`);
-            }
-
-            this.skillsData[id][propName] = process.env[val];
+  constructor () {
+    this.skillsData = Object.entries(process.env)
+      .filter(([key]) => key.startsWith('skill_'))
+      .reduce((acc, [key, value]) => {
+        const [, id, attr] = key.split('_');
+        acc[id] = acc[id] || {};
+        const propName = { appid: 'appId', endpoint: 'skillEndpoint', group: 'group' }[attr.toLowerCase()];
+        if (!propName) { throw new Error(`[SkillsConfiguration]: Invalid environment variable declaration ${key}`); }
+        acc[id][propName] = value;
+        if (propName === 'group') {
+          acc[id] = this.createSkillDefinition({ id, ...acc[id] });
         }
+        return acc;
+      }, {});
 
-        this.skillHostEndpointValue = process.env.SkillHostEndpoint;
-        if (!this.skillHostEndpointValue) {
-            throw new Error('[SkillsConfiguration]: Missing configuration parameter. SkillHostEndpoint is required');
-        }
+    this.skillHostEndpointValue = process.env.SkillHostEndpoint;
+    if (!this.skillHostEndpointValue) {
+      throw new Error('[SkillsConfiguration]: Missing configuration parameter. SkillHostEndpoint is required');
     }
+  }
 
-    get skills() {
-        return this.skillsData;
+  get skills () {
+    return this.skillsData;
+  }
+
+  get skillHostEndpoint () {
+    return this.skillHostEndpointValue;
+  }
+
+  createSkillDefinition (skill) {
+    // Note: we hard code this for now, we should dynamically create instances based on the manifests.
+    switch (skill.group) {
+      case 'Echo':
+        return Object.assign(new EchoSkill(), skill);
+
+      case 'Waterfall':
+        return Object.assign(new WaterfallSkill(), skill);
+
+      case 'Teams':
+        return Object.assign(new TeamsSkill(), skill);
+
+      default:
+        throw new Error(`[SkillsConfiguration]: Unable to find definition class for ${skill.id}`);
     }
-
-    get skillHostEndpoint() {
-        return this.skillHostEndpointValue;
-    }
-
-    createSkillDefinition(skill) {
-        // Note: we hard code this for now, we should dynamically create instances based on the manifests.
-        // For now, this code creates a strong typed version of the SkillDefinition and copies the info from
-        // settings into it.
-        let skillDefinition = new SkillDefinition();
-
-        switch (true) {
-        case skill.id.startsWith('EchoSkillBot'):
-            skillDefinition = Object.assign(new EchoSkill(), skill);
-            break;
-        case skill.id.startsWith('WaterfallSkillBot'):
-            skillDefinition = Object.assign(new WaterfallSkill(), skill);
-            break;
-        case skill.id.startsWith('TeamsSkillBot'):
-            skillDefinition = Object.assign(new TeamsSkill(), skill);
-            break;
-        default:
-            throw new Error(`[SkillsConfiguration]: Unable to find definition class for ${ skill.id }`);
-        }
-
-        return skillDefinition;
-    }
+  }
 }
 
 module.exports.SkillsConfiguration = SkillsConfiguration;

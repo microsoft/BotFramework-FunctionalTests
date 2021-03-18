@@ -4,44 +4,41 @@
 const { ActivityEx } = require('botbuilder-core');
 const { SkillDefinition } = require('./skillDefinition');
 
-const SKILL_ACTION_TEAMS_TASK_MODULE = 'TeamsTaskModule';
-const SKILL_ACTION_TEAMS_CARD_ACTION = 'TeamsCardAction';
-const SKILL_ACTION_TEAMS_CONVERSATION = 'TeamsConversation';
+const SkillAction = {
+  TeamsTaskModule: 'TeamsTaskModule',
+  TeamsCardAction: 'TeamsCardAction',
+  TeamsConversation: 'TeamsConversation',
+  Cards: 'Cards',
+  Proactive: 'Proactive',
+  Attachment: 'Attachment',
+  Auth: 'Auth',
+  Sso: 'Sso',
+  Echo: 'Echo',
+  FileUpload: 'FileUpload',
+  Delete: 'Delete',
+  Update: 'Update'
+};
 
 class TeamsSkill extends SkillDefinition {
-    getActions() {
-        return [
-            SKILL_ACTION_TEAMS_TASK_MODULE,
-            SKILL_ACTION_TEAMS_CARD_ACTION,
-            SKILL_ACTION_TEAMS_CONVERSATION
-        ];
+  getActions () {
+    return Object.values(SkillAction);
+  }
+
+  /**
+   * @param {string} actionId
+   */
+  createBeginActivity (actionId) {
+    if (!this.getActions().includes(actionId)) {
+      throw new Error(`[TeamsSkill]: Unable to create begin activity for "${actionId}".`);
     }
 
-    /**
-     * @param {string} actionId
-     */
-    createBeginActivity(actionId) {
-        const activity = ActivityEx.createEventActivity();
+    // We don't support special parameters in these skills so a generic event with the right name
+    // will do in this case.
+    const activity = ActivityEx.createEventActivity();
+    activity.name = actionId;
 
-        switch (actionId) {
-        case SKILL_ACTION_TEAMS_TASK_MODULE:
-            activity.name = SKILL_ACTION_TEAMS_TASK_MODULE;
-            break;
-
-        case SKILL_ACTION_TEAMS_CARD_ACTION:
-            activity.name = SKILL_ACTION_TEAMS_CARD_ACTION;
-            break;
-
-        case SKILL_ACTION_TEAMS_CONVERSATION:
-            activity.name = SKILL_ACTION_TEAMS_CONVERSATION;
-            break;
-
-        default:
-            throw new Error(`[TeamsSkill]: Unable to create begin activity for "${ actionId }".`);
-        }
-
-        return activity;
-    }
+    return activity;
+  }
 }
 
 module.exports.TeamsSkill = TeamsSkill;

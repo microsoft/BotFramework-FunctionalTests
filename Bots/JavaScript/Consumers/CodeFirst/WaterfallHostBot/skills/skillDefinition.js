@@ -2,13 +2,13 @@
 // Licensed under the MIT License.
 
 class SkillDefinition {
-    getActions() {
-        throw new Error('[SkillDefinition]: Method not implemented');
-    }
+  getActions () {
+    throw new Error('[SkillDefinition]: Method not implemented');
+  }
 
-    createBeginActivity() {
-        throw new Error('[SkillDefinition]: Method not implemented');
-    }
+  createBeginActivity () {
+    throw new Error('[SkillDefinition]: Method not implemented');
+  }
 }
 
 module.exports.SkillDefinition = SkillDefinition;
