@@ -3,26 +3,32 @@
     {
       "type": "message",
       "role": "bot",
-      "text": "Attachment \"architecture-resize.png\" has been received and saved to ${FileLocation}\r\n",
+      "text": "Attachment \"${FileName}\" has been received and saved to ${BotsTempFolder}\r\n",
       "assertions": [
         "type == 'message'",
         "from.role == 'bot'",
         "recipient.role == 'user'",
-        "text == 'Attachment \"architecture-resize.png\" has been received and saved to ${FileLocation}\r\n'",
+        "text == 'Attachment \"${FileName}\" has been received and saved to ${BotsTempFolder}\r\n'",
         "inputHint == 'acceptingInput'"
       ]
     },
     {
       "type": "message",
       "role": "bot",
-      "text": "Do you want to upload another file?\n\n   1. Yes\n   2. No",
+      "text": "Do you want to upload another file?",
       "assertions": [
         "type == 'message'",
         "from.role == 'bot'",
         "recipient.role == 'user'",
-        "text == 'Do you want to upload another file?\n\n   1. Yes\n   2. No'",
+        "text == 'Do you want to upload another file?'",
         "speak == 'Do you want to upload another file?'",
-        "inputHint == 'expectingInput'"
+        "inputHint == 'expectingInput'",
+        "suggestedActions.actions[0].type == 'imBack'",
+        "suggestedActions.actions[0].title == 'Yes'",
+        "suggestedActions.actions[0].value == 'Yes'",
+        "suggestedActions.actions[1].type == 'imBack'",
+        "suggestedActions.actions[1].title == 'No'",
+        "suggestedActions.actions[1].value == 'No'"
       ]
     },
     {

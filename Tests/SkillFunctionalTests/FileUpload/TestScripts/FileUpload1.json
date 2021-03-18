@@ -57,36 +57,33 @@
     {
       "type": "message",
       "role": "bot",
-      "text": "What type of skill would you like to use?",
+      "text": "What group of skills would you like to use?",
       "assertions": [
         "type == 'message'",
         "from.role == 'bot'",
         "recipient.role == 'user'",
-        "text == 'What type of skill would you like to use?'",
-        "speak == 'What type of skill would you like to use?'",
+        "text == 'What group of skills would you like to use?'",
+        "speak == 'What group of skills would you like to use?'",
         "inputHint == 'expectingInput'",
         "suggestedActions.actions[0].type == 'imBack'",
-        "suggestedActions.actions[0].title == 'EchoSkill'",
-        "suggestedActions.actions[0].value == 'EchoSkill'",
-        "suggestedActions.actions[1].type == 'imBack'",
-        "suggestedActions.actions[1].title == 'WaterfallSkill'",
-        "suggestedActions.actions[1].value == 'WaterfallSkill'"
+        "suggestedActions.actions[0].title == 'Echo' || suggestedActions.actions[0].title == 'Waterfall' || suggestedActions.actions[0].title == 'Teams'",
+        "suggestedActions.actions[0].value == 'Echo' || suggestedActions.actions[0].title == 'Waterfall' || suggestedActions.actions[0].title == 'Teams'"
       ]
     },
     {
       "type": "message",
       "role": "user",
-      "text": "WaterfallSkill"
+      "text": "Waterfall"
     },
     {
       "type": "message",
       "role": "bot",
-      "text": "What skill would you like to call?",
+      "text": "What skill would you like to call?\n\n   1. WaterfallSkillBotDotNet\n   2. WaterfallSkillBotJS\n   3. WaterfallSkillBotPython",
       "assertions": [
         "type == 'message'",
         "from.role == 'bot'",
         "recipient.role == 'user'",
-        "text == 'What skill would you like to call?'",
+        "startsWith(text, 'What skill would you like to call?')",
         "speak == 'What skill would you like to call?'",
         "inputHint == 'expectingInput'"
       ]
@@ -99,13 +96,13 @@
     {
       "type": "message",
       "role": "bot",
-      "text": "Select an action # to send to **${TargetSkill}**.\n\nOr just type in a message and it will be forwarded to the skill as a message activity.\n\n   1. Cards\n   2. Proactive\n   3. Auth\n   4. MessageWithAttachment\n   5. Sso\n   6. FileUpload\n   7. Echo",
+      "text": "Select an action to send to **${TargetSkill}**.\n\n   1. Cards\n   2. Proactive\n   3. Auth\n   4. MessageWithAttachment\n   5. Sso\n   6. FileUpload\n   7. Echo\n   8. Delete\n   9. Update",
       "assertions": [
         "type == 'message'",
         "from.role == 'bot'",
         "recipient.role == 'user'",
-        "text == 'Select an action # to send to **${TargetSkill}**.\n\nOr just type in a message and it will be forwarded to the skill as a message activity.\n\n   1. Cards\n   2. Proactive\n   3. Auth\n   4. MessageWithAttachment\n   5. Sso\n   6. FileUpload\n   7. Echo'",
-        "speak == 'Select an action # to send to **${TargetSkill}**.\n\nOr just type in a message and it will be forwarded to the skill as a message activity.'",
+        "text == 'Select an action to send to **${TargetSkill}**.\n\n   1. Cards\n   2. Proactive\n   3. Auth\n   4. MessageWithAttachment\n   5. Sso\n   6. FileUpload\n   7. Echo\n   8. Delete\n   9. Update'",
+        "speak == 'Select an action to send to **WaterfallSkillBotDotNet**.'",
         "inputHint == 'expectingInput'"
       ]
     },

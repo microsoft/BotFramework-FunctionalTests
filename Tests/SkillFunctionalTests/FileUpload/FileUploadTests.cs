@@ -73,6 +73,7 @@ namespace SkillFunctionalTests.FileUpload
         [MemberData(nameof(TestCases))]
         public async Task RunTestCases(TestCaseDataObject testData)
         {
+            const string fileName = "TestFile.txt";
             var testCase = testData.GetObject<TestCase>();
             Logger.LogInformation(JsonConvert.SerializeObject(testCase, Formatting.Indented));
 
@@ -84,29 +85,16 @@ namespace SkillFunctionalTests.FileUpload
             {
                 { "DeliveryMode", testCase.DeliveryMode },
                 { "TargetSkill", testCase.TargetSkill },
-                { "FileLocation", "\\\"C:\\\\local\\\\Temp\\\\architecture-resize.png\\\"" }
+                { "FileName", fileName },
+                
+                // Temp folder where the bots deployed in Azure save the uploaded file. Change the path to run the tests against local bots.
+                { "BotsTempFolder", $"\\\"D:\\\\local\\\\Temp\\\\{fileName}\\\"" }
             };
             await runner.RunTestAsync(Path.Combine(_testScriptsFolder, testCase.Script), testParams);
 
-            // Create attachment to send.
-            var sendAttachment = new Attachment
-            {
-                Name = @"architecture-resize.png",
-                ContentType = "image/png",
-                ContentUrl = "https://docs.microsoft.com/en-us/bot-framework/media/how-it-works/architecture-resize.png",
-            };
+            await using var file = File.OpenRead(Directory.GetCurrentDirectory() + $"/FileUpload/media/{fileName}");
 
-            var attachments = new List<Attachment>();
-            attachments.Add(sendAttachment);
-
-            // Send FileUpload activity
-            var sendActivity = new Activity
-            {
-                Type = ActivityTypes.Message,
-                Attachments = attachments
-            };
-
-            await runner.SendActivityAsync(sendActivity);
+            await runner.UploadAsync(file);
 
             // Execute the rest of the conversation.
             await runner.RunTestAsync(Path.Combine(_testScriptsFolder, "FileUpload2.json"), testParams);
