@@ -57,36 +57,33 @@
     {
       "type": "message",
       "role": "bot",
-      "text": "What type of skill would you like to use?",
+      "text": "What group of skills would you like to use?",
       "assertions": [
         "type == 'message'",
         "from.role == 'bot'",
         "recipient.role == 'user'",
-        "text == 'What type of skill would you like to use?'",
-        "speak == 'What type of skill would you like to use?'",
+        "text == 'What group of skills would you like to use?'",
+        "speak == 'What group of skills would you like to use?'",
         "inputHint == 'expectingInput'",
         "suggestedActions.actions[0].type == 'imBack'",
-        "suggestedActions.actions[0].title == 'EchoSkill'",
-        "suggestedActions.actions[0].value == 'EchoSkill'",
-        "suggestedActions.actions[1].type == 'imBack'",
-        "suggestedActions.actions[1].title == 'WaterfallSkill'",
-        "suggestedActions.actions[1].value == 'WaterfallSkill'"
+        "suggestedActions.actions[0].title == 'Echo' || suggestedActions.actions[0].title == 'Waterfall' || suggestedActions.actions[0].title == 'Teams'",
+        "suggestedActions.actions[0].value == 'Echo' || suggestedActions.actions[0].title == 'Waterfall' || suggestedActions.actions[0].title == 'Teams'"
       ]
     },
     {
       "type": "message",
       "role": "user",
-      "text": "WaterfallSkill"
+      "text": "Waterfall"
     },
     {
       "type": "message",
       "role": "bot",
-      "text": "What skill would you like to call?",
+      "text": "What skill would you like to call?\n\n   1. WaterfallSkillBotDotNet\n   2. WaterfallSkillBotJS\n   3. WaterfallSkillBotPython",
       "assertions": [
         "type == 'message'",
         "from.role == 'bot'",
         "recipient.role == 'user'",
-        "text == 'What skill would you like to call?'",
+        "startsWith(text, 'What skill would you like to call?')",
         "speak == 'What skill would you like to call?'",
         "inputHint == 'expectingInput'"
       ]
@@ -99,13 +96,13 @@
     {
       "type": "message",
       "role": "bot",
-      "text": "Select an action # to send to **${TargetSkill}**.\n\nOr just type in a message and it will be forwarded to the skill as a message activity.\n\n   1. Cards\n   2. Proactive\n   3. Auth\n   4. MessageWithAttachment\n   5. Sso\n   6. FileUpload\n   7. Echo",
+      "text": "Select an action # to send to **${TargetSkill}**.\n\n   1. Cards\n   2. Proactive\n   3. Auth\n   4. MessageWithAttachment\n   5. Sso\n   6. FileUpload\n   7. Echo\n   8. Delete\n   9. Update",
       "assertions": [
         "type == 'message'",
         "from.role == 'bot'",
         "recipient.role == 'user'",
-        "text == 'Select an action # to send to **${TargetSkill}**.\n\nOr just type in a message and it will be forwarded to the skill as a message activity.\n\n   1. Cards\n   2. Proactive\n   3. Auth\n   4. MessageWithAttachment\n   5. Sso\n   6. FileUpload\n   7. Echo'",
-        "speak == 'Select an action # to send to **${TargetSkill}**.\n\nOr just type in a message and it will be forwarded to the skill as a message activity.'",
+        "text == 'Select an action to send to **${TargetSkill}**.\n\n   1. Cards\n   2. Proactive\n   3. Auth\n   4. MessageWithAttachment\n   5. Sso\n   6. FileUpload\n   7. Echo\n   8. Delete\n   9. Update'",
+        "speak == 'Select an action to send to **${TargetSkill}**.'",
         "inputHint == 'expectingInput'"
       ]
     },
@@ -139,13 +136,13 @@
     {
       "type": "message",
       "role": "bot",
-      "text": "What card do you want?",
+      "text": "What attachment type do you want?",
       "assertions": [
         "type == 'message'",
         "from.role == 'bot'",
         "recipient.role == 'user'",
-        "text == 'What card do you want?'",
-        "speak == 'What card do you want?'",
+        "text == 'What attachment type do you want?'",
+        "speak == 'What attachment type do you want?'",
         "inputHint == 'expectingInput'",
         "suggestedActions.actions[0].type == 'imBack'",
         "suggestedActions.actions[0].title == 'Inline'",
@@ -169,9 +166,9 @@
         "from.role == 'bot'",
         "recipient.role == 'user'",
         "text == 'This is an inline attachment.'",
-        "inputHint == 'acceptingInput'",
+        "inputHint == 'ignoringInput'",
         "attachments[0].contentType == 'image/png'",
-        "attachments[0].name == 'Files\\architecture-resize.png'"
+        "attachments[0].name == 'Files/architecture-resize.png'"
       ]
     },
     {
@@ -201,13 +198,13 @@
     {
       "type": "message",
       "role": "bot",
-      "text": "What card do you want?",
+      "text": "What attachment type do you want?",
       "assertions": [
         "type == 'message'",
         "from.role == 'bot'",
         "recipient.role == 'user'",
-        "text == 'What card do you want?'",
-        "speak == 'What card do you want?'",
+        "text == 'What attachment type do you want?'",
+        "speak == 'What attachment type do you want?'",
         "inputHint == 'expectingInput'",
         "suggestedActions.actions[0].type == 'imBack'",
         "suggestedActions.actions[0].title == 'Inline'",
@@ -231,10 +228,10 @@
         "from.role == 'bot'",
         "recipient.role == 'user'",
         "text == 'This is an attachment from a HTTP URL.'",
-        "inputHint == 'acceptingInput'",
+        "inputHint == 'ignoringInput'",
         "attachments[0].contentType == 'image/png'",
-        "attachments[0].contentUrl == 'https://docs.microsoft.com/en-us/bot-framework/media/how-it-works/architecture-resize.png'",
-        "attachments[0].name == 'Files\\architecture-resize.png'"
+        "endsWith(attachments[0].contentUrl, 'images/architecture-resize.png')",
+        "attachments[0].name == 'Files/architecture-resize.png'"
       ]
     },
     {

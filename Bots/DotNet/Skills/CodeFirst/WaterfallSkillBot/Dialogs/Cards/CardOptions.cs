@@ -1,4 +1,7 @@
-﻿namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
+namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
 {
     public enum CardOptions
     {
@@ -10,18 +13,18 @@
         /// <summary>
         /// Adaptive card - Task module
         /// </summary>
-        AdaptiveCardTaskModule,
+        AdaptiveCardTeamsTaskModule,
 
         /// <summary>
         /// Adaptive card - Submit action
         /// </summary>
-        AdaptiveCardSumbitAction,
+        AdaptiveCardSubmitAction,
 
         /// <summary>
         /// Hero cards
         /// </summary>
         Hero,
-        
+
         /// <summary>
         /// Thumbnail cards
         /// </summary>
@@ -71,6 +74,11 @@
         /// Video cards
         /// </summary>
         Video,
+
+        /// <summary>
+        /// Adaptive update cards
+        /// </summary>
+        AdaptiveUpdate,
 
         /// <summary>
         /// Ends the card selection dialog

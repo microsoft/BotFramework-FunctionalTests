@@ -3,7 +3,7 @@
     {
       "type": "message",
       "role": "user",
-      "text": "AdaptiveCardSumbitAction"
+      "text": "AdaptiveCardSubmitAction"
     },
     {
       "type": "message",
