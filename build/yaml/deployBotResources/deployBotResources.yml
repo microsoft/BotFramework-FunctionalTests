@@ -54,6 +54,10 @@ variables:
   # BffnWaterfallHostBotDotNetAppSecret: (optional) define in Azure
   # BffnWaterfallSkillBotDotNetAppId: (optional) define in Azure
   # BffnWaterfallSkillBotDotNetAppSecret: (optional) define in Azure
+  # BffnWaterfallHostBotJSAppId: (optional) define in Azure
+  # BffnWaterfallHostBotJSAppSecret: (optional) define in Azure
+  # BffnWaterfallSkillBotJSAppId: (optional) define in Azure
+  # BffnWaterfallSkillBotJSAppSecret: (optional) define in Azure
   # BotPricingTier: (optional) define in Azure
   # ConnectionName: (optional) define in Azure
   # DependenciesRegistryHosts: (optional) define in Azure
@@ -210,6 +214,22 @@ stages:
           appSecret: $(BffnEchoSkillBotJSV3AppSecret)
           project:
             directory: 'Bots/JavaScript/Skills/CodeFirst/EchoSkillBot-v3'
+
+        - name: bffnwaterfallhostbotjs
+          type: 'Host'
+          displayName: 'JS Waterfall Host Bot'
+          appId: $env:BffnWaterfallHostBotJSAppId
+          appSecret: $env:BffnWaterfallHostBotJSAppSecret
+          project:
+            directory: 'Bots/JavaScript/Consumers/CodeFirst/WaterfallHostBot'
+
+        - name: bffnwaterfallskillbotjs
+          type: 'Skill'
+          displayName: 'JS Waterfall Skill Bot'
+          appId: $env:BffnWaterfallSkillBotJSAppId
+          appSecret: $env:BffnWaterfallSkillBotJSAppSecret
+          project: 
+            directory: 'Bots/JavaScript/Skills/CodeFirst/WaterfallSkillBot'
 
 # Python
   - template: python/deploy.yml

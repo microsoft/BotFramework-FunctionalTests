@@ -56,6 +56,12 @@ steps:
               configType    = $types.Env
           }
           @{
+              key           = 'WaterfallHostBotJS'
+              botName       = 'bffnwaterfallhostbotjs'
+              resourceGroup = $groups.JS
+              configType    = $types.Env
+          }
+          @{
               key           = 'SimpleHostBotPython'
               botName       = 'bffnsimplehostbotpython'
               resourceGroup = $groups.Python
@@ -121,6 +127,14 @@ steps:
               group = 'Echo'
           }
           @{
+              key           = 'WaterfallSkillBotJS'
+              keyComposer   = 'waterfallSkillBotJS' 
+              botName       = 'bffnwaterfallskillbotjs'
+              appId         = "$env:BffnWaterfallSkillBotJSAppId"
+              resourceGroup = $groups.JS
+              group = 'Waterfall'
+          }
+          @{
               key           = 'EchoSkillBotPython'
               keyComposer   = 'echoSkillBotPython' 
               botName       = 'bffnechoskillbotpython'
@@ -155,9 +169,11 @@ steps:
               name      = 'Waterfall'; 
               consumers = @(
                 'WaterfallHostBotDotNet'
+                'WaterfallHostBotJS'
               );
               skills    = @(
                 'WaterfallSkillBotDotNet'
+                'WaterfallSkillBotJS'
               );
           }
         )
