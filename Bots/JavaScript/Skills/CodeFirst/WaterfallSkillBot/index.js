@@ -99,6 +99,9 @@ const bot = new SkillBot(conversationState, dialog, server.url);
 // Expose the manifest
 server.get('/manifests/*', restify.plugins.serveStatic({ directory: './manifests', appendRequestPath: false }));
 
+// Expose images
+server.get('/images/*', restify.plugins.serveStatic({ directory: './images', appendRequestPath: false }));
+
 // Listen for incoming requests.
 server.post('/api/messages', (req, res) => {
   adapter.processActivity(req, res, async (context) => {

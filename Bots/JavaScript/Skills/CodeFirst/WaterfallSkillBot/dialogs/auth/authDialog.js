@@ -10,9 +10,9 @@ const CONFIRM_PROMPT = 'ConfirmPrompt';
 
 class AuthDialog extends ComponentDialog {
   /**
-     * @param {string} dialogId
-     * @param {Object} configuration
-     */
+   * @param {string} dialogId
+   * @param {Object} configuration
+   */
   constructor (dialogId, configuration) {
     super(dialogId);
 
@@ -37,15 +37,15 @@ class AuthDialog extends ComponentDialog {
   }
 
   /**
-     * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
-     */
+   * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
+   */
   promptStep (stepContext) {
     return stepContext.beginDialog(OAUTH_PROMPT);
   }
 
   /**
-     * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
-     */
+   * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
+   */
   async loginStep (stepContext) {
     // Get the token from the previous step.
     const tokenResponse = stepContext.result;
@@ -68,8 +68,8 @@ class AuthDialog extends ComponentDialog {
   }
 
   /**
-     * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
-     */
+   * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
+   */
   async displayToken (stepContext) {
     const result = stepContext.result;
 

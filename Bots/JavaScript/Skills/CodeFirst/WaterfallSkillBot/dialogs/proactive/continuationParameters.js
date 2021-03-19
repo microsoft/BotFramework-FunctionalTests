@@ -6,10 +6,10 @@
  */
 class ContinuationParameters {
   /**
-     * @param {string} claimsIdentity
-     * @param {string} oAuthScope
-     * @param {import('botbuilder').ConversationReference} conversationReference
-     */
+   * @param {string} claimsIdentity
+   * @param {string} oAuthScope
+   * @param {import('botbuilder').ConversationReference} conversationReference
+   */
   constructor (claimsIdentity, oAuthScope, conversationReference) {
     this.claimsIdentity = claimsIdentity;
     this.oAuthScope = oAuthScope;

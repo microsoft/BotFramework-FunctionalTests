@@ -13,8 +13,8 @@ class SkillConversationIdFactory extends SkillConversationIdFactoryBase {
   }
 
   /**
-     * @param {import('botbuilder').SkillConversationIdFactoryOptions} options
-     */
+   * @param {import('botbuilder').SkillConversationIdFactoryOptions} options
+   */
   async createSkillConversationIdWithOptions (options) {
     if (!options) {
       throw new Error("Argument 'options' is null.");
@@ -35,8 +35,8 @@ class SkillConversationIdFactory extends SkillConversationIdFactoryBase {
   }
 
   /**
-     * @param {string} skillConversationId
-     */
+   * @param {string} skillConversationId
+   */
   async getSkillConversationReference (skillConversationId) {
     if (!skillConversationId) {
       throw new Error("Argument 'skillConversationId' is null or empty.");
@@ -46,8 +46,8 @@ class SkillConversationIdFactory extends SkillConversationIdFactoryBase {
   }
 
   /**
-     * @param {string} skillConversationId
-     */
+   * @param {string} skillConversationId
+   */
   async deleteConversationReference (skillConversationId) {
     // Delete the SkillConversationReference from storage
     this.refs[skillConversationId] = undefined;

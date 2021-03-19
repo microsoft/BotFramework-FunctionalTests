@@ -11,9 +11,9 @@ const SSO_SKILL_DIALOG = 'SsoSkillDialog';
 
 class SsoSkillDialog extends ComponentDialog {
   /**
-     * @param {string} dialogId
-     * @param {Object} configuration
-     */
+   * @param {string} dialogId
+   * @param {Object} configuration
+   */
   constructor (dialogId, configuration) {
     super(dialogId);
 
@@ -31,8 +31,8 @@ class SsoSkillDialog extends ComponentDialog {
   }
 
   /**
-     * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
-     */
+   * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
+   */
   async promptActionStep (stepContext) {
     const messageText = 'What SSO action would you like to perform on the skill?';
     const repromptMessageText = 'That was not a valid choice, please select a valid choice.';
@@ -45,8 +45,8 @@ class SsoSkillDialog extends ComponentDialog {
   }
 
   /**
-     * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
-     */
+   * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
+   */
   async getPromptChoices (stepContext) {
     const choices = [];
     const token = await stepContext.context.adapter.getUserToken(stepContext.context, this.connectionName);
@@ -64,8 +64,8 @@ class SsoSkillDialog extends ComponentDialog {
   }
 
   /**
-     * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
-     */
+   * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
+   */
   async handleActionStep (stepContext) {
     const action = stepContext.result.value.toLowerCase();
 
@@ -100,8 +100,8 @@ class SsoSkillDialog extends ComponentDialog {
   }
 
   /**
-     * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
-     */
+   * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
+   */
   async promptFinalStep (stepContext) {
     // Restart the dialog (we will exit when the user says end).
     return stepContext.replaceDialog(this.initialDialogId);
