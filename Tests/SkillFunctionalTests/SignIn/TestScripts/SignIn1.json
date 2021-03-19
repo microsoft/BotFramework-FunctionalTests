@@ -57,7 +57,7 @@
     {
       "type": "message",
       "role": "bot",
-      "text": "What type of skill would you like to use?",
+      "text": "What group of skills would you like to use?",
       "assertions": [
         "type == 'message'",
         "from.role == 'bot'",
@@ -66,14 +66,8 @@
         "speak == 'What group of skills would you like to use?'",
         "inputHint == 'expectingInput'",
         "suggestedActions.actions[0].type == 'imBack'",
-        "suggestedActions.actions[0].title == 'Echo'",
-        "suggestedActions.actions[0].value == 'Echo'",
-        "suggestedActions.actions[1].type == 'imBack'",
-        "suggestedActions.actions[1].title == 'Waterfall'",
-        "suggestedActions.actions[1].value == 'Waterfall'",
-        "suggestedActions.actions[2].type == 'imBack'",
-        "suggestedActions.actions[2].title == 'Teams'",
-        "suggestedActions.actions[2].value == 'Teams'"
+        "suggestedActions.actions[0].title == 'Echo' || suggestedActions.actions[0].title == 'Waterfall' || suggestedActions.actions[0].title == 'Teams'",
+        "suggestedActions.actions[0].value == 'Echo' || suggestedActions.actions[0].title == 'Waterfall' || suggestedActions.actions[0].title == 'Teams'"
       ]
     },
     {
@@ -89,7 +83,7 @@
         "type == 'message'",
         "from.role == 'bot'",
         "recipient.role == 'user'",
-        "text == 'What skill would you like to call?\n\n   1. WaterfallSkillBotDotNet\n   2. WaterfallSkillBotJS\n   3. WaterfallSkillBotPython'",
+        "startsWith(text, 'What skill would you like to call?')",
         "speak == 'What skill would you like to call?'",
         "inputHint == 'expectingInput'"
       ]
@@ -97,7 +91,7 @@
     {
       "type": "message",
       "role": "user",
-      "text": "WaterfallSkillBotDotNet"
+      "text": "${TargetSkill}"
     },
     {
       "type": "message",

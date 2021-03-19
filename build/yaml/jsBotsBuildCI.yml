@@ -1,4 +1,8 @@
 steps:
+  - script: yarn --immutable
+    displayName: yarn install
+  - script: yarn lint
+    displayName: yarn lint
   - task: Npm@1
     displayName: npm install SimpleHostBot
     inputs:

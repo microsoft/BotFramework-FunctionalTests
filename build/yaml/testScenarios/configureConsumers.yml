@@ -18,9 +18,9 @@ steps:
 
         # Bots Resource Groups
         $groups = @{
-          DotNet = "$(ResourceGroup)-DotNet"
-          JS     = "$(ResourceGroup)-JS"
-          Python = "$(ResourceGroup)-Python"
+          DotNet = "$(InternalResourceGroupName)-DotNet"
+          JS     = "$(InternalResourceGroupName)-JS"
+          Python = "$(InternalResourceGroupName)-Python"
         }
 
         # Bots Settings
@@ -56,6 +56,12 @@ steps:
               configType    = $types.Env
           }
           @{
+              key           = 'WaterfallHostBotJS'
+              botName       = 'bffnwaterfallhostbotjs'
+              resourceGroup = $groups.JS
+              configType    = $types.Env
+          }
+          @{
               key           = 'SimpleHostBotPython'
               botName       = 'bffnsimplehostbotpython'
               resourceGroup = $groups.Python
@@ -70,6 +76,7 @@ steps:
               botName       = 'bffnechoskillbotdotnet'
               appId         = "$env:BffnEchoSkillBotDotNetAppId"
               resourceGroup = $groups.DotNet
+              group = 'Echo'
           }
           @{
               key           = 'EchoSkillBotDotNet21'
@@ -77,6 +84,7 @@ steps:
               botName       = 'bffnechoskillbotdotnet21'
               appId         = "$env:BffnEchoSkillBotDotNet21AppId"
               resourceGroup = $groups.DotNet
+              group = 'Echo'
           }
           @{
               key           = 'EchoSkillBotDotNetV3'
@@ -84,6 +92,7 @@ steps:
               botName       = 'bffnechoskillbotdotnetv3'
               appId         = "$env:BffnEchoSkillBotDotNetV3AppId"
               resourceGroup = $groups.DotNet
+              group = 'Echo'
           }
           @{
               key           = 'EchoSkillBotComposerDotNet'
@@ -91,6 +100,7 @@ steps:
               botName       = 'bffnechoskillbotcomposerdotnet'
               appId         = "$env:BffnEchoSkillBotComposerDotNetAppId"
               resourceGroup = $groups.DotNet
+              group = 'Echo'
           }
           @{
               key           = 'WaterfallSkillBotDotNet'
@@ -98,6 +108,7 @@ steps:
               botName       = 'bffnwaterfallskillbotdotnet'
               appId         = "$env:BffnWaterfallSkillBotDotNetAppId"
               resourceGroup = $groups.DotNet
+              group = 'Waterfall'
           }
           @{
               key           = 'EchoSkillBotJS'
@@ -105,6 +116,7 @@ steps:
               botName       = 'bffnechoskillbotjs'
               appId         = "$env:BffnEchoSkillBotJSAppId"
               resourceGroup = $groups.JS
+              group = 'Echo'
           }
           @{
               key           = 'EchoSkillBotJSV3'
@@ -112,6 +124,15 @@ steps:
               botName       = 'bffnechoskillbotjsv3'
               appId         = "$env:BffnEchoSkillBotJSV3AppId"
               resourceGroup = $groups.JS
+              group = 'Echo'
+          }
+          @{
+              key           = 'WaterfallSkillBotJS'
+              keyComposer   = 'waterfallSkillBotJS' 
+              botName       = 'bffnwaterfallskillbotjs'
+              appId         = "$env:BffnWaterfallSkillBotJSAppId"
+              resourceGroup = $groups.JS
+              group = 'Waterfall'
           }
           @{
               key           = 'EchoSkillBotPython'
@@ -119,6 +140,7 @@ steps:
               botName       = 'bffnechoskillbotpython'
               appId         = "$env:BffnEchoSkillBotPythonAppId"
               resourceGroup = $groups.Python
+              group = 'Echo'
           }
         )
 
@@ -147,9 +169,11 @@ steps:
               name      = 'Waterfall'; 
               consumers = @(
                 'WaterfallHostBotDotNet'
+                'WaterfallHostBotJS'
               );
               skills    = @(
                 'WaterfallSkillBotDotNet'
+                'WaterfallSkillBotJS'
               );
           }
         )
@@ -159,7 +183,7 @@ steps:
           if(-not [string]::IsNullOrEmpty($skill.appId)){
             continue;
           }
-          $entry = az keyvault secret list --vault-name "$(KeyVault)" --query "[?name == 'Bffn$($skill.key)AppId']" | ConvertFrom-Json;
+          $entry = az keyvault secret list --vault-name "$(InternalKeyVaultName)" --query "[?name == 'Bffn$($skill.key)AppId']" | ConvertFrom-Json;
           $secretVault = az keyvault secret show --id $entry.id | ConvertFrom-Json;
           $skill.appId = $secretVault.value;
         }
@@ -250,10 +274,12 @@ steps:
                       $properties += "BotFrameworkSkills:$($index):Id=$($skillBot.key)";
                       $properties += "BotFrameworkSkills:$($index):AppId=$($skillBot.appId)";
                       $properties += "BotFrameworkSkills:$($index):SkillEndpoint=https://$($skillBot.botName)$($env:ResourceSuffix)-$(DeploymentBuildSuffix).azurewebsites.net/api/messages";
+                      $properties += "BotFrameworkSkills:$($index):Group=$($skillBot.group)"
                     }
                     $types.Env { 
                       $properties += "skill_$($skillBot.key)_appId=$($skillBot.appId)";
                       $properties += "skill_$($skillBot.key)_endpoint=https://$($skillBot.botName)$($env:ResourceSuffix)-$(DeploymentBuildSuffix).azurewebsites.net/api/messages";
+                      $properties += "skill_$($skillBot.key)_group=$($skillBot.group)"
                     }
                     $types.Composer {
                       # NOTE: Composer uses different capitalization for the skill keys.

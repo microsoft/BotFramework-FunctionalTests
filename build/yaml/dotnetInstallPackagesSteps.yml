@@ -79,6 +79,11 @@ steps:
   displayName: 'Set Registry Url'
   name: 'Set_Registry_Url'
 
+- task: UseDotNet@2
+  displayName: 'Use .NET Core sdk 5.0.103'
+  inputs:
+    version: 5.0.103
+
 - task: DotNetCoreCLI@2
   displayName: 'Add custom Bot.Builder.Integration.AspNet.Core version'  
   inputs:

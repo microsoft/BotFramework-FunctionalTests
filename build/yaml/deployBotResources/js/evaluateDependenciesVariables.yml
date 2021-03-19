@@ -6,17 +6,17 @@ parameters:
 steps:
   - powershell: |
       # Get Source
-      $sourceDotNetMyGet = "https://botbuilder.myget.org/F/botbuilder-v4-js-daily/npm/"
-      $sourceDotNetv3MyGet = "https://botbuilder.myget.org/F/botbuilder-v3-js-daily/npm/" 
-      $sourceDotNetNpm = "https://registry.npmjs.com/" 
+      $sourceJSMyGet = "https://botbuilder.myget.org/F/botbuilder-v4-js-daily/npm/"
+      $sourceJSv3MyGet = "https://botbuilder.myget.org/F/botbuilder-v3-js-daily/npm/"
+      $sourceJSNpm = "https://registry.npmjs.com/" 
       switch -regex ("${{ parameters.registry }}") {
         "^($null|MyGet)$" {
           switch ("${{ parameters.botType }}") {
-            "SkillV3" { $source = $sourceDotNetv3MyGet } 
-            default { $source = $sourceDotNetMyGet }
+            "SkillV3" { $source = $sourceJSv3MyGet } 
+            default { $source = $sourceJSMyGet }
           }
         }
-        "Npm" { $source = $sourceDotNetNpm }
+        "Npm" { $source = $sourceJSNpm }
         default { $source = "${{ parameters.registry }}" }
       }
       Write-Host "Source: $source"
@@ -31,7 +31,12 @@ steps:
             [Console]::ResetColor()
             exit 1 # Force exit
           }
-          $versionNumber = npm show botbuilder@latest version | Out-String
+          
+          if ($source -eq $sourceJSMyGet) {
+            $versionNumber = npm show botbuilder@next version | Out-String
+          } else {
+            $versionNumber = npm show botbuilder@latest version | Out-String
+          }
         }
         STABLE { 
           if ("${{ parameters.botType }}" -in "Host", "Skill") {
