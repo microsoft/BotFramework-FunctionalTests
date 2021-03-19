@@ -22,6 +22,7 @@ variables:
   # BffnEchoSkillBotJSV3AppId: (optional) define in Azure
   # BffnEchoSkillBotPythonAppId: (optional) define in Azure
   # BffnWaterfallSkillBotDotNetAppId: (optional) define in Azure
+  # BffnWaterfallSkillBotJSAppId: (optional) define in Azure
   # DeployBotResourcesGuid: (optional) define in Azure
   # ResourceSuffix: (optional) define in Azure
 
@@ -68,6 +69,7 @@ stages:
             - CardActions
             - ProactiveMessages
             - FileUpload
+            - SignIn
 
         - name: SingleTurn
           testCategories:
