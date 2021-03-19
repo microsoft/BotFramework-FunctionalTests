@@ -2,6 +2,9 @@ parameters:
   dependsOn: ''
   resourceGroup: ''
   bots: []
+  output:
+    path: 'build-composer'
+    zip: 'build'
 
 stages:
 - ${{ each bot in parameters.bots }}:
@@ -124,13 +127,37 @@ stages:
                 Microsoft.Bot.Builder.Dialogs
                 Microsoft.Bot.Connector
 
-          # Prepare composer runtime
-          - template: composerPrepare.yml
-            parameters:
-              project: '${{ bot.project }}'
-              output: 
-                path: 'build-composer'
-                zip: 'build'
+          # Prepare DotNet deploy
+          - task: AzureCLI@1
+            displayName: 'Prepare Deploy'
+            inputs:
+              azureSubscription: $(AzureSubscription)
+              scriptLocation: inlineScript
+              inlineScript: 'az bot prepare-deploy --lang Csharp --code-dir ${{ bot.project.directory }}/runtime/azurewebapp --proj-file-path Microsoft.BotFramework.Composer.WebApp.csproj --output json'
+
+          # Build Bot
+          - task: DotNetCoreCLI@2
+            displayName: 'Build'
+            inputs:
+              command: publish
+              publishWebProjects: false
+              projects: '${{ bot.project.directory }}/runtime/azurewebapp/Microsoft.BotFramework.Composer.WebApp.csproj'
+              arguments: '-c release -o ${{ parameters.output.path }}'
+              modifyOutputPath: false
+              zipAfterPublish: false
+
+          # Arrange composer folders & files
+          - powershell: |
+              $composerDialogs = "${{ parameters.output.path }}/ComposerDialogs"
+              Remove-Item $composerDialogs -Recurse -ErrorAction Ignore
+
+              Copy-Item -Path (Get-Item -Path ${{ bot.project.directory }}/* -Exclude ('runtime', 'scripts', '*.ps1', 'readme.md', '*.botproj', '.gitignore')).FullName -Destination $composerDialogs -Recurse -Force -Container
+            displayName: 'Prepare Composer'
+
+          # Zip bot
+          - powershell: |
+              7z.exe a -tzip "${{ parameters.output.path }}/${{ parameters.output.zip }}.zip" "$(System.DefaultWorkingDirectory)/${{ parameters.output.path }}/*" -aoa
+            displayName: 'Zip bot'
 
           # Create App Service and Bot Channel Registration
           - template: ../common/createAppService.yml
@@ -145,7 +172,7 @@ stages:
             parameters:
               botName: '${{ bot.name }}'
               botGroup: '${{ parameters.resourceGroup }}'
-              source: "build-composer/build.zip"
+              source: "${{ parameters.output.path }}/${{ parameters.output.zip }}.zip"
 
           # Create DirectLine Channel Hosts
           - ${{ if eq(bot.type, 'Host') }}:
