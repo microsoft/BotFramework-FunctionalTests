@@ -7,15 +7,17 @@ trigger: none
 pr: none
 
 variables:
-  AppInsights: 'bffnappinsights$($env:ResourceSuffix)'
-  AppServicePlanLinux: 'bffnbotsappservicelinux$($env:ResourceSuffix)'
-  AppServicePlanWindows: 'bffnbotsappservicewin$($env:ResourceSuffix)'
-  CosmosDB: 'bffnbotstatedb$($env:ResourceSuffix)'
-  KeyVault: 'bffnbotkeyvault$($env:ResourceSuffix)'
+  InternalAppInsightsName: 'bffnappinsights$($env:ResourceSuffix)'
+  InternalAppServicePlanLinuxName: 'bffnbotsappservicelinux$($env:ResourceSuffix)'
+  InternalAppServicePlanWindowsName: 'bffnbotsappservicewin$($env:ResourceSuffix)'
+  InternalCosmosDBName: 'bffnbotstatedb$($env:ResourceSuffix)'
+  InternalKeyVaultName: 'bffnbotkeyvault$($env:ResourceSuffix)'
+  InternalBotResourceGroupName: $[coalesce(variables['DeployResourceGroup'], 'bffnbots')]
+  InternalSharedResourceGroupName: $[coalesce(variables['SharedResourceGroup'], 'bffnshared')]
   # AzureSubscription: define in Azure
-  # DeployResourceGroup: define in Azure
-  # SharedResourceGroup: define in Azure
+  # DeployResourceGroup: (optional) define in Azure
   # ResourceSuffix: (optional) define in Azure
+  # SharedResourceGroup: (optional) define in Azure
 
 pool:
   vmImage: 'windows-2019'
@@ -30,7 +32,7 @@ stages:
       steps:
         - template: ../common/deleteResourceGroup.yml
           parameters:
-            name: "$(DeployResourceGroup)-DotNet"
+            name: "$(InternalBotResourceGroupName)-DotNet"
 
 - stage: 'Delete_JS_Resource_Group'
   displayName: "Delete JS's Resource Group"
@@ -41,7 +43,7 @@ stages:
       steps:
         - template: ../common/deleteResourceGroup.yml
           parameters:
-            name: "$(DeployResourceGroup)-JS"
+            name: "$(InternalBotResourceGroupName)-JS"
 
 - stage: 'Delete_App_Service_Plan_Windows'
   displayName: 'Delete App Service Plan (Windows)'
@@ -59,13 +61,13 @@ stages:
             scriptType: ps
             scriptLocation: inlineScript
             inlineScript: |
-              Write-Host "Looking for '$(AppServicePlanWindows)'...";
-              $exists = az appservice plan show --name "$(AppServicePlanWindows)" --resource-group "$(SharedResourceGroup)"
+              Write-Host "Looking for '$(InternalAppServicePlanWindowsName)'...";
+              $exists = az appservice plan show --name "$(InternalAppServicePlanWindowsName)" --resource-group "$(InternalSharedResourceGroupName)"
               if ($exists) {
-                Write-Host "Deleting '$(AppServicePlanWindows)'...";
-                az appservice plan delete --name "$(AppServicePlanWindows)" --resource-group "$(SharedResourceGroup)" --yes
+                Write-Host "Deleting '$(InternalAppServicePlanWindowsName)'...";
+                az appservice plan delete --name "$(InternalAppServicePlanWindowsName)" --resource-group "$(InternalSharedResourceGroupName)" --yes
               } else {
-                Write-Host "No pre-existing '$(AppServicePlanWindows)' resource found.";
+                Write-Host "No pre-existing '$(InternalAppServicePlanWindowsName)' resource found.";
               }
 
 - stage: 'Delete_Python_Resource_Group'
@@ -77,7 +79,7 @@ stages:
       steps:
         - template: ../common/deleteResourceGroup.yml
           parameters:
-            name: "$(DeployResourceGroup)-Python"
+            name: "$(InternalBotResourceGroupName)-Python"
 
 - stage: 'Delete_App_Service_Plan_Linux'
   displayName: 'Delete App Service Plan (Linux)'
@@ -94,13 +96,13 @@ stages:
             scriptType: ps
             scriptLocation: inlineScript
             inlineScript: |
-              Write-Host "Looking for '$(AppServicePlanLinux)'...";
-              $exists = az appservice plan show --name "$(AppServicePlanLinux)" --resource-group "$(SharedResourceGroup)-linux"
+              Write-Host "Looking for '$(InternalAppServicePlanLinuxName)'...";
+              $exists = az appservice plan show --name "$(InternalAppServicePlanLinuxName)" --resource-group "$(InternalSharedResourceGroupName)-linux"
               if ($exists) {
-                Write-Host "Deleting '$(AppServicePlanLinux)'...";
-                az appservice plan delete --name "$(AppServicePlanLinux)" --resource-group "$(SharedResourceGroup)-linux" --yes
+                Write-Host "Deleting '$(InternalAppServicePlanLinuxName)'...";
+                az appservice plan delete --name "$(InternalAppServicePlanLinuxName)" --resource-group "$(InternalSharedResourceGroupName)-linux" --yes
               } else {
-                Write-Host "No pre-existing '$(AppServicePlanLinux)' resource found.";
+                Write-Host "No pre-existing '$(InternalAppServicePlanLinuxName)' resource found.";
               }
 
 - stage: 'Delete_App_Insights'
@@ -119,17 +121,17 @@ stages:
             inlineScript: |
               az config set extension.use_dynamic_install=yes_without_prompt
               az feature register --name AIWorkspacePreview --namespace microsoft.insights
-              Write-Host "Looking for '$(AppInsights)'...";
-              if ((az group exists -n "$(SharedResourceGroup)") -eq 'true') {
-                $exists = az monitor app-insights component show --app "$(AppInsights)" --resource-group "$(SharedResourceGroup)"
+              Write-Host "Looking for '$(InternalAppInsightsName)'...";
+              if ((az group exists -n "$(InternalSharedResourceGroupName)") -eq 'true') {
+                $exists = az monitor app-insights component show --app "$(InternalAppInsightsName)" --resource-group "$(InternalSharedResourceGroupName)"
                 if ($exists) {
-                  Write-Host "Deleting '$(AppInsights)'...";
-                  az monitor app-insights component delete --app "$(AppInsights)" --resource-group "$(SharedResourceGroup)"
+                  Write-Host "Deleting '$(InternalAppInsightsName)'...";
+                  az monitor app-insights component delete --app "$(InternalAppInsightsName)" --resource-group "$(InternalSharedResourceGroupName)"
                 } else {
-                  Write-Host "No pre-existing '$(AppInsights)' resource found.";
+                  Write-Host "No pre-existing '$(InternalAppInsightsName)' resource found.";
                 }
               } else {
-                Write-Host "No pre-existing '$(SharedResourceGroup)' group found.";
+                Write-Host "No pre-existing '$(InternalSharedResourceGroupName)' group found.";
               }
 
 - stage: 'Delete_CosmosDB'
@@ -146,13 +148,13 @@ stages:
             scriptType: ps
             scriptLocation: inlineScript
             inlineScript: |
-              Write-Host "Looking for '$(CosmosDB)'...";
-              $exists = az cosmosdb check-name-exists --name "$(CosmosDB)"
+              Write-Host "Looking for '$(InternalCosmosDBName)'...";
+              $exists = az cosmosdb check-name-exists --name "$(InternalCosmosDBName)"
               if ($exists -eq $true) {
-                Write-Host "Deleting '$(CosmosDB)'...";
-                az cosmosdb delete --name "$(CosmosDB)" --resource-group "$(SharedResourceGroup)" --yes
+                Write-Host "Deleting '$(InternalCosmosDBName)'...";
+                az cosmosdb delete --name "$(InternalCosmosDBName)" --resource-group "$(InternalSharedResourceGroupName)" --yes
               } else {
-                Write-Host "No pre-existing '$(CosmosDB)' resource found.";
+                Write-Host "No pre-existing '$(InternalCosmosDBName)' resource found.";
               }
 
 - stage: 'Delete_App_Registrations'
@@ -164,8 +166,8 @@ stages:
       steps:
         - template: deleteAppRegistrations.yml
           parameters:
-            keyVault: "$(KeyVault)"
-            resourceGroup: "$(SharedResourceGroup)"
+            keyVault: "$(InternalKeyVaultName)"
+            resourceGroup: "$(InternalSharedResourceGroupName)"
 
 - stage: 'Delete_Key_Vault'
   displayName: 'Delete Key Vault'
@@ -182,14 +184,14 @@ stages:
             scriptType: ps
             scriptLocation: inlineScript
             inlineScript: |
-              Write-Host "Looking for '$(KeyVault)'...";
-              $exists = az keyvault list --resource-group "$(SharedResourceGroup)" --query "[?name == '$(KeyVault)']" | ConvertFrom-Json
+              Write-Host "Looking for '$(InternalKeyVaultName)'...";
+              $exists = az keyvault list --resource-group "$(InternalSharedResourceGroupName)" --query "[?name == '$(InternalKeyVaultName)']" | ConvertFrom-Json
               if ($exists) {
-                Write-Host "Deleting '$(KeyVault)'...";
-                az keyvault delete --name "$(KeyVault)" --resource-group "$(SharedResourceGroup)"
-                az keyvault purge --name "$(KeyVault)"
+                Write-Host "Deleting '$(InternalKeyVaultName)'...";
+                az keyvault delete --name "$(InternalKeyVaultName)" --resource-group "$(InternalSharedResourceGroupName)"
+                az keyvault purge --name "$(InternalKeyVaultName)"
               } else {
-                Write-Host "No pre-existing '$(KeyVault)' resource found.";
+                Write-Host "No pre-existing '$(InternalKeyVaultName)' resource found.";
               }
 
 - stage: 'Delete_Resource_Group_Windows'
@@ -208,7 +210,7 @@ stages:
       steps:
         - template: ../common/deleteResourceGroup.yml
           parameters:
-            name: "$(SharedResourceGroup)"
+            name: "$(InternalSharedResourceGroupName)"
 
 - stage: 'Delete_Resource_Group_Linux'
   displayName: 'Delete Resource Group (Linux)'
@@ -221,4 +223,4 @@ stages:
       steps:
         - template: ../common/deleteResourceGroup.yml
           parameters:
-            name: "$(SharedResourceGroup)-linux"
+            name: "$(InternalSharedResourceGroupName)-linux"

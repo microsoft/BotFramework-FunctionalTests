@@ -29,18 +29,18 @@ const UPDATE_DIALOG = 'Update';
  */
 class ActivityRouterDialog extends ComponentDialog {
   /**
-     * @param {string} serverUrl
-     * @param {import('botbuilder').ConversationState} conversationState
-     * @param {import('../skillConversationIdFactory').SkillConversationIdFactory} conversationIdFactory
-     * @param {import('botbuilder').SkillHttpClient} skillClient
-     * @param {Object<string, import('./proactive/continuationParameters').ContinuationParameters>} continuationParametersStore
-     */
+   * @param {string} serverUrl
+   * @param {import('botbuilder').ConversationState} conversationState
+   * @param {import('../skillConversationIdFactory').SkillConversationIdFactory} conversationIdFactory
+   * @param {import('botbuilder').SkillHttpClient} skillClient
+   * @param {Object<string, import('./proactive/continuationParameters').ContinuationParameters>} continuationParametersStore
+   */
   constructor (serverUrl, conversationState, conversationIdFactory, skillClient, continuationParametersStore) {
     super(MAIN_DIALOG);
 
     this.addDialog(new CardDialog(CARDS_DIALOG, serverUrl))
       .addDialog(new WaitForProactiveDialog(PROACTIVE_DIALOG, serverUrl, continuationParametersStore))
-      .addDialog(new MessageWithAttachmentDialog(ATTACHMENT_DIALOG))
+      .addDialog(new MessageWithAttachmentDialog(ATTACHMENT_DIALOG, serverUrl))
       .addDialog(new AuthDialog(AUTH_DIALOG, process.env))
       .addDialog(new SsoSkillDialog(SSO_DIALOG, process.env))
       .addDialog(new FileUploadDialog(FILE_UPLOAD_DIALOG))
@@ -55,12 +55,12 @@ class ActivityRouterDialog extends ComponentDialog {
   }
 
   /**
-     * @param {string} dialogId
-     * @param {import('botbuilder').ConversationState} conversationState
-     * @param {import('../skillConversationIdFactory').SkillConversationIdFactory} conversationIdFactory
-     * @param {import('botbuilder').SkillHttpClient} skillClient
-     * @param {Object} configuration
-     */
+   * @param {string} dialogId
+   * @param {import('botbuilder').ConversationState} conversationState
+   * @param {import('../skillConversationIdFactory').SkillConversationIdFactory} conversationIdFactory
+   * @param {import('botbuilder').SkillHttpClient} skillClient
+   * @param {Object} configuration
+   */
   createEchoSkillDialog (dialogId, conversationState, conversationIdFactory, skillClient, configuration) {
     const skillHostEndpoint = configuration.SkillHostEndpoint;
     if (!skillHostEndpoint) {
@@ -88,8 +88,8 @@ class ActivityRouterDialog extends ComponentDialog {
   }
 
   /**
-     * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
-     */
+   * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
+   */
   async processActivity (stepContext) {
     // A skill can send trace activities, if needed.
     await stepContext.context.sendActivity({
@@ -113,9 +113,9 @@ class ActivityRouterDialog extends ComponentDialog {
   }
 
   /**
-     * This method performs different tasks based on event name.
-     * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
-     */
+   * This method performs different tasks based on event name.
+   * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
+   */
   async onEventActivity (stepContext) {
     const activity = stepContext.context.activity;
     await stepContext.context.sendActivity({

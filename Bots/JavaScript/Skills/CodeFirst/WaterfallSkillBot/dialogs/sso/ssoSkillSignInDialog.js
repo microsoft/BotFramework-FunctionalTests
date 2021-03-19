@@ -8,9 +8,9 @@ const WATERFALL_DIALOG = 'WaterfallDialog';
 
 class SsoSkillSignInDialog extends ComponentDialog {
   /**
-     * @param {string} dialogId
-     * @param {string} connectionName
-     */
+   * @param {string} dialogId
+   * @param {string} connectionName
+   */
   constructor (dialogId, connectionName) {
     super(dialogId);
 
@@ -29,15 +29,15 @@ class SsoSkillSignInDialog extends ComponentDialog {
   }
 
   /**
-     * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
-     */
+   * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
+   */
   async signInStep (stepContext) {
     return stepContext.beginDialog(OAUTH_PROMPT);
   }
 
   /**
-     * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
-     */
+   * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
+   */
   async displayToken (stepContext) {
     const { result } = stepContext;
     if (!result || !result.token) {

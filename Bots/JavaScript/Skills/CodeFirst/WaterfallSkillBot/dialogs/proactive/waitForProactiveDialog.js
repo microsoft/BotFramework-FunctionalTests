@@ -6,10 +6,10 @@ const { Dialog, DialogTurnStatus } = require('botbuilder-dialogs');
 
 class WaitForProactiveDialog extends Dialog {
   /**
-     * @param {string} dialogId
-     * @param {string} serverUrl
-     * @param {Object<string, import('./continuationParameters').ContinuationParameters>} continuationParametersStore
-     */
+   * @param {string} dialogId
+   * @param {string} serverUrl
+   * @param {Object<string, import('./continuationParameters').ContinuationParameters>} continuationParametersStore
+   */
   constructor (dialogId, serverUrl, continuationParametersStore) {
     super(dialogId);
     this.serverUrl = serverUrl;
@@ -17,17 +17,17 @@ class WaitForProactiveDialog extends Dialog {
   }
 
   /**
-     * Message to send to users when the bot receives a Conversation Update event
-     * @param {string} url
-     * @param {string} id
-     */
+   * Message to send to users when the bot receives a Conversation Update event
+   * @param {string} url
+   * @param {string} id
+   */
   notifyMessage (url, id) {
     return `Navigate to ${url}/api/notify?user=${id} to proactively message the user.`;
   }
 
   /**
-     * @param {import('botbuilder-dialogs').DialogContext} dc
-     */
+   * @param {import('botbuilder-dialogs').DialogContext} dc
+   */
   async beginDialog (dc) {
     // Store a reference to the conversation.
     this.addOrUpdateContinuationParameters(dc.context);
@@ -38,8 +38,8 @@ class WaitForProactiveDialog extends Dialog {
   }
 
   /**
-     * @param {import('botbuilder-dialogs').DialogContext} dc
-     */
+   * @param {import('botbuilder-dialogs').DialogContext} dc
+   */
   async continueDialog (dc) {
     const { activity } = dc.context;
     if (activity.type === ActivityTypes.Event && activity.name === ActivityEventNames.ContinueConversation) {
@@ -64,9 +64,9 @@ class WaitForProactiveDialog extends Dialog {
   }
 
   /**
-     * Helper to extract and store parameters we need to continue a conversation from a proactive message.
-     * @param {import('botbuilder').TurnContext} turnContext
-     */
+   * Helper to extract and store parameters we need to continue a conversation from a proactive message.
+   * @param {import('botbuilder').TurnContext} turnContext
+   */
   addOrUpdateContinuationParameters (turnContext) {
     this.continuationParametersStore[turnContext.activity.from.id] = {
       claimsIdentity: turnContext.turnState.get(turnContext.adapter.BotIdentityKey),
