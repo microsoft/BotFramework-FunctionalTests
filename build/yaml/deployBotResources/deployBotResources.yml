@@ -218,16 +218,16 @@ stages:
         - name: bffnwaterfallhostbotjs
           type: 'Host'
           displayName: 'JS Waterfall Host Bot'
-          appId: $env:BffnWaterfallHostBotJSAppId
-          appSecret: $env:BffnWaterfallHostBotJSAppSecret
+          appId: $(BffnWaterfallHostBotJSAppId)
+          appSecret: $(BffnWaterfallHostBotJSAppSecret)
           project:
             directory: 'Bots/JavaScript/Consumers/CodeFirst/WaterfallHostBot'
 
         - name: bffnwaterfallskillbotjs
           type: 'Skill'
           displayName: 'JS Waterfall Skill Bot'
-          appId: $env:BffnWaterfallSkillBotJSAppId
-          appSecret: $env:BffnWaterfallSkillBotJSAppSecret
+          appId: $(BffnWaterfallSkillBotJSAppId)
+          appSecret: $(BffnWaterfallSkillBotJSAppSecret)
           project: 
             directory: 'Bots/JavaScript/Skills/CodeFirst/WaterfallSkillBot'
 
