@@ -31,7 +31,12 @@ steps:
             [Console]::ResetColor()
             exit 1 # Force exit
           }
-          $versionNumber = npm show botbuilder@latest version | Out-String
+          
+          if ($source -eq $sourceJSMyGet) {
+            $versionNumber = npm show botbuilder@next version | Out-String
+          } else {
+            $versionNumber = npm show botbuilder@latest version | Out-String
+          }
         }
         STABLE { 
           if ("${{ parameters.botType }}" -in "Host", "Skill") {
