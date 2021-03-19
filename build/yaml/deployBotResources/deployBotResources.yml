@@ -55,6 +55,7 @@ variables:
   # BffnWaterfallSkillBotJSAppId: (optional) define in Azure
   # BffnWaterfallSkillBotJSAppSecret: (optional) define in Azure
   # BotPricingTier: (optional) define in Azure
+  # ConnectionName: (optional) define in Azure
   # DependenciesRegistryHosts: (optional) define in Azure
   # DependenciesRegistrySkills: (optional) define in Azure
   # DependenciesRegistrySkillsV3: (optional) define in Azure
