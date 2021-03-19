@@ -492,6 +492,23 @@ class CardSampleHelper {
   static createVideoCard (url) {
     return CardFactory.videoCard('Video Card', [{ url }]);
   }
+
+  static createUpdateAdaptiveCard () {
+    const { title, text, buttons } = {
+      title: 'Update card',
+      text: 'Update Card Action',
+      buttons: [
+        {
+          type: ActionTypes.MessageBack,
+          title: 'Update card title',
+          text: 'Update card text',
+          value: { count: 0 }
+        }
+      ]
+    };
+
+    return CardFactory.heroCard(title, text, null, buttons);
+  }
 }
 
 module.exports.CardSampleHelper = CardSampleHelper;

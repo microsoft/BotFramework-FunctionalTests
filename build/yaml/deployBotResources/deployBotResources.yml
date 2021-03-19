@@ -10,18 +10,22 @@ pool:
   vmImage: 'windows-2019'
 
 variables:
-  AppInsights: 'bffnappinsights$($env:ResourceSuffix)'
   BuildConfiguration: 'Debug'
   BuildPlatform: 'AnyCPU'
-  KeyVault: 'bffnbotkeyvault$($env:ResourceSuffix)'
-  # AppServicePlanGroup: define in Azure
-  # AppServicePlanGroupLinux: define in Azure
-  # AppServicePlanName: define in Azure
-  # AppServicePlanNameLinux: define in Azure
+  InternalAppInsightsName: 'bffnappinsights$($env:ResourceSuffix)'
+  InternalAppServicePlanLinuxName: $[coalesce(variables['AppServicePlanNameLinux'], 'bffnbotsappservicelinux$($env:ResourceSuffix)')]
+  InternalAppServicePlanLinuxResourceGroupName: $[coalesce(variables['AppServicePlanGroupLinux'], 'bffnshared-linux')]
+  InternalAppServicePlanWindowsName: $[coalesce(variables['AppServicePlanName'], 'bffnbotsappservicewin$($env:ResourceSuffix)')]
+  InternalAppServicePlanWindowsResourceGroup: $[coalesce(variables['AppServicePlanGroup'], 'bffnshared')]
+  InternalKeyVaultName: 'bffnbotkeyvault$($env:ResourceSuffix)'
+  InternalResourceGroupName: $[coalesce(variables['ResourceGroup'], 'bffnbots')]
   # AzureDeploymentPassword: define in Azure
   # AzureDeploymentUser: define in Azure
   # AzureSubscription: define in Azure
-  # ResourceGroup: define in Azure
+  # AppServicePlanGroup: (optional) define in Azure
+  # AppServicePlanGroupLinux: (optional) define in Azure
+  # AppServicePlanName: (optional) define in Azure
+  # AppServicePlanNameLinux: (optional) define in Azure
   # BffnEchoSkillBotComposerDotNetAppId: (optional) define in Azure
   # BffnEchoSkillBotComposerDotNetAppSecret: (optional) define in Azure
   # BffnEchoSkillBotDotNet21AppId: (optional) define in Azure
@@ -62,6 +66,7 @@ variables:
   # DependenciesVersionHosts: (optional) define in Azure
   # DependenciesVersionSkills: (optional) define in Azure
   # DependenciesVersionSkillsV3: (optional) define in Azure
+  # ResourceGroup: (optional) define in Azure
   # ResourceSuffix: (optional) define in Azure
 
 stages:
@@ -70,22 +75,22 @@ stages:
     parameters:
       resourceGroups: 
         - id: 'Prepare_DotNetGroup'
-          name: "$(ResourceGroup)-DotNet"
+          name: "$(InternalResourceGroupName)-DotNet"
           displayName: "Prepare DotNet's Resource Group"
 
         - id: 'Prepare_JSGroup'
-          name: "$(ResourceGroup)-JS"
+          name: "$(InternalResourceGroupName)-JS"
           displayName: "Prepare JS's Resource Group"
 
         - id: 'Prepare_PythonGroup'
-          name: "$(ResourceGroup)-Python"
+          name: "$(InternalResourceGroupName)-Python"
           displayName: "Prepare Python's Resource Group"
 
 # DotNet
   - template: dotnet/deploy.yml
     parameters:
       dependsOn: "Prepare_DotNetGroup"
-      resourceGroup: "$(ResourceGroup)-DotNet"
+      resourceGroup: "$(InternalResourceGroupName)-DotNet"
       bots:
         - name: bffnsimplehostbotdotnet
           type: 'Host'
@@ -160,7 +165,7 @@ stages:
   - template: dotnet/deployComposer.yml
     parameters:
       dependsOn: "Prepare_DotNetGroup"
-      resourceGroup: "$(ResourceGroup)-DotNet"
+      resourceGroup: "$(InternalResourceGroupName)-DotNet"
       bots:
         - name: bffnsimplehostbotcomposerdotnet
           type: 'Host'
@@ -184,7 +189,7 @@ stages:
   - template: js/deploy.yml
     parameters:
       dependsOn: "Prepare_JSGroup"
-      resourceGroup: "$(ResourceGroup)-JS"
+      resourceGroup: "$(InternalResourceGroupName)-JS"
       bots:
         - name: bffnsimplehostbotjs
           type: 'Host'
@@ -213,16 +218,16 @@ stages:
         - name: bffnwaterfallhostbotjs
           type: 'Host'
           displayName: 'JS Waterfall Host Bot'
-          appId: $env:BffnWaterfallHostBotJSAppId
-          appSecret: $env:BffnWaterfallHostBotJSAppSecret
+          appId: $(BffnWaterfallHostBotJSAppId)
+          appSecret: $(BffnWaterfallHostBotJSAppSecret)
           project:
             directory: 'Bots/JavaScript/Consumers/CodeFirst/WaterfallHostBot'
 
         - name: bffnwaterfallskillbotjs
           type: 'Skill'
           displayName: 'JS Waterfall Skill Bot'
-          appId: $env:BffnWaterfallSkillBotJSAppId
-          appSecret: $env:BffnWaterfallSkillBotJSAppSecret
+          appId: $(BffnWaterfallSkillBotJSAppId)
+          appSecret: $(BffnWaterfallSkillBotJSAppSecret)
           project: 
             directory: 'Bots/JavaScript/Skills/CodeFirst/WaterfallSkillBot'
 
@@ -230,7 +235,7 @@ stages:
   - template: python/deploy.yml
     parameters:
       dependsOn: "Prepare_PythonGroup"
-      resourceGroup: "$(ResourceGroup)-Python"
+      resourceGroup: "$(InternalResourceGroupName)-Python"
       bots:
         - name: bffnsimplehostbotpython
           type: 'Host'
