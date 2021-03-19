@@ -25,6 +25,9 @@ class SkillsConfiguration {
         case 'endpoint':
           propName = 'skillEndpoint';
           break;
+        case 'group':
+          propName = 'group';
+          break;
         default:
           throw new Error(`[SkillsConfiguration]: Invalid environment variable declaration ${val}`);
       }

@@ -39,11 +39,11 @@ namespace SkillFunctionalTests.ProactiveMessages
             var hostBots = new List<HostBot>
             {
                 HostBot.WaterfallHostBotDotNet,
+                HostBot.WaterfallHostBotJS,
 
-                // TODO: Enable these when the ports to JS, Python and composer are ready
-                //HostBotNames.WaterfallHostBotJS,
-                //HostBotNames.WaterfallHostBotPython,
-                //HostBotNames.ComposerHostBotDotNet
+                // TODO: Enable these when the ports to Python and composer are ready
+                //HostBot.WaterfallHostBotPython,
+                //HostBot.ComposerHostBotDotNet
             };
 
             var targetSkills = new List<string>

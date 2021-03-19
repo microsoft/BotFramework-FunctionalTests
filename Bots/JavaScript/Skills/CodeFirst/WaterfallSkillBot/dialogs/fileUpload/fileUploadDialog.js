@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 const { MessageFactory, InputHints } = require('botbuilder');
-const { ComponentDialog, AttachmentPrompt, ChoicePrompt, WaterfallDialog, ListStyle, ChoiceFactory, DialogTurnStatus } = require('botbuilder-dialogs');
+const { ComponentDialog, AttachmentPrompt, WaterfallDialog, DialogTurnStatus, ConfirmPrompt } = require('botbuilder-dialogs');
 const fs = require('fs');
 const fetch = require('node-fetch');
 const os = require('os');
@@ -13,18 +13,18 @@ const util = require('util');
 const streamPipeline = util.promisify(stream.pipeline);
 
 const ATTACHMENT_PROMPT = 'AttachmentPrompt';
-const CHOICE_PROMPT = 'ChoicePrompt';
+const CONFIRM_PROMPT = 'ConfirmPrompt';
 const WATERFALL_DIALOG = 'WaterfallDialog';
 
 class FileUploadDialog extends ComponentDialog {
   /**
-     * @param {string} dialogId
-     */
+   * @param {string} dialogId
+   */
   constructor (dialogId) {
     super(dialogId);
 
     this.addDialog(new AttachmentPrompt(ATTACHMENT_PROMPT))
-      .addDialog(new ChoicePrompt(CHOICE_PROMPT))
+      .addDialog(new ConfirmPrompt(CONFIRM_PROMPT))
       .addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
         this.promptUploadStep.bind(this),
         this.handleAttachmentStep.bind(this),
@@ -35,8 +35,8 @@ class FileUploadDialog extends ComponentDialog {
   }
 
   /**
-     * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
-     */
+   * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
+   */
   async promptUploadStep (stepContext) {
     return stepContext.prompt(ATTACHMENT_PROMPT, {
       prompt: MessageFactory.text('Please upload a file to continue.'),
@@ -45,43 +45,42 @@ class FileUploadDialog extends ComponentDialog {
   }
 
   /**
-     * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
-     */
+   * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
+   */
   async handleAttachmentStep (stepContext) {
-    let filetext = '';
+    let fileText = '';
 
     for (const file of stepContext.context.activity.attachments) {
       const localFileName = path.resolve(os.tmpdir(), file.name);
       const tempFile = fs.createWriteStream(localFileName);
       fetch(file.contentUrl).then(response => streamPipeline(response.body, tempFile));
 
-      filetext += `Attachment "${file.name}" has been received and saved to "${localFileName}"\r\n`;
+      fileText += `Attachment "${file.name}" has been received and saved to "${localFileName}"\r\n`;
     }
 
-    await stepContext.context.sendActivity(MessageFactory.text(filetext));
+    await stepContext.context.sendActivity(MessageFactory.text(fileText));
 
+    // Ask to upload another file or end.
     const messageText = 'Do you want to upload another file?';
-    const repromptMessageText = 'You must select "Yes" or "No".';
+    const repromptMessageText = "That's an invalid choice.";
 
-    return stepContext.prompt(CHOICE_PROMPT, {
+    return stepContext.prompt(CONFIRM_PROMPT, {
       prompt: MessageFactory.text(messageText, messageText, InputHints.ExpectingInput),
-      retryPrompt: MessageFactory.text(repromptMessageText, repromptMessageText, InputHints.ExpectingInput),
-      choices: ChoiceFactory.toChoices(['Yes', 'No']),
-      style: ListStyle.list
+      retryPrompt: MessageFactory.text(repromptMessageText, repromptMessageText, InputHints.ExpectingInput)
     });
   }
 
   /**
-     * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
-     */
+   * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
+   */
   async finalStep (stepContext) {
-    const choice = stepContext.result.value.toLowerCase();
+    const tryAnother = stepContext.result;
 
-    if (choice === 'yes') {
+    if (tryAnother) {
       return stepContext.replaceDialog(this.initialDialogId);
-    } else {
-      return { status: DialogTurnStatus.complete };
     }
+
+    return { status: DialogTurnStatus.complete };
   }
 }
 
