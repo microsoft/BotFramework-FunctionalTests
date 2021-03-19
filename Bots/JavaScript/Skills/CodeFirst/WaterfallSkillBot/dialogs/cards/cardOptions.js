@@ -3,63 +3,67 @@
 
 module.exports.CardOptions = {
   /**
-     * Adaptive card - Bot action
-     */
+   * Adaptive card - Bot action
+   */
   AdaptiveCardBotAction: 'AdaptiveCardBotAction',
   /**
-     * Adaptive card - Task module
-     */
-  AdaptiveCardTaskModule: 'AdaptiveCardTaskModule',
+   * Adaptive card - Task module
+   */
+  AdaptiveCardTeamsTaskModule: 'AdaptiveCardTeamsTaskModule',
   /**
-     * Adaptive card - Submit action
-     */
+   * Adaptive card - Submit action
+   */
   AdaptiveCardSubmitAction: 'AdaptiveCardSubmitAction',
   /**
-     * Hero cards
-     */
+   * Hero cards
+   */
   Hero: 'Hero',
   /**
-     * Thumbnail cards
-     */
+   * Thumbnail cards
+   */
   Thumbnail: 'Thumbnail',
   /**
-     * Receipt cards
-     */
+   * Receipt cards
+   */
   Receipt: 'Receipt',
   /**
-     * Signin cards
-     */
+   * Signin cards
+   */
   Signin: 'Signin',
   /**
-     * Carousel cards
-     */
+   * Carousel cards
+   */
   Carousel: 'Carousel',
   /**
-     * List cards
-     */
+   * List cards
+   */
   List: 'List',
   /**
-     * O365 cards
-     */
+   * O365 cards
+   */
   O365: 'O365',
   /**
-     * File cards
-     */
+   * File cards
+   */
   TeamsFileConsent: 'TeamsFileConsent',
   /**
-     * Animation cards
-     */
+   * Animation cards
+   */
   Animation: 'Animation',
   /**
-     * Audio cards
-     */
+   * Audio cards
+   */
   Audio: 'Audio',
   /**
-     * Video cards
-     */
+   * Video cards
+   */
   Video: 'Video',
   /**
-     * Ends the card selection dialog
-     */
+   * Adaptive update cards
+   */
+  AdaptiveUpdate: 'AdaptiveUpdate',
+  /**
+   * Ends the card selection dialog
+   */
   End: 'End'
 };
