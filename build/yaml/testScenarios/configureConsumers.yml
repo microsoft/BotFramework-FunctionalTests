@@ -154,6 +154,7 @@ steps:
               botName       = 'bffnwaterfallskillbotpython'
               appId         = "$env:BffnWaterfallSkillBotPythonAppId"
               resourceGroup = $groups.Python
+              group = "Waterfall"
           }
         )
 
