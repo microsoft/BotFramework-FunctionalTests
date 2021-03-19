@@ -13,10 +13,6 @@
             "metadata": {
                 "description": "The name for the Core (SQL) database"
             }
-        },
-        "isZoneRedundant": {
-            "type": "string",
-            "defaultValue": "false"
         }
     },
     "variables": {
@@ -72,7 +68,7 @@
                     "id": "[parameters('databaseName')]"
                 },
                 "options": {
-                    "throughput": 400
+                    "throughput": "400"
                 }
             }
         }
