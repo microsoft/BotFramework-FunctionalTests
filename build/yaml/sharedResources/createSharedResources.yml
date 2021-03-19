@@ -10,15 +10,16 @@ pool:
   vmImage: 'windows-2019'
 
 variables:
-  AppInsights: 'bffnappinsights$($env:ResourceSuffix)'
-  AppServicePlanLinux: 'bffnbotsappservicelinux$($env:ResourceSuffix)'
-  AppServicePlanWindows: 'bffnbotsappservicewin$($env:ResourceSuffix)'
-  CosmosDB: 'bffnbotstatedb$($env:ResourceSuffix)'
-  KeyVault: 'bffnbotkeyvault$($env:ResourceSuffix)'
+  InternalAppInsightsName: 'bffnappinsights$($env:ResourceSuffix)'
+  InternalAppServicePlanLinuxName: 'bffnbotsappservicelinux$($env:ResourceSuffix)'
+  InternalAppServicePlanWindowsName: 'bffnbotsappservicewin$($env:ResourceSuffix)'
+  InternalCosmosDBName: 'bffnbotstatedb$($env:ResourceSuffix)'
+  InternalKeyVaultName: 'bffnbotkeyvault$($env:ResourceSuffix)'
+  InternalResourceGroupName: $[coalesce(variables['ResourceGroupName'], 'bffnshared')]
   # AzureSubscription: define in Azure
   # KeyVaultObjectId: define in Azure
-  # ResourceGroupName: define in Azure
   # AppServicePlanPricingTier: (optional) define in Azure
+  # ResourceGroupName: (optional) define in Azure
   # ResourceSuffix: (optional) define in Azure
 
 stages:
@@ -30,12 +31,12 @@ stages:
       steps:
       - checkout: none
       - task: AzureCLI@2
-        displayName: 'Create $(ResourceGroupName)'
+        displayName: 'Create $(InternalResourceGroupName)'
         inputs:
           azureSubscription: $(AzureSubscription)
           scriptType: ps
           scriptLocation: inlineScript
-          inlineScript: 'az group create --name "$(ResourceGroupName)" --location "westus"'
+          inlineScript: 'az group create --name "$(InternalResourceGroupName)" --location "westus"'
 
 - stage: Create_Resource_Group_Linux
   displayName: Create Resource Group (Linux)
@@ -46,12 +47,12 @@ stages:
       steps:
       - checkout: none
       - task: AzureCLI@2
-        displayName: 'Create $(ResourceGroupName)-linux'
+        displayName: 'Create $(InternalResourceGroupName)-linux'
         inputs:
           azureSubscription: $(AzureSubscription)
           scriptType: ps
           scriptLocation: inlineScript
-          inlineScript: 'az group create --name "$(ResourceGroupName)-linux" --location "westus"'
+          inlineScript: 'az group create --name "$(InternalResourceGroupName)-linux" --location "westus"'
 
 - stage: Create_CosmosDB
   displayName: Create CosmosDB
@@ -66,7 +67,7 @@ stages:
           azureSubscription: $(AzureSubscription)
           scriptType: ps
           scriptLocation: inlineScript
-          inlineScript: 'az deployment group create --name "$(CosmosDB)" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-cosmosdb-resources.json --parameters accountName="$(CosmosDB)" databaseName="$(CosmosDB)"'
+          inlineScript: 'az deployment group create --name "$(InternalCosmosDBName)" --resource-group "$(InternalResourceGroupName)" --template-file build/templates/template-cosmosdb-resources.json --parameters accountName="$(InternalCosmosDBName)" databaseName="$(InternalCosmosDBName)"'
 
 - stage: Create_Key_Vault
   displayName: Create Key Vault
@@ -81,7 +82,7 @@ stages:
           azureSubscription: $(AzureSubscription)
           scriptType: ps
           scriptLocation: inlineScript
-          inlineScript: 'az deployment group create --name "$(KeyVault)" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-key-vault-resources.json --parameters keyVaultName="$(KeyVault)" objectId="$(KeyVaultObjectId)"'
+          inlineScript: 'az deployment group create --name "$(InternalKeyVaultName)" --resource-group "$(InternalResourceGroupName)" --template-file build/templates/template-key-vault-resources.json --parameters keyVaultName="$(InternalKeyVaultName)" objectId="$(KeyVaultObjectId)"'
 
 - stage: Create_App_Registrations
   displayName: Create App Registrations
@@ -93,7 +94,7 @@ stages:
       - checkout: none
       - template: createAppRegistrations.yml
         parameters: 
-          keyVault: '$(KeyVault)'
+          keyVault: '$(InternalKeyVaultName)'
 
 - stage: Create_App_Service_Plan_Windows
   displayName: Create App Service Plan (Windows)
@@ -111,7 +112,7 @@ stages:
           inlineScript: |
             $appServicePlanPricingTier = if($env:AppServicePlanPricingTier) { "newAppServicePlanSku=$env:AppServicePlanPricingTier" };
             
-            az deployment group create --name "$(AppServicePlanWindows)" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-service-plan-windows-resources.json --parameters $appServicePlanPricingTier newAppServicePlanName="$(AppServicePlanWindows)"
+            az deployment group create --name "$(InternalAppServicePlanWindowsName)" --resource-group "$(InternalResourceGroupName)" --template-file build/templates/template-service-plan-windows-resources.json --parameters $appServicePlanPricingTier newAppServicePlanName="$(InternalAppServicePlanWindowsName)"
 
 - stage: Create_App_Service_Plan_Linux
   displayName: Create App Service Plan (Linux)
@@ -129,7 +130,7 @@ stages:
           inlineScript: |
             $appServicePlanPricingTier = if($env:AppServicePlanPricingTier) { "newAppServicePlanSku=$env:AppServicePlanPricingTier" };
 
-            az deployment group create --name "$(AppServicePlanLinux)" --resource-group "$(ResourceGroupName)-linux" --template-file build/templates/template-service-plan-linux-resources.json --parameters $appServicePlanPricingTier newAppServicePlanName="$(AppServicePlanLinux)"
+            az deployment group create --name "$(InternalAppServicePlanLinuxName)" --resource-group "$(InternalResourceGroupName)-linux" --template-file build/templates/template-service-plan-linux-resources.json --parameters $appServicePlanPricingTier newAppServicePlanName="$(InternalAppServicePlanLinuxName)"
 
 - stage: Create_App_Insights
   displayName: Create App Insights
@@ -144,4 +145,4 @@ stages:
           azureSubscription: $(AzureSubscription)
           scriptType: ps
           scriptLocation: inlineScript
-          inlineScript: 'az deployment group create --name "$(AppInsights)" --resource-group "$(ResourceGroupName)" --template-file build/templates/template-app-insights-resources.json --parameters appInsightsName="$(AppInsights)"'
+          inlineScript: 'az deployment group create --name "$(InternalAppInsightsName)" --resource-group "$(InternalResourceGroupName)" --template-file build/templates/template-app-insights-resources.json --parameters appInsightsName="$(InternalAppInsightsName)"'

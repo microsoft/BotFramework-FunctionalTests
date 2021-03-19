@@ -6,10 +6,10 @@ const { runDialog } = require('botbuilder-dialogs');
 
 class SkillBot extends ActivityHandler {
   /**
-     * @param {import('botbuilder').ConversationState} conversationState
-     * @param {import('botbuilder-dialogs').Dialog} dialog
-     * @param {string} serverUrl
-     */
+   * @param {import('botbuilder').ConversationState} conversationState
+   * @param {import('botbuilder-dialogs').Dialog} dialog
+   * @param {string} serverUrl
+   */
   constructor (conversationState, dialog, serverUrl) {
     super();
     if (!conversationState) throw new Error('[SkillBot]: Missing parameter. conversationState is required');
@@ -47,9 +47,9 @@ class SkillBot extends ActivityHandler {
   }
 
   /**
-     * Override the ActivityHandler.run() method to save state changes after the bot logic completes.
-     * @param {import('botbuilder').TurnContext} context
-     */
+   * Override the ActivityHandler.run() method to save state changes after the bot logic completes.
+   * @param {import('botbuilder').TurnContext} context
+   */
   async run (context) {
     await super.run(context);
 

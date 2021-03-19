@@ -38,20 +38,20 @@ namespace SkillFunctionalTests.MessageWithAttachment
             var hostBots = new List<HostBot>
             {
                 HostBot.WaterfallHostBotDotNet,
+                HostBot.WaterfallHostBotJS,
                 HostBot.WaterfallHostBotPython,
 
-                // TODO: Enable these when the ports to JS, and composer are ready
-                //HostBot.WaterfallHostBotJS,
+                // TODO: Enable this when the port to composer is ready
                 //HostBot.ComposerHostBotDotNet
             };
 
             var targetSkills = new List<string>
             {
                 SkillBotNames.WaterfallSkillBotDotNet,
+                SkillBotNames.WaterfallSkillBotJS,
                 SkillBotNames.WaterfallSkillBotPython,
 
-                // TODO: Enable these when the ports to JS, and composer are ready
-                //SkillBotNames.WaterfallSkillBotJS,
+                // TODO: Enable this when the port to composer is ready
                 //SkillBotNames.ComposerSkillBotDotNet
             };
 

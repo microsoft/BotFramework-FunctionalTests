@@ -10,10 +10,9 @@ pr: none
 variables:
   BuildConfiguration: 'Debug'
   BuildPlatform: 'any cpu'
-  KeyVault: 'bffnbotkeyvault$($env:ResourceSuffix)'
-  DeployBotResourcesDefaultGuid: '02 - Deploy Bot Resources'
+  InternalKeyVaultName: 'bffnbotkeyvault$($env:ResourceSuffix)'
+  InternalResourceGroupName: $[coalesce(variables['ResourceGroup'], 'bffnbots')]
   # AzureSubscription: define in Azure
-  # ResourceGroup: define in Azure
   # BffnEchoSkillBotComposerDotnetAppId: (optional) define in Azure
   # BffnEchoSkillBotDotNet21AppId: (optional) define in Azure
   # BffnEchoSkillBotDotNetAppId: (optional) define in Azure
@@ -22,8 +21,10 @@ variables:
   # BffnEchoSkillBotJSV3AppId: (optional) define in Azure
   # BffnEchoSkillBotPythonAppId: (optional) define in Azure
   # BffnWaterfallSkillBotDotNetAppId: (optional) define in Azure
+  # BffnWaterfallSkillBotJSAppId: (optional) define in Azure
   # BffnWaterfallSkillBotPythonAppId: (optional) define in Azure
   # DeployBotResourcesGuid: (optional) define in Azure
+  # ResourceGroup: (optional) define in Azure
   # ResourceSuffix: (optional) define in Azure
 
 pool:

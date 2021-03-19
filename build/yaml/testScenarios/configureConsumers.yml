@@ -18,9 +18,9 @@ steps:
 
         # Bots Resource Groups
         $groups = @{
-          DotNet = "$(ResourceGroup)-DotNet"
-          JS     = "$(ResourceGroup)-JS"
-          Python = "$(ResourceGroup)-Python"
+          DotNet = "$(InternalResourceGroupName)-DotNet"
+          JS     = "$(InternalResourceGroupName)-JS"
+          Python = "$(InternalResourceGroupName)-Python"
         }
 
         # Bots Settings
@@ -52,6 +52,12 @@ steps:
           @{
               key           = 'SimpleHostBotJS'
               botName       = 'bffnsimplehostbotjs'
+              resourceGroup = $groups.JS
+              configType    = $types.Env
+          }
+          @{
+              key           = 'WaterfallHostBotJS'
+              botName       = 'bffnwaterfallhostbotjs'
               resourceGroup = $groups.JS
               configType    = $types.Env
           }
@@ -127,6 +133,14 @@ steps:
               group = 'Echo'
           }
           @{
+              key           = 'WaterfallSkillBotJS'
+              keyComposer   = 'waterfallSkillBotJS' 
+              botName       = 'bffnwaterfallskillbotjs'
+              appId         = "$env:BffnWaterfallSkillBotJSAppId"
+              resourceGroup = $groups.JS
+              group = 'Waterfall'
+          }
+          @{
               key           = 'EchoSkillBotPython'
               keyComposer   = 'echoSkillBotPython' 
               botName       = 'bffnechoskillbotpython'
@@ -168,10 +182,12 @@ steps:
               name      = 'Waterfall'; 
               consumers = @(
                 'WaterfallHostBotDotNet',
+                'WaterfallHostBotJS',
                 'WaterfallHostBotPython'
               );
               skills    = @(
                 'WaterfallSkillBotDotNet',
+                'WaterfallSkillBotJS',
                 'WaterfallSkillBotPython'
               );
           }
@@ -182,7 +198,7 @@ steps:
           if(-not [string]::IsNullOrEmpty($skill.appId)){
             continue;
           }
-          $entry = az keyvault secret list --vault-name "$(KeyVault)" --query "[?name == 'Bffn$($skill.key)AppId']" | ConvertFrom-Json;
+          $entry = az keyvault secret list --vault-name "$(InternalKeyVaultName)" --query "[?name == 'Bffn$($skill.key)AppId']" | ConvertFrom-Json;
           $secretVault = az keyvault secret show --id $entry.id | ConvertFrom-Json;
           $skill.appId = $secretVault.value;
         }
