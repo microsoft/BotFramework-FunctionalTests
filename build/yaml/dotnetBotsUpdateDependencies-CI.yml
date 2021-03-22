@@ -44,10 +44,8 @@ steps:
   inputs:
     command: restore
     projects: |
-      Bots/DotNet/Consumers/Composer/SimpleHostBotComposer/runtime/azurewebapp/*.csproj
-      Bots/DotNet/Consumers/Composer/SimpleHostBotComposer/runtime/azurefunctions/*.csproj
-      Bots/DotNet/Consumers/Composer/SimpleHostBotComposer/runtime/customaction/*.csproj
-      Bots/DotNet/Consumers/Composer/SimpleHostBotComposer/runtime/core/*.csproj
+      directory: 'Bots/DotNet/Consumers/Composer/SimpleHostBotComposer/runtime/azurewebapp/'
+      name: 'Microsoft.BotFramework.Composer.WebApp.csproj'
     feedsToUse: 'select'
     includeNuGetOrg: true
     arguments: '--no-build'
@@ -56,10 +54,8 @@ steps:
   inputs:
     command: build
     projects: |
-      Bots/DotNet/Consumers/Composer/SimpleHostBotComposer/runtime/azurewebapp/*.csproj
-      Bots/DotNet/Consumers/Composer/SimpleHostBotComposer/runtime/azurefunctions/*.csproj
-      Bots/DotNet/Consumers/Composer/SimpleHostBotComposer/runtime/customaction/*.csproj
-      Bots/DotNet/Consumers/Composer/SimpleHostBotComposer/runtime/core/*.csproj
+      directory: 'Bots/DotNet/Consumers/Composer/SimpleHostBotComposer/runtime/azurewebapp/'
+      name: 'Microsoft.BotFramework.Composer.WebApp.csproj'
     feedsToUse: 'select'
     includeNuGetOrg: true
     arguments: '-v n --configuration $(BuildConfiguration) -p:Platform="$(BuildPlatform)" --no-restore'
