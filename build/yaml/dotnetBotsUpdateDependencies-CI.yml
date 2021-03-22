@@ -58,7 +58,6 @@ steps:
       Bots/DotNet/Skills/Composer/EchoSkillBotComposer/runtime/**/*.csproj
     feedsToUse: 'select'
     includeNuGetOrg: true
-    arguments: '-v n --configuration $(BuildConfiguration) -p:Platform="$(BuildPlatform)" --no-restore'
 
 - task: DotNetCoreCLI@2
   displayName: 'Build composer bots'
