@@ -44,19 +44,11 @@ steps:
   inputs:
     command: restore
     projects: |
-      Bots/DotNet/**/Composer/**/runtime/azurewebapp/Microsoft.BotFramework.Composer.WebApp.csproj
+      Bots/DotNet/Consumers/Composer/SimpleHostBotComposer/runtime/**/*.csproj
+      Bots/DotNet/Skills/Composer/EchoSkillBotComposer/runtime/**/*.csproj
     feedsToUse: 'select'
     includeNuGetOrg: true
     arguments: '--no-build'
-- task: DotNetCoreCLI@2
-  displayName: Build bots
-  inputs:
-    command: build
-    projects: |
-      Bots/DotNet/**/Composer/**/runtime/azurewebapp/Microsoft.BotFramework.Composer.WebApp.csproj
-    feedsToUse: 'select'
-    includeNuGetOrg: true
-    arguments: '-v n --configuration $(BuildConfiguration) -p:Platform="$(BuildPlatform)" --no-restore'
 
 - task: DotNetCoreCLI@2
   displayName: 'Build composer bots'
