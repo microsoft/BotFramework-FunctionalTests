@@ -52,9 +52,6 @@ steps:
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'
-    parameters:
-      source: "$(DependenciesSource)"
-      version: "$(DependenciesVersionNumber)"
     project: |
       Bots/DotNet/Consumers/Composer/SimpleHostBotComposer/runtime/**/*.csproj
       Bots/DotNet/Skills/Composer/EchoSkillBotComposer/runtime/**/*.csproj
