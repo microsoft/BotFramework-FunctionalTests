@@ -44,8 +44,10 @@ steps:
   inputs:
     command: restore
     projects: |
-      Bots/DotNet/Consumers/Composer/SimpleHostBotComposer/runtime/**/*.csproj
-      Bots/DotNet/Skills/Composer/EchoSkillBotComposer/runtime/**/*.csproj
+      Bots/DotNet/Consumers/Composer/SimpleHostBotComposer/runtime/azurewebapp/Microsoft.BotFramework.Composer.WebApp.csproj
+      Bots/DotNet/Consumers/Composer/SimpleHostBotComposer/runtime/azurefunctions/Microsoft.BotFramework.Composer.Functions.csproj
+      Bots/DotNet/Consumers/Composer/SimpleHostBotComposer/runtime/customaction/Microsoft.BotFramework.Composer.CustomAction.csproj
+      Bots/DotNet/Consumers/Composer/SimpleHostBotComposer/runtime/core/Microsoft.BotFramework.Composer.Core.csproj
     feedsToUse: 'select'
     includeNuGetOrg: true
     arguments: '--no-build'
@@ -54,8 +56,10 @@ steps:
   inputs:
     command: build
     projects: |
-      Bots/DotNet/Consumers/Composer/SimpleHostBotComposer/runtime/**/*.csproj
-      Bots/DotNet/Skills/Composer/EchoSkillBotComposer/runtime/**/*.csproj
+      Bots/DotNet/Consumers/Composer/SimpleHostBotComposer/runtime/azurewebapp/Microsoft.BotFramework.Composer.WebApp.csproj
+      Bots/DotNet/Consumers/Composer/SimpleHostBotComposer/runtime/azurefunctions/Microsoft.BotFramework.Composer.Functions.csproj
+      Bots/DotNet/Consumers/Composer/SimpleHostBotComposer/runtime/customaction/Microsoft.BotFramework.Composer.CustomAction.csproj
+      Bots/DotNet/Consumers/Composer/SimpleHostBotComposer/runtime/core/Microsoft.BotFramework.Composer.Core.csproj
     feedsToUse: 'select'
     includeNuGetOrg: true
     arguments: '-v n --configuration $(BuildConfiguration) -p:Platform="$(BuildPlatform)" --no-restore'
