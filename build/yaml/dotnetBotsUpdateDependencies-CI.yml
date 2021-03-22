@@ -39,157 +39,26 @@ steps:
 # End of Restore & Build excluding Composer and V3
 
 # Start of Restore & Build for Composer
-- template: deployBotResources/dotnet/evaluateDependenciesVariables.yml
-  parameters:
-    botType: "Host"
-
-- template: deployBotResources/dotnet/installDependencies.yml
-  parameters:
-    source: "$(DependenciesSource)"
-    version: "$(DependenciesVersionNumber)"
-    project: 
-      directory: 'Bots/DotNet/Consumers/Composer/SimpleHostBotComposer/runtime/azurewebapp/'
-      name: 'Microsoft.BotFramework.Composer.WebApp.csproj'
-    packages:
-      Microsoft.Bot.Builder
-      Microsoft.Bot.Builder.AI.Luis
-      Microsoft.Bot.Builder.AI.QnA
-      Microsoft.Bot.Builder.ApplicationInsights
-      Microsoft.Bot.Builder.Azure
-      Microsoft.Bot.Builder.Dialogs.Declarative
-      Microsoft.Bot.Builder.Dialogs.Adaptive
-      Microsoft.Bot.Builder.Dialogs.Debugging
-      Microsoft.Bot.Builder.Integration.ApplicationInsights.Core
-      Microsoft.Bot.Builder.Integration.AspNet.Core
-      Microsoft.Bot.Builder.Dialogs
-      Microsoft.Bot.Connector
-
-- template: deployBotResources/dotnet/installDependencies.yml
-  parameters:
-    source: "$(DependenciesSource)"
-    version: "$(DependenciesVersionNumber)"
-    project: 
-      directory: 'Bots/DotNet/Consumers/Composer/SimpleHostBotComposer/runtime/azurefunctions/'
-      name: 'Microsoft.BotFramework.Composer.Functions.csproj'
-    packages:
-      Microsoft.Bot.Builder
-      Microsoft.Bot.Builder.AI.Luis
-      Microsoft.Bot.Builder.AI.QnA
-      Microsoft.Bot.Builder.ApplicationInsights
-      Microsoft.Bot.Builder.Azure
-      Microsoft.Bot.Builder.Dialogs.Adaptive
-      Microsoft.Bot.Builder.Dialogs.Debugging
-      Microsoft.Bot.Builder.Dialogs.Declarative
-      Microsoft.Bot.Builder.Integration.ApplicationInsights.Core
-      Microsoft.Bot.Builder.Integration.AspNet.Core
-      Microsoft.Bot.Builder.Dialogs
-      Microsoft.Bot.Connector
-
-- template: deployBotResources/dotnet/installDependencies.yml
-  parameters:
-    source: "$(DependenciesSource)"
-    version: "$(DependenciesVersionNumber)"
-    project:
-      directory: 'Bots/DotNet/Consumers/Composer/SimpleHostBotComposer/runtime/customaction/'
-      name: 'Microsoft.BotFramework.Composer.CustomAction.csproj'
-    packages:
-      Microsoft.Bot.Builder.Dialogs.Adaptive
-
-- template: deployBotResources/dotnet/installDependencies.yml
-  parameters:
-    source: "$(DependenciesSource)"
-    version: "$(DependenciesVersionNumber)"
-    project: 
-      directory: 'Bots/DotNet/Consumers/Composer/SimpleHostBotComposer/runtime/core/'
-      name: 'Microsoft.BotFramework.Composer.Core.csproj'
-    packages:
-      Microsoft.Bot.Builder
-      Microsoft.Bot.Builder.AI.Luis
-      Microsoft.Bot.Builder.AI.QnA
-      Microsoft.Bot.Builder.ApplicationInsights
-      Microsoft.Bot.Builder.Azure
-      Microsoft.Bot.Builder.Azure.Blobs
-      Microsoft.Bot.Builder.Dialogs.Adaptive
-      Microsoft.Bot.Builder.Dialogs.Debugging
-      Microsoft.Bot.Builder.Dialogs.Declarative
-      Microsoft.Bot.Builder.Integration.ApplicationInsights.Core
-      Microsoft.Bot.Builder.Integration.AspNet.Core
-      Microsoft.Bot.Builder.Dialogs
-      Microsoft.Bot.Connector
-
-- template: deployBotResources/dotnet/installDependencies.yml
-  parameters:
-    source: "$(DependenciesSource)"
-    version: "$(DependenciesVersionNumber)"
-    project: 
-      directory: 'Bots/DotNet/Skills/Composer/EchoSkillBotComposer/runtime/azurewebapp/'
-      name: 'Microsoft.BotFramework.Composer.WebApp.csproj'
-    packages:
-      Microsoft.Bot.Builder
-      Microsoft.Bot.Builder.AI.Luis
-      Microsoft.Bot.Builder.AI.QnA
-      Microsoft.Bot.Builder.ApplicationInsights
-      Microsoft.Bot.Builder.Azure
-      Microsoft.Bot.Builder.Dialogs.Declarative
-      Microsoft.Bot.Builder.Dialogs.Adaptive
-      Microsoft.Bot.Builder.Dialogs.Debugging
-      Microsoft.Bot.Builder.Integration.ApplicationInsights.Core
-      Microsoft.Bot.Builder.Integration.AspNet.Core
-      Microsoft.Bot.Builder.Dialogs
-      Microsoft.Bot.Connector
-
-- template: deployBotResources/dotnet/installDependencies.yml
-  parameters:
-    source: "$(DependenciesSource)"
-    version: "$(DependenciesVersionNumber)"
-    project: 
-      directory: 'Bots/DotNet/Skills/Composer/EchoSkillBotComposer/runtime/azurefunctions/'
-      name: 'Microsoft.BotFramework.Composer.Functions.csproj'
-    packages:
-      Microsoft.Bot.Builder
-      Microsoft.Bot.Builder.AI.Luis
-      Microsoft.Bot.Builder.AI.QnA
-      Microsoft.Bot.Builder.ApplicationInsights
-      Microsoft.Bot.Builder.Azure
-      Microsoft.Bot.Builder.Dialogs.Adaptive
-      Microsoft.Bot.Builder.Dialogs.Debugging
-      Microsoft.Bot.Builder.Dialogs.Declarative
-      Microsoft.Bot.Builder.Integration.ApplicationInsights.Core
-      Microsoft.Bot.Builder.Integration.AspNet.Core
-      Microsoft.Bot.Builder.Dialogs
-      Microsoft.Bot.Connector
-
-- template: deployBotResources/dotnet/installDependencies.yml
-  parameters:
-    source: "$(DependenciesSource)"
-    version: "$(DependenciesVersionNumber)"
-    project:
-      directory: 'Bots/DotNet/Skills/Composer/EchoSkillBotComposer/runtime/customaction/'
-      name: 'Microsoft.BotFramework.Composer.CustomAction.csproj'
-    packages:
-      Microsoft.Bot.Builder.Dialogs.Adaptive
-
-- template: deployBotResources/dotnet/installDependencies.yml
-  parameters:
-    source: "$(DependenciesSource)"
-    version: "$(DependenciesVersionNumber)"
-    project: 
-      directory: 'Bots/DotNet/Skills/Composer/EchoSkillBotComposer/runtime/core/'
-      name: 'Microsoft.BotFramework.Composer.Core.csproj'
-    packages:
-      Microsoft.Bot.Builder
-      Microsoft.Bot.Builder.AI.Luis
-      Microsoft.Bot.Builder.AI.QnA
-      Microsoft.Bot.Builder.ApplicationInsights
-      Microsoft.Bot.Builder.Azure
-      Microsoft.Bot.Builder.Azure.Blobs
-      Microsoft.Bot.Builder.Dialogs.Adaptive
-      Microsoft.Bot.Builder.Dialogs.Debugging
-      Microsoft.Bot.Builder.Dialogs.Declarative
-      Microsoft.Bot.Builder.Integration.ApplicationInsights.Core
-      Microsoft.Bot.Builder.Integration.AspNet.Core
-      Microsoft.Bot.Builder.Dialogs
-      Microsoft.Bot.Connector
+- task: DotNetCoreCLI@2
+  displayName: Restore bots
+  inputs:
+    command: restore
+    projects: |
+      Bots/DotNet/Consumers/Composer/SimpleHostBotComposer/runtime/**/*.csproj
+      Bots/DotNet/Skills/Composer/EchoSkillBotComposer/runtime/**/*.csproj
+    feedsToUse: 'select'
+    includeNuGetOrg: true
+    arguments: '--no-build'
+- task: DotNetCoreCLI@2
+  displayName: Build bots
+  inputs:
+    command: build
+    projects: |
+      Bots/DotNet/Consumers/Composer/SimpleHostBotComposer/runtime/**/*.csproj
+      Bots/DotNet/Skills/Composer/EchoSkillBotComposer/runtime/**/*.csproj
+    feedsToUse: 'select'
+    includeNuGetOrg: true
+    arguments: '-v n --configuration $(BuildConfiguration) -p:Platform="$(BuildPlatform)" --no-restore'
 
 - task: DotNetCoreCLI@2
   displayName: 'Build composer bots'
