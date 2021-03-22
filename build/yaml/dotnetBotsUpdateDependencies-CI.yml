@@ -40,7 +40,7 @@ steps:
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'
-    projects: 'Bots/DotNet/Consumers/Composer/SimpleHostBotComposer/runtime/azurewebapp/Microsoft.BotFramework.Composer.WebApp.csproj'
+    projects: Bots/DotNet/**/Composer/**/*.csproj
 
 - task: DotNetCoreCLI@2
   displayName: 'Build composer bots'
