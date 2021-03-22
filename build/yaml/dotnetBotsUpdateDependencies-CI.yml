@@ -19,7 +19,7 @@ steps:
     command: restore
     projects: |
       Bots/DotNet/**/*.csproj
-      !Bots/DotNet/**/Composer/**/*.csproj
+      Bots/DotNet/**/Composer/**/*.csproj
       !Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3/EchoSkillBot-v3.csproj
     feedsToUse: 'select'
     includeNuGetOrg: true
@@ -31,12 +31,16 @@ steps:
     command: build
     projects: |
       Bots/DotNet/**/*.csproj
-      Bots/DotNet/**/Composer/**/*.csproj
+      !Bots/DotNet/**/Composer/**/*.csproj
       !Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3/EchoSkillBot-v3.csproj
     feedsToUse: 'select'
     includeNuGetOrg: true
     arguments: '-v n --configuration $(BuildConfiguration) -p:Platform="$(BuildPlatform)" --no-restore'
 # End of Restore & Build excluding Composer and V3
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'build'
+    projects: 'Bots/DotNet/Consumers/Composer/SimpleHostBotComposer/runtime/azurewebapp/'
 
 - task: DotNetCoreCLI@2
   displayName: 'Build composer bots'
