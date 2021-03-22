@@ -31,24 +31,12 @@ steps:
     command: build
     projects: |
       Bots/DotNet/**/*.csproj
-      !Bots/DotNet/**/Composer/**/*.csproj
+      Bots/DotNet/**/Composer/**/*.csproj
       !Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3/EchoSkillBot-v3.csproj
     feedsToUse: 'select'
     includeNuGetOrg: true
     arguments: '-v n --configuration $(BuildConfiguration) -p:Platform="$(BuildPlatform)" --no-restore'
 # End of Restore & Build excluding Composer and V3
-
-# Start of Restore & Build for Composer
-- task: DotNetCoreCLI@2
-  displayName: Restore bots
-  inputs:
-    command: restore
-    projects: |
-      Bots/DotNet/Consumers/Composer/SimpleHostBotComposer/runtime/**/*.csproj
-      Bots/DotNet/Skills/Composer/EchoSkillBotComposer/runtime/**/*.csproj
-    feedsToUse: 'select'
-    includeNuGetOrg: true
-    arguments: '--no-build'
 
 - task: DotNetCoreCLI@2
   displayName: 'Build composer bots'
