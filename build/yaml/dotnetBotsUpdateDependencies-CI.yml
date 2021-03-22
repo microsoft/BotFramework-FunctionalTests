@@ -50,10 +50,12 @@ steps:
     includeNuGetOrg: true
     arguments: '--no-build'
 - task: DotNetCoreCLI@2
-  displayName: Build bots
   inputs:
-    command: build
-    projects: |
+    command: 'build'
+    parameters:
+      source: "$(DependenciesSource)"
+      version: "$(DependenciesVersionNumber)"
+    project: |
       Bots/DotNet/Consumers/Composer/SimpleHostBotComposer/runtime/**/*.csproj
       Bots/DotNet/Skills/Composer/EchoSkillBotComposer/runtime/**/*.csproj
     feedsToUse: 'select'
