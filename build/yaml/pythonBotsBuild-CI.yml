@@ -11,4 +11,4 @@
      script: |
       python -m pip install --upgrade pip;
       find ./Bots -type f -name "requirements.txt" -exec pip install -r "{}" \;
-    failOnStderr: true
+     failOnStderr: true
