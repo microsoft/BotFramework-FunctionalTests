@@ -12,7 +12,13 @@ jobs:
         BuildPlatform: 'Any CPU'
         SolutionDir: '$(Build.SourcesDirectory)/Bots/DotNet/'
       steps: 
-      - template: dotnetBotsUpdateDependencies-CI.yml
       - template: dotnetBotsBuild-CI.yml
+    - job: "BuildfunctionalTestsBots"
+      variables:
+        BuildConfiguration: 'Debug'
+        BuildPlatform: 'Any CPU'
+        SolutionDir: '$(Build.SourcesDirectory)/'
+      steps: 
+      - template: functionalTestsBuild-CI.yml
 pool:
     vmImage: 'windows-2019'
