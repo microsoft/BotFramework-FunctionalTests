@@ -19,7 +19,7 @@ steps:
     command: restore
     projects: |
       Bots/DotNet/**/*.csproj
-      Bots/DotNet/**/Composer/**/*.csproj
+      !Bots/DotNet/**/Composer/**/*.csproj
       !Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3/EchoSkillBot-v3.csproj
     feedsToUse: 'select'
     includeNuGetOrg: true
@@ -31,7 +31,7 @@ steps:
     command: build
     projects: |
       Bots/DotNet/**/*.csproj
-      Bots/DotNet/**/Composer/**/*.csproj
+      !Bots/DotNet/**/Composer/**/*.csproj
       !Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3/EchoSkillBot-v3.csproj
     feedsToUse: 'select'
     includeNuGetOrg: true
