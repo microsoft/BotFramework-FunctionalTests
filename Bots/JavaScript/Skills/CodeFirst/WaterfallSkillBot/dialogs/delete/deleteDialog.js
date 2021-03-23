@@ -8,7 +8,7 @@ const { Channels, TurnContext } = require('botbuilder-core');
 const SLEEP_TIMER = 5000;
 const WATERFALL_DIALOG = 'WaterfallDialog';
 const CHOICE_PROMPT = 'ChoicePrompt';
-const DELETE_UNSUPPORTED = new Set([Channels.Emulator, Channels.Facebook, Channels.Webchat]);
+const DELETE_SUPPORTED = new Set([Channels.Msteams, Channels.Slack, Channels.Telegram]);
 
 class DeleteDialog extends ComponentDialog {
     /**
@@ -31,15 +31,20 @@ class DeleteDialog extends ComponentDialog {
      */
     async HandleDeleteDialog(stepContext) {
         let channel = stepContext.context.activity.channelId;
-
-        if (!DeleteDialog.isDeleteSupported(channel))
+        console.log("^^^^^^^^^^^^^^^^^^^^");
+        console.log(`The activity channel is ${channel}`);
+        console.log(`Facebook channel constant is ${Channels.Facebook}`);
+        if (DeleteDialog.isDeleteSupported(channel))
         {
+            console.log("##################");
+            console.log(`Incoming activity id ${stepContext.context.activity.id}`);
             var activity = MessageFactory.text("I will delete this message in 5 seconds");
             TurnContext.applyConversationReference(activity, TurnContext.getConversationReference(stepContext.context.activity));
             var id = await stepContext.context.sendActivity(activity);
+            console.log(`Outbound activity id ${id.id}`);
             activity.id = id.id;
             await DeleteDialog.sleep(SLEEP_TIMER);
-            await stepContext.context.deleteActivity(TurnContext.getConversationReference(activity));
+            await stepContext.context.deleteActivity(id.id);
         }
         else
         {
@@ -74,7 +79,7 @@ class DeleteDialog extends ComponentDialog {
     }
 
     static isDeleteSupported(channel) {
-        return !DELETE_UNSUPPORTED.has(channel);
+        return DELETE_SUPPORTED.has(channel);
     }
 }
 

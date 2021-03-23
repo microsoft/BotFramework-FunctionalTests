@@ -20,8 +20,9 @@ class CardSampleHelper {
                     title: 'imBack',
                     data: {
                         msteams: {
-                            type: 'imBack',
-                            value: 'text'
+                            type: ActionTypes.ImBack,
+                            value: {key: 'value'},
+                            text: 'im back message'
                         }
                     }
                 },

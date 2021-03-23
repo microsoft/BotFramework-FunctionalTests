@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-const { MessageFactory, InputHints } = require('botbuilder');
+const { MessageFactory, InputHints, Channels } = require('botbuilder');
 const { ComponentDialog, AttachmentPrompt, ChoicePrompt, WaterfallDialog, ListStyle, ChoiceFactory, DialogTurnStatus } = require('botbuilder-dialogs');
 const fs = require('fs');
 const fetch = require('node-fetch');
@@ -51,7 +51,20 @@ class FileUploadDialog extends ComponentDialog {
         let filetext = '';
 
         for (const file of stepContext.context.activity.attachments) {
-            const localFileName = path.resolve(os.tmpdir(), file.name);
+            console.log("#################");
+            console.log(file);
+            console.log(os.tmpdir());
+
+            var fileName = '';
+            if ([Channels.Telegram, Channels.Facebook].includes(stepContext.context.activity.channelId)){
+                fileName = "temp.jpg";
+            }
+            else
+            {
+                fileName = file.name;
+            }
+            
+            const localFileName = path.resolve(os.tmpdir(), fileName);
             const tempFile = fs.createWriteStream(localFileName);
             fetch(file.contentUrl).then(response => streamPipeline(response.body, tempFile));
 

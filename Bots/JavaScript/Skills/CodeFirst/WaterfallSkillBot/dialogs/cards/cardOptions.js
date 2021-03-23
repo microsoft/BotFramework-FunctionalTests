@@ -15,6 +15,10 @@ module.exports.CardOptions = {
      */
     AdaptiveCardSumbitAction: 'AdaptiveCardSumbitAction',
     /**
+     * Adaptive card - update
+     */
+    AdaptiveUpdate: 'AdaptiveUpdate',
+    /**
      * Hero cards
      */
     Hero: 'Hero',

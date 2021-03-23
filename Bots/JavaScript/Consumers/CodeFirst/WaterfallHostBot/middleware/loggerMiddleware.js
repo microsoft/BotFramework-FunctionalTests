@@ -28,7 +28,7 @@ class LoggerMiddleware {
         turnContext.onSendActivities(this.outgoingHandler.bind(this));
 
         // Continue processing messages.
-        await next();
+        return next();
     }
 
     /**
@@ -42,7 +42,7 @@ class LoggerMiddleware {
             this.logger.log(message);
         });
 
-        await next();
+        return next();
     }
 }
 

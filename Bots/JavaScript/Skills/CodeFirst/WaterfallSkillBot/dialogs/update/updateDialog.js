@@ -6,7 +6,7 @@ const { ChoiceFactory, ChoicePrompt, ComponentDialog, ListStyle, WaterfallDialog
 const { Channels } = require('botbuilder-core');
 
 const WATERFALL_DIALOG = 'WaterfallDialog';
-const UPDATE_UNSUPPORTED = new Set([Channels.Emulator, Channels.Facebook, Channels.Webchat]);
+const UPDATE_SUPPORTED = new Set([Channels.Msteams, Channels.Slack, Channels.Telegram]);
 const CHOICE_PROMPT = "ChoicePrompt";
 
 
@@ -34,7 +34,7 @@ class UpdateDialog extends ComponentDialog {
     async HandleUpdateDialog(stepContext) {
         let channel = stepContext.context.activity.channelId;
 
-        if (!UpdateDialog.isUpdateSupported(channel)){
+        if (UpdateDialog.isUpdateSupported(channel)){
             const conversationId = stepContext.context.activity.conversation.id;
 
             if (conversationId in this.updateTracker) {
@@ -83,7 +83,7 @@ class UpdateDialog extends ComponentDialog {
     }
 
     static isUpdateSupported(channel) {
-        return !UPDATE_UNSUPPORTED.has(channel);
+        return UPDATE_SUPPORTED.has(channel);
     }
 }
 
