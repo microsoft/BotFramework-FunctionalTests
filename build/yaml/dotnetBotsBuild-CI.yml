@@ -4,7 +4,7 @@ steps:
   inputs:
     version: 2.1.x
 
-- task: UseDotNet@2
+- task: UseDotNet@3
   displayName: 'Use .Net Core sdk 3.1.x'
   inputs:
     version: 3.1.x
@@ -19,7 +19,7 @@ steps:
     command: restore
     projects: |
       Bots/DotNet/**/*.csproj
-      !Bots/DotNet/**/Composer/**/*.csproj
+      Bots/DotNet/**/Composer/**/*.csproj
       !Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3/EchoSkillBot-v3.csproj
     feedsToUse: 'select'
     includeNuGetOrg: true
@@ -31,7 +31,7 @@ steps:
     command: build
     projects: |
       Bots/DotNet/**/*.csproj
-      !Bots/DotNet/**/Composer/**/*.csproj
+      Bots/DotNet/**/Composer/**/*.csproj
       !Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3/EchoSkillBot-v3.csproj
     feedsToUse: 'select'
     includeNuGetOrg: true
