@@ -80,7 +80,7 @@ namespace SkillFunctionalTests.CardActions
             {
                 if (testCase.Script == "O365.json")
                 {
-                    // BUG: O365 fails with ExpectReplies for WaterfallSkillBotPython (remove when https://github.com/microsoft/BotFramework-FunctionalTests/issues/XXX is fixed).
+                    // BUG: O365 fails with ExpectReplies for WaterfallSkillBotPython (remove when https://github.com/microsoft/BotFramework-FunctionalTests/issues/328 is fixed).
                     if (testCase.TargetSkill == SkillBotNames.WaterfallSkillBotPython && testCase.DeliveryMode == DeliveryModes.ExpectReplies)
                     {
                         return true;
