@@ -37,10 +37,12 @@ class SsoSkillDialog extends ComponentDialog {
     const messageText = 'What SSO action would you like to perform on the skill?';
     const repromptMessageText = 'That was not a valid choice, please select a valid choice.';
 
+    var choices = ChoiceFactory.toChoices(await this.getPromptChoices(stepContext));
+
     return stepContext.prompt(ACTION_PROMPT, {
       prompt: MessageFactory.text(messageText, messageText, InputHints.ExpectingInput),
       retryPrompt: MessageFactory.text(repromptMessageText, repromptMessageText, InputHints.ExpectingInput),
-      choices: ChoiceFactory.toChoices(await this.getPromptChoices(stepContext))
+      choices: choices
     });
   }
 
@@ -49,7 +51,8 @@ class SsoSkillDialog extends ComponentDialog {
    */
   async getPromptChoices (stepContext) {
     const choices = [];
-    const token = await stepContext.context.adapter.getUserToken(stepContext.context, this.connectionName);
+    const adapter = stepContext.context.adapter;
+    const token = await adapter.getUserToken(stepContext.context, this.connectionName);
 
     if (!token) {
       choices.push('Login');
@@ -79,7 +82,8 @@ class SsoSkillDialog extends ComponentDialog {
         return stepContext.next();
 
       case 'show token': {
-        const token = await stepContext.context.adapter.getUserToken(stepContext.context, this.connectionName);
+        const adapter = stepContext.context.adapter;
+        const token = await adapter.getUserToken(stepContext.context, this.connectionName);
 
         if (!token) {
           await stepContext.context.sendActivity('User has no cached token.');
