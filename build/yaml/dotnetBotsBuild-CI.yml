@@ -18,8 +18,7 @@ steps:
   inputs:
     command: restore
     projects: |
-      Bots/DotNet/**/*.csproj
-      Bots/DotNet/**/Composer/**/*.csproj
+      SkillFunctionalTests.sln
       !Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3/EchoSkillBot-v3.csproj
     feedsToUse: 'select'
     includeNuGetOrg: true
@@ -30,8 +29,7 @@ steps:
   inputs:
     command: build
     projects: |
-      Bots/DotNet/**/*.csproj
-      Bots/DotNet/**/Composer/**/*.csproj
+      SkillFunctionalTests.sln
       !Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3/EchoSkillBot-v3.csproj
     feedsToUse: 'select'
     includeNuGetOrg: true
