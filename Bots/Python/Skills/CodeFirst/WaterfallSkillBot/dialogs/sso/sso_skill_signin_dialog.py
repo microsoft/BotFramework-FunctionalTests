@@ -37,15 +37,20 @@ class SsoSkillSignInDialog(ComponentDialog):
         return await step_context.begin_dialog(OAuthPrompt.__name__)
 
     async def display_token(self, step_context: WaterfallStepContext):
-        result = step_context.result
+        sso_token = step_context.result
+        if sso_token:
+            if isinstance(sso_token, dict):
+                token = sso_token.get("token")
+            else:
+                token = sso_token.token
 
-        if result is None or result.token is None:
             await step_context.context.send_activity(
-                "No token was provided for the skill."
+                f"Here is your token for the skill: {token}"
             )
+
         else:
             await step_context.context.send_activity(
-                f"Here is your token for the skill: { result.token }"
+                "No token was provided for the skill."
             )
 
         return await step_context.end_dialog()

@@ -4,6 +4,7 @@
 import json
 from typing import Dict
 from datetime import datetime
+
 from botbuilder.core import MessageFactory, ConversationState
 from botbuilder.dialogs import (
     WaterfallDialog,
@@ -21,12 +22,14 @@ from botbuilder.schema import Activity, ActivityTypes, InputHints
 from botbuilder.integration.aiohttp.skills import SkillHttpClient
 from config import DefaultConfig
 from skill_conversation_id_factory import SkillConversationIdFactory
-from .cards import CardDialog
-from .proactive import WaitForProactiveDialog
-from .message_with_attachment import MessageWithAttachmentDialog
-from .auth import AuthDialog
-from .sso import SsoSkillDialog
-from .file_upload import FileUploadDialog
+from dialogs.cards import CardDialog
+from dialogs.delete import DeleteDialog
+from dialogs.proactive import WaitForProactiveDialog
+from dialogs.message_with_attachment import MessageWithAttachmentDialog
+from dialogs.auth import AuthDialog
+from dialogs.sso import SsoSkillDialog
+from dialogs.file_upload import FileUploadDialog
+from dialogs.update import UpdateDialog
 
 ECHO_SKILL = "EchoSkill"
 
@@ -43,13 +46,18 @@ class ActivityRouterDialog(ComponentDialog):
         super().__init__(ActivityRouterDialog.__name__)
 
         self.add_dialog(CardDialog(configuration))
+        self.add_dialog(MessageWithAttachmentDialog(configuration))
+
         self.add_dialog(
             WaitForProactiveDialog(configuration, continuation_parameters_store)
         )
-        self.add_dialog(MessageWithAttachmentDialog())
+
         self.add_dialog(AuthDialog(configuration))
         self.add_dialog(SsoSkillDialog(configuration))
         self.add_dialog(FileUploadDialog())
+        self.add_dialog(DeleteDialog())
+        self.add_dialog(UpdateDialog())
+
         self.add_dialog(
             self.create_echo_skill_dialog(
                 configuration, conversation_state, conversation_id_factory, skill_client
@@ -71,13 +79,8 @@ class ActivityRouterDialog(ComponentDialog):
         if configuration.SKILL_HOST_ENDPOINT is None:
             raise Exception("SkillHostEndpoint is not in configuration")
 
-        if (
-            configuration.ECHO_SKILL_INFO.id is None
-            or configuration.ECHO_SKILL_INFO.skill_endpoint is None
-        ):
-            raise Exception(
-                "EchoSkillInfo_id and EchoSkillInfo_skillEndpoint are not set in configuration"
-            )
+        if configuration.ECHO_SKILL_INFO is None:
+            raise Exception("EchoSkillInfo is not set in configuration")
 
         options = SkillDialogOptions(
             bot_id=configuration.APP_ID,
@@ -148,6 +151,12 @@ class ActivityRouterDialog(ComponentDialog):
             return await step_context.begin_dialog(
                 dialog.id, BeginSkillDialogOptions(activity=message_activity)
             )
+
+        if activity.name == "Delete":
+            return await step_context.begin_dialog(DeleteDialog.__name__)
+
+        if activity.name == "Update":
+            return await step_context.begin_dialog(UpdateDialog.__name__)
 
         # We didn't get an event name we can handle.
         await step_context.context.send_activity(

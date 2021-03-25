@@ -3,11 +3,24 @@
 
 from botframework.connector import Channels
 
-from .card_options import CardOptions
+from dialogs.cards.card_options import CardOptions
 
 
 UNSUPPORTED_CHANNEL_CARDS = {
-    Channels.emulator.value: [CardOptions.teams_file_consent, CardOptions.o365]
+    Channels.emulator.value: [
+        CardOptions.ADAPTIVE_CARD_TEAMS_TASK_MODULE,
+        CardOptions.ADAPTIVE_UPDATE,
+        CardOptions.O365,
+        CardOptions.TEAMS_FILE_CONSENT,
+    ],
+    Channels.direct_line.value: [CardOptions.ADAPTIVE_UPDATE],
+    Channels.telegram.value: [
+        CardOptions.ADAPTIVE_CARD_BOT_ACTION,
+        CardOptions.ADAPTIVE_CARD_TEAMS_TASK_MODULE,
+        CardOptions.ADAPTIVE_CARD_SUBMIT_ACTION,
+        CardOptions.LIST,
+        CardOptions.TEAMS_FILE_CONSENT,
+    ],
 }
 
 

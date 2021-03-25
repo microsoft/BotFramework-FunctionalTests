@@ -54,9 +54,9 @@ class AuthDialog(ComponentDialog):
         token_response = step_context.result
 
         if token_response:
-            # Workaround, step_context.result value using DirectLine returns a 'dict' instead of TokenResponse 
+            # Workaround, step_context.result value using DirectLine returns a 'dict' instead of TokenResponse
             if isinstance(token_response, dict):
-                step_context.values["token"] = token_response.get('token')
+                step_context.values["token"] = token_response.get("token")
             else:
                 step_context.values["token"] = token_response.token
 

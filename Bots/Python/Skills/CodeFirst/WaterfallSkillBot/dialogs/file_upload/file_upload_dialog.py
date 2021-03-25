@@ -12,10 +12,9 @@ from botbuilder.dialogs import (
     DialogTurnStatus,
     WaterfallDialog,
     WaterfallStepContext,
-    Choice,
-    ListStyle,
+    ConfirmPrompt,
 )
-from botbuilder.dialogs.prompts import ChoicePrompt, PromptOptions, AttachmentPrompt
+from botbuilder.dialogs.prompts import PromptOptions, AttachmentPrompt
 from botbuilder.schema import (
     InputHints,
     Activity,
@@ -29,7 +28,7 @@ class FileUploadDialog(ComponentDialog):
         super().__init__(FileUploadDialog.__name__)
 
         self.add_dialog(AttachmentPrompt(AttachmentPrompt.__name__))
-        self.add_dialog(ChoicePrompt(ChoicePrompt.__name__))
+        self.add_dialog(ConfirmPrompt(ConfirmPrompt.__name__))
         self.add_dialog(
             WaterfallDialog(
                 WaterfallDialog.__name__,
@@ -65,8 +64,9 @@ class FileUploadDialog(ComponentDialog):
 
         await step_context.context.send_activity(MessageFactory.text(file_text))
 
+        # Ask to upload another file or end.
         message_text = "Do you want to upload another file?"
-        reprompt_message_text = 'You must select "Yes" or "No".'
+        reprompt_message_text = "That's an invalid choice."
 
         options = PromptOptions(
             prompt=MessageFactory.text(
@@ -75,16 +75,14 @@ class FileUploadDialog(ComponentDialog):
             retry_prompt=MessageFactory.text(
                 reprompt_message_text, reprompt_message_text, InputHints.expecting_input
             ),
-            choices=[Choice("Yes"), Choice("No")],
-            style=ListStyle.list_style,
         )
 
-        return await step_context.prompt(ChoicePrompt.__name__, options)
+        return await step_context.prompt(ConfirmPrompt.__name__, options)
 
     async def final_step(self, step_context: WaterfallStepContext):
-        choice = str(step_context.result.value).lower()
+        try_another = step_context.result
 
-        if choice == "yes":
+        if try_another:
             return await step_context.replace_dialog(self.initial_dialog_id)
 
         await step_context.context.send_activity(

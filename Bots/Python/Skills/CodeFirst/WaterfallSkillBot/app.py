@@ -91,7 +91,12 @@ async def messages(req: Request) -> Response:
     auth_header = req.headers["Authorization"] if "Authorization" in req.headers else ""
 
     try:
-        CONFIG.SERVER_URL = str(req.url).replace(str(req.path), "")
+        website_hostname = os.getenv("WEBSITE_HOSTNAME")
+        if website_hostname:
+            CONFIG.SERVER_URL = f"https://{website_hostname}"
+        else:
+            CONFIG.SERVER_URL = f"{req.scheme}://{req.host}"
+
         response = await ADAPTER.process_activity(activity, auth_header, BOT.on_turn)
         # DeliveryMode => Expected Replies
         if response:
@@ -142,7 +147,7 @@ async def notify(req: Request) -> Response:
     )
 
 
-# Listen for incoming requests on /api/notify
+# Listen for incoming requests on /api/music
 async def music(req: Request) -> web.FileResponse:  # pylint: disable=unused-argument
     file_path = os.path.join(os.getcwd(), "dialogs/cards/files/music.mp3")
     return web.FileResponse(file_path)
@@ -152,8 +157,11 @@ APP = web.Application(middlewares=[aiohttp_error_middleware])
 APP.router.add_post("/api/messages", messages)
 APP.router.add_routes(aiohttp_channel_service_routes(SKILL_HANDLER, "/api/skills"))
 
-# simple way of exposing the manifest for dev purposes.
+# Simple way of exposing the manifest for dev purposes.
 APP.router.add_static("/manifests", "./manifests/")
+
+# Simple way of exposing images folder.
+APP.router.add_static("/images", "./images/")
 
 # Listen for incoming requests.
 APP.router.add_get("/api/music", music)

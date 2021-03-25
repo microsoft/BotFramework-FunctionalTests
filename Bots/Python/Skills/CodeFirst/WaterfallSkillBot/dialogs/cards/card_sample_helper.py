@@ -152,6 +152,21 @@ class CardSampleHelper:
         )
 
     @staticmethod
+    def create_adaptive_update_card() -> Attachment:
+        card = HeroCard(title="Update card", text="Update Card Action", buttons=[])
+
+        action = CardAction(
+            type=ActionTypes.message_back,
+            title="Update card title",
+            text="Update card text",
+            value={"count": 0},
+        )
+
+        card.buttons.push(action)
+
+        return CardFactory.hero_card(card)
+
+    @staticmethod
     def create_hero_card() -> Attachment:
         card = HeroCard(
             title="BotFramework Hero Card",
@@ -473,7 +488,7 @@ class CardSampleHelper:
                 O365ConnectorCardViewAction(
                     type="ViewAction",
                     name="View Action",
-                    target=["http://microsoft.com"]
+                    target=["http://microsoft.com"],
                 ),
                 O365ConnectorCardOpenUri(
                     type="OpenUri",
@@ -497,10 +512,7 @@ class CardSampleHelper:
             ],
         )
 
-        return Attachment(
-            content=card,
-            content_type=ContentType.O365_CONNECTOR_CARD
-        )
+        return Attachment(content=card, content_type=ContentType.O365_CONNECTOR_CARD)
 
     @staticmethod
     def create_teams_file_consent_card(file_name: str):
