@@ -19,8 +19,9 @@ class SsoSignInDialog(ComponentDialog):
                 OAuthPrompt.__name__,
                 OAuthPromptSettings(
                     connection_name=connection_name,
-                    text="Sign in to the host bot using AAD for SSO",
+                    text=f"Sign in to the host bot using AAD for SSO and connection {connection_name}",
                     title="Sign In",
+                    timeout=60000,
                 ),
             )
         )
@@ -41,10 +42,16 @@ class SsoSignInDialog(ComponentDialog):
         return await step_context.begin_dialog(OAuthPrompt.__name__)
 
     async def display_token(self, step_context: WaterfallStepContext):
-        if not step_context.result.token:
-            await step_context.context.send_activity("No token was provided.")
+        sso_token = step_context.result
+        if sso_token:
+            if isinstance(sso_token, dict):
+                token = sso_token.get("token")
+            else:
+                token = sso_token.token
+
+            await step_context.context.send_activity(f"Here is your token: {token}")
+
         else:
-            await step_context.context.send_activity(
-                f"Here is your token: {step_context.result.token}"
-            )
+            await step_context.context.send_activity("No token was provided.")
+
         return await step_context.end_dialog()

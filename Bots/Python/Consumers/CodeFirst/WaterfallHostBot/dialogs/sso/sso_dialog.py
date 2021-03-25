@@ -16,7 +16,6 @@ from botbuilder.dialogs.dialog_turn_result import DialogTurnResult
 from botbuilder.dialogs.dialog_turn_status import DialogTurnStatus
 from botbuilder.schema import Activity, ActivityTypes, InputHints
 
-from skills_configuration import DefaultConfig
 from .sso_signin_dialog import SsoSignInDialog
 
 
@@ -25,15 +24,15 @@ class SsoDialog(ComponentDialog):
     Helps prepare the host for SSO operations and provides helpers to check the status and invoke the skill.
     """
 
-    def __init__(self, configuration: DefaultConfig, skill_dialog: Dialog):
-        super().__init__(SsoDialog.__name__ + skill_dialog.id)
+    def __init__(self, dialog_id: str, sso_skill_dialog: Dialog, connection_name):
+        super().__init__(dialog_id)
 
-        self.connection_name = configuration.SSO_CONNECTION_NAME
-        self.skill_dialog_id = skill_dialog.id
+        self._connection_name = connection_name
+        self.skill_dialog_id = sso_skill_dialog.id
 
         self.add_dialog(ChoicePrompt(ChoicePrompt.__name__))
-        self.add_dialog(SsoSignInDialog(self.connection_name))
-        self.add_dialog(skill_dialog)
+        self.add_dialog(SsoSignInDialog(self._connection_name))
+        self.add_dialog(sso_skill_dialog)
 
         self.add_dialog(
             WaterfallDialog(
@@ -74,7 +73,7 @@ class SsoDialog(ComponentDialog):
 
         prompt_choices = list()
         token = await step_context.context.adapter.get_user_token(
-            step_context.context, self.connection_name
+            step_context.context, self._connection_name
         )
 
         if token is None:
@@ -100,14 +99,14 @@ class SsoDialog(ComponentDialog):
 
         if action == "logout":
             await step_context.context.adapter.sign_out_user(
-                step_context.context, self.connection_name
+                step_context.context, self._connection_name
             )
             await step_context.context.send_activity("You have been signed out.")
             return await step_context.next(step_context.result)
 
         if action == "show token":
             token = await step_context.context.adapter.get_user_token(
-                step_context.context, self.connection_name
+                step_context.context, self._connection_name
             )
 
             if token is None:

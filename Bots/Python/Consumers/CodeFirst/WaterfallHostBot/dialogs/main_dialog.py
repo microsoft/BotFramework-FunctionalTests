@@ -16,7 +16,6 @@ from botbuilder.dialogs.choices import Choice, FoundChoice
 from botbuilder.dialogs.prompts import (
     PromptOptions,
     ChoicePrompt,
-    PromptValidatorContext,
 )
 from botbuilder.dialogs.skills import (
     SkillDialogOptions,
@@ -33,14 +32,14 @@ from skills_configuration import SkillsConfiguration, DefaultConfig
 from dialogs.tangent_dialog import TangentDialog
 from dialogs.sso.sso_dialog import SsoDialog
 
-
+SSO_DIALOG_PREFIX = "Sso"
 ACTIVE_SKILL_PROPERTY_NAME = "MainDialog.ActiveSkillProperty"
 DELIVERY_MODE_NAME = "MainDialog.DeliveryMode"
 SELECTED_SKILL_KEY_NAME = "MainDialog.SelectedSkillKey"
 JUST_FORWARD_THE_ACTIVITY = "JustForwardTurnContext.Activity"
 
 DELIVERY_MODE_PROMPT = "DeliveryModePrompt"
-SKILL_TYPE_PROMPT = "SkillTypePrompt"
+SKILL_GROUP_PROMPT = "SkillGroupPrompt"
 SKILL_PROMPT = "SkillPrompt"
 SKILL_ACTION_PROMPT = "SkillActionPrompt"
 
@@ -56,7 +55,13 @@ class MainDialog(ComponentDialog):
     ):
         super().__init__(MainDialog.__name__)
 
-        bot_id = configuration.APP_ID
+        self._configuration = configuration
+        if not self._configuration:
+            raise TypeError(
+                "[MainDialog]: Missing parameter. configuration is required"
+            )
+
+        bot_id = self._configuration.APP_ID
 
         self._skills_config = skills_config
         if not self._skills_config:
@@ -98,33 +103,24 @@ class MainDialog(ComponentDialog):
         self.add_dialog(ChoicePrompt(DELIVERY_MODE_PROMPT))
 
         # Add ChoicePrompt to render available types of skill.
-        self.add_dialog(ChoicePrompt(SKILL_TYPE_PROMPT))
+        self.add_dialog(ChoicePrompt(SKILL_GROUP_PROMPT))
 
         # Add ChoicePrompt to render available skills.
         self.add_dialog(ChoicePrompt(SKILL_PROMPT))
 
         # Add ChoicePrompt to render skill actions.
-        self.add_dialog(
-            ChoicePrompt(SKILL_ACTION_PROMPT, self._skill_action_prompt_validator)
-        )
+        self.add_dialog(ChoicePrompt(SKILL_ACTION_PROMPT))
 
-        # Add dialog to prepare SSO on the host and test the SSO skill.
-        # The waterfall skillDialog created in add_skill_dialogs contains the SSO skill action.
-        waterfall_skills = [
-            skill_dialog
-            for skill_dialog in self._dialogs._dialogs.values()
-            if skill_dialog.id.startswith("WATERFALLSKILL")
-        ]
+        # Special case: register SSO dialogs for skills that support SSO actions.
+        self._add_sso_dialogs(self._configuration)
 
-        for waterfall_skill in waterfall_skills:
-            self.add_dialog(SsoDialog(configuration, waterfall_skill))
-
+        # Add main waterfall dialog for this bot.
         self.add_dialog(
             WaterfallDialog(
                 WaterfallDialog.__name__,
                 [
                     self._select_delivery_mode_step,
-                    self._select_skill_type_step,
+                    self._select_skill_group_step,
                     self._select_skill_step,
                     self._select_skill_action_step,
                     self._call_skill_action_step,
@@ -148,6 +144,7 @@ class MainDialog(ComponentDialog):
         if (
             active_skill
             and activity.type == ActivityTypes.message
+            and activity.text
             and "abort" in activity.text.lower()
         ):
             # Cancel all dialogs when the user says abort.
@@ -184,7 +181,7 @@ class MainDialog(ComponentDialog):
             if step_context.options
             else "What delivery mode would you like to use?"
         )
-        reprompt_message_text = (
+        retry_message_text = (
             "That was not a valid choice, please select a valid delivery mode."
         )
 
@@ -193,9 +190,8 @@ class MainDialog(ComponentDialog):
                 message_text, message_text, InputHints.expecting_input
             ),
             retry_prompt=MessageFactory.text(
-                reprompt_message_text, reprompt_message_text, InputHints.expecting_input
+                retry_message_text, retry_message_text, InputHints.expecting_input
             ),
-            style=ListStyle.suggested_action,
             choices=[
                 Choice(DeliveryModes.normal.value),
                 Choice(DeliveryModes.expect_replies.value),
@@ -205,33 +201,39 @@ class MainDialog(ComponentDialog):
         # Prompt the user to select a delivery mode.
         return await step_context.prompt(DELIVERY_MODE_PROMPT, options)
 
-    async def _select_skill_type_step(self, step_context: WaterfallStepContext):
+    async def _select_skill_group_step(self, step_context: WaterfallStepContext):
         """
-        Render a prompt to select the type of skill to use.
+        Render a prompt to select the group of skills to use.
         """
 
         # Remember the delivery mode selected by the user.
         step_context.values[DELIVERY_MODE_NAME] = step_context.result.value
 
         # Create the PromptOptions with the types of supported skills.
-        message_text = "What type of skill would you like to use?"
-        reprompt_message_text = (
-            "That was not a valid choice, please select a valid skill type."
+        message_text = "What group of skills would you like to use?"
+        retry_message_text = (
+            "That was not a valid choice, please select a valid skill group."
         )
+
+        choices = []
+        groups = []
+        for skill in self._skills_config.SKILLS.values():
+            if skill.group not in groups:
+                groups.append(skill.group)
+                choices.append(Choice(skill.group))
 
         options = PromptOptions(
             prompt=MessageFactory.text(
                 message_text, message_text, InputHints.expecting_input
             ),
             retry_prompt=MessageFactory.text(
-                reprompt_message_text, reprompt_message_text, InputHints.expecting_input
+                retry_message_text, retry_message_text, InputHints.expecting_input
             ),
-            style=ListStyle.suggested_action,
-            choices=[Choice("EchoSkill"), Choice("WaterfallSkill")],
+            choices=choices,
         )
 
         # Prompt the user to select a type of skill.
-        return await step_context.prompt(SKILL_TYPE_PROMPT, options)
+        return await step_context.prompt(SKILL_GROUP_PROMPT, options)
 
     async def _select_skill_step(
         self, step_context: WaterfallStepContext
@@ -240,26 +242,24 @@ class MainDialog(ComponentDialog):
         Render a prompt to select the skill to call.
         """
 
-        skill_type = step_context.result.value
+        skill_group = step_context.result.value
 
         # Create the PromptOptions from the skill configuration which contain the list of configured skills.
         message_text = "What skill would you like to call?"
-        reprompt_message_text = (
-            "That was not a valid choice, please select a valid skill."
-        )
+        retry_message_text = "That was not a valid choice, please select a valid skill."
 
         options = PromptOptions(
             prompt=MessageFactory.text(
                 message_text, message_text, InputHints.expecting_input
             ),
             retry_prompt=MessageFactory.text(
-                reprompt_message_text, reprompt_message_text, InputHints.expecting_input
+                retry_message_text, retry_message_text, InputHints.expecting_input
             ),
-            style=ListStyle.suggested_action,
+            style=ListStyle.list_style,
             choices=[
-                Choice(val.id)
-                for key, val in self._skills_config.SKILLS.items()
-                if key.lower().startswith(skill_type.lower())
+                Choice(skill.id)
+                for skill in self._skills_config.SKILLS.values()
+                if skill.group.lower().startswith(skill_group.lower())
             ],
         )
 
@@ -299,38 +299,27 @@ class MainDialog(ComponentDialog):
         # Remember the skill selected by the user.
         step_context.values[SELECTED_SKILL_KEY_NAME] = selected_skill
 
+        skill_action_choices = [
+            Choice(action) for action in selected_skill.get_actions()
+        ]
+        if len(skill_action_choices) == 1:
+            # The skill only supports one action (e.g. Echo), skip the prompt.
+            return await step_context.next(
+                FoundChoice(value=skill_action_choices[0].value, index=0, score=0)
+            )
+
         # Create the PromptOptions with the actions supported by the selected skill.
-        message_text = (
-            f"Select an action # to send to **{selected_skill.id}**.\n\nOr just type in "
-            f"a message and it will be forwarded to the skill as a message activity."
-        )
+        message_text = f"Select an action to send to **{selected_skill.id}**."
 
         options = PromptOptions(
             prompt=MessageFactory.text(
                 message_text, message_text, InputHints.expecting_input
             ),
-            choices=[Choice(action) for action in selected_skill.get_actions()],
+            choices=skill_action_choices,
         )
 
         # Prompt the user to select a skill action.
         return await step_context.prompt(SKILL_ACTION_PROMPT, options)
-
-    async def _skill_action_prompt_validator(
-        self, prompt_context: PromptValidatorContext
-    ):
-        """
-        This validator defaults to Message if the user doesn't select an existing option.
-        """
-
-        if not prompt_context.recognized.succeeded:
-            # Assume the user wants to send a message if an item in the list is not selected.
-            prompt_context.recognized.value = FoundChoice(
-                value=JUST_FORWARD_THE_ACTIVITY,
-                index=0,
-                score=0,
-            )
-
-        return True
 
     async def _call_skill_action_step(self, step_context: WaterfallStepContext):
         """
@@ -338,25 +327,33 @@ class MainDialog(ComponentDialog):
         """
 
         selected_skill = step_context.values[SELECTED_SKILL_KEY_NAME]
-        skill_activity = self._create_begin_activity(
-            step_context.context, selected_skill.id, step_context.result.value
-        )
-
-        # Create the BeginSkillDialogOptions and assign the activity to send.
-        skill_dialog_args = BeginSkillDialogOptions(activity=skill_activity)
-        delivery_mode = str(step_context.values[DELIVERY_MODE_NAME])
-
-        if delivery_mode == DeliveryModes.expect_replies:
-            skill_dialog_args.activity.delivery_mode = DeliveryModes.expect_replies
 
         # Save active skill in state.
         await self.active_skill_property.set(step_context.context, selected_skill)
 
+        # Create the initial activity to call the skill.
+        skill_activity = self._create_begin_activity(
+            step_context.context, selected_skill.id, step_context.result.value
+        )
+
         if skill_activity.name == "Sso":
             # Special case, we start the SSO dialog to prepare the host to call the skill.
             return await step_context.begin_dialog(
-                SsoDialog.__name__ + selected_skill.id
+                f"{SSO_DIALOG_PREFIX}{selected_skill.id}"
             )
+
+        # We are manually creating the activity to send to the skill; ensure we add the ChannelData and Properties
+        # from the original activity so the skill gets them.
+        # Note: this is not necessary if we are just forwarding the current activity from context.
+        skill_activity.channel_data = step_context.context.activity.channel_data
+        skill_activity.additional_properties = (
+            step_context.context.activity.additional_properties
+        )
+
+        # Create the BeginSkillDialogOptions and assign the activity to send.
+        skill_dialog_args = BeginSkillDialogOptions(activity=skill_activity)
+        if str(step_context.values[DELIVERY_MODE_NAME]) == DeliveryModes.expect_replies:
+            skill_dialog_args.activity.delivery_mode = DeliveryModes.expect_replies
 
         # Start the skillDialog instance with the arguments.
         return await step_context.begin_dialog(selected_skill.id, skill_dialog_args)
@@ -438,3 +435,22 @@ class MainDialog(ComponentDialog):
         activity.additional_properties = context.activity.additional_properties
 
         return activity
+
+    # Special case.
+    # SSO needs a dialog in the host to allow the user to sign in.
+    # We create and several SsoDialog instances for each skill that supports SSO.
+    def _add_sso_dialogs(self, configuration: DefaultConfig):
+        connection_name = configuration.SSO_CONNECTION_NAME
+
+        for sso_skill_dialog in [
+            skill_dialog
+            for skill_dialog in self._dialogs._dialogs.values()  # pylint: disable=W0212
+            if skill_dialog.id.startswith("WATERFALLSKILL")
+        ]:
+            self.add_dialog(
+                SsoDialog(
+                    f"{SSO_DIALOG_PREFIX}{sso_skill_dialog.id}",
+                    sso_skill_dialog,
+                    connection_name,
+                )
+            )
