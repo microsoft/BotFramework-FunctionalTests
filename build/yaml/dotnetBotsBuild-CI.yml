@@ -12,62 +12,19 @@ steps:
 - task: NuGetToolInstaller@1
   displayName: 'Use NuGet'
 
-# Start of Restore & Build excluding Composer and V3
-- task: DotNetCoreCLI@2
-  displayName: Restore bots
-  inputs:
-    command: restore
-    projects: |
-      Bots/DotNet/**/*.csproj
-      Bots/DotNet/**/Composer/**/*.csproj
-      !Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3/EchoSkillBot-v3.csproj
-    feedsToUse: 'select'
-    includeNuGetOrg: true
-    arguments: '--no-build'
-
-- task: DotNetCoreCLI@2
-  displayName: Build bots
-  inputs:
-    command: build
-    projects: |
-      Bots/DotNet/**/*.csproj
-      Bots/DotNet/**/Composer/**/*.csproj
-      !Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3/EchoSkillBot-v3.csproj
-    feedsToUse: 'select'
-    includeNuGetOrg: true
-    arguments: '-v n --configuration $(BuildConfiguration) -p:Platform="$(BuildPlatform)" --no-restore'
-# End of Restore & Build excluding Composer and V3
-           
-- task: DotNetCoreCLI@2
-  displayName: 'Build composer bots'
-  inputs:
-    command: publish
-    publishWebProjects: false
-    projects: |
-      Bots/DotNet/**/Composer/**/runtime/azurewebapp/Microsoft.BotFramework.Composer.WebApp.csproj
-    modifyOutputPath: false
-    zipAfterPublish: false
-# End of Restore & Build for Composer
-
-# Start of Restore & Build for V3
 - task: NuGetCommand@2
-  displayName: 'Restore V3 bot'
+  displayName: 'NuGet restore'
   inputs:
-    restoreSolution: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3/EchoSkillBot-v3.csproj'
+    restoreSolution: 'Bots/DotNet/FunctionalTestsBots.sln'
     restoreDirectory: '$(SolutionDir)packages'
-    feedsToUse: 'select'
-    includeNuGetOrg: true
-    noCache: true
-    
 
 - task: MSBuild@1
-  displayName: 'Build V3 bot'
+  displayName: 'Build'
   inputs:
-    solution: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3/EchoSkillBot-v3.csproj'
-    #vsVersion: 16.0
-    platform: 'AnyCPU'
+    solution: 'Bots/DotNet/FunctionalTestsBots.sln'
+    vsVersion: 16.0
+    platform: '$(BuildPlatform)'
     configuration: '$(BuildConfiguration)'
-# End of Restore & Build for V3
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: build folder'
