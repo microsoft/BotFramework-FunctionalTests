@@ -186,6 +186,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Bots
         /// Sends an activity to the skill bot.
         /// </summary>
         /// <param name="turnContext">Context for the current turn of conversation.</param>
+        /// <param name="deliveryMode">The delivery mode to use when communicating to the skill.</param>
         /// <param name="targetSkill">The skill that will receive the activity.</param>
         /// <param name="cancellationToken">CancellationToken propagates notifications that operations should be cancelled.</param>
         /// <returns>A <see cref="Task{TResult}"/> representing the result of the asynchronous operation.</returns>
