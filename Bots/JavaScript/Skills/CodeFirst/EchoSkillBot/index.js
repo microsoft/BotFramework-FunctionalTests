@@ -16,7 +16,6 @@ dotenv.config({ path: ENV_FILE });
 
 // This bot's main dialog.
 const { EchoBot } = require('./bot');
-const { MainDialog } = require('./dialogs/mainDialog');
 const { allowedCallersClaimsValidator } = require('./authentication/allowedCallersClaimsValidator');
 
 // Create HTTP server
@@ -78,11 +77,8 @@ const memoryStorage = new MemoryStorage();
 const conversationState = new ConversationState(memoryStorage);
 const userState = new UserState(memoryStorage);
 
-// Create the main dialog.
-const dialog = new MainDialog();
-
 // Create the bot that will handle incoming messages.
-const myBot = new EchoBot(conversationState, userState, dialog);
+const myBot = new EchoBot(conversationState, userState);
 
 // Listen for incoming requests.
 server.post('/api/messages', (req, res) => {

@@ -10,33 +10,18 @@ class EchoBot extends ActivityHandler {
      * @param {UserState} userState
      * @param {Dialog} dialog
      */
-  constructor (conversationState, userState, dialog) {
+  constructor (conversationState, userState) {
     super();
     if (!conversationState) throw new Error('[DialogBot]: Missing parameter. conversationState is required');
     if (!userState) throw new Error('[DialogBot]: Missing parameter. userState is required');
-    if (!dialog) throw new Error('[DialogBot]: Missing parameter. dialog is required');
 
     this.conversationState = conversationState;
     this.userState = userState;
-    this.dialog = dialog;
     this.dialogState = this.conversationState.createProperty('DialogState');
-
-    this.onTokenResponseEvent(async (context, next) => {
-      console.log('Running dialog with Token Response Event Activity.');
-      await this.dialog.run(context, this.dialogState);
-      await next();
-    });
 
     // See https://aka.ms/about-bot-activity-message to learn more about the message and other activity types.
     this.onMessage(async (context, next) => {
       switch (context.activity.text.toLowerCase()) {
-        case 'auth':
-        case 'yes':
-        case 'no':
-          // Run the Dialog with the new message Activity.
-          await this.dialog.run(context, this.dialogState);
-          await next();
-          break;
         case 'end':
         case 'stop':
           await context.sendActivity('Ending conversation from the skill...');
