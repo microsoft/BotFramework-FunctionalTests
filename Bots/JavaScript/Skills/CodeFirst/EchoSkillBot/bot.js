@@ -4,21 +4,8 @@
 const { ActivityHandler, ActivityTypes, EndOfConversationCodes } = require('botbuilder');
 
 class EchoBot extends ActivityHandler {
-  /**
-     *
-     * @param {ConversationState} conversationState
-     * @param {UserState} userState
-     * @param {Dialog} dialog
-     */
-  constructor (conversationState, userState) {
+  constructor () {
     super();
-    if (!conversationState) throw new Error('[DialogBot]: Missing parameter. conversationState is required');
-    if (!userState) throw new Error('[DialogBot]: Missing parameter. userState is required');
-
-    this.conversationState = conversationState;
-    this.userState = userState;
-    this.dialogState = this.conversationState.createProperty('DialogState');
-
     // See https://aka.ms/about-bot-activity-message to learn more about the message and other activity types.
     this.onMessage(async (context, next) => {
       switch (context.activity.text.toLowerCase()) {
@@ -47,17 +34,6 @@ class EchoBot extends ActivityHandler {
       // By calling next() you ensure that the next BotHandler is run.
       await next();
     });
-  }
-
-  /**
-     * Override the ActivityHandler.run() method to save state changes after the bot logic completes.
-     */
-  async run (context) {
-    await super.run(context);
-
-    // Save any state changes. The load happened during the execution of the Dialog.
-    await this.conversationState.saveChanges(context, false);
-    await this.userState.saveChanges(context, false);
   }
 }
 
