@@ -22,41 +22,48 @@ class HostBot extends ActivityHandler {
     this.deliveryModeProperty = this.conversationState.createProperty(HostBot.DeliveryModePropertyName);
     this.activeSkillProperty = this.conversationState.createProperty(HostBot.ActiveSkillPropertyName);
 
+    this.onTurn(async (context, next) => {
+      // Forward all activities except EndOfConversation to the active skill.
+      if (context.activity.type !== ActivityTypes.EndOfConversation) {
+        // Try to get the active skill.
+        const activeSkill = await this.activeSkillProperty.get(context);
+
+        if (activeSkill) {
+          const deliveryMode = await this.deliveryModeProperty.get(context);
+
+          // Send the activity to the skill
+          await this.sendToSkill(context, deliveryMode, activeSkill);
+          return;
+        }
+      }
+
+      await next();
+    });
+
     // See https://aka.ms/about-bot-activity-message to learn more about the message and other activity types.
     this.onMessage(async (context, next) => {
-      const selectedSkill = this.skillsConfig.skills[context.activity.text];
       const deliveryMode = await this.deliveryModeProperty.get(context);
-
+      const selectedSkill = this.skillsConfig.skills[context.activity.text];
       const v3Bots = ['EchoSkillBotDotNetV3', 'EchoSkillBotJSV3'];
+
       if (selectedSkill && deliveryMode === DeliveryModes.ExpectReplies && v3Bots.includes(selectedSkill.id)) {
         const message = MessageFactory.text("V3 Bots do not support 'expectReplies' delivery mode.");
         await context.sendActivity(message);
+
         // Forget delivery mode and skill invocation.
         await this.deliveryModeProperty.delete(context);
         await this.activeSkillProperty.delete(context);
+
         // Restart setup dialog
         await this.conversationState.delete(context);
-        await this.dialog.run(context, this.dialogStateProperty);
-        return;
       }
 
-      // Try to get the active skill.
-      const activeSkill = await this.activeSkillProperty.get(context);
-
-      if (activeSkill) {
-        // Send the activity to the skill
-        await this.sendToSkill(context, deliveryMode, activeSkill);
-      } else {
-        await this.dialog.run(context, this.dialogStateProperty);
-      }
+      await this.dialog.run(context, this.dialogStateProperty);
     });
 
     this.onEndOfConversation(async (context, next) => {
       // Handle EndOfConversation returned by the skill.
       await this.EndConversation(context.activity, context);
-
-      // Restart setup dialog
-      await this.dialog.run(context, this.dialogStateProperty);
 
       // By calling next() you ensure that the next BotHandler is run.
       await next();
@@ -96,6 +103,11 @@ class HostBot extends ActivityHandler {
 
       // We are back at the host.
       await context.sendActivity('Back in the host bot.');
+
+      // Restart setup dialog
+      await this.dialog.run(context, this.dialogStateProperty);
+
+      await this.conversationState.saveChanges(context);
     }
   }
 
@@ -124,9 +136,6 @@ class HostBot extends ActivityHandler {
         for (let index = 0; index < responseActivities.length; index++) {
           if (responseActivities[index].type === ActivityTypes.EndOfConversation) {
             await this.EndConversation(responseActivities[index], context);
-
-            // Restart setup dialog
-            await this.dialog.run(context, this.dialogStateProperty);
           } else {
             await context.sendActivity(responseActivities[index]);
           }
