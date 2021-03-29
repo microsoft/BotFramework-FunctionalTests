@@ -19,12 +19,12 @@ The matrix consists of all the available combinations to test in this repository
     <tr align="center">
         <tr align="center">
         <td>C# Net Core 2.1</td>
-        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/DotNet21DotNet21SkillBotFunctionalTest?branchName=main"></td>   
-        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/DotNet21DotNet31SkillBotFunctionalTest?branchName=main"></td>
-        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/DotNet21JsSkillBotFunctionalTest?branchName=main"></td>
-        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/DotNet21PySkillBotFunctionalTest?branchName=main"></td>
-        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/V3SkillBots/DotNet21JsV3SkillBotFunctionalTest?branchName=main"></td>
-        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/V3SkillBots/DotNet21DotNetV3SkillBotFunctionalTest?branchName=main"></td>
+        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/FunctionalTests/legacy/DotNet21DotNet21SkillBotFunctionalTest?branchName=main"></td>   
+        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/FunctionalTests/legacy/DotNet21DotNet31SkillBotFunctionalTest?branchName=main"></td>
+        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/FunctionalTests/legacy/DotNet21JsSkillBotFunctionalTest?branchName=main"></td>
+        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/FunctionalTests/legacy/DotNet21PySkillBotFunctionalTest?branchName=main"></td>
+        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/FunctionalTests/legacy/V3SkillBots/DotNet21JsV3SkillBotFunctionalTest?branchName=main"></td>
+        <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/FunctionalTests/legacy/V3SkillBots/DotNet21DotNetV3SkillBotFunctionalTest?branchName=main"></td>
     </tr>
         <td>C# Net Core 3.1</td>
         <td><img src="https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/SkillBots/DotNet31DotNet21SkillBotFunctionalTest?branchName=main"></td>
