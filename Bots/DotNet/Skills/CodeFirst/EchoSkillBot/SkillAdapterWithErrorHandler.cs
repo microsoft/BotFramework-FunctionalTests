@@ -19,10 +19,9 @@ namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot
         /// </summary>
         /// <param name="configuration">The configuration properties.</param>
         /// <param name="credentialProvider">An implementation of the bots credentials.</param>
-        /// <param name="authConfig">The configuration setting for the authentication.</param>
+        /// /// <param name="authConfig">The configuration setting for the authentication.</param>
         /// <param name="logger">An instance of a logger.</param>
-        /// <param name="conversationState">A state management object for the conversation.</param>
-        public SkillAdapterWithErrorHandler(IConfiguration configuration, ICredentialProvider credentialProvider, AuthenticationConfiguration authConfig, ILogger<BotFrameworkHttpAdapter> logger, ConversationState conversationState = null)
+        public SkillAdapterWithErrorHandler(IConfiguration configuration, ICredentialProvider credentialProvider, AuthenticationConfiguration authConfig, ILogger<BotFrameworkHttpAdapter> logger)
             : base(configuration, credentialProvider, authConfig, logger: logger)
         {
             OnTurnError = async (turnContext, exception) =>
@@ -49,21 +48,6 @@ namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot
                 endOfConversation.Code = "SkillError";
                 endOfConversation.Text = exception.Message;
                 await turnContext.SendActivityAsync(endOfConversation);
-
-                if (conversationState != null)
-                {
-                    try
-                    {
-                        // Delete the conversationState for the current conversation to prevent the
-                        // bot from getting stuck in a error-loop caused by being in a bad state.
-                        // ConversationState should be thought of as similar to "cookie-state" in a Web pages.
-                        await conversationState.DeleteAsync(turnContext);
-                    }
-                    catch (Exception ex)
-                    {
-                        logger.LogError(ex, $"Exception caught on attempting to Delete ConversationState : {ex}");
-                    }
-                }
             };
         }
     }
