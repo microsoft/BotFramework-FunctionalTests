@@ -12,6 +12,7 @@ variables:
   BuildPlatform: 'any cpu'
   InternalKeyVaultName: 'bffnbotkeyvault$($env:ResourceSuffix)'
   InternalResourceGroupName: $[coalesce(variables['ResourceGroup'], 'bffnbots')]
+  DeployBotResourcesDefaultGuid: '02 - Deploy Bot Resources'
   # AzureSubscription: define in Azure
   # BffnEchoSkillBotComposerDotnetAppId: (optional) define in Azure
   # BffnEchoSkillBotDotNet21AppId: (optional) define in Azure
