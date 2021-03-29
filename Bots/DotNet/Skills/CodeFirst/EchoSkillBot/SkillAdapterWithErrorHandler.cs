@@ -19,7 +19,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot
         /// </summary>
         /// <param name="configuration">The configuration properties.</param>
         /// <param name="credentialProvider">An implementation of the bots credentials.</param>
-        /// /// <param name="authConfig">The configuration setting for the authentication.</param>
+        /// <param name="authConfig">The configuration setting for the authentication.</param>
         /// <param name="logger">An instance of a logger.</param>
         public SkillAdapterWithErrorHandler(IConfiguration configuration, ICredentialProvider credentialProvider, AuthenticationConfiguration authConfig, ILogger<BotFrameworkHttpAdapter> logger)
             : base(configuration, credentialProvider, authConfig, logger: logger)
