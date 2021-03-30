@@ -1,5 +1,5 @@
 {
-  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
     "appId": {
@@ -44,15 +44,27 @@
   },
   "resources": [
     {
+      "type": "Microsoft.Web/sites",
       "apiVersion": "2018-11-01",
       "name": "[parameters('botName')]",
-      "type": "Microsoft.Web/sites",
       "location": "[parameters('botLocation')]",
-      "tags": {},
-      "dependsOn": [],
       "kind": "app",
       "properties": {
-        "name": "[parameters('botName')]",
+        "enabled": true,
+        "hostNameSslStates": [
+          {
+              "name": "[concat(parameters('botName'), '.azurewebsites.net')]",
+              "sslState": "Disabled",
+              "hostType": "Standard"
+          },
+          {
+              "name": "[concat(parameters('botName'), '.scm.azurewebsites.net')]",
+              "sslState": "Disabled",
+              "hostType": "Repository"
+          }
+        ],
+        "serverFarmId": "[concat('/subscriptions/', subscription().id,'/resourcegroups/', parameters('appServicePlanResourceGroup'), '/providers/Microsoft.Web/serverfarms/', parameters('appServicePlanName'))]",
+        "reserved": false,
         "siteConfig": {
           "appSettings": [
             {
@@ -80,21 +92,110 @@
               "value": "~2"
             }
           ],
-          "cors": {
-            "allowedOrigins": [
-              "https://botservice.hosting.portal.azure.net",
-              "https://hosting.onecloud.azure-test.net/"
-            ]
-          },
           "webSocketsEnabled": true
         },
-        "serverFarmId": "[concat('/subscriptions/', subscription().id,'/resourcegroups/', parameters('appServicePlanResourceGroup'), '/providers/Microsoft.Web/serverfarms/', parameters('appServicePlanName'))]",
-        "clientAffinityEnabled": true
+        "scmSiteAlsoStopped": false,
+        "clientAffinityEnabled": true,
+        "clientCertEnabled": false,
+        "httpsOnly": false
       }
     },
     {
-      "apiVersion": "2017-12-01",
+      "type": "Microsoft.Web/sites/config",
+      "apiVersion": "2018-11-01",
+      "name": "[concat(parameters('botName'), '/web')]",
+      "location": "[parameters('botLocation')]",
+      "dependsOn": [
+          "[resourceId('Microsoft.Web/sites', parameters('botName'))]"
+      ],
+      "properties": {
+          "numberOfWorkers": 1,
+          "defaultDocuments": [
+              "Default.htm",
+              "Default.html",
+              "Default.asp",
+              "index.htm",
+              "index.html",
+              "iisstart.htm",
+              "default.aspx",
+              "index.php",
+              "hostingstart.html"
+          ],
+          "netFrameworkVersion": "v4.0",
+          "phpVersion": "5.6",
+          "requestTracingEnabled": false,
+          "remoteDebuggingEnabled": false,
+          "httpLoggingEnabled": false,
+          "logsDirectorySizeLimit": 35,
+          "detailedErrorLoggingEnabled": false,
+          "publishingUsername": "[parameters('botName')]",
+          "azureStorageAccounts": {},
+          "scmType": "None",
+          "use32BitWorkerProcess": true,
+          "webSocketsEnabled": true,
+          "alwaysOn": false,
+          "managedPipelineMode": "Integrated",
+          "virtualApplications": [
+              {
+                  "virtualPath": "/",
+                  "physicalPath": "site\\wwwroot",
+                  "preloadEnabled": false
+              }
+          ],
+          "loadBalancing": "LeastRequests",
+          "experiments": {
+              "rampUpRules": []
+          },
+          "autoHealEnabled": false,
+          "cors": {
+              "allowedOrigins": [
+                  "https://botservice.hosting.portal.azure.net",
+                  "https://hosting.onecloud.azure-test.net/"
+              ],
+              "supportCredentials": false
+          },
+          "localMySqlEnabled": false,
+          "ipSecurityRestrictions": [
+              {
+                  "ipAddress": "Any",
+                  "action": "Allow",
+                  "priority": 1,
+                  "name": "Allow all",
+                  "description": "Allow all access"
+              }
+          ],
+          "scmIpSecurityRestrictions": [
+              {
+                  "ipAddress": "Any",
+                  "action": "Allow",
+                  "priority": 1,
+                  "name": "Allow all",
+                  "description": "Allow all access"
+              }
+          ],
+          "scmIpSecurityRestrictionsUseMain": false,
+          "http20Enabled": false,
+          "minTlsVersion": "1.2",
+          "ftpsState": "AllAllowed",
+          "reservedInstanceCount": 0
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/hostNameBindings",
+      "apiVersion": "2018-11-01",
+      "name": "[concat(parameters('botName'), '/', parameters('botName'), '.azurewebsites.net')]",
+      "location": "[parameters('botLocation')]",
+      "dependsOn": [
+          "[resourceId('Microsoft.Web/sites', parameters('botName'))]"
+      ],
+      "properties": {
+          "siteName": "[parameters('botName')]",
+          "hostNameType": "Verified"
+      }
+    },
+    {
       "type": "Microsoft.BotService/botServices",
+      "apiVersion": "2020-06-02",
       "name": "[parameters('botName')]",
       "location": "global",
       "kind": "bot",
@@ -106,8 +207,8 @@
         "displayName": "[parameters('botName')]",
         "endpoint": "[variables('botEndpoint')]",
         "msaAppId": "[parameters('appId')]",
-        "developerAppInsightsApplicationId": null,
-        "developerAppInsightKey": null,
+        "developerAppInsightsApplicationId": "",
+        "developerAppInsightKey": "",
         "publishingCredentials": null,
         "storageResourceId": null
       },
