@@ -67,6 +67,12 @@ steps:
               resourceGroup = $groups.Python
               configType    = $types.Env
           }
+          @{
+              key           = 'WaterfallHostBotPython'
+              botName       = 'bffnwaterfallhostbotpython'
+              resourceGroup = $groups.Python
+              configType    = $types.Env
+          }
         )
 
         $skills = @(
@@ -142,6 +148,14 @@ steps:
               resourceGroup = $groups.Python
               group = 'Echo'
           }
+          @{
+              key           = 'WaterfallSkillBotPython'
+              keyComposer   = 'waterfallSkillBotPython' 
+              botName       = 'bffnwaterfallskillbotpython'
+              appId         = "$env:BffnWaterfallSkillBotPythonAppId"
+              resourceGroup = $groups.Python
+              group = "Waterfall"
+          }
         )
 
         # Bots Test Scenarios
@@ -168,12 +182,14 @@ steps:
           @{ 
               name      = 'Waterfall'; 
               consumers = @(
-                'WaterfallHostBotDotNet'
-                'WaterfallHostBotJS'
+                'WaterfallHostBotDotNet',
+                'WaterfallHostBotJS',
+                'WaterfallHostBotPython'
               );
               skills    = @(
-                'WaterfallSkillBotDotNet'
-                'WaterfallSkillBotJS'
+                'WaterfallSkillBotDotNet',
+                'WaterfallSkillBotJS',
+                'WaterfallSkillBotPython'
               );
           }
         )
