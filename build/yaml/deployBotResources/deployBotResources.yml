@@ -19,8 +19,6 @@ variables:
   InternalAppServicePlanWindowsResourceGroup: $[coalesce(variables['AppServicePlanGroup'], 'bffnshared')]
   InternalKeyVaultName: 'bffnbotkeyvault$($env:ResourceSuffix)'
   InternalResourceGroupName: $[coalesce(variables['ResourceGroup'], 'bffnbots')]
-  # AzureDeploymentPassword: define in Azure
-  # AzureDeploymentUser: define in Azure
   # AzureSubscription: define in Azure
   # AppServicePlanGroup: (optional) define in Azure
   # AppServicePlanGroupLinux: (optional) define in Azure
