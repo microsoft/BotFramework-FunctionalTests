@@ -32,19 +32,19 @@ class TokenExchangeSkillHandler extends SkillHandler {
 
     async onSendToConversation(claimsIdentity, conversationId, activity) {
         if (await this.interceptOAuthCards(claimsIdentity, activity)) {
-            return new ResourceResponse(v4());
+            return { id: v4() };
         }
 
         return await super.onSendToConversation(claimsIdentity, conversationId, activity);
     }
 
     async onReplyToActivity(claimsIdentity, conversationId, activityId, activity) {
-            if (await this.interceptOAuthCards(claimsIdentity, activity))
-            {
-                return new ResourceResponse(v4());
-            }
+        if (await this.interceptOAuthCards(claimsIdentity, activity))
+        {
+            return { id: v4() };
+        }
 
-            return await super.onReplyToActivity(claimsIdentity, conversationId, activityId, activity);
+        return await super.onReplyToActivity(claimsIdentity, conversationId, activityId, activity);
     }
 
      getCallingSkill(claimsIdentity) {
@@ -112,12 +112,11 @@ class TokenExchangeSkillHandler extends SkillHandler {
         activity.value = {
             id: id,
             token: token,
-            connectionName: connectionName,
-        };
-        //activity.text = ''
+            connectionName: connectionName
+        }
 
         var skillConversationReference = await this.conversationIdFactory.getSkillConversationReference(incomingActivity.conversation.id);
-        activity.conversation = skillConversationReference.conversationReference.conversation;
+        activity.conversation = incomingActivity.conversation;
         activity.serviceUrl = skillConversationReference.conversationReference.serviceUrl;
 
         // route the activity to the skill
