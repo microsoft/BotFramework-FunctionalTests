@@ -22,6 +22,7 @@ variables:
   # BffnEchoSkillBotPythonAppId: (optional) define in Azure
   # BffnWaterfallSkillBotDotNetAppId: (optional) define in Azure
   # BffnWaterfallSkillBotJSAppId: (optional) define in Azure
+  # BffnWaterfallSkillBotPythonAppId: (optional) define in Azure
   # DeployBotResourcesGuid: (optional) define in Azure
   # ResourceGroup: (optional) define in Azure
   # ResourceSuffix: (optional) define in Azure
