@@ -1,18 +1,26 @@
 # This YAML runs all the CI pipelines Dot Net, python, JS in parallel
+variables:
+  BuildConfiguration: 'Debug'
+  BuildPlatform: 'Any CPU'
+
 jobs:
-    -  job: "BuildJSBots"
-       steps: 
-       - template: jsBotsBuildCI.yml
-    -  job: "BuildPythonBots"
-       steps: 
-       - template: pythonBotsBuild-CI.yml
+    - job: "BuildJSBots"
+      steps: 
+      - template: jsBotsBuildCI.yml
+
+    - job: "BuildPythonBots"
+      steps: 
+      - template: pythonBotsBuild-CI.yml
+
     - job: "BuildDotnetBots"
       variables:
-        BuildConfiguration: 'Debug'
-        BuildPlatform: 'Any CPU'
         SolutionDir: '$(Build.SourcesDirectory)/Bots/DotNet/'
       steps: 
-      - template: dotnetBotsUpdateDependencies-CI.yml
       - template: dotnetBotsBuild-CI.yml
+
+    - job: "BuildSkillsFunctionalTests"
+      steps: 
+      - template: functionalTestsBuild-CI.yml
+
 pool:
     vmImage: 'windows-2019'
