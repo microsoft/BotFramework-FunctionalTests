@@ -39,9 +39,9 @@ namespace SkillFunctionalTests.MessageWithAttachment
             {
                 HostBot.WaterfallHostBotDotNet,
                 HostBot.WaterfallHostBotJS,
+                HostBot.WaterfallHostBotPython,
 
-                // TODO: Enable these when the ports to Python and composer are ready
-                //HostBot.WaterfallHostBotPython,
+                // TODO: Enable this when the port to composer is ready
                 //HostBot.ComposerHostBotDotNet
             };
 
@@ -49,9 +49,9 @@ namespace SkillFunctionalTests.MessageWithAttachment
             {
                 SkillBotNames.WaterfallSkillBotDotNet,
                 SkillBotNames.WaterfallSkillBotJS,
+                SkillBotNames.WaterfallSkillBotPython,
 
-                // TODO: Enable these when the ports to Python and composer are ready
-                //SkillBotNames.WaterfallSkillBotPython,
+                // TODO: Enable this when the port to composer is ready
                 //SkillBotNames.ComposerSkillBotDotNet
             };
 
