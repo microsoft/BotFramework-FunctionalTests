@@ -10,20 +10,21 @@ steps:
     version: 3.1.x
 
 - task: NuGetToolInstaller@1
-  inputs:
-    versionSpec: 
+  displayName: 'Use NuGet'
 
 - task: NuGetCommand@2
+  displayName: 'NuGet restore'
   inputs:
-    command: 'restore'
-    restoreSolution: SkillFunctionalTests.sln
+    restoreSolution: 'Bots/DotNet/FunctionalTestsBots.sln'
+    restoreDirectory: '$(SolutionDir)packages'
 
-
-- task: DotNetCoreCLI@2
-  displayName: 'dotnet build'
+- task: MSBuild@1
+  displayName: 'Build'
   inputs:
-    projects: SkillFunctionalTests.sln
-
+    solution: 'Bots/DotNet/FunctionalTestsBots.sln'
+    vsVersion: 16.0
+    platform: '$(BuildPlatform)'
+    configuration: '$(BuildConfiguration)'
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: build folder'
