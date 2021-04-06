@@ -79,12 +79,17 @@ stages:
                 botName: '${{ bot.name }}'
                 botGroup: '${{ parameters.resourceGroup }}'
           
+          # Zip bot
+          - powershell: |
+              7z.exe a -tzip "$(System.DefaultWorkingDirectory)/build/${{ bot.name }}/${{ bot.name }}.zip" "$(System.DefaultWorkingDirectory)/${{ bot.project.directory }}/*" -aoa
+            displayName: 'Zip bot'
+            
           # Deploy bot
-          - template: ../common/gitDeploy.yml
+          - template: ../common/zipDeploy.yml
             parameters:
               botName: '${{ bot.name }}'
-              resourceGroup: '${{ parameters.resourceGroup }}'
-              project: '${{ bot.project }}'
+              botGroup: '${{ parameters.resourceGroup }}'
+              source: "$(System.DefaultWorkingDirectory)/build/${{ bot.name }}/${{ bot.name }}.zip"
 
           # Create DirectLine Channel Hosts
           - ${{ if eq(bot.type, 'Host') }}:
