@@ -81,7 +81,7 @@ stages:
           
           # Zip bot
           - powershell: |
-              Compress-Archive -Path "$(System.DefaultWorkingDirectory)/${{ bot.project.directory }}/*" -DestinationPath "$(System.DefaultWorkingDirectory)/build/${{ bot.name }}.zip"
+              Compress-Archive -Path "$(System.DefaultWorkingDirectory)/${{ bot.project.directory }}/*" -DestinationPath "$(System.DefaultWorkingDirectory)/build/${{ bot.name }}.zip" -verbose
             displayName: 'Zip bot'
             
           # Deploy bot
