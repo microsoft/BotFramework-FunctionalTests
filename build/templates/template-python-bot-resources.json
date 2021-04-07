@@ -60,6 +60,10 @@
             "hostType": "Repository"
           }
         ],
+        "serverFarmId": "[concat('/subscriptions/', subscription().id,'/resourcegroups/', parameters('appServicePlanResourceGroup'), '/providers/Microsoft.Web/serverfarms/', parameters('appServicePlanName'))]",
+        "reserved": true,
+        "isXenon": false,
+        "hyperV": false,
         "siteConfig": {
           "appSettings": [
             {
@@ -77,12 +81,14 @@
           ],
           "webSocketsEnabled": true
         },
-        "serverFarmId": "[concat('/subscriptions/', subscription().id,'/resourcegroups/', parameters('appServicePlanResourceGroup'), '/providers/Microsoft.Web/serverfarms/', parameters('appServicePlanName'))]",
-        "reserved": false,
         "scmSiteAlsoStopped": false,
-        "clientAffinityEnabled": true,
+        "clientAffinityEnabled": false,
         "clientCertEnabled": false,
-        "httpsOnly": false
+        "hostNamesDisabled": false,
+        "containerSize": 0,
+        "dailyMemoryTimeQuota": 0,
+        "httpsOnly": false,
+        "redundancyMode": "None"
       }
     },
     {
@@ -117,15 +123,14 @@
         "scmType": "None",
         "use32BitWorkerProcess": true,
         "webSocketsEnabled": false,
-        "alwaysOn": false,
+        "alwaysOn": true,
         "appCommandLine": "gunicorn --bind 0.0.0.0 --worker-class aiohttp.worker.GunicornWebWorker --timeout 600 app:APP",
         "managedPipelineMode": "Integrated",
         "virtualApplications": [
           {
             "virtualPath": "/",
             "physicalPath": "site\\wwwroot",
-            "preloadEnabled": false,
-            "virtualDirectories": null
+            "preloadEnabled": true
           }
         ],
         "loadBalancing": "LeastRequests",
