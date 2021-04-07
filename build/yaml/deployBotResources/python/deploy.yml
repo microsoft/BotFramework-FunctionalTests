@@ -81,6 +81,8 @@ stages:
           
           # Zip bot
           - powershell: |
+              Write-Host "$(System.DefaultWorkingDirectory)/${{ bot.project.directory }}"
+              Write-Host "$(System.DefaultWorkingDirectory)/build/${{ bot.name }}/${{ bot.name }}.zip"
               Compress-Archive -Path "$(System.DefaultWorkingDirectory)/${{ bot.project.directory }}" -DestinationPath "$(System.DefaultWorkingDirectory)/build/${{ bot.name }}/${{ bot.name }}.zip"
             displayName: 'Zip bot'
             
@@ -99,8 +101,8 @@ stages:
                 botGroup: '${{ parameters.resourceGroup }}'
           
           - powershell: |
-              cd "$(System.DefaultWorkingDirectory)/${{ bot.project.directory }}"
+              cd "$(System.DefaultWorkingDirectory)"
               ls -R
-              displayName: 'Dir workspace'
-              continueOnError: true
-              condition: succeededOrFailed()
+            continueOnError: true
+            condition: succeededOrFailed()
+            displayName: 'Dir workspace'
