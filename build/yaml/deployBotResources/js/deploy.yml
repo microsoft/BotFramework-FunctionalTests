@@ -84,7 +84,7 @@ stages:
           # Zip bot
           - powershell: |
               move-item -path '${{ bot.project.directory }}/deployment-scripts/*' -destination '${{ bot.project.directory }}'
-              7z.exe a -tzip '$(System.DefaultWorkingDirectory)/${{ bot.name }}.zip' '$(System.DefaultWorkingDirectory)/${{ bot.project.directory }}/*' -aoa
+              Compress-Archive -DestinationPath '$(System.DefaultWorkingDirectory)/${{ bot.name }}.zip' -Path '$(System.DefaultWorkingDirectory)/${{ bot.project.directory }}/*'
             displayName: 'Zip Bot'
 
           # Create App Service and Bot Channel Registration

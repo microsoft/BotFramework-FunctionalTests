@@ -81,7 +81,7 @@ stages:
           
           # Zip bot
           - powershell: |
-              7z.exe a -tzip "$(System.DefaultWorkingDirectory)/build/${{ bot.name }}/${{ bot.name }}.zip" "$(System.DefaultWorkingDirectory)/${{ bot.project.directory }}/*" -aoa
+              Compress-Archive -DestinationPath "$(System.DefaultWorkingDirectory)/build/${{ bot.name }}/${{ bot.name }}.zip" -Path "$(System.DefaultWorkingDirectory)/${{ bot.project.directory }}/*"
             displayName: 'Zip bot'
             
           # Deploy bot
