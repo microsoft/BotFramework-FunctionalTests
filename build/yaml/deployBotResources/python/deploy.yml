@@ -87,11 +87,11 @@ stages:
           - task: Bash@3
             displayName: Install dependencies
             inputs:
-            targetType: 'inline'
-            script: |
-              python -m pip install --upgrade pip;
-              find ./Bots -type f -name "requirements.txt" -exec pip install -r "{}" \;
-            failOnStderr: true
+              targetType: 'inline'
+              script: |
+                python -m pip install --upgrade pip;
+                find ./Bots -type f -name "requirements.txt" -exec pip install -r "{}" \;
+              failOnStderr: true
           
           # Zip bot
           - powershell: |
