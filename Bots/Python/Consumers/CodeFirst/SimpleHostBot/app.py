@@ -20,12 +20,12 @@ from botframework.connector.auth import (
     SimpleCredentialProvider,
 )
 
-from dialogs import SetupDialog
-from skill_conversation_id_factory import SkillConversationIdFactory
-from authentication import AllowedSkillsClaimsValidator
-from bots import HostBot
-from config import DefaultConfig, SkillConfiguration
-from adapter_with_error_handler import AdapterWithErrorHandler
+from .dialogs import SetupDialog
+from .skill_conversation_id_factory import SkillConversationIdFactory
+from .authentication import AllowedSkillsClaimsValidator
+from .bots import HostBot
+from .config import DefaultConfig, SkillConfiguration
+from .adapter_with_error_handler import AdapterWithErrorHandler
 
 CONFIG = DefaultConfig()
 SKILL_CONFIG = SkillConfiguration()
