@@ -84,7 +84,7 @@ stages:
           # Zip bot
           - powershell: |
               move-item -path '${{ bot.project.directory }}/deployment-scripts/*' -destination '${{ bot.project.directory }}'
-              Compress-Archive -DestinationPath '$(System.DefaultWorkingDirectory)/${{ bot.name }}.zip' -Path '$(System.DefaultWorkingDirectory)/${{ bot.project.directory }}/*'
+              Compress-Archive -Path '$(System.DefaultWorkingDirectory)/${{ bot.project.directory }}/*' -DestinationPath '$(System.DefaultWorkingDirectory)/build/${{ bot.name }}.zip' -verbose
             displayName: 'Zip Bot'
 
           # Create App Service and Bot Channel Registration
@@ -109,7 +109,7 @@ stages:
             parameters:
               botName: '${{ bot.name }}'
               botGroup: '${{ parameters.resourceGroup }}'
-              source: '$(System.DefaultWorkingDirectory)/${{ bot.name }}.zip'
+              source: '$(System.DefaultWorkingDirectory)/build/${{ bot.name }}.zip'
 
           # Create DirectLine Channel Hosts
           - ${{ if eq(bot.type, 'Host') }}:
