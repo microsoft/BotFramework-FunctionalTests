@@ -19,8 +19,6 @@ variables:
   InternalAppServicePlanWindowsResourceGroup: $[coalesce(variables['AppServicePlanGroup'], 'bffnshared')]
   InternalKeyVaultName: 'bffnbotkeyvault$($env:ResourceSuffix)'
   InternalResourceGroupName: $[coalesce(variables['ResourceGroup'], 'bffnbots')]
-  # AzureDeploymentPassword: define in Azure
-  # AzureDeploymentUser: define in Azure
   # AzureSubscription: define in Azure
   # AppServicePlanGroup: (optional) define in Azure
   # AppServicePlanGroupLinux: (optional) define in Azure
@@ -58,6 +56,10 @@ variables:
   # BffnWaterfallHostBotJSAppSecret: (optional) define in Azure
   # BffnWaterfallSkillBotJSAppId: (optional) define in Azure
   # BffnWaterfallSkillBotJSAppSecret: (optional) define in Azure
+  # BffnWaterfallHostBotPythonAppId: (optional) define in Azure
+  # BffnWaterfallHostBotPythonAppSecret: (optional) define in Azure
+  # BffnWaterfallSkillBotPythonAppId: (optional) define in Azure
+  # BffnWaterfallSkillBotPythonAppSecret: (optional) define in Azure
   # BotPricingTier: (optional) define in Azure
   # ConnectionName: (optional) define in Azure
   # DependenciesRegistryHosts: (optional) define in Azure
@@ -252,6 +254,22 @@ stages:
           appSecret: $(BffnEchoSkillBotPythonAppSecret)
           project: 
             directory: 'Bots/Python/Skills/CodeFirst/EchoSkillBot'
+
+        - name: bffnwaterfallhostbotpython
+          type: 'Host'
+          displayName: 'Python Waterfall Host Bot'
+          appId: $env:BffnWaterfallHostBotPythonAppId
+          appSecret: $env:BffnWaterfallHostBotPythonAppSecret
+          project:
+            directory: 'Bots/Python/Consumers/CodeFirst/WaterfallHostBot'
+
+        - name: bffnwaterfallskillbotpython
+          type: 'Skill'
+          displayName: 'Python Waterfall Skill Bot'
+          appId: $env:BffnWaterfallSkillBotPythonAppId
+          appSecret: $env:BffnWaterfallSkillBotPythonAppSecret
+          project: 
+            directory: 'Bots/Python/Skills/CodeFirst/WaterfallSkillBot'
 
 # Publish variables
   - stage: 'Publish_Variables'
