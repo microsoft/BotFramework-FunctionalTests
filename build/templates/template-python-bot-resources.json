@@ -63,6 +63,10 @@
         "siteConfig": {
           "appSettings": [
             {
+              "name": "SCM_DO_BUILD_DURING_DEPLOYMENT",
+              "value": "true"
+            },
+            {
               "name": "MicrosoftAppId",
               "value": "[parameters('appId')]"
             },
@@ -103,7 +107,7 @@
           "hostingstart.html"
         ],
         "netFrameworkVersion": "v4.0",
-        "linuxFxVersion": "PYTHON|3.7",
+        "linuxFxVersion": "PYTHON|3.8",
         "requestTracingEnabled": false,
         "remoteDebuggingEnabled": false,
         "remoteDebuggingVersion": "VS2017",
