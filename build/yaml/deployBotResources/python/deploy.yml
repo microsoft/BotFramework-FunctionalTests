@@ -62,15 +62,6 @@ stages:
                 botName: '${{ bot.displayName }}'
               version: "$(DependenciesVersionNumber)"
                     
-          - powershell: |
-              Write-Host "$(System.DefaultWorkingDirectory)/${{ bot.project.directory }}"
-              Write-Host "$(System.DefaultWorkingDirectory)/build/${{ bot.name }}/${{ bot.name }}.zip"
-              cd "$(System.DefaultWorkingDirectory)"
-              ls -R
-            continueOnError: true
-            condition: succeededOrFailed()
-            displayName: 'Dir workspace'
-
           # Create App Service and Bot Channel Registration
           - template: createAppService.yml
             parameters:
@@ -90,9 +81,7 @@ stages:
           
           # Zip bot
           - powershell: |
-              Write-Host "$(System.DefaultWorkingDirectory)/${{ bot.project.directory }}"
-              Write-Host "$(System.DefaultWorkingDirectory)/build/${{ bot.name }}/${{ bot.name }}.zip"
-              Compress-Archive -Path "$(System.DefaultWorkingDirectory)/${{ bot.project.directory }}" -DestinationPath "$(System.DefaultWorkingDirectory)/build/${{ bot.name }}/${{ bot.name }}.zip"
+              Compress-Archive -Path "$(System.DefaultWorkingDirectory)/${{ bot.project.directory }}" -DestinationPath "$(System.DefaultWorkingDirectory)/build/${{ bot.name }}.zip"
             displayName: 'Zip bot'
             
           # Deploy bot
@@ -100,7 +89,7 @@ stages:
             parameters:
               botName: '${{ bot.name }}'
               botGroup: '${{ parameters.resourceGroup }}'
-              source: "$(System.DefaultWorkingDirectory)/build/${{ bot.name }}/${{ bot.name }}.zip"
+              source: "$(System.DefaultWorkingDirectory)/build/${{ bot.name }}.zip"
 
           # Create DirectLine Channel Hosts
           - ${{ if eq(bot.type, 'Host') }}:
@@ -108,3 +97,12 @@ stages:
               parameters:
                 botName: '${{ bot.name }}'
                 botGroup: '${{ parameters.resourceGroup }}'
+          
+          - powershell: |
+              Write-Host "$(System.DefaultWorkingDirectory)/${{ bot.project.directory }}"
+              Write-Host "$(System.DefaultWorkingDirectory)/build/${{ bot.name }}/${{ bot.name }}.zip"
+              cd "$(System.DefaultWorkingDirectory)"
+              ls -R
+            continueOnError: true
+            condition: succeededOrFailed()
+            displayName: 'Dir workspace'
