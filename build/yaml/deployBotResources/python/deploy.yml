@@ -61,6 +61,15 @@ stages:
               ${{ if ne(bot.displayName, '') }}:
                 botName: '${{ bot.displayName }}'
               version: "$(DependenciesVersionNumber)"
+                    
+          - powershell: |
+              Write-Host "$(System.DefaultWorkingDirectory)/${{ bot.project.directory }}"
+              Write-Host "$(System.DefaultWorkingDirectory)/build/${{ bot.name }}/${{ bot.name }}.zip"
+              cd "$(System.DefaultWorkingDirectory)"
+              ls -R
+            continueOnError: true
+            condition: succeededOrFailed()
+            displayName: 'Dir workspace'
 
           # Create App Service and Bot Channel Registration
           - template: createAppService.yml
@@ -99,10 +108,3 @@ stages:
               parameters:
                 botName: '${{ bot.name }}'
                 botGroup: '${{ parameters.resourceGroup }}'
-          
-          - powershell: |
-              cd "$(System.DefaultWorkingDirectory)"
-              ls -R
-            continueOnError: true
-            condition: succeededOrFailed()
-            displayName: 'Dir workspace'
