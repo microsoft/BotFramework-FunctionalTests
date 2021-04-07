@@ -79,20 +79,6 @@ stages:
                 botName: '${{ bot.name }}'
                 botGroup: '${{ parameters.resourceGroup }}'
           
-          - task: UsePythonVersion@0
-            displayName: Use Python version
-            inputs:
-              versionSpec: '3.8.x'
-
-          - task: Bash@3
-            displayName: Install dependencies
-            inputs:
-              targetType: 'inline'
-              script: |
-                python -m pip install --upgrade pip;
-                find ./Bots -type f -name "requirements.txt" -exec pip install -r "{}" \;
-              failOnStderr: true
-          
           # Zip bot
           - powershell: |
               Compress-Archive -Path "$(System.DefaultWorkingDirectory)/${{ bot.project.directory }}/*" -DestinationPath "$(System.DefaultWorkingDirectory)/build/${{ bot.name }}.zip" -verbose
