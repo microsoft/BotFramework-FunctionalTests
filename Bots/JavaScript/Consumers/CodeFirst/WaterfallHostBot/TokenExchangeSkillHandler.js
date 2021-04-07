@@ -12,119 +12,115 @@ const WATERFALL_SKILL_BOT = 'WaterfallSkillBot';
  * A SkillHandler specialized to support SSO Token exchanges.
  */
 class TokenExchangeSkillHandler extends SkillHandler {
-    constructor(adapter, bot, conversationIdFactory,skillsConfig, skillClient,
-        credentialProvider, authConfig, channelProvider = null, logger = null) {
-            super(adapter, bot, SkillConversationIdFactory, credentialProvider, authConfig, channelProvider)
+  constructor (adapter, bot, conversationIdFactory, skillsConfig, skillClient,
+    credentialProvider, authConfig, channelProvider = null, logger = null) {
+    super(adapter, bot, SkillConversationIdFactory, credentialProvider, authConfig, channelProvider);
+    this.adapter = adapter;
+    this.tokenExchangeProvider = adapter;
 
-            this.adapter = adapter;
-            this.tokenExchangeProvider = adapter;
+    if (!this.tokenExchangeProvider) {
+      throw new Error(`${adapter} does not support token exchange`);
+    }
 
-            if (!this.tokenExchangeProvider) {
-                throw new Error(`${adapter} does not support token exchange`);
+    this.skillsConfig = skillsConfig;
+    this.skillClient = skillClient;
+    this.conversationIdFactory = conversationIdFactory;
+    this.logger = logger;
+    this.botId = process.env.MicrosoftAppId;
+  }
+
+  async onSendToConversation (claimsIdentity, conversationId, activity) {
+    if (await this.interceptOAuthCards(claimsIdentity, activity)) {
+      return { id: v4() };
+    }
+
+    return await super.onSendToConversation(claimsIdentity, conversationId, activity);
+  }
+
+  async onReplyToActivity (claimsIdentity, conversationId, activityId, activity) {
+    if (await this.interceptOAuthCards(claimsIdentity, activity)) {
+      return { id: v4() };
+    }
+
+    return await super.onReplyToActivity(claimsIdentity, conversationId, activityId, activity);
+  }
+
+  getCallingSkill (claimsIdentity) {
+    const appId = JwtTokenValidation.getAppIdFromClaims(claimsIdentity.claims);
+
+    if (!appId) {
+      return null;
+    }
+
+    return Object.values(this.skillsConfig.skills).find(s => s.appId === appId);
+  }
+
+  async interceptOAuthCards (claimsIdentity, activity) {
+    const oauthCardAttachment = activity.attachments ? activity.attachments.find(att => att.contentType === CardFactory.contentTypes.oauthCard) : null;
+    if (oauthCardAttachment) {
+      const targetSkill = this.getCallingSkill(claimsIdentity);
+      if (targetSkill) {
+        const oauthCard = oauthCardAttachment.content;
+
+        if (oauthCard.tokenExchangeResource.uri) {
+          const context = new TurnContext(this.adapter, activity);
+          context.turnState.push('BotIdentity', claimsIdentity);
+
+          // We need to know what connection name to use for the token exchange so we figure that out here
+          const connectionName = targetSkill.id.includes(WATERFALL_SKILL_BOT) ? process.env.SsoConnectionName : process.env.SsoConnectionNameTeams;
+
+          if (!connectionName) {
+            throw new Error('The connection name cannot be null.');
+          }
+
+          // AAD token exchange
+          try {
+            const result = await this.tokenExchangeProvider.exchangeToken(
+              context,
+              connectionName,
+              activity.recipient.id,
+              { uri: oauthCard.tokenExchangeResource.uri }
+            );
+
+            if (result.token) {
+              // If token above is null, then SSO has failed and hence we return false.
+              // If not, send an invoke to the skill with the token.
+              return await this.sendTokenExchangeInvokeToSkill(activity, oauthCard.tokenExchangeResource.id, result.token, oauthCard.connectionName, targetSkill);
             }
+          } catch (exception) {
+            // Show oauth card if token exchange fails.
+            this.logger.log('Unable to exchange token.', exception);
+            return false;
+          }
 
-            this.skillsConfig = skillsConfig;
-            this.skillClient = skillClient;
-            this.conversationIdFactory = conversationIdFactory;
-            this.logger = logger;
-            this.botId = process.env.MicrosoftAppId;
+          return false;
         }
-
-    async onSendToConversation(claimsIdentity, conversationId, activity) {
-        if (await this.interceptOAuthCards(claimsIdentity, activity)) {
-            return { id: v4() };
-        }
-
-        return await super.onSendToConversation(claimsIdentity, conversationId, activity);
+      }
     }
 
-    async onReplyToActivity(claimsIdentity, conversationId, activityId, activity) {
-        if (await this.interceptOAuthCards(claimsIdentity, activity))
-        {
-            return { id: v4() };
-        }
+    return false;
+  }
 
-        return await super.onReplyToActivity(claimsIdentity, conversationId, activityId, activity);
-    }
+  async sendTokenExchangeInvokeToSkill (incomingActivity, id, token, connectionName, targetSkill) {
+    const activity = ActivityEx.createReply(incomingActivity);
+    activity.type = ActivityTypes.Invoke;
+    activity.name = tokenExchangeOperationName;
+    activity.value = {
+      id: id,
+      token: token,
+      connectionName: connectionName
+    };
 
-     getCallingSkill(claimsIdentity) {
-        var appId = JwtTokenValidation.getAppIdFromClaims(claimsIdentity.claims);
+    const skillConversationReference = await this.conversationIdFactory.getSkillConversationReference(incomingActivity.conversation.id);
+    activity.conversation = incomingActivity.conversation;
+    activity.serviceUrl = skillConversationReference.conversationReference.serviceUrl;
 
-        if (!appId) {
-            return null;
-        }
+    // Route the activity to the skill
+    const response = await this.skillClient.postActivity(this.botId, targetSkill.appId, targetSkill.skillEndpoint, this.skillsConfig.skillHostEndpoint, activity.conversation.id, activity);
 
-        return Object.values(this.skillsConfig.skills).find(s => s.appId === appId);
-    }
-
-    async interceptOAuthCards(claimsIdentity, activity) {
-        var oauthCardAttachment = activity.attachments ? activity.attachments.find(att => att.contentType === CardFactory.contentTypes.oauthCard) : null;
-        if (oauthCardAttachment) {
-            var targetSkill = this.getCallingSkill(claimsIdentity);
-            if (targetSkill) {
-                var oauthCard = oauthCardAttachment.content;
-
-                if (oauthCard.tokenExchangeResource.uri) {
-                    var context = new TurnContext(this.adapter, activity)
-                    context.turnState.push('BotIdentity', claimsIdentity);
-
-                    // We need to know what connection name to use for the token exchange so we figure that out here
-                    var connectionName = targetSkill.id.includes(WATERFALL_SKILL_BOT) ? process.env.SsoConnectionName : process.env.SsoConnectionNameTeams;
-                    
-                    if (!connectionName) {
-                        throw new Error("The connection name cannot be null.");
-                    }
-
-                    // AAD token exchange
-                    try {
-                        var result = await this.tokenExchangeProvider.exchangeToken(
-                            context,
-                            connectionName,
-                            activity.recipient.id,
-                            { uri: oauthCard.tokenExchangeResource.uri }
-                        );
-
-                        if (result.token) {
-                            // If token above is null, then SSO has failed and hence we return false.
-                            // If not, send an invoke to the skill with the token. 
-                            return await this.sendTokenExchangeInvokeToSkill(activity, oauthCard.tokenExchangeResource.id, result.token, oauthCard.connectionName, targetSkill);
-                        }
-                    }
-                    catch (exception) {
-                        // Show oauth card if token exchange fails.
-                        this.logger.log("Unable to exchange token.", exception);
-                        return false;
-                    }
-
-                    return false;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    async sendTokenExchangeInvokeToSkill(incomingActivity, id, token, connectionName, targetSkill)
-    {
-        var activity = ActivityEx.createReply(incomingActivity);
-        activity.type = ActivityTypes.Invoke;
-        activity.name = tokenExchangeOperationName;
-        activity.value = {
-            id: id,
-            token: token,
-            connectionName: connectionName
-        }
-
-        var skillConversationReference = await this.conversationIdFactory.getSkillConversationReference(incomingActivity.conversation.id);
-        activity.conversation = incomingActivity.conversation;
-        activity.serviceUrl = skillConversationReference.conversationReference.serviceUrl;
-
-        // route the activity to the skill
-        var response = await this.skillClient.postActivity(this.botId, targetSkill.appId, targetSkill.skillEndpoint, this.skillsConfig.skillHostEndpoint, activity.conversation.id, activity);
-
-        // Check response status: true if success, false if failure
-        return response.status >= 200 && response.status <= 299;
-    }
+    // Check response status: true if success, false if failure
+    return response.status >= 200 && response.status <= 299;
+  }
 }
 
 module.exports.TokenExchangeSkillHandler = TokenExchangeSkillHandler;
