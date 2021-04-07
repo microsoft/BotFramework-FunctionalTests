@@ -83,7 +83,9 @@ steps:
           @{ appName = "bffnwaterfallhostbotjs"; variables = @{ appId = "BffnWaterfallHostBotJSAppId"; appSecret = "BffnWaterfallHostBotJSAppSecret"; objectId = "BffnWaterfallHostBotJSAppObjectId" }},
           @{ appName = "bffnwaterfallskillbotjs"; variables = @{ appId = "BffnWaterfallSkillBotJSAppId"; appSecret = "BffnWaterfallSkillBotJSAppSecret"; objectId = "BffnWaterfallSkillBotJSAppObjectId" }},
           @{ appName = "bffnsimplehostbotpython"; variables = @{ appId = "BffnSimpleHostBotPythonAppId"; appSecret = "BffnSimpleHostBotPythonAppSecret"; objectId = "BffnSimpleHostBotPythonAppObjectId" }},
-          @{ appName = "bffnechoskillbotpython"; variables = @{ appId = "BffnEchoSkillBotPythonAppId"; appSecret = "BffnEchoSkillBotPythonAppSecret"; objectId = "BffnEchoSkillBotPythonAppObjectId" }}
+          @{ appName = "bffnechoskillbotpython"; variables = @{ appId = "BffnEchoSkillBotPythonAppId"; appSecret = "BffnEchoSkillBotPythonAppSecret"; objectId = "BffnEchoSkillBotPythonAppObjectId" }},
+          @{ appName = "bffnwaterfallhostbotpython"; variables = @{ appId = "BffnWaterfallHostBotPythonAppId"; appSecret = "BffnWaterfallHostBotPythonAppSecret"; objectId = "BffnWaterfallHostBotPythonAppObjectId" }},
+          @{ appName = "bffnwaterfallskillbotpython"; variables = @{ appId = "BffnWaterfallSkillBotPythonAppId"; appSecret = "BffnWaterfallSkillBotPythonAppSecret"; objectId = "BffnWaterfallSkillBotPythonAppObjectId" }}
         )
 
         $token = GetToken;
