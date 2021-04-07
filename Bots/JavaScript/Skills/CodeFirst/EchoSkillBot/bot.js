@@ -15,8 +15,7 @@ class EchoBot extends ActivityHandler {
           type: ActivityTypes.EndOfConversation,
           code: EndOfConversationCodes.CompletedSuccessfully
         });
-      }
-      else {
+      } else {
         await context.sendActivity(`Echo: ${context.activity.text}`);
         await context.sendActivity('Say "end" or "stop" and I\'ll end the conversation and back to the parent.');
       }
