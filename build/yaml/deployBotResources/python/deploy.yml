@@ -88,7 +88,7 @@ stages:
           # Install prerequisites
           - script: |
               python -m venv antenv
-              source antenv/bin/activate
+               .\antenv\Scripts\Activate.ps1
               python -m pip install --upgrade pip
               pip install setup
               pip install gunicorn
@@ -100,6 +100,11 @@ stages:
           - powershell: |
               Compress-Archive -Path "$(System.DefaultWorkingDirectory)/${{ bot.project.directory }}/*" -DestinationPath "$(System.DefaultWorkingDirectory)/build/${{ bot.name }}.zip" -verbose
             displayName: 'Zip bot'
+
+          # Upload zip to artifacts in case we want to debug it
+          - publish: "$(System.DefaultWorkingDirectory)/build/${{ bot.name }}.zip"
+            displayName: 'Upload zip package'
+            artifact: drop
             
           # Deploy bot
           - template: ../common/zipDeploy.yml
