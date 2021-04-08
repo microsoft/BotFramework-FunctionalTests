@@ -78,14 +78,26 @@ stages:
                 appSecret:  $(AppSecret)
                 botName: '${{ bot.name }}'
                 botGroup: '${{ parameters.resourceGroup }}'
+
+          # Set Python version
+          - task: UsePythonVersion@0
+            displayName: Set python version to 3.8.x
+            inputs:
+              versionSpec: '3.8.x'
           
+          # Install prerequisites
+          - script: |
+              python -m venv antenv
+              source antenv/bin/activate
+              python -m pip install --upgrade pip
+              pip install setup
+              pip install gunicorn
+              pip install -r requirements.txt           
+            workingDirectory: $(System.DefaultWorkingDirectory)/${{ bot.project.directory }}
+            displayName: "Install prerequisites"
+
           # Zip bot
           - powershell: |
-              cd "$(System.DefaultWorkingDirectory)/${{ bot.project.directory }}"
-              python -m venv ./venv
-              .\venv\Scripts\Activate.ps1
-              pip install -r .\requirements.txt
-              deactivate
               Compress-Archive -Path "$(System.DefaultWorkingDirectory)/${{ bot.project.directory }}/*" -DestinationPath "$(System.DefaultWorkingDirectory)/build/${{ bot.name }}.zip" -verbose
             displayName: 'Zip bot'
             
