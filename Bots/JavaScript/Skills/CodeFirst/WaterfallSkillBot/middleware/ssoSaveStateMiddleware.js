@@ -29,7 +29,7 @@ class SsoSaveStateMiddleware {
    */
   async outgoingHandler (turnContext, activities, next) {
     for (const activity of activities) {
-      if (activity.attachments && activity.attachments.some(attachment => attachment.contentType === CardFactory.contentTypes.oauthCard)) {
+      if (!!activity.attachments && activity.attachments.some(attachment => attachment.contentType === CardFactory.contentTypes.oauthCard)) {
         this.conversationState.saveChanges(turnContext);
       }
     }
