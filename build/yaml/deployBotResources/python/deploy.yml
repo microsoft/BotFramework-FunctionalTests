@@ -42,16 +42,16 @@ stages:
               displayName: 'Prepare .env file'
 
           # Evaluate dependencies source and version
-          #- template: evaluateDependenciesVariables.yml
-          #  parameters:
-          #    ${{ if eq(bot.type, 'Host') }}:
-          #      registry: "$env:DependenciesRegistryHosts"
-          #      version: "$env:DependenciesVersionHosts"
-          #    ${{ if eq(bot.type, 'Skill') }}:
-          #      registry: "$env:DependenciesRegistrySkills"
-          #      version: "$env:DependenciesVersionSkills"
-          #    botType: '${{ bot.type }}'
-          #    project: '${{ bot.project }}'
+          - template: evaluateDependenciesVariables.yml
+            parameters:
+              ${{ if eq(bot.type, 'Host') }}:
+                registry: "$env:DependenciesRegistryHosts"
+                version: "$env:DependenciesVersionHosts"
+              ${{ if eq(bot.type, 'Skill') }}:
+                registry: "$env:DependenciesRegistrySkills"
+                version: "$env:DependenciesVersionSkills"
+              botType: '${{ bot.type }}'
+              project: '${{ bot.project }}'
 
           # Tag BotBuilder package version
           - template: ../common/tagBotBuilderVersion.yml
