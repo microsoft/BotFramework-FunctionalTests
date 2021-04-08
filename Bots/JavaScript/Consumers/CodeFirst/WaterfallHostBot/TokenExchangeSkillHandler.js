@@ -52,11 +52,11 @@ class TokenExchangeSkillHandler extends SkillHandler {
       return null;
     }
 
-    return Object.values(this.skillsConfig.skills).find(s => s.appId === appId);
+    return Object.values(this.skillsConfig.skills).find(skill => skill.appId === appId);
   }
 
   async interceptOAuthCards (claimsIdentity, activity) {
-    const oauthCardAttachment = activity.attachments ? activity.attachments.find(att => att.contentType === CardFactory.contentTypes.oauthCard) : null;
+    const oauthCardAttachment = activity.attachments ? activity.attachments.find(attachment => attachment.contentType === CardFactory.contentTypes.oauthCard) : null;
     if (oauthCardAttachment) {
       const targetSkill = this.getCallingSkill(claimsIdentity);
       if (targetSkill) {
@@ -92,8 +92,6 @@ class TokenExchangeSkillHandler extends SkillHandler {
             this.logger.log('Unable to exchange token.', exception);
             return false;
           }
-
-          return false;
         }
       }
     }
