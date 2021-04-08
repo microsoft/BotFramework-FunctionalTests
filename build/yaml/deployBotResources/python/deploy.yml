@@ -81,6 +81,11 @@ stages:
           
           # Zip bot
           - powershell: |
+              cd "$(System.DefaultWorkingDirectory)/${{ bot.project.directory }}"
+              python -m venv ./venv
+              .\venv\Scripts\Activate.ps1
+              pip install -r .\requirements.txt
+              deactivate
               Compress-Archive -Path "$(System.DefaultWorkingDirectory)/${{ bot.project.directory }}/*" -DestinationPath "$(System.DefaultWorkingDirectory)/build/${{ bot.name }}.zip" -verbose
             displayName: 'Zip bot'
             
@@ -91,13 +96,6 @@ stages:
               botGroup: '${{ parameters.resourceGroup }}'
               source: "$(System.DefaultWorkingDirectory)/build/${{ bot.name }}.zip"
 
-          # Deploy bot
-          - template: ../common/zipDeploy.yml
-            parameters:
-              botName: '${{ bot.name }}'
-              botGroup: '${{ parameters.resourceGroup }}'
-              source: "$(System.DefaultWorkingDirectory)/build/${{ bot.name }}.zip"
-              
           # Create DirectLine Channel Hosts
           - ${{ if eq(bot.type, 'Host') }}:
             - template: ../common/createDirectLine.yml
