@@ -7,7 +7,7 @@ const restify = require('restify');
 
 // Import required bot services.
 // See https://aka.ms/bot-services to learn more about the different parts of a bot.
-const { ActivityTypes, BotFrameworkAdapter, InputHints, MemoryStorage, ConversationState, UserState } = require('botbuilder');
+const { ActivityTypes, BotFrameworkAdapter, InputHints } = require('botbuilder');
 const { AuthenticationConfiguration } = require('botframework-connector');
 
 // Import required bot configuration.
@@ -16,7 +16,6 @@ dotenv.config({ path: ENV_FILE });
 
 // This bot's main dialog.
 const { EchoBot } = require('./bot');
-const { MainDialog } = require('./dialogs/mainDialog');
 const { allowedCallersClaimsValidator } = require('./authentication/allowedCallersClaimsValidator');
 
 // Create HTTP server
@@ -69,20 +68,8 @@ adapter.onTurnError = async (context, error) => {
   await context.sendActivity(endOfConversation);
 };
 
-// Define the state store for your bot.
-// See https://aka.ms/about-bot-state to learn more about using MemoryStorage.
-// A bot requires a state storage system to persist the dialog and user state between messages.
-const memoryStorage = new MemoryStorage();
-
-// Create conversation and user state with in-memory storage provider.
-const conversationState = new ConversationState(memoryStorage);
-const userState = new UserState(memoryStorage);
-
-// Create the main dialog.
-const dialog = new MainDialog();
-
 // Create the bot that will handle incoming messages.
-const myBot = new EchoBot(conversationState, userState, dialog);
+const myBot = new EchoBot();
 
 // Listen for incoming requests.
 server.post('/api/messages', (req, res) => {
