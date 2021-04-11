@@ -13,6 +13,8 @@ stages:
     dependsOn: '${{ parameters.dependsOn }}'
     jobs:
       - job: 'Deploy'
+#        pool:
+#          vmImage: 'ubuntu-latest'
         displayName: 'Deploy steps'
         steps:
           # Delete Bot Resources
@@ -20,6 +22,7 @@ stages:
             parameters:
               resourceGroup: '${{ parameters.resourceGroup }}'
               resourceName: '${{ bot.name }}'
+            enabled: false
 
           # Gets Bot App Registration credentials from KeyVault or Pipeline Variables
           - template: ../common/getAppRegistration.yml
@@ -69,6 +72,7 @@ stages:
               appSecret:  $(AppSecret)
               botName: '${{ bot.name }}'
               botGroup: '${{ parameters.resourceGroup }}'
+            enabled: false
 
           # Configure OAuth
           - ${{ if eq(bot.type, 'Skill') }}:
@@ -89,7 +93,7 @@ stages:
           - task: ArchiveFiles@2
             displayName: 'Zip bot'
             inputs:
-              rootFolderOrFile: '$(System.DefaultWorkingDirectory)/${{ bot.project.directory }}/*'
+              rootFolderOrFile: '$(System.DefaultWorkingDirectory)/${{ bot.project.directory }}'
               includeRootFolder: false
               archiveType: 'zip'
               archiveFile: '$(System.DefaultWorkingDirectory)/build/${{ bot.name }}.zip'
