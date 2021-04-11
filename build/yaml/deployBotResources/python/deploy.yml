@@ -18,11 +18,10 @@ stages:
         displayName: 'Deploy steps'
         steps:
           # Delete Bot Resources
-          - template: ../common/deleteResources.yml
-            parameters:
-              resourceGroup: '${{ parameters.resourceGroup }}'
-              resourceName: '${{ bot.name }}'
-            enabled: false
+          #- template: ../common/deleteResources.yml
+          #  parameters:
+          #    resourceGroup: '${{ parameters.resourceGroup }}'
+          #    resourceName: '${{ bot.name }}'
 
           # Gets Bot App Registration credentials from KeyVault or Pipeline Variables
           - template: ../common/getAppRegistration.yml
@@ -66,13 +65,12 @@ stages:
               version: "$(DependenciesVersionNumber)"
                     
           # Create App Service and Bot Channel Registration
-          - template: createAppService.yml
-            parameters:
-              appId: $(AppId)
-              appSecret:  $(AppSecret)
-              botName: '${{ bot.name }}'
-              botGroup: '${{ parameters.resourceGroup }}'
-            enabled: false
+          #- template: createAppService.yml
+          #  parameters:
+          #    appId: $(AppId)
+          #    appSecret:  $(AppSecret)
+          #    botName: '${{ bot.name }}'
+          #    botGroup: '${{ parameters.resourceGroup }}'
 
           # Configure OAuth
           - ${{ if eq(bot.type, 'Skill') }}:
