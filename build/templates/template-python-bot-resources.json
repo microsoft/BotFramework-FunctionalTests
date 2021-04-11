@@ -42,7 +42,7 @@
   "resources": [
     {
       "type": "Microsoft.Web/sites",
-      "apiVersion": "2018-11-01",
+      "apiVersion": "2020-09-01",
       "name": "[parameters('botName')]",
       "location": "[parameters('botLocation')]",
       "kind": "app,linux",
@@ -62,17 +62,12 @@
         ],
         "serverFarmId": "[concat('/subscriptions/', subscription().id,'/resourcegroups/', parameters('appServicePlanResourceGroup'), '/providers/Microsoft.Web/serverfarms/', parameters('appServicePlanName'))]",
         "reserved": true,
-        "isXenon": false,
         "hyperV": false,
         "siteConfig": {
           "appSettings": [
             {
               "name": "SCM_DO_BUILD_DURING_DEPLOYMENT",
               "value": "true"
-            },
-            {
-              "name": "WEBSITE_RUN_FROM_PACKAGE",
-              "value": "1"
             },
             {
               "name": "MicrosoftAppId",
@@ -86,22 +81,20 @@
           "webSocketsEnabled": true
         },
         "scmSiteAlsoStopped": false,
-        "clientAffinityEnabled": false,
-        "clientCertEnabled": false,
+        "clientAffinityEnabled": true,
         "hostNamesDisabled": false,
-        "containerSize": 0,
-        "dailyMemoryTimeQuota": 0,
+        "clientCertEnabled": false,
         "httpsOnly": false,
         "redundancyMode": "None"
       }
     },
     {
       "type": "Microsoft.Web/sites/config",
-      "apiVersion": "2018-11-01",
+      "apiVersion": "2020-09-01",
       "name": "[concat(parameters('botName'), '/web')]",
       "location": "[parameters('botLocation')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/sites/', parameters('botName'))]"
+        "[resourceId('Microsoft.Web/sites', parameters('botName'))]"
       ],
       "properties": {
         "numberOfWorkers": 1,
@@ -126,7 +119,7 @@
         "publishingUsername": "[variables('publishingUsername')]",
         "scmType": "None",
         "use32BitWorkerProcess": true,
-        "webSocketsEnabled": false,
+        "webSocketsEnabled": true,
         "alwaysOn": true,
         "appCommandLine": "gunicorn --bind 0.0.0.0 --worker-class aiohttp.worker.GunicornWebWorker --timeout 600 app:APP",
         "managedPipelineMode": "Integrated",
@@ -177,7 +170,7 @@
     },
     {
       "type": "Microsoft.Web/sites/hostNameBindings",
-      "apiVersion": "2018-11-01",
+      "apiVersion": "2020-09-01",
       "name": "[concat(parameters('botName'), '/', parameters('botName'), '.azurewebsites.net')]",
       "location": "[parameters('botLocation')]",
       "dependsOn": [
@@ -198,7 +191,7 @@
         "name": "[parameters('botSku')]"
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Web/sites/', parameters('botName'))]"
+        "[resourceId('Microsoft.Web/sites', parameters('botName'))]"
       ],
       "properties": {
         "name": "[parameters('botName')]",
