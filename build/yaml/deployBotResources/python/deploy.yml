@@ -101,7 +101,7 @@ stages:
             displayName: 'Publish zip package'
             inputs:
               pathToPublish: '$(System.DefaultWorkingDirectory)/build/${{ bot.name }}.zip'
-              artifactName: python
+              artifactName: python-$(Build.BuildId)
             
           # Deploy bot
           - task: AzureWebApp@1
@@ -111,7 +111,7 @@ stages:
               appName: '${{ bot.name }}-$(Build.BuildId)'
               resourceGroupName: '${{ parameters.resourceGroup }}'
               package: '$(System.DefaultWorkingDirectory)/build/${{ bot.name }}.zip'
-              deploymentMethod: zipDeploy
+              deploymentMethod: runFromPackage
 
           # Create DirectLine Channel Hosts
           - ${{ if eq(bot.type, 'Host') }}:
