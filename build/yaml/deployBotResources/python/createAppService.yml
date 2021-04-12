@@ -13,9 +13,10 @@ steps:
       scriptLocation: inlineScript
       inlineScript: |
         Set-PSDebug -Trace 1;
-        Write-Host $(BotPricingTier)
 
-        $botPricingTier = if($(BotPricingTier)) { "botSku=$(BotPricingTier)" };
+        $botPricingTier = if("$(BotPricingTier)") { "botSku=$(BotPricingTier)" };
+
+        Write-Host $botPricingTier
 
         az deployment group create --resource-group "${{ parameters.botGroup }}" --name "${{ parameters.botName }}$($env:ResourceSuffix)-$(Build.BuildId)" --template-file "build/templates/template-python-bot-resources.json" --parameters $botPricingTier botLocation="westus" appId="${{ parameters.appId }}" appSecret="${{ parameters.appSecret }}" botName="${{ parameters.botName }}$($env:ResourceSuffix)-$(Build.BuildId)" appServicePlanName="$(InternalAppServicePlanLinuxName)" appServicePlanResourceGroup="$(InternalAppServicePlanLinuxResourceGroupName)";
 
