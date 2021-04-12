@@ -35,6 +35,7 @@ stages:
               - task: AzureCLI@2
                 displayName: 'Prepare .env file'
                 inputs:
+                  azureSubscription: $(AzureSubscription)
                   scriptType: pscore
                   scriptLocation: inlineScript
                   inlineScript: |
