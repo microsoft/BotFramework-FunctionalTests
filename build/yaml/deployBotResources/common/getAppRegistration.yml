@@ -16,8 +16,8 @@ steps:
         $source = "";
 
         if ([string]::IsNullOrEmpty("${{ parameters.appId }}")) {
-          $source = "KeyVault '$(KeyVault)'";
-          $entries = az keyvault secret list --vault-name "$(KeyVault)" | ConvertFrom-Json | Where-Object {$_.name -like "${{ parameters.botName }}*"};
+          $source = "KeyVault '$(InternalKeyVaultName)'";
+          $entries = az keyvault secret list --vault-name "$(InternalKeyVaultName)" | ConvertFrom-Json | Where-Object {$_.name -like "${{ parameters.botName }}*"};
 
           foreach ($entry in $entries) {
             $secretVault = az keyvault secret show --id $entry.id | ConvertFrom-Json;

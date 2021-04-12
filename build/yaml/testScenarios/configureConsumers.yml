@@ -18,9 +18,9 @@ steps:
 
         # Bots Resource Groups
         $groups = @{
-          DotNet = "$(ResourceGroup)-DotNet"
-          JS     = "$(ResourceGroup)-JS"
-          Python = "$(ResourceGroup)-Python"
+          DotNet = "$(InternalResourceGroupName)-DotNet"
+          JS     = "$(InternalResourceGroupName)-JS"
+          Python = "$(InternalResourceGroupName)-Python"
         }
 
         # Bots Settings
@@ -56,8 +56,20 @@ steps:
               configType    = $types.Env
           }
           @{
+              key           = 'WaterfallHostBotJS'
+              botName       = 'bffnwaterfallhostbotjs'
+              resourceGroup = $groups.JS
+              configType    = $types.Env
+          }
+          @{
               key           = 'SimpleHostBotPython'
               botName       = 'bffnsimplehostbotpython'
+              resourceGroup = $groups.Python
+              configType    = $types.Env
+          }
+          @{
+              key           = 'WaterfallHostBotPython'
+              botName       = 'bffnwaterfallhostbotpython'
               resourceGroup = $groups.Python
               configType    = $types.Env
           }
@@ -121,12 +133,28 @@ steps:
               group = 'Echo'
           }
           @{
+              key           = 'WaterfallSkillBotJS'
+              keyComposer   = 'waterfallSkillBotJS' 
+              botName       = 'bffnwaterfallskillbotjs'
+              appId         = "$env:BffnWaterfallSkillBotJSAppId"
+              resourceGroup = $groups.JS
+              group = 'Waterfall'
+          }
+          @{
               key           = 'EchoSkillBotPython'
               keyComposer   = 'echoSkillBotPython' 
               botName       = 'bffnechoskillbotpython'
               appId         = "$env:BffnEchoSkillBotPythonAppId"
               resourceGroup = $groups.Python
               group = 'Echo'
+          }
+          @{
+              key           = 'WaterfallSkillBotPython'
+              keyComposer   = 'waterfallSkillBotPython' 
+              botName       = 'bffnwaterfallskillbotpython'
+              appId         = "$env:BffnWaterfallSkillBotPythonAppId"
+              resourceGroup = $groups.Python
+              group = "Waterfall"
           }
         )
 
@@ -154,10 +182,14 @@ steps:
           @{ 
               name      = 'Waterfall'; 
               consumers = @(
-                'WaterfallHostBotDotNet'
+                'WaterfallHostBotDotNet',
+                'WaterfallHostBotJS',
+                'WaterfallHostBotPython'
               );
               skills    = @(
-                'WaterfallSkillBotDotNet'
+                'WaterfallSkillBotDotNet',
+                'WaterfallSkillBotJS',
+                'WaterfallSkillBotPython'
               );
           }
         )
@@ -167,7 +199,7 @@ steps:
           if(-not [string]::IsNullOrEmpty($skill.appId)){
             continue;
           }
-          $entry = az keyvault secret list --vault-name "$(KeyVault)" --query "[?name == 'Bffn$($skill.key)AppId']" | ConvertFrom-Json;
+          $entry = az keyvault secret list --vault-name "$(InternalKeyVaultName)" --query "[?name == 'Bffn$($skill.key)AppId']" | ConvertFrom-Json;
           $secretVault = az keyvault secret show --id $entry.id | ConvertFrom-Json;
           $skill.appId = $secretVault.value;
         }

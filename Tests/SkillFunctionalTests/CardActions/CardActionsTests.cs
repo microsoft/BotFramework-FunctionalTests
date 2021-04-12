@@ -39,20 +39,20 @@ namespace SkillFunctionalTests.CardActions
             var hostBots = new List<HostBot>
             {
                 HostBot.WaterfallHostBotDotNet,
+                HostBot.WaterfallHostBotJS,
+                HostBot.WaterfallHostBotPython,
 
-                // TODO: Enable these when the ports to JS, Python and composer are ready
-                //HostBotNames.WaterfallHostBotJS,
-                //HostBotNames.WaterfallHostBotPython,
-                //HostBotNames.ComposerHostBotDotNet
+                // TODO: Enable this when the port to composer is ready
+                //HostBot.ComposerHostBotDotNet
             };
 
             var targetSkills = new List<string>
             {
                 SkillBotNames.WaterfallSkillBotDotNet,
+                SkillBotNames.WaterfallSkillBotJS,
+                SkillBotNames.WaterfallSkillBotPython,
 
-                // TODO: Enable these when the ports to JS, Python and composer are ready
-                //SkillBotNames.WaterfallSkillBotJS,
-                //SkillBotNames.WaterfallSkillBotPython,
+                // TODO: Enable this when the port to composer is ready
                 //SkillBotNames.ComposerSkillBotDotNet
             };
 
@@ -74,7 +74,23 @@ namespace SkillFunctionalTests.CardActions
             };
 
             var testCaseBuilder = new TestCaseBuilder();
-            var testCases = testCaseBuilder.BuildTestCases(channelIds, deliverModes, hostBots, targetSkills, scripts);
+
+            // This local function is used to exclude ExpectReplies, O365 and WaterfallSkillBotPython test cases
+            static bool ShouldExclude(TestCase testCase)
+            {
+                if (testCase.Script == "O365.json")
+                {
+                    // BUG: O365 fails with ExpectReplies for WaterfallSkillBotPython (remove when https://github.com/microsoft/BotFramework-FunctionalTests/issues/328 is fixed).
+                    if (testCase.TargetSkill == SkillBotNames.WaterfallSkillBotPython && testCase.DeliveryMode == DeliveryModes.ExpectReplies)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            var testCases = testCaseBuilder.BuildTestCases(channelIds, deliverModes, hostBots, targetSkills, scripts, ShouldExclude);
             foreach (var testCase in testCases)
             {
                 yield return testCase;

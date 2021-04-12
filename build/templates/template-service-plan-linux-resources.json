@@ -39,12 +39,12 @@
     },
     "resources": [
         {
-            "comments": "Create a new Linux App Service Plan if no existing App Service Plan name was passed in.",
             "type": "Microsoft.Web/serverfarms",
-            "condition": "[not(variables('useExistingAppServicePlan'))]",
-            "name": "[variables('servicePlanName')]",
             "apiVersion": "2018-02-01",
+            "name": "[variables('servicePlanName')]",
             "location": "[variables('resourcesLocation')]",
+            "comments": "Create a new Linux App Service Plan if no existing App Service Plan name was passed in.",
+            "condition": "[not(variables('useExistingAppServicePlan'))]",
             "sku": {
                 "name": "[parameters('newAppServicePlanSku')]"
             },

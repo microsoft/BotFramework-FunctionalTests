@@ -4,7 +4,7 @@
     "parameters": {
         "appInsightsName": {
             "type": "string",
-            "defaultValue": "",
+            "defaultValue": "bffnappinsights",
             "metadata": {
                 "description": "The name of the Application Insights instance."
             }
@@ -19,12 +19,16 @@
     },
     "resources": [
         {
-            "apiVersion": "2015-05-01",
-            "name": "[parameters('appInsightsName')]",
             "type": "Microsoft.Insights/components",
+            "apiVersion": "2020-02-02-preview",
+            "name": "[parameters('appInsightsName')]",
             "location": "[parameters('location')]",
+            "kind": "web",
             "properties": {
-                "Application_Type":"web"
+                "Application_Type":"web",
+                "IngestionMode": "ApplicationInsights",
+                "publicNetworkAccessForIngestion": "Enabled",
+                "publicNetworkAccessForQuery": "Enabled"
             }
         }
     ]

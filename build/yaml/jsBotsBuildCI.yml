@@ -10,69 +10,27 @@ steps:
       verbose: false
       customFeed: b99a003e-8342-4082-978b-613db93df5b9
   - task: Npm@1
-    displayName: npm pack SimpleHostBot
-    inputs:
-      command: custom
-      workingDir: Bots/JavaScript/Consumers/CodeFirst/SimpleHostBot
-      verbose: false
-      customCommand: pack
-  - task: Npm@1
     displayName: npm install CardSkillBot
     inputs:
       workingDir: Bots/JavaScript/Skills/CodeFirst/CardSkillBot
       verbose: false
-  - task: Npm@1
-    displayName: npm pack CardSkillBot
-    inputs:
-      command: custom
-      workingDir: Bots/JavaScript/Skills/CodeFirst/CardSkillBot
-      verbose: false
-      customCommand: pack
   - task: Npm@1
     displayName: npm install EchoSkillBot
     inputs:
       workingDir: Bots/JavaScript/Skills/CodeFirst/EchoSkillBot
       verbose: false
   - task: Npm@1
-    displayName: npm pack EchoSkillBot
-    inputs:
-      command: custom
-      workingDir: Bots/JavaScript/Skills/CodeFirst/EchoSkillBot
-      verbose: false
-      customCommand: pack
-  - task: Npm@1
     displayName: npm install EchoSkillBot-v3
     inputs:
       workingDir: Bots/JavaScript/Skills/CodeFirst/EchoSkillBot-v3
       verbose: false
-  - task: Npm@1
-    displayName: npm pack EchoSkillBot-v3
-    inputs:
-      command: custom
-      workingDir: Bots/JavaScript/Skills/CodeFirst/EchoSkillBot-v3
-      verbose: false
-      customCommand: pack
   - task: Npm@1
     displayName: npm install MultiturnSkillBot
     inputs:
       workingDir: Bots/JavaScript/Skills/CodeFirst/MultiturnSkillBot
       verbose: false
   - task: Npm@1
-    displayName: npm pack MultiturnSkillBot
-    inputs:
-      command: custom
-      workingDir: Bots/JavaScript/Skills/CodeFirst/MultiturnSkillBot
-      verbose: false
-      customCommand: pack
-  - task: Npm@1
     displayName: npm install ProactiveSkillBot
     inputs:
       workingDir: Bots/JavaScript/Skills/CodeFirst/ProactiveSkillBot
       verbose: false
-  - task: Npm@1
-    displayName: npm pack ProactiveSkillBot
-    inputs:
-      command: custom
-      workingDir: Bots/JavaScript/Skills/CodeFirst/ProactiveSkillBot
-      verbose: false
-      customCommand: pack
