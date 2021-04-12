@@ -101,7 +101,7 @@ stages:
             displayName: 'Publish zip package'
             inputs:
               pathToPublish: '$(System.DefaultWorkingDirectory)/build/${{ bot.name }}.zip'
-              artifactName: ${{ bot.name }}
+              artifactName: drop
             
           # Deploy bot
           - task: AzureWebApp@1
