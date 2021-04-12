@@ -111,7 +111,7 @@ stages:
               appName: '${{ bot.name }}-$(Build.BuildId)'
               resourceGroupName: '${{ parameters.resourceGroup }}'
               package: '$(System.DefaultWorkingDirectory)/build/${{ bot.name }}.zip'
-              deploymentMethod: runFromPackage
+              deploymentMethod: zipDeploy
 
           # Create DirectLine Channel Hosts
           - ${{ if eq(bot.type, 'Host') }}:
