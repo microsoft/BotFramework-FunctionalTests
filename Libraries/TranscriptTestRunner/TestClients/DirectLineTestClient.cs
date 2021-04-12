@@ -181,65 +181,67 @@ namespace TranscriptTestRunner.TestClients
             var maxTries = _options.StartConversationMaxAttempts;
             while (tryCount < maxTries && !_activityQueue.Any() && !_futureQueue.Any())
             {
-                using var startConversationCts = new CancellationTokenSource(_options.StartConversationTimeout);
-                tryCount++;
-                try
+                using (var startConversationCts = new CancellationTokenSource(_options.StartConversationTimeout))
                 {
-                    _logger.LogDebug($"{DateTime.Now} Attempting to start conversation (try {tryCount} of {maxTries}).");
-
-                    // Obtain a token using the Direct Line secret
-                    var tokenInfo = await GetDirectLineTokenAsync().ConfigureAwait(false);
-
-                    // Ensure we dispose the client after the retries (this helps us make sure we get a new conversation ID on each try)
-                    _dlClient?.Dispose();
-
-                    // Create directLine client from token and initialize settings.
-                    _dlClient = new DirectLineClient(tokenInfo.Token);
-                    _dlClient.SetRetryPolicy(new RetryPolicy(new HttpStatusCodeErrorDetectionStrategy(), 0));
-
-                    // From now on, we'll add an Origin header in directLine calls, with 
-                    // the trusted origin we sent when acquiring the token as value.
-                    _dlClient.HttpClient.DefaultRequestHeaders.Add(_originHeader.Key, _originHeader.Value);
-
-                    // Start the conversation now (this will send a ConversationUpdate to the bot)
-                    _conversation = await _dlClient.Conversations.StartConversationAsync(startConversationCts.Token).ConfigureAwait(false);
-                    _logger.LogDebug($"{DateTime.Now} Got conversation ID {_conversation.ConversationId} from direct line client.");
-                    _logger.LogTrace($"{DateTime.Now} {Environment.NewLine}{JsonConvert.SerializeObject(_conversation, Formatting.Indented)}");
-
-                    // Ensure we dispose the _webSocketClient after the retries.
-                    _webSocketClient?.Dispose();
-
-                    // Initialize web socket client and listener
-                    _webSocketClient = new ClientWebSocket();
-                    await _webSocketClient.ConnectAsync(new Uri(_conversation.StreamUrl), startConversationCts.Token).ConfigureAwait(false);
-
-                    _logger.LogDebug($"{DateTime.Now} Connected to websocket, state is {_webSocketClient.State}.");
-
-                    // Block and wait for the first response to come in.
-                    ActivitySet activitySet = null;
-                    while (activitySet == null)
+                    tryCount++;
+                    try
                     {
-                        activitySet = await ReceiveActivityAsync(startConversationCts).ConfigureAwait(false);
-                        if (activitySet != null)
+                        _logger.LogDebug($"{DateTime.Now} Attempting to start conversation (try {tryCount} of {maxTries}).");
+
+                        // Obtain a token using the Direct Line secret
+                        var tokenInfo = await GetDirectLineTokenAsync().ConfigureAwait(false);
+
+                        // Ensure we dispose the client after the retries (this helps us make sure we get a new conversation ID on each try)
+                        _dlClient?.Dispose();
+
+                        // Create directLine client from token and initialize settings.
+                        _dlClient = new DirectLineClient(tokenInfo.Token);
+                        _dlClient.SetRetryPolicy(new RetryPolicy(new HttpStatusCodeErrorDetectionStrategy(), 0));
+
+                        // From now on, we'll add an Origin header in directLine calls, with 
+                        // the trusted origin we sent when acquiring the token as value.
+                        _dlClient.HttpClient.DefaultRequestHeaders.Add(_originHeader.Key, _originHeader.Value);
+
+                        // Start the conversation now (this will send a ConversationUpdate to the bot)
+                        _conversation = await _dlClient.Conversations.StartConversationAsync(startConversationCts.Token).ConfigureAwait(false);
+                        _logger.LogDebug($"{DateTime.Now} Got conversation ID {_conversation.ConversationId} from direct line client.");
+                        _logger.LogTrace($"{DateTime.Now} {Environment.NewLine}{JsonConvert.SerializeObject(_conversation, Formatting.Indented)}");
+
+                        // Ensure we dispose the _webSocketClient after the retries.
+                        _webSocketClient?.Dispose();
+
+                        // Initialize web socket client and listener
+                        _webSocketClient = new ClientWebSocket();
+                        await _webSocketClient.ConnectAsync(new Uri(_conversation.StreamUrl), startConversationCts.Token).ConfigureAwait(false);
+
+                        _logger.LogDebug($"{DateTime.Now} Connected to websocket, state is {_webSocketClient.State}.");
+
+                        // Block and wait for the first response to come in.
+                        ActivitySet activitySet = null;
+                        while (activitySet == null)
                         {
-                            ProcessActivitySet(activitySet);
+                            activitySet = await ReceiveActivityAsync(startConversationCts).ConfigureAwait(false);
+                            if (activitySet != null)
+                            {
+                                ProcessActivitySet(activitySet);
+                            }
+                            else
+                            {
+                                _logger.LogDebug($"{DateTime.Now} Got empty ActivitySet while attempting to start the conversation.");
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        if (tryCount < maxTries)
+                        {
+                            _logger.LogDebug($"{DateTime.Now} Failed to start conversation (attempt {tryCount} of {maxTries}), retrying...{Environment.NewLine}Exception{Environment.NewLine}{ex}");
                         }
                         else
                         {
-                            _logger.LogDebug($"{DateTime.Now} Got empty ActivitySet while attempting to start the conversation.");
+                            _logger.LogCritical($"{DateTime.Now} Failed to start conversation after {maxTries} attempts.{Environment.NewLine}Exception{Environment.NewLine}{ex}");
+                            throw;
                         }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    if (tryCount < maxTries)
-                    {
-                        _logger.LogDebug($"{DateTime.Now} Failed to start conversation (attempt {tryCount} of {maxTries}), retrying...{Environment.NewLine}Exception{Environment.NewLine}{ex}");
-                    }
-                    else
-                    {
-                        _logger.LogCritical($"{DateTime.Now} Failed to start conversation after {maxTries} attempts.{Environment.NewLine}Exception{Environment.NewLine}{ex}");
-                        throw;
                     }
                 }
             }
@@ -392,22 +394,7 @@ namespace TranscriptTestRunner.TestClients
                 "application/json");
 
             using var response = await client.SendAsync(request).ConfigureAwait(false);
-            try
-            {
-                response.EnsureSuccessStatusCode();
-            }
-            catch
-            {
-                // Log headers and body to help troubleshoot issues (the exception itself will be handled upstream).
-                var sb = new StringBuilder();
-                sb.AppendLine($"Failed to get a directline token (response status was: {response.StatusCode}");
-                sb.AppendLine("Response headers:");
-                sb.AppendLine(JsonConvert.SerializeObject(response.Headers, Formatting.Indented));
-                sb.AppendLine("Response body:");
-                sb.AppendLine(response.Content.ReadAsStringAsync().GetAwaiter().GetResult());
-                _logger.LogWarning(sb.ToString());
-                throw;
-            }
+            response.EnsureSuccessStatusCode();
 
             // Extract token from response
             var body = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
