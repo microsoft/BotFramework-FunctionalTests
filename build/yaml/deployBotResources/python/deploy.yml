@@ -13,6 +13,8 @@ stages:
     dependsOn: '${{ parameters.dependsOn }}'
     jobs:
       - job: 'Deploy'
+        pool:
+          vmImage: 'ubuntu-latest'
         displayName: 'Deploy steps'
         steps:
           # Delete Bot Resources
@@ -30,16 +32,32 @@ stages:
 
           # Prepare .env file, deleting all the declared skills, so it uses only the settings define in Azure
           - ${{ if eq(bot.type, 'Host') }}:
-            - powershell: |
-                $file = "${{ bot.project.directory }}/.env"
-                $content = Get-Content $file
-                $content | ForEach-Object {
-                  $line = $_
-                  if ($line.Trim().Length -gt 0 -and -not $line.Trim().ToLower().StartsWith('skill_')) {
-                    $line
-                  }
-                } | Set-Content $file;
-              displayName: 'Prepare .env file'
+              - task: AzureCLI@2
+                displayName: 'Prepare .env file'
+                inputs:
+                  scriptType: pscore
+                  scriptLocation: inlineScript
+                  inlineScript: |
+                    $file = "${{ bot.project.directory }}/.env"
+                    $content = Get-Content $file
+                    $content | ForEach-Object {
+                      $line = $_
+                      if ($line.Trim().Length -gt 0 -and -not $line.Trim().ToLower().StartsWith('skill_')) {
+                        $line
+                      }
+                    } | Set-Content $file;
+
+          #- ${{ if eq(bot.type, 'Host') }}:
+          #  - powershell: |
+          #      $file = "${{ bot.project.directory }}/.env"
+          #      $content = Get-Content $file
+          #      $content | ForEach-Object {
+          #        $line = $_
+          #        if ($line.Trim().Length -gt 0 -and -not $line.Trim().ToLower().StartsWith('skill_')) {
+          #          $line
+          #        }
+          #      } | Set-Content $file;
+          #    displayName: 'Prepare .env file'
 
           # Evaluate dependencies source and version
           - template: evaluateDependenciesVariables.yml
