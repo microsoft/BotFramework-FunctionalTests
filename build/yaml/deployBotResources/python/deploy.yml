@@ -48,18 +48,6 @@ stages:
                       }
                     } | Set-Content $file;
 
-          #- ${{ if eq(bot.type, 'Host') }}:
-          #  - powershell: |
-          #      $file = "${{ bot.project.directory }}/.env"
-          #      $content = Get-Content $file
-          #      $content | ForEach-Object {
-          #        $line = $_
-          #        if ($line.Trim().Length -gt 0 -and -not $line.Trim().ToLower().StartsWith('skill_')) {
-          #          $line
-          #        }
-          #      } | Set-Content $file;
-          #    displayName: 'Prepare .env file'
-
           # Evaluate dependencies source and version
           - template: evaluateDependenciesVariables.yml
             parameters:
@@ -109,7 +97,6 @@ stages:
                 python -m venv antenv
                 source antenv/bin/activate
                 python -m pip install --upgrade pip
-                pip install setup
                 pip install -r requirements.txt
             workingDirectory: $(System.DefaultWorkingDirectory)/${{ bot.project.directory }}
             displayName: "Install prerequisites"
