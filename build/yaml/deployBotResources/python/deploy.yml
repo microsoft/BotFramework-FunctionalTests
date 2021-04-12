@@ -94,14 +94,14 @@ stages:
               archiveType: 'zip'
               archiveFile: '$(System.DefaultWorkingDirectory)/build/${{ bot.name }}.zip'
               replaceExistingArchive: true
-              verbose: # (no value); this input is optional
+              verbose: true
 
           # Upload zip to artifacts in case we want to debug it
           - task: PublishBuildArtifacts@1
             displayName: 'Publish zip package'
             inputs:
               pathToPublish: '$(System.DefaultWorkingDirectory)/build/${{ bot.name }}.zip'
-              artifactName: drop
+              artifactName: python
             
           # Deploy bot
           - task: AzureWebApp@1
