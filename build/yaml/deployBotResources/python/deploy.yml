@@ -121,7 +121,7 @@ stages:
             
           # Deploy bot
           - task: AzureWebApp@1
-            displayName: "Deploy Azure Web App : ${{ bot.name }}$(env:ResourceSuffix)-($env:ResourceSuffix)-($ResourceSuffix)-$(ResourceSuffix)-$(Build.BuildId)"
+            displayName: "Deploy Azure Web App : ${{ bot.name }}$(env:ResourceSuffix)-($env:ResourceSuffix)-($ResourceSuffix)-$(ResourceSuffix)-$(RESOURCESUFFIX)-$($env:ResourceSuffix)-$(Build.BuildId)"
             inputs:
               azureSubscription: $(AzureSubscription)
               appName: '${{ bot.name }}-$(Build.BuildId)'
