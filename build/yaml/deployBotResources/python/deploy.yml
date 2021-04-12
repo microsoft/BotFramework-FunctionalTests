@@ -13,8 +13,6 @@ stages:
     dependsOn: '${{ parameters.dependsOn }}'
     jobs:
       - job: 'Deploy'
-        pool:
-          vmImage: 'ubuntu-latest'
         displayName: 'Deploy steps'
         steps:
           # Delete Bot Resources
