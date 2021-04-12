@@ -97,9 +97,11 @@ stages:
               verbose: # (no value); this input is optional
 
           # Upload zip to artifacts in case we want to debug it
-          - publish: "$(System.DefaultWorkingDirectory)/build/${{ bot.name }}.zip"
+          - task: PublishBuildArtifacts@1
             displayName: 'Publish zip package'
-            artifact: PythonBots
+            inputs:
+              pathToPublish: '$(System.DefaultWorkingDirectory)/build/${{ bot.name }}.zip'
+              artifactName: ${{ bot.name }}
             
           # Deploy bot
           - task: AzureWebApp@1
