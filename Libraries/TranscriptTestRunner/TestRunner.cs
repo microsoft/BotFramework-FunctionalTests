@@ -29,7 +29,6 @@ namespace TranscriptTestRunner
         private readonly int _replyTimeout;
         private readonly TestClientBase _testClient;
         private Stopwatch _stopwatch;
-        private TranscriptConverter _transcriptConverter;
         private string _testScriptPath;
 
         /// <summary>
@@ -62,30 +61,20 @@ namespace TranscriptTestRunner
         /// <summary>
         /// Executes a test script with the test steps.
         /// </summary>
-        /// <remarks>
-        /// If the file is of type <i>.transcript</i> it will be converted to an intermediary <i>TestScript.json</i> file.
-        /// </remarks>
-        /// <param name="transcriptPath">Path to the file to use.</param>
+        /// <param name="testScriptPath">Path to the file to use.</param>
         /// <param name="scriptParams">Optional. Parameter dictionary, every key surrounded by brackets as such: <c>${key}</c> 
         /// found in the script will be replaced by its value.</param>
         /// <param name="callerName">Optional. The name of the method caller.</param>
         /// <param name="cancellationToken">Optional. A <see cref="CancellationToken"/> that can be used by other objects
         /// or threads to receive notice of cancellation.</param>
         /// <returns>A task that represents the work queued to execute.</returns>
-        public async Task RunTestAsync(string transcriptPath, Dictionary<string, string> scriptParams = null, [CallerMemberName] string callerName = "", CancellationToken cancellationToken = default)
+        public async Task RunTestAsync(string testScriptPath, Dictionary<string, string> scriptParams = null, [CallerMemberName] string callerName = "", CancellationToken cancellationToken = default)
         {
-            var testFileName = $"{callerName} - {Path.GetFileNameWithoutExtension(transcriptPath)}";
+            var testFileName = $"{callerName} - {Path.GetFileNameWithoutExtension(testScriptPath)}";
 
-            _logger.LogInformation($"======== Running script: {transcriptPath} ========");
+            _logger.LogInformation($"======== Running script: {testScriptPath} ========");
 
-            if (transcriptPath.EndsWith(".transcript", StringComparison.OrdinalIgnoreCase))
-            {
-                ConvertTranscript(transcriptPath);
-            }
-            else
-            {
-                _testScriptPath = transcriptPath;
-            }
+            _testScriptPath = testScriptPath;
 
             await ExecuteTestScriptAsync(testFileName, cancellationToken, scriptParams).ConfigureAwait(false);
         }
@@ -264,19 +253,6 @@ namespace TranscriptTestRunner
             }
 
             return result.ToString();
-        }
-
-        private void ConvertTranscript(string transcriptPath)
-        {
-            _transcriptConverter = new TranscriptConverter
-            {
-                EmulatorTranscript = transcriptPath,
-                TestScript = $"{Directory.GetCurrentDirectory()}/ConvertedTestTranscripts/{Path.GetFileNameWithoutExtension(transcriptPath)}.json"
-            };
-
-            _transcriptConverter.Convert();
-
-            _testScriptPath = _transcriptConverter.TestScript;
         }
 
         private async Task ExecuteTestScriptAsync(string callerName, CancellationToken cancellationToken, Dictionary<string, string> scriptParams = null)
