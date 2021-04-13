@@ -58,7 +58,7 @@ stages:
           displayName: 'Delete App Service Plan (Windows)'
           inputs:
             azureSubscription: $(AzureSubscription)
-            scriptType: ps
+            scriptType: pscore
             scriptLocation: inlineScript
             inlineScript: |
               Write-Host "Looking for '$(InternalAppServicePlanWindowsName)'...";
@@ -93,7 +93,7 @@ stages:
           displayName: 'Delete App Service Plan (Linux)'
           inputs:
             azureSubscription: $(AzureSubscription)
-            scriptType: ps
+            scriptType: pscore
             scriptLocation: inlineScript
             inlineScript: |
               Write-Host "Looking for '$(InternalAppServicePlanLinuxName)'...";
@@ -116,7 +116,7 @@ stages:
           displayName: 'Delete App Insights'
           inputs:
             azureSubscription: $(AzureSubscription)
-            scriptType: ps
+            scriptType: pscore
             scriptLocation: inlineScript
             inlineScript: |
               az config set extension.use_dynamic_install=yes_without_prompt
@@ -145,7 +145,7 @@ stages:
           displayName: 'Delete CosmosDB'
           inputs:
             azureSubscription: $(AzureSubscription)
-            scriptType: ps
+            scriptType: pscore
             scriptLocation: inlineScript
             inlineScript: |
               Write-Host "Looking for '$(InternalCosmosDBName)'...";
@@ -181,7 +181,7 @@ stages:
           displayName: 'Delete Key Vault'
           inputs:
             azureSubscription: $(AzureSubscription)
-            scriptType: ps
+            scriptType: pscore
             scriptLocation: inlineScript
             inlineScript: |
               Write-Host "Looking for '$(InternalKeyVaultName)'...";

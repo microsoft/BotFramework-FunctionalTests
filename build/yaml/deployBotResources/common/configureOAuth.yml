@@ -9,7 +9,7 @@ steps:
     displayName: 'Configure OAuth connection'
     inputs:
       azureSubscription: $(AzureSubscription)
-      scriptType: ps
+      scriptType: pscore
       scriptLocation: inlineScript
       inlineScript: |
         $connectionName = if([string]::IsNullOrEmpty($env:ConnectionName)) { "TestOAuthProvider" } Else { $env:ConnectionName };

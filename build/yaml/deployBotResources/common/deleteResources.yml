@@ -7,7 +7,7 @@ steps:
     displayName: 'Delete pre-existing bot resources'
     inputs:
       azureSubscription: $(AzureSubscription)
-      scriptType: ps
+      scriptType: pscore
       scriptLocation: inlineScript
       inlineScript: |
         Write-Host "Looking for '${{ parameters.resourceGroup }}'...";
