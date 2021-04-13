@@ -73,6 +73,7 @@ stages:
               appId: $(AppId)
               appSecret:  $(AppSecret)
               botName: '${{ bot.name }}'
+              botGroup: '${{ parameters.resourceGroup }}'
 
           # Configure OAuth
           - ${{ if eq(bot.type, 'Skill') }}:
