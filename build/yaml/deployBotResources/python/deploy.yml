@@ -89,14 +89,14 @@ stages:
             inputs:
               versionSpec: '3.8.x'
 
-          # Install prerequisites (linux only)
+          # Build Python app (linux only)
           - script: |
                 python -m venv antenv
                 source antenv/bin/activate
                 python -m pip install --upgrade pip
                 pip install -r requirements.txt
             workingDirectory: $(System.DefaultWorkingDirectory)/${{ bot.project.directory }}
-            displayName: "Install prerequisites"
+            displayName: "Build Python app"
 
           # Zip bot
           - task: ArchiveFiles@2
@@ -118,7 +118,7 @@ stages:
             
           # Deploy bot
           - task: AzureWebApp@1
-            displayName: 'Deploy Azure Web App : ${{ bot.name }-$(Build.BuildId)'
+            displayName: 'Deploy Azure Web App : ${{ bot.name }}-$(Build.BuildId)'
             inputs:
               azureSubscription: $(AzureSubscription)
               appName: '${{ bot.name }}-$(Build.BuildId)'
