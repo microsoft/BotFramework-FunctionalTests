@@ -3,8 +3,6 @@ parameters:
   appSecret: ''
   botName: ''
   botGroup: ''
-  resourceSuffix: ''
-  botPricingTier: ''
 
 steps:
   - task: AzureCLI@2
@@ -15,10 +13,6 @@ steps:
       scriptLocation: inlineScript
       inlineScript: |
         Set-PSDebug -Trace 1;
-
-        Write-Host "Suffix: ${{ parameters.resourceSuffix }}"
-
-        Write-Host "Pricing tier: ${{ parameters.botPricingTier }}"
 
         $botPricingTier = if("$(BotPricingTier)") { "botSku=$(BotPricingTier)" };
 

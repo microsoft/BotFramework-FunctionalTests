@@ -32,13 +32,11 @@ stages:
 
           # Prepare .env file, deleting all the declared skills, so it uses only the settings define in Azure
           - ${{ if eq(bot.type, 'Host') }}:
-              - task: AzureCLI@2
+              - task: PowerShell@2
                 displayName: 'Prepare .env file'
                 inputs:
-                  azureSubscription: $(AzureSubscription)
-                  scriptType: pscore
-                  scriptLocation: inlineScript
-                  inlineScript: |
+                  targetType: inline
+                  script: |
                     $file = "${{ bot.project.directory }}/.env"
                     $content = Get-Content $file
                     $content | ForEach-Object {
@@ -75,9 +73,6 @@ stages:
               appId: $(AppId)
               appSecret:  $(AppSecret)
               botName: '${{ bot.name }}'
-              botGroup: '${{ parameters.resourceGroup }}'
-              resourceSuffix: '${{ $(ResourceSuffix) }}'
-              botPricingTier: '${{ $(BotPricingTier) }}'
 
           # Configure OAuth
           - ${{ if eq(bot.type, 'Skill') }}:
@@ -94,7 +89,7 @@ stages:
             inputs:
               versionSpec: '3.8.x'
 
-          # Install prerequisites
+          # Install prerequisites (linux only)
           - script: |
                 python -m venv antenv
                 source antenv/bin/activate
@@ -123,7 +118,7 @@ stages:
             
           # Deploy bot
           - task: AzureWebApp@1
-            displayName: 'Deploy Azure Web App : $(BotPricingTier)-${{ bot.name }}$(env:ResourceSuffix)-($env:ResourceSuffix)-($ResourceSuffix)-$(ResourceSuffix)-$(RESOURCESUFFIX)-$($env:ResourceSuffix)-$(Build.BuildId)'
+            displayName: 'Deploy Azure Web App : ${{ bot.name }-$(Build.BuildId)'
             inputs:
               azureSubscription: $(AzureSubscription)
               appName: '${{ bot.name }}-$(Build.BuildId)'
