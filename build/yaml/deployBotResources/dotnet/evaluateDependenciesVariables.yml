@@ -48,6 +48,8 @@ steps:
         STABLE { $versionNumber = "" }
         default { $versionNumber = "${{ parameters.version }}" }
       }
+
+      $versionNumber = "4.13.0-rc5"
       Write-Host "Version Number: $versionNumber"
       
       # Set environment variables
