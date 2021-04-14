@@ -87,6 +87,13 @@ stages:
               7z.exe a -tzip '$(System.DefaultWorkingDirectory)/${{ bot.name }}.zip' '$(System.DefaultWorkingDirectory)/${{ bot.project.directory }}/*' -aoa
             displayName: 'Zip Bot'
 
+          # Upload zip to artifacts in case we want to debug it
+          - task: PublishBuildArtifacts@1
+            displayName: 'Publish zip package'
+            inputs:
+              pathToPublish: '$(System.DefaultWorkingDirectory)/${{ bot.name }}.zip'
+              artifactName: js-$(Build.BuildId)
+
           # Create App Service and Bot Channel Registration
           - template: ../common/createAppService.yml
             parameters:
@@ -103,13 +110,6 @@ stages:
                 appSecret:  $(AppSecret)
                 botName: '${{ bot.name }}'
                 botGroup: '${{ parameters.resourceGroup }}'
-
-          # Upload zip to artifacts in case we want to debug it
-          - task: PublishBuildArtifacts@1
-            displayName: 'Publish zip package'
-            inputs:
-              pathToPublish: '$(System.DefaultWorkingDirectory)/${{ bot.name }}.zip'
-              artifactName: js-$(Build.BuildId)
 
           # Deploy bot
           - template: ../common/zipDeploy.yml

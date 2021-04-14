@@ -159,6 +159,13 @@ stages:
               7z.exe a -tzip "${{ parameters.output.path }}/${{ parameters.output.zip }}.zip" "$(System.DefaultWorkingDirectory)/${{ parameters.output.path }}/*" -aoa
             displayName: 'Zip bot'
 
+          # Upload zip to artifacts in case we want to debug it
+          - task: PublishBuildArtifacts@1
+            displayName: 'Publish zip package'
+            inputs:
+              pathToPublish: '${{ parameters.output.path }}/${{ parameters.output.zip }}.zip'
+              artifactName: dotnetComposer-$(Build.BuildId)
+
           # Create App Service and Bot Channel Registration
           - template: ../common/createAppService.yml
             parameters:
@@ -166,13 +173,6 @@ stages:
               appSecret:  $(AppSecret)
               botName: '${{ bot.name }}'
               botGroup: '${{ parameters.resourceGroup }}'
-
-          # Upload zip to artifacts in case we want to debug it
-          - task: PublishBuildArtifacts@1
-            displayName: 'Publish zip package'
-            inputs:
-              pathToPublish: '${{ parameters.output.path }}/${{ parameters.output.zip }}.zip'
-              artifactName: dotnetComposer-$(Build.BuildId)
 
           # Deploy bot
           - template: ../common/zipDeploy.yml

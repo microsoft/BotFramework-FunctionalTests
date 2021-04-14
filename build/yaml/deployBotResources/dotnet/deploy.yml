@@ -138,6 +138,13 @@ stages:
                 7z.exe a -tzip "$(System.DefaultWorkingDirectory)/build/${{ bot.name }}/${{ bot.name }}.zip" "$(System.DefaultWorkingDirectory)/${{ bot.project.directory }}/*" -aoa
               displayName: 'Zip bot'
           # End of DotNet v3 Install, Build
+          
+          # Upload zip to artifacts in case we want to debug it
+          - task: PublishBuildArtifacts@1
+            displayName: 'Publish zip package'
+            inputs:
+              pathToPublish: '$(System.DefaultWorkingDirectory)/build/${{ bot.name }}/${{ bot.name }}.zip'
+              artifactName: dotnet-$(Build.BuildId)
 
           # Tag BotBuilder package version
           - template: ../common/tagBotBuilderVersion.yml
@@ -164,13 +171,6 @@ stages:
                 appSecret:  $(AppSecret)
                 botName: '${{ bot.name }}'
                 botGroup: '${{ parameters.resourceGroup }}'
-
-          # Upload zip to artifacts in case we want to debug it
-          - task: PublishBuildArtifacts@1
-            displayName: 'Publish zip package'
-            inputs:
-              pathToPublish: '$(System.DefaultWorkingDirectory)/build/${{ bot.name }}/${{ bot.name }}.zip'
-              artifactName: dotnet-$(Build.BuildId)
 
           # Deploy bot
           - template: ../common/zipDeploy.yml
