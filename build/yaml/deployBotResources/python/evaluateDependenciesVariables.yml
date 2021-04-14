@@ -86,6 +86,8 @@ steps:
             $versionNumber = $packageVersion.Split(" ")[1]
           }
 
+          $versionNumber = "4.13.0rc0"
+
           Write-Host "`nSource: $source"
           Write-Host "Extra Source: $extraSource"
           Write-Host "Version Number: $versionNumber"

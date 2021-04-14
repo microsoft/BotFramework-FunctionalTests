@@ -165,6 +165,13 @@ stages:
                 botName: '${{ bot.name }}'
                 botGroup: '${{ parameters.resourceGroup }}'
 
+          # Upload zip to artifacts in case we want to debug it
+          - task: PublishBuildArtifacts@1
+            displayName: 'Publish zip package'
+            inputs:
+              pathToPublish: '$(System.DefaultWorkingDirectory)/build/${{ bot.name }}/${{ bot.name }}.zip'
+              artifactName: dotnet-$(Build.BuildId)
+
           # Deploy bot
           - template: ../common/zipDeploy.yml
             parameters:
