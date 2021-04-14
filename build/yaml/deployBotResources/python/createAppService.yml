@@ -9,13 +9,13 @@ steps:
     displayName: 'Create resources'
     inputs:
       azureSubscription: $(AzureSubscription)
-      scriptType: ps
+      scriptType: pscore
       scriptLocation: inlineScript
       inlineScript: |
         Set-PSDebug -Trace 1;
 
-        $botPricingTier = if($env:BotPricingTier) { "botSku=$env:BotPricingTier" };
+        $botPricingTier = if("$(BotPricingTier)") { "botSku=$(BotPricingTier)" };
 
-        az deployment group create --resource-group "${{ parameters.botGroup }}" --name "${{ parameters.botName }}$($env:ResourceSuffix)-$(Build.BuildId)" --template-file "build\templates\template-python-bot-resources.json" --parameters $botPricingTier botLocation="westus" appId="${{ parameters.appId }}" appSecret="${{ parameters.appSecret }}" botName="${{ parameters.botName }}$($env:ResourceSuffix)-$(Build.BuildId)" appServicePlanName="$(InternalAppServicePlanLinuxName)" appServicePlanResourceGroup="$(InternalAppServicePlanLinuxResourceGroupName)";
+        az deployment group create --resource-group "${{ parameters.botGroup }}" --name "${{ parameters.botName }}$($env:ResourceSuffix)-$(Build.BuildId)" --template-file "build/templates/template-python-bot-resources.json" --parameters $botPricingTier botLocation="westus" appId="${{ parameters.appId }}" appSecret="${{ parameters.appSecret }}" botName="${{ parameters.botName }}$($env:ResourceSuffix)-$(Build.BuildId)" appServicePlanName="$(InternalAppServicePlanLinuxName)" appServicePlanResourceGroup="$(InternalAppServicePlanLinuxResourceGroupName)";
 
         Set-PSDebug -Trace 0;

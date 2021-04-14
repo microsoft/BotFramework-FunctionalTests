@@ -9,7 +9,7 @@ steps:
     displayName: 'Create resources'
     inputs:
       azureSubscription: $(AzureSubscription)
-      scriptType: ps
+      scriptType: pscore
       scriptLocation: inlineScript
       inlineScript: |
         Set-PSDebug -Trace 1;
