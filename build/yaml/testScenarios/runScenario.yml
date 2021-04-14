@@ -35,5 +35,6 @@ stages:
               displayName: 'DotNet Test'
               inputs:
                 command: test
+                testRunTitle: 'SkillFunctionalTests-${{ scenario.name }}-$(Build.BuildNumber)'
                 projects: 'Tests/SkillFunctionalTests/SkillFunctionalTests.csproj'
-                arguments: "-v n --configuration $(BuildConfiguration) --no-build --no-restore --filter TestCategory!=IgnoreInAutomatedBuild&TestCategory=${{ join('|TestCategory=', scenario.testCategories) }}"
+                arguments: "-v n --configuration $(BuildConfiguration) --no-build --no-restore --logger trx;LogFileName=SkillFunctionalTests-${{ scenario.name }}-$(Build.BuildNumber).trx --filter TestCategory!=IgnoreInAutomatedBuild&TestCategory=${{ join('|TestCategory=', scenario.testCategories) }}"
