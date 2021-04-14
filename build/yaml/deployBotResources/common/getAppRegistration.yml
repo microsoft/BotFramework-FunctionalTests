@@ -8,7 +8,7 @@ steps:
     displayName: 'Get AppId & AppSecret'
     inputs:
       azureSubscription: $(AzureSubscription)
-      scriptType: ps
+      scriptType: pscore
       failOnStandardError: true
       scriptLocation: inlineScript
       inlineScript: |

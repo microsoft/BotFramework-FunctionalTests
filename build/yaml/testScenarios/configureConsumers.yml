@@ -6,7 +6,7 @@ steps:
     displayName: Set Consumers AppSettings
     inputs:
       azureSubscription: $(AzureSubscription)
-      scriptType: ps
+      scriptType: pscore
       scriptLocation: inlineScript
       inlineScript: |
         # Type of setting to use for the AppSettings variables.
