@@ -400,7 +400,7 @@ namespace TranscriptTestRunner.TestClients
             {
                 // Log headers and body to help troubleshoot issues (the exception itself will be handled upstream).
                 var sb = new StringBuilder();
-                sb.AppendLine($"Failed to get a directline token (response status was: {response.StatusCode}");
+                sb.AppendLine($"Failed to get a directline token (response status was: {response.StatusCode})");
                 sb.AppendLine("Response headers:");
                 sb.AppendLine(JsonConvert.SerializeObject(response.Headers, Formatting.Indented));
                 sb.AppendLine("Response body:");
