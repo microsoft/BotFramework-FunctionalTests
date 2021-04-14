@@ -1,1 +1,0 @@
-{"type":"AdaptiveCard","version":"1.2","body":[{"type":"TextBlock","text":"Task Module Adaptive Card"}],"actions":[{"type":"Action.Submit","data":{"msteams":{"type":"invoke","value":"{\r\n  \"hiddenKey\": \"hidden value from task module launcher\",\r\n  \"type\": \"task/fetch\"\r\n}"}},"title":"Launch Task Module"}]}
