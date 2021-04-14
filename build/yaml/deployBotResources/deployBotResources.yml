@@ -258,16 +258,16 @@ stages:
         - name: bffnwaterfallhostbotpython
           type: 'Host'
           displayName: 'Python Waterfall Host Bot'
-          appId: $env:BffnWaterfallHostBotPythonAppId
-          appSecret: $env:BffnWaterfallHostBotPythonAppSecret
+          appId: $(BffnWaterfallHostBotPythonAppId)
+          appSecret: $(BffnWaterfallHostBotPythonAppSecret)
           project:
             directory: 'Bots/Python/Consumers/CodeFirst/WaterfallHostBot'
 
         - name: bffnwaterfallskillbotpython
           type: 'Skill'
           displayName: 'Python Waterfall Skill Bot'
-          appId: $env:BffnWaterfallSkillBotPythonAppId
-          appSecret: $env:BffnWaterfallSkillBotPythonAppSecret
+          appId: $(BffnWaterfallSkillBotPythonAppId)
+          appSecret: $(BffnWaterfallSkillBotPythonAppSecret)
           project: 
             directory: 'Bots/Python/Skills/CodeFirst/WaterfallSkillBot'
 
