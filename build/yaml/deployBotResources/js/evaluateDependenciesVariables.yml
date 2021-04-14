@@ -49,7 +49,6 @@ steps:
         }
         default { $versionNumber = "${{ parameters.version }}" }
       }
-
       Write-Host "Version Number: $versionNumber"
       
       # Set environment variables
