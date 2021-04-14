@@ -46,10 +46,10 @@ stages:
             parameters:
               ${{ if eq(bot.type, 'Host') }}:
                 registry: "$env:DependenciesRegistryHosts"
-                version: "$env:DependenciesVersionHosts"
+                version: "4.13.0-rc8"
               ${{ if eq(bot.type, 'Skill') }}:
                 registry: "$env:DependenciesRegistrySkills"
-                version: "$env:DependenciesVersionSkills"
+                version: "4.13.0-rc8"
               ${{ if eq(bot.type, 'SkillV3') }}:
                 registry: "$env:DependenciesRegistrySkillsV3"
                 version: "$env:DependenciesVersionSkillsV3"

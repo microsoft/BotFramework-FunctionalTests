@@ -43,10 +43,10 @@ stages:
             parameters:
               ${{ if eq(bot.type, 'Host') }}:
                 registry: "$env:DependenciesRegistryHosts"
-                version: "$env:DependenciesVersionHosts"
+                version: "4.13.0-rc5"
               ${{ if eq(bot.type, 'Skill') }}:
                 registry: "$env:DependenciesRegistrySkills"
-                version: "$env:DependenciesVersionSkills"
+                version: "4.13.0-rc5"
               botType: '${{ bot.type }}'
 
           # Install dependencies in Microsoft.BotFramework.Composer.WebApp
