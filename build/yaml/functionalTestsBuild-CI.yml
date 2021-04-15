@@ -25,6 +25,14 @@ steps:
     platform: '$(BuildPlatform)'
     configuration: '$(BuildConfiguration)'
 
+- task: DotNetCoreCLI@2
+  displayName: 'Run Unit Tests'
+  inputs:
+    command: test
+    projects: 'Tests/TranscriptTestRunnerTests/TranscriptTestRunnerTests.csproj'
+    testRunTitle: 'FunctionalTests-CI-Results-$(Build.BuildNumber)'
+    arguments: '-v n --configuration $(BuildConfiguration) --no-build --no-restore --collect "Code Coverage" --logger "trx;LogFileName=FunctionalTests-CI-Results-$(Build.BuildNumber).trx"'
+
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: build folder'
   inputs:
