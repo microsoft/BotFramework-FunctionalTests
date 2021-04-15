@@ -22,9 +22,5 @@ jobs:
       steps: 
       - template: functionalTestsBuild-CI.yml
 
-    - job: "RunUnitTests"
-      steps:
-      - template: runUnitTests-CI.yml
-
 pool:
     vmImage: 'windows-2019'
