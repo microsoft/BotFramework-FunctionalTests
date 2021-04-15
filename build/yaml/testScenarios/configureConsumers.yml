@@ -11,16 +11,13 @@ steps:
       failOnStderr: true
       inlineScript: |
         # Helper Functions.
-
-        function DisplayNoBotsFoundMessage {
-          Write-Host "No bots were found in the configuration.";
-        }
+        $noBotsFoundMessage = "No bots were found in the configuration.";
 
         function AddBotsSuffix ($bots, $suffix) {
           # Add a suffix for each bot.
 
           if (-not $bots) {
-            DisplayNoBotsFoundMessage
+            Write-Host $noBotsFoundMessage;
             return $bots;
           }
 
@@ -35,7 +32,7 @@ steps:
           # Load AppIds from KeyVault.
 
           if (-not $bots) {
-            DisplayNoBotsFoundMessage
+            Write-Host $noBotsFoundMessage;
             return $bots;
           }
 
@@ -66,7 +63,7 @@ steps:
           # Filter bots by a specific test scenario.
 
           if (-not $bots) {
-            DisplayNoBotsFoundMessage
+            Write-Host $noBotsFoundMessage;
             return $bots;
           }
 
@@ -105,7 +102,7 @@ steps:
           # Filter bots only if their resource exists in Azure.
           
           if (-not $bots) {
-            DisplayNoBotsFoundMessage
+            Write-Host $noBotsFoundMessage;
             return $bots;
           }
 
@@ -131,7 +128,7 @@ steps:
           # Filter bots that have an AppId.
 
           if (-not $bots) {
-            DisplayNoBotsFoundMessage
+            Write-Host $noBotsFoundMessage;
             return $bots;
           }
 
@@ -175,7 +172,7 @@ steps:
           # Save each bot direct line into the Test Project AppSettings file.
 
           if (-not $bots) {
-            DisplayNoBotsFoundMessage
+            Write-Host $noBotsFoundMessage;
             return $bots;
           }
 
