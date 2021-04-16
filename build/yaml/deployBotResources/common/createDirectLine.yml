@@ -7,7 +7,7 @@ steps:
   displayName: 'Create DirectLine Channel'
   inputs:
     azureSubscription: $(AzureSubscription)
-    scriptType: ps
+    scriptType: pscore
     scriptLocation: inlineScript
     inlineScript: |
       az bot directline create -n "${{ parameters.botName }}$($env:ResourceSuffix)-$(Build.BuildId)" -g "${{ parameters.botGroup }}"
