@@ -26,6 +26,10 @@ indent_size = 2
 [*.{schema,uischema}]
 indent_size = 4
 
+# YAML files
+[*.yaml]
+indent_size = 2
+
 # Code files
 [*.{cs,csx,vb,vbx}]
 indent_size = 4
