@@ -20,7 +20,7 @@ namespace TranscriptConverter
             var cmd = new Command("convert", "Converts transcript files into test script to be executed by the TranscriptTestRunner");
 
             cmd.AddArgument(new Argument<string>("source"));
-            cmd.AddArgument(new Argument<string>("target"));
+            cmd.AddOption(new Option<string>("--target", "Path to the target test script file."));
 
             cmd.Handler = CommandHandler.Create<string, string>((source, target) =>
             {
@@ -32,9 +32,11 @@ namespace TranscriptConverter
 
                     Console.WriteLine("Finished conversion");
 
-                    WriteTestScript(testScript, target);
+                    var targetPath = string.IsNullOrEmpty(target) ? source.Replace(".transcript", ".json", StringComparison.InvariantCulture) : target;
 
-                    Console.WriteLine("{0}: {1}", "Test script saved as", target);
+                    WriteTestScript(testScript, targetPath);
+
+                    Console.WriteLine("{0}: {1}", "Test script saved as", targetPath);
                 }
                 catch (FileNotFoundException e)
                 {
