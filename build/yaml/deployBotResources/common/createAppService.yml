@@ -1,21 +1,29 @@
 parameters:
-  appId: ''
-  appSecret: ''
-  botName: ''
-  botGroup: ''
+  azureSubscription: ""
+  appId: ""
+  appSecret: ""
+  botName: ""
+  botGroup: ""
+  botPricingTier: ""
+  resourceSuffix: ""
+  appServicePlan: ""
+  appServicePlanRG: ""
+  appInsight: ""
+  templateFile: ""
 
 steps:
   - task: AzureCLI@2
-    displayName: 'Create resources'
+    displayName: "Create resources"
     inputs:
-      azureSubscription: $(AzureSubscription)
+      azureSubscription: "${{ parameters.azureSubscription }}"
       scriptType: pscore
       scriptLocation: inlineScript
       inlineScript: |
-        Set-PSDebug -Trace 1;
+        Set-PSDebug -Trace 1
 
-        $botPricingTier = if($env:BotPricingTier) { "botSku=$env:BotPricingTier" };
+        $botPricingTier = if(-not ([string]::IsNullOrEmpty("${{ parameters.botPricingTier }}"))) { "botSku=${{ parameters.botPricingTier }}" };
+        $appInsights = if(-not ([string]::IsNullOrEmpty("${{ parameters.appInsight }}"))) { "appInsightsName=${{ parameters.appInsight }}" }
 
-        az deployment group create --resource-group "${{ parameters.botGroup }}" --name "${{ parameters.botName }}$($env:ResourceSuffix)-$(Build.BuildId)" --template-file "build\templates\template-bot-resources.json" --parameters $botPricingTier botLocation="westus" appId="${{ parameters.appId }}" appSecret="${{ parameters.appSecret }}" botName="${{ parameters.botName }}$($env:ResourceSuffix)-$(Build.BuildId)" appServicePlanName="$(InternalAppServicePlanWindowsName)" appServicePlanResourceGroup="$(InternalAppServicePlanWindowsResourceGroup)" appInsightsName="$(InternalAppInsightsName)";
+        az deployment group create --resource-group "${{ parameters.botGroup }}" --name "${{ parameters.botName }}${{ parameters.resourceSuffix }}-$(Build.BuildId)" --template-file ${{ parameters.templateFile }} --parameters $botPricingTier botLocation="westus" appId="${{ parameters.appId }}" appSecret="${{ parameters.appSecret }}" botName="${{ parameters.botName }}${{ parameters.resourceSuffix }}-$(Build.BuildId)" appServicePlanName="${{ parameters.appServicePlan }}" appServicePlanResourceGroup="${{ parameters.appServicePlanRG }}" $appInsights;
 
-        Set-PSDebug -Trace 0;
+        Set-PSDebug -Trace 0

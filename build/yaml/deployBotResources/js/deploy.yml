@@ -1,32 +1,44 @@
 parameters:
-  dependsOn: ''
-  resourceGroup: ''
+  dependsOn: ""
+  azureSubscription: ""
+  resourceGroup: ""
   bots: []
+  botPricingTier: ""
+  resourceSuffix: ""
+  appServicePlan: ""
+  appServicePlanRG: ""
+  appInsight: ""
+  connectionName: ""
+  keyVault: ""
 
 stages:
 - ${{ each bot in parameters.bots }}:
-  - stage: 'Deploy_${{ bot.name }}'
+  - stage: "Deploy_${{ bot.name }}"
     ${{ if eq(bot.displayName, '') }}:
-      displayName: '${{ bot.name }}'
+      displayName: "${{ bot.name }}"
     ${{ if ne(bot.displayName, '') }}:
-      displayName: '${{ bot.displayName }}'
-    dependsOn: '${{ parameters.dependsOn }}'
+      displayName: "${{ bot.displayName }}"
+    dependsOn: "${{ parameters.dependsOn }}"
     jobs:
-      - job: 'Deploy'
-        displayName: 'Deploy steps'
+      - job: "Deploy"
+        displayName: "Deploy steps"
         steps:
           # Delete Bot Resources
           - template: ../common/deleteResources.yml
             parameters:
-              resourceGroup: '${{ parameters.resourceGroup }}'
-              resourceName: '${{ bot.name }}'
-              
+              azureSubscription: "${{ parameters.azureSubscription }}"
+              resourceGroup: "${{ parameters.resourceGroup }}"
+              resourceName: "${{ bot.name }}"
+              resourceSuffix: "${{ parameters.resourceSuffix }}"
+
           # Gets Bot App Registration credentials from KeyVault or Pipeline Variables
           - template: ../common/getAppRegistration.yml
             parameters:
+              azureSubscription: "${{ parameters.azureSubscription }}"
               appId: ${{ bot.appId }}
               appSecret: ${{ bot.appSecret }}
-              botName: '${{ bot.name }}'
+              botName: "${{ bot.name }}"
+              keyVault: "${{ parameters.keyVault }}"
 
           # Prepare .env file, deleting all the declared skills, so it uses only the settings define in Azure
           - ${{ if eq(bot.type, 'Host') }}:
@@ -49,24 +61,17 @@ stages:
           # Evaluate dependencies source and version
           - template: evaluateDependenciesVariables.yml
             parameters:
-              ${{ if eq(bot.type, 'Host') }}:
-                registry: "$env:DependenciesRegistryHosts"
-                version: "$env:DependenciesVersionHosts"
-              ${{ if eq(bot.type, 'Skill') }}:
-                registry: "$env:DependenciesRegistrySkills"
-                version: "$env:DependenciesVersionSkills"
-              ${{ if eq(bot.type, 'SkillV3') }}:
-                registry: "$env:DependenciesRegistrySkillsV3"
-                version: "$env:DependenciesVersionSkillsV3"
-              botType: '${{ bot.type }}'
+              registry: "${{ bot.dependenciesRegistry }}"
+              version: "${{ bot.dependenciesVersion }}"
+              botType: "${{ bot.type }}"
 
           # Tag BotBuilder version
           - template: ../common/tagBotBuilderVersion.yml
             parameters:
               ${{ if eq(bot.displayName, '') }}:
-                botName: '${{ bot.name }}'
+                botName: "${{ bot.name }}"
               ${{ if ne(bot.displayName, '') }}:
-                botName: '${{ bot.displayName }}'
+                botName: "${{ bot.displayName }}"
               version: "$(DependenciesVersionNumber)"
 
           # Set BotBuilder source and version
@@ -111,7 +116,7 @@ stages:
           - task: AzureCLI@2
             displayName: 'Prepare Bot'
             inputs:
-              azureSubscription: $(AzureSubscription)
+              azureSubscription: "${{ parameters.azureSubscription }}"
               scriptType: pscore
               scriptLocation: inlineScript
               inlineScript: 'az bot prepare-deploy --code-dir "${{ bot.project.directory }}" --lang Javascript'
@@ -137,17 +142,24 @@ stages:
           # Create App Service and Bot Channel Registration
           - template: ../common/createAppService.yml
             parameters:
+              azureSubscription: "${{ parameters.azureSubscription }}"
               appId: $(AppId)
               appSecret:  $(AppSecret)
-              botName: '${{ bot.name }}'
-              botGroup: '${{ parameters.resourceGroup }}'
+              botName: "${{ bot.name }}"
+              botGroup: "${{ parameters.resourceGroup }}"
+              botPricingTier: "${{ parameters.botPricingTier }}"
+              resourceSuffix: "${{ parameters.resourceSuffix }}"
+              appServicePlan: "${{ parameters.appServicePlan }}"
+              appServicePlanRG: "${{ parameters.appServicePlanRG }}"
+              appInsight: "${{ parameters.appInsight }}"
+              templateFile: "build/templates/template-bot-resources.json"
 
           # Deploy bot
           - task: AzureWebApp@1
             displayName: 'Deploy Azure Web App : ${{ bot.name }}-$(Build.BuildId)'
             inputs:
-              azureSubscription: $(AzureSubscription)
-              appName: '${{ bot.name }}-$(Build.BuildId)'
+              azureSubscription: "${{ parameters.azureSubscription }}"
+              appName: '${{ bot.name }}${{ parameters.resourceSuffix }}-$(Build.BuildId)'
               resourceGroupName: '${{ parameters.resourceGroup }}'
               package: '$(System.DefaultWorkingDirectory)/build/${{ bot.name }}.zip'
               deploymentMethod: runFromPackage
@@ -156,14 +168,19 @@ stages:
           - ${{ if eq(bot.type, 'Skill') }}:
             - template: ../common/configureOAuth.yml
               parameters:
+                azureSubscription: "${{ parameters.azureSubscription }}"
                 appId: $(AppId)
                 appSecret:  $(AppSecret)
-                botName: '${{ bot.name }}'
-                botGroup: '${{ parameters.resourceGroup }}'
+                botName: "${{ bot.name }}"
+                botGroup: "${{ parameters.resourceGroup }}"
+                connectionName: "${{ parameters.connectionName }}"
+                resourceSuffix: "${{ parameters.resourceSuffix }}"
 
           # Create DirectLine Channel Hosts
           - ${{ if eq(bot.type, 'Host') }}:
             - template: ../common/createDirectLine.yml
               parameters:
-                botName: '${{ bot.name }}'
-                botGroup: '${{ parameters.resourceGroup }}'
+                azureSubscription: "${{ parameters.azureSubscription }}"
+                botName: "${{ bot.name }}"
+                botGroup: "${{ parameters.resourceGroup }}"
+                resourceSuffix: "${{ parameters.resourceSuffix }}"

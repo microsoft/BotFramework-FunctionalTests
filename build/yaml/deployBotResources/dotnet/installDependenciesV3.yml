@@ -1,19 +1,19 @@
 parameters:
-  version: ''
-  source: ''
+  version: ""
+  source: ""
   project: {}
   packages: []
 
 steps:
   - powershell: |
-      $version = ''
-      $source = ''
+      $version = ""
+      $source = ""
 
-      if(-not ([string]::IsNullOrEmpty("${{ parameters.version }}"))){
+      if (-not ([string]::IsNullOrEmpty("${{ parameters.version }}"))) {
         $version = "-Version ""${{ parameters.version }}"""
       }
 
-      if(-not ([string]::IsNullOrEmpty("${{ parameters.source }}"))){
+      if (-not ([string]::IsNullOrEmpty("${{ parameters.source }}"))) {
         $source = "-Source ""${{ parameters.source }}"""
       }
 
@@ -25,4 +25,4 @@ steps:
       foreach ($package in "${{ parameters.packages }}".Split()) {
         write-host "  - $package "
       }
-    displayName: 'Install dependencies' 
+    displayName: "Install dependencies" 

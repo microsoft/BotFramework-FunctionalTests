@@ -1,13 +1,15 @@
 parameters:
-  botName: ''
-  botGroup: ''
+  azureSubscription: ""
+  botName: ""
+  botGroup: ""
+  resourceSuffix: ""
 
 steps:
 - task: AzureCLI@2
-  displayName: 'Create DirectLine Channel'
+  displayName: "Create DirectLine Channel"
   inputs:
-    azureSubscription: $(AzureSubscription)
+    azureSubscription: "${{ parameters.azureSubscription }}"
     scriptType: pscore
     scriptLocation: inlineScript
     inlineScript: |
-      az bot directline create -n "${{ parameters.botName }}$($env:ResourceSuffix)-$(Build.BuildId)" -g "${{ parameters.botGroup }}"
+      az bot directline create -n "${{ parameters.botName }}${{ parameters.resourceSuffix }}-$(Build.BuildId)" -g "${{ parameters.botGroup }}"

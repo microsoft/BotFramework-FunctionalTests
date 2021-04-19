@@ -1,7 +1,7 @@
 parameters:
-  registry: ''
-  version: ''
-  botType: ''
+  registry: ""
+  version: ""
+  botType: ""
 
 steps:
   - task: PowerShell@2

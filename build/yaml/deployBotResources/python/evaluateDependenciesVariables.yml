@@ -1,12 +1,12 @@
 parameters:
-  registry: ''
-  version: ''
-  botType: ''
+  registry: ""
+  version: ""
+  botType: ""
   project: {}
 
 steps:
   - task: PowerShell@2
-    displayName: 'Evaluate source & version'
+    displayName: "Evaluate source & version"
     inputs:
       targetType: inline
       script: |
@@ -18,19 +18,19 @@ steps:
           switch -regex ("${{ parameters.registry }}") {
             "^($null||Artifacts)$" {
               $source = $sourceArtifacts
-              $extraSource = $sourcePypi;
+              $extraSource = $sourcePypi
             }
             "Pypi" { 
-              $source = $sourcePypi;
-              $extraSource = $sourceArtifacts;
+              $source = $sourcePypi
+              $extraSource = $sourceArtifacts
             }
             "Test.Pypi" { 
-              $source = $sourceTestPypi;
-              $extraSource = $sourcePypi;
+              $source = $sourceTestPypi
+              $extraSource = $sourcePypi
             }
             default { 
-              $source = "${{ parameters.registry }}";
-              $extraSource = $sourcePypi;
+              $source = "${{ parameters.registry }}"
+              $extraSource = $sourcePypi
             }
           }
 
@@ -38,20 +38,20 @@ steps:
           switch -regex ("${{ parameters.version }}") {
             "^($null||LATEST)$" {
               if ("${{ parameters.registry }}".ToUpper() -in "PYPI") {
-                [Console]::ForegroundColor = 'red'
+                [Console]::ForegroundColor = "red"
                 [Console]::Error.WriteLine("Preview versions of BotBuilder are not available for this source.")
                 [Console]::ResetColor()
                 exit 1 # Force exit
               }
-              $versionNumber = "";
-              $preFag = "--pre";
+              $versionNumber = ""
+              $preFag = "--pre"
             }
             STABLE { 
-              $versionNumber = "";
+              $versionNumber = ""
             }
             default { 
-              $versionNumber = "${{ parameters.version }}";
-              $condition = "==";
+              $versionNumber = "${{ parameters.version }}"
+              $condition = "=="
             }
           }
 
@@ -69,7 +69,7 @@ steps:
 
             $script = "$package $condition $versionNumber"
 
-            if($matchinfo.LineNumber -gt 0) {
+            if ($matchinfo.LineNumber -gt 0) {
               $content[$matchinfo.LineNumber - 1] = $script
               Set-Content -Path $file -Value $content
             } else {
@@ -82,7 +82,7 @@ steps:
 
           if (-not $versionNumber) {
             Invoke-Expression "pip install botbuilder-integration-aiohttp $line --quiet"
-            $packageVersion = pip show botbuilder-integration-aiohttp | Where-Object { $_ -match '^Version' }
+            $packageVersion = pip show botbuilder-integration-aiohttp | Where-Object { $_ -match "^Version" }
             $versionNumber = $packageVersion.Split(" ")[1]
           }
 
