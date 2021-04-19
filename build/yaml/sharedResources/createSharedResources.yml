@@ -7,142 +7,146 @@ trigger: none
 pr: none
 
 pool:
-  vmImage: 'windows-2019'
+  vmImage: "windows-2019"
 
 variables:
-  InternalAppInsightsName: 'bffnappinsights$($env:ResourceSuffix)'
-  InternalAppServicePlanLinuxName: 'bffnbotsappservicelinux$($env:ResourceSuffix)'
-  InternalAppServicePlanWindowsName: 'bffnbotsappservicewin$($env:ResourceSuffix)'
-  InternalCosmosDBName: 'bffnbotstatedb$($env:ResourceSuffix)'
-  InternalKeyVaultName: 'bffnbotkeyvault$($env:ResourceSuffix)'
-  InternalResourceGroupName: $[coalesce(variables['ResourceGroupName'], 'bffnshared')]
-  # AzureSubscription: define in Azure
-  # KeyVaultObjectId: define in Azure
-  # AppServicePlanPricingTier: (optional) define in Azure
-  # ResourceGroupName: (optional) define in Azure
-  # ResourceSuffix: (optional) define in Azure
+  ## Azure Resources (Define these variables in Azure)
+  # AzureSubscription: Service Connection Name to Manage Azure resources.
+  # KeyVaultObjectId: Suscription's Object Id to create the keyvault to store App Registrations.
+  # AppServicePlanPricingTier: (optional) Pricing Tier for App Service Plans, default F1.
+  # ResourceGroupName: (optional) Name of the Resource Group for the shared resources.
+  # ResourceSuffix: (optional) Suffix to add to the resources' name to avoid collitions.
+
+  ## Internal variables
+  InternalAppInsightsName: "bffnappinsights$($env:ResourceSuffix)"
+  InternalAppServicePlanLinuxName: "bffnbotsappservicelinux$($env:ResourceSuffix)"
+  InternalAppServicePlanWindowsName: "bffnbotsappservicewin$($env:ResourceSuffix)"
+  InternalCosmosDBName: "bffnbotstatedb$($env:ResourceSuffix)"
+  InternalKeyVaultName: "bffnbotkeyvault$($env:ResourceSuffix)"
+  ResourceGroup: "bffnshared$($env.ResourceSuffix)"
+  InternalResourceGroupName: $[coalesce(variables['ResourceGroupName'], variables['ResourceGroup'])]
 
 stages:
 - stage: Create_Resource_Group_Windows
-  displayName: Create Resource Group (Windows)
+  displayName: "Create Resource Group (Windows)"
   jobs:
     - job: Create_Resource_Group_Windows
-      displayName: 'Create steps'
+      displayName: "Create steps"
       steps:
       - checkout: none
       - task: AzureCLI@2
-        displayName: 'Create $(InternalResourceGroupName)'
+        displayName: "Create $(InternalResourceGroupName)"
         inputs:
           azureSubscription: $(AzureSubscription)
           scriptType: pscore
           scriptLocation: inlineScript
-          inlineScript: 'az group create --name "$(InternalResourceGroupName)" --location "westus"'
+          inlineScript: "az group create --name $(InternalResourceGroupName) --location westus"
 
 - stage: Create_Resource_Group_Linux
-  displayName: Create Resource Group (Linux)
+  displayName: "Create Resource Group (Linux)"
   dependsOn: []
   jobs:
     - job: Create_Resource_Group_Linux
-      displayName: 'Create steps'
+      displayName: "Create steps"
       steps:
       - checkout: none
       - task: AzureCLI@2
-        displayName: 'Create $(InternalResourceGroupName)-linux'
+        displayName: "Create $(InternalResourceGroupName)-linux"
         inputs:
           azureSubscription: $(AzureSubscription)
           scriptType: pscore
           scriptLocation: inlineScript
-          inlineScript: 'az group create --name "$(InternalResourceGroupName)-linux" --location "westus"'
+          inlineScript: "az group create --name $(InternalResourceGroupName)-linux --location westus"
 
 - stage: Create_CosmosDB
-  displayName: Create CosmosDB
+  displayName: "Create CosmosDB"
   dependsOn: Create_Resource_Group_Windows
   jobs:
     - job: Deploy_Cosmos_DB
-      displayName: 'Deploy steps'
+      displayName: "Deploy steps"
       steps:
       - task: AzureCLI@2
-        displayName: 'Deploy CosmosDB'
+        displayName: "Deploy CosmosDB"
         inputs:
           azureSubscription: $(AzureSubscription)
           scriptType: pscore
           scriptLocation: inlineScript
-          inlineScript: 'az deployment group create --name "$(InternalCosmosDBName)" --resource-group "$(InternalResourceGroupName)" --template-file build/templates/template-cosmosdb-resources.json --parameters accountName="$(InternalCosmosDBName)" databaseName="$(InternalCosmosDBName)"'
+          inlineScript: "az deployment group create --name $(InternalCosmosDBName) --resource-group $(InternalResourceGroupName) --template-file build/templates/template-cosmosdb-resources.json --parameters accountName=$(InternalCosmosDBName) databaseName=$(InternalCosmosDBName)"
 
 - stage: Create_Key_Vault
-  displayName: Create Key Vault
+  displayName: "Create Key Vault"
   dependsOn: Create_Resource_Group_Windows
   jobs:
     - job: Deploy_Key_Vault
-      displayName: 'Deploy steps'
+      displayName: "Deploy steps"
       steps:
       - task: AzureCLI@2
-        displayName: 'Deploy Key Vault'
+        displayName: "Deploy Key Vault"
         inputs:
           azureSubscription: $(AzureSubscription)
           scriptType: pscore
           scriptLocation: inlineScript
-          inlineScript: 'az deployment group create --name "$(InternalKeyVaultName)" --resource-group "$(InternalResourceGroupName)" --template-file build/templates/template-key-vault-resources.json --parameters keyVaultName="$(InternalKeyVaultName)" objectId="$(KeyVaultObjectId)"'
+          inlineScript: "az deployment group create --name $(InternalKeyVaultName) --resource-group $(InternalResourceGroupName) --template-file build/templates/template-key-vault-resources.json --parameters keyVaultName=$(InternalKeyVaultName) objectId=$(KeyVaultObjectId)"
 
 - stage: Create_App_Registrations
-  displayName: Create App Registrations
+  displayName: "Create App Registrations"
   dependsOn: Create_Key_Vault
   jobs:
     - job: Create_App_Registrations
-      displayName: 'Create steps'
+      displayName: "Create steps"
       steps:
       - checkout: none
       - template: createAppRegistrations.yml
         parameters: 
-          keyVault: '$(InternalKeyVaultName)'
+          keyVault: "$(InternalKeyVaultName)"
 
 - stage: Create_App_Service_Plan_Windows
-  displayName: Create App Service Plan (Windows)
+  displayName: "Create App Service Plan (Windows)"
   dependsOn: Create_Resource_Group_Windows
   jobs:
     - job: Deploy_App_Service_Plan_Windows
-      displayName: 'Deploy steps'
+      displayName: "Deploy steps"
       steps:
       - task: AzureCLI@2
-        displayName: 'Deploy App Service Plan (Windows)'
+        displayName: "Deploy App Service Plan (Windows)"
         inputs:
           azureSubscription: $(AzureSubscription)
           scriptType: pscore
           scriptLocation: inlineScript
           inlineScript: |
-            $appServicePlanPricingTier = if($env:AppServicePlanPricingTier) { "newAppServicePlanSku=$env:AppServicePlanPricingTier" };
+            $appServicePlanPricingTier = if ($env:AppServicePlanPricingTier) { "newAppServicePlanSku=$env:AppServicePlanPricingTier" }
             
             az deployment group create --name "$(InternalAppServicePlanWindowsName)" --resource-group "$(InternalResourceGroupName)" --template-file build/templates/template-service-plan-windows-resources.json --parameters $appServicePlanPricingTier newAppServicePlanName="$(InternalAppServicePlanWindowsName)"
 
 - stage: Create_App_Service_Plan_Linux
-  displayName: Create App Service Plan (Linux)
+  displayName: "Create App Service Plan (Linux)"
   dependsOn: Create_Resource_Group_Linux
   jobs:
     - job: Deploy_App_Service_Plan_Linux
-      displayName: 'Deploy steps'
+      displayName: "Deploy steps"
       steps:
       - task: AzureCLI@2
-        displayName: 'Deploy App Service Plan (Linux)'
+        displayName: "Deploy App Service Plan (Linux)"
         inputs:
           azureSubscription: $(AzureSubscription)
           scriptType: pscore
           scriptLocation: inlineScript
           inlineScript: |
-            $appServicePlanPricingTier = if($env:AppServicePlanPricingTier) { "newAppServicePlanSku=$env:AppServicePlanPricingTier" };
+            $appServicePlanPricingTier = if ($env:AppServicePlanPricingTier) { "newAppServicePlanSku=$env:AppServicePlanPricingTier" }
 
             az deployment group create --name "$(InternalAppServicePlanLinuxName)" --resource-group "$(InternalResourceGroupName)-linux" --template-file build/templates/template-service-plan-linux-resources.json --parameters $appServicePlanPricingTier newAppServicePlanName="$(InternalAppServicePlanLinuxName)"
 
 - stage: Create_App_Insights
-  displayName: Create App Insights
+  displayName: "Create App Insights"
   dependsOn: Create_Resource_Group_Windows
   jobs:
     - job: Deploy_App_Insights
-      displayName: 'Deploy steps'
+      displayName: "Deploy steps"
       steps:
       - task: AzureCLI@2
-        displayName: 'Deploy App Insights'
+        displayName: "Deploy App Insights"
         inputs:
           azureSubscription: $(AzureSubscription)
           scriptType: pscore
           scriptLocation: inlineScript
-          inlineScript: 'az deployment group create --name "$(InternalAppInsightsName)" --resource-group "$(InternalResourceGroupName)" --template-file build/templates/template-app-insights-resources.json --parameters appInsightsName="$(InternalAppInsightsName)"'
+          inlineScript: "az deployment group create --name $(InternalAppInsightsName) --resource-group $(InternalResourceGroupName) --template-file build/templates/template-app-insights-resources.json --parameters appInsightsName=$(InternalAppInsightsName)"

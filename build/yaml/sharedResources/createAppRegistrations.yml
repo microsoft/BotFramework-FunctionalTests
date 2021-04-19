@@ -1,9 +1,9 @@
 parameters:
-  keyVault: ''
+  keyVault: ""
 
 steps:
   - task: AzureCLI@2
-    displayName: 'Create App Registrations & Store into KeyVault'
+    displayName: "Create App Registrations & Store into KeyVault"
     inputs:
       azureSubscription: $(AzureSubscription)
       addSpnToEnvironment: true
@@ -23,7 +23,7 @@ steps:
             client_secret = $env:servicePrincipalKey;
           }
 
-          Invoke-WebRequest -Uri "https://login.microsoftonline.com/$($env:tenantId)/oauth2/v2.0/token" -Method "POST" -Body $body | ConvertFrom-Json;
+          Invoke-WebRequest -Uri "https://login.microsoftonline.com/$($env:tenantId)/oauth2/v2.0/token" -Method "POST" -Body $body | ConvertFrom-Json
         }
 
         function CreateAppRegistration($token, $appName) {
@@ -36,7 +36,7 @@ steps:
           $body = @{
             displayName    = $appName;
             signInAudience = "AzureADandPersonalMicrosoftAccount"
-          } | ConvertTo-Json;
+          } | ConvertTo-Json
 
           $app = Invoke-WebRequest -Uri "https://graph.microsoft.com/v1.0/applications" -Method "POST" -Headers $headers -Body $body -ContentType "application/json" | ConvertFrom-Json;
           
@@ -44,13 +44,13 @@ steps:
 
           $body = @{
             displayName = $app.appId;
-          } | ConvertTo-Json;
+          } | ConvertTo-Json
 
-          $secret = Invoke-WebRequest -Uri "https://graph.microsoft.com/v1.0/applications/$($app.id)/addPassword" -Method "POST" -Headers $headers -Body $body -ContentType "application/json" | ConvertFrom-Json;
+          $secret = Invoke-WebRequest -Uri "https://graph.microsoft.com/v1.0/applications/$($app.id)/addPassword" -Method "POST" -Headers $headers -Body $body -ContentType "application/json" | ConvertFrom-Json
 
           $app | Add-Member -MemberType NoteProperty -Name secret -Value $secret.secretText;
 
-          $app;
+          $app
         }
 
         function SaveAppRegistrationIntoKeyVault($vaultName, $bot, $app) {
@@ -88,23 +88,23 @@ steps:
           @{ appName = "bffnwaterfallskillbotpython"; variables = @{ appId = "BffnWaterfallSkillBotPythonAppId"; appSecret = "BffnWaterfallSkillBotPythonAppSecret"; objectId = "BffnWaterfallSkillBotPythonAppObjectId" }}
         )
 
-        $token = GetToken;
+        $token = GetToken
 
         foreach ($bot in $bots) {
-          $botName = "$($bot.appName)$($env:ResourceSuffix)";
-          Write-Host "`n[$botName] Starting";
-          Write-Host "Creating App Registration ...";
+          $botName = "$($bot.appName)$($env:ResourceSuffix)"
+          Write-Host "`n[$botName] Starting"
+          Write-Host "Creating App Registration ..."
           
-          $app = CreateAppRegistration $token $botName;
+          $app = CreateAppRegistration $token $botName
           Write-Host "
             App Registration:
-              Name: $botName;
+              Name: $botName
               Variables:
-                $($bot.variables.objectId): $($app.id);
-                $($bot.variables.appId): $($app.appId);
-          ";
+                $($bot.variables.objectId): $($app.id)
+                $($bot.variables.appId): $($app.appId)
+          "
 
-          Write-Host "Storing App Registration into the KeyVault (${{ parameters.keyVault }}) ...";
-          SaveAppRegistrationIntoKeyVault "${{ parameters.keyVault }}" $bot.variables $app;
-          Write-Host "[$botName] Ending";
+          Write-Host "Storing App Registration into the KeyVault (${{ parameters.keyVault }}) ..."
+          SaveAppRegistrationIntoKeyVault "${{ parameters.keyVault }}" $bot.variables $app
+          Write-Host "[$botName] Ending"
         }
