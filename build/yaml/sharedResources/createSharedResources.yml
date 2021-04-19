@@ -23,8 +23,7 @@ variables:
   InternalAppServicePlanWindowsName: "bffnbotsappservicewin$($env:ResourceSuffix)"
   InternalCosmosDBName: "bffnbotstatedb$($env:ResourceSuffix)"
   InternalKeyVaultName: "bffnbotkeyvault$($env:ResourceSuffix)"
-  ResourceGroup: "bffnshared$($env.ResourceSuffix)"
-  InternalResourceGroupName: $[coalesce(variables['ResourceGroupName'], variables['ResourceGroup'])]
+  InternalResourceGroupName: $[coalesce(variables['ResourceGroupName'], 'bffnshared')]
 
 stages:
 - stage: Create_Resource_Group_Windows
