@@ -66,8 +66,8 @@ variables:
   # DependenciesRegistrySkills: (optional) Registry to download the dependency packages for the skill bots.
   # DependenciesRegistrySkillsV3: (optional) Registry to download the dependency packages for the skill v3 bots.
   # DependenciesVersionHosts: (optional) Version of the dependency packages for the host bots.
-  # DependenciesVersionSkills: (optional) Version of the dependency packages for the host bots.
-  # DependenciesVersionSkillsV3: (optional) Version of the dependency packages for the host bots.
+  # DependenciesVersionSkills: (optional) Version of the dependency packages for the skill bots.
+  # DependenciesVersionSkillsV3: (optional) Version of the dependency packages for the skill v3 bots.
 
   ## Internal variables
   InternalResourceSuffix: $[coalesce(variables['ResourceSuffix'], '')]
