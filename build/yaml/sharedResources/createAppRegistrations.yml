@@ -1,11 +1,13 @@
 parameters:
+  azureSubscription: ""
   keyVault: ""
+  resourceSuffix: ""
 
 steps:
   - task: AzureCLI@2
     displayName: "Create App Registrations & Store into KeyVault"
     inputs:
-      azureSubscription: $(AzureSubscription)
+      azureSubscription: "${{ parameters.azureSubscription }}"
       addSpnToEnvironment: true
       failOnStandardError: true
       scriptType: pscore
@@ -91,7 +93,7 @@ steps:
         $token = GetToken
 
         foreach ($bot in $bots) {
-          $botName = "$($bot.appName)$($env:ResourceSuffix)"
+          $botName = "$($bot.appName)${{ parameters.resourceSuffix }}"
           Write-Host "`n[$botName] Starting"
           Write-Host "Creating App Registration ..."
           

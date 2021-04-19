@@ -97,7 +97,9 @@ stages:
       - checkout: none
       - template: createAppRegistrations.yml
         parameters: 
+          azureSubscription: $(AzureSubscription)
           keyVault: "$(InternalKeyVaultName)"
+          resourceSuffix: $env:ResourceSuffix
 
 - stage: Create_App_Service_Plan_Windows
   displayName: "Create App Service Plan (Windows)"
@@ -114,7 +116,6 @@ stages:
           scriptLocation: inlineScript
           inlineScript: |
             $appServicePlanPricingTier = if ($env:AppServicePlanPricingTier) { "newAppServicePlanSku=$env:AppServicePlanPricingTier" }
-            
             az deployment group create --name "$(InternalAppServicePlanWindowsName)" --resource-group "$(InternalResourceGroupName)" --template-file build/templates/template-service-plan-windows-resources.json --parameters $appServicePlanPricingTier newAppServicePlanName="$(InternalAppServicePlanWindowsName)"
 
 - stage: Create_App_Service_Plan_Linux
@@ -132,7 +133,6 @@ stages:
           scriptLocation: inlineScript
           inlineScript: |
             $appServicePlanPricingTier = if ($env:AppServicePlanPricingTier) { "newAppServicePlanSku=$env:AppServicePlanPricingTier" }
-
             az deployment group create --name "$(InternalAppServicePlanLinuxName)" --resource-group "$(InternalResourceGroupName)-linux" --template-file build/templates/template-service-plan-linux-resources.json --parameters $appServicePlanPricingTier newAppServicePlanName="$(InternalAppServicePlanLinuxName)"
 
 - stage: Create_App_Insights
