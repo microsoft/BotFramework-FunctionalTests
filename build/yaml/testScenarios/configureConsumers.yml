@@ -1,11 +1,27 @@
 parameters:
-  scenario: ''
+  appIds:
+    EchoSkillBotComposerDotNet: ""
+    EchoSkillBotDotNet: ""
+    EchoSkillBotDotNet21: ""
+    EchoSkillBotDotNetV3: ""
+    EchoSkillBotJS: ""
+    EchoSkillBotJSV3: ""
+    EchoSkillBotPython: ""
+    WaterfallSkillBotDotNet: ""
+    WaterfallSkillBotJS: ""
+    WaterfallSkillBotPython: ""
+  azureSubscription: ""
+  keyVault: ""
+  resourceGroup: ""
+  resourceSuffix: ""
+  scenario: ""
+
 
 steps:
   - task: AzureCLI@2
-    displayName: Set Consumers AppSettings
+    displayName: "Set Consumers AppSettings"
     inputs:
-      azureSubscription: $(AzureSubscription)
+      azureSubscription: ${{ parameters.azureSubscription }}
       scriptType: pscore
       scriptLocation: inlineScript
       inlineScript: |
@@ -18,58 +34,58 @@ steps:
 
         # Bots Resource Groups
         $groups = @{
-          DotNet = "$(InternalResourceGroupName)-DotNet"
-          JS     = "$(InternalResourceGroupName)-JS"
-          Python = "$(InternalResourceGroupName)-Python"
+          DotNet = "${{ parameters.resourceGroup }}-DotNet"
+          JS     = "${{ parameters.resourceGroup }}-JS"
+          Python = "${{ parameters.resourceGroup }}-Python"
         }
 
         # Bots Settings
         $consumers = @(
           @{
-              key           = 'SimpleHostBotDotNet'
-              botName       = 'bffnsimplehostbotdotnet'
+              key           = "SimpleHostBotDotNet"
+              botName       = "bffnsimplehostbotdotnet"
               resourceGroup = $groups.DotNet
               configType    = $types.Appsettings
           }
           @{
-              key           = 'SimpleHostBotDotNet21'
-              botName       = 'bffnsimplehostbotdotnet21'
+              key           = "SimpleHostBotDotNet21"
+              botName       = "bffnsimplehostbotdotnet21"
               resourceGroup = $groups.DotNet
               configType    = $types.Appsettings
           }
           @{
-              key           = 'SimpleHostBotComposerDotNet'
-              botName       = 'bffnsimplehostbotcomposerdotnet'
+              key           = "SimpleHostBotComposerDotNet"
+              botName       = "bffnsimplehostbotcomposerdotnet"
               resourceGroup = $groups.DotNet
               configType    = $types.Composer
           }
           @{
-              key           = 'WaterfallHostBotDotNet'
-              botName       = 'bffnwaterfallhostbotdotnet'
+              key           = "WaterfallHostBotDotNet"
+              botName       = "bffnwaterfallhostbotdotnet"
               resourceGroup = $groups.DotNet
               configType    = $types.Appsettings
           }
           @{
-              key           = 'SimpleHostBotJS'
-              botName       = 'bffnsimplehostbotjs'
+              key           = "SimpleHostBotJS"
+              botName       = "bffnsimplehostbotjs"
               resourceGroup = $groups.JS
               configType    = $types.Env
           }
           @{
-              key           = 'WaterfallHostBotJS'
-              botName       = 'bffnwaterfallhostbotjs'
+              key           = "WaterfallHostBotJS"
+              botName       = "bffnwaterfallhostbotjs"
               resourceGroup = $groups.JS
               configType    = $types.Env
           }
           @{
-              key           = 'SimpleHostBotPython'
-              botName       = 'bffnsimplehostbotpython'
+              key           = "SimpleHostBotPython"
+              botName       = "bffnsimplehostbotpython"
               resourceGroup = $groups.Python
               configType    = $types.Env
           }
           @{
-              key           = 'WaterfallHostBotPython'
-              botName       = 'bffnwaterfallhostbotpython'
+              key           = "WaterfallHostBotPython"
+              botName       = "bffnwaterfallhostbotpython"
               resourceGroup = $groups.Python
               configType    = $types.Env
           }
@@ -77,82 +93,82 @@ steps:
 
         $skills = @(
           @{
-              key           = 'EchoSkillBotDotNet'
-              keyComposer   = 'echoSkillBotDotNet' 
-              botName       = 'bffnechoskillbotdotnet'
-              appId         = "$env:BffnEchoSkillBotDotNetAppId"
+              key           = "EchoSkillBotDotNet"
+              keyComposer   = "echoSkillBotDotNet" 
+              botName       = "bffnechoskillbotdotnet"
+              appId         = "${{ parameters.appIds.EchoSkillBotDotNet }}"
               resourceGroup = $groups.DotNet
-              group = 'Echo'
+              group = "Echo"
           }
           @{
-              key           = 'EchoSkillBotDotNet21'
-              keyComposer   = 'echoSkillBotDotNet21' 
-              botName       = 'bffnechoskillbotdotnet21'
-              appId         = "$env:BffnEchoSkillBotDotNet21AppId"
+              key           = "EchoSkillBotDotNet21"
+              keyComposer   = "echoSkillBotDotNet21" 
+              botName       = "bffnechoskillbotdotnet21"
+              appId         = "${{ parameters.appIds.EchoSkillBotDotNet21 }}"
               resourceGroup = $groups.DotNet
-              group = 'Echo'
+              group = "Echo"
           }
           @{
-              key           = 'EchoSkillBotDotNetV3'
-              keyComposer   = 'echoSkillBotDotNetV3' 
-              botName       = 'bffnechoskillbotdotnetv3'
-              appId         = "$env:BffnEchoSkillBotDotNetV3AppId"
+              key           = "EchoSkillBotDotNetV3"
+              keyComposer   = "echoSkillBotDotNetV3" 
+              botName       = "bffnechoskillbotdotnetv3"
+              appId         = "${{ parameters.appIds.EchoSkillBotDotNetV3 }}"
               resourceGroup = $groups.DotNet
-              group = 'Echo'
+              group = "Echo"
           }
           @{
-              key           = 'EchoSkillBotComposerDotNet'
-              keyComposer   = 'echoSkillBotComposerDotNet' 
-              botName       = 'bffnechoskillbotcomposerdotnet'
-              appId         = "$env:BffnEchoSkillBotComposerDotNetAppId"
+              key           = "EchoSkillBotComposerDotNet"
+              keyComposer   = "echoSkillBotComposerDotNet" 
+              botName       = "bffnechoskillbotcomposerdotnet"
+              appId         = "${{ parameters.appIds.EchoSkillBotComposerDotNet }}"
               resourceGroup = $groups.DotNet
-              group = 'Echo'
+              group = "Echo"
           }
           @{
-              key           = 'WaterfallSkillBotDotNet'
-              keyComposer   = 'waterfallSkillBotDotNet' 
-              botName       = 'bffnwaterfallskillbotdotnet'
-              appId         = "$env:BffnWaterfallSkillBotDotNetAppId"
+              key           = "WaterfallSkillBotDotNet"
+              keyComposer   = "waterfallSkillBotDotNet" 
+              botName       = "bffnwaterfallskillbotdotnet"
+              appId         = "${{ parameters.appIds.WaterfallSkillBotDotNet }}"
               resourceGroup = $groups.DotNet
-              group = 'Waterfall'
+              group = "Waterfall"
           }
           @{
-              key           = 'EchoSkillBotJS'
-              keyComposer   = 'echoSkillBotJs' 
-              botName       = 'bffnechoskillbotjs'
-              appId         = "$env:BffnEchoSkillBotJSAppId"
+              key           = "EchoSkillBotJS"
+              keyComposer   = "echoSkillBotJs" 
+              botName       = "bffnechoskillbotjs"
+              appId         = "${{ parameters.appIds.EchoSkillBotJS }}"
               resourceGroup = $groups.JS
-              group = 'Echo'
+              group = "Echo"
           }
           @{
-              key           = 'EchoSkillBotJSV3'
-              keyComposer   = 'echoSkillBotJsV3' 
-              botName       = 'bffnechoskillbotjsv3'
-              appId         = "$env:BffnEchoSkillBotJSV3AppId"
+              key           = "EchoSkillBotJSV3"
+              keyComposer   = "echoSkillBotJsV3" 
+              botName       = "bffnechoskillbotjsv3"
+              appId         = "${{ parameters.appIds.EchoSkillBotJSV3 }}"
               resourceGroup = $groups.JS
-              group = 'Echo'
+              group = "Echo"
           }
           @{
-              key           = 'WaterfallSkillBotJS'
-              keyComposer   = 'waterfallSkillBotJS' 
-              botName       = 'bffnwaterfallskillbotjs'
-              appId         = "$env:BffnWaterfallSkillBotJSAppId"
+              key           = "WaterfallSkillBotJS"
+              keyComposer   = "waterfallSkillBotJS" 
+              botName       = "bffnwaterfallskillbotjs"
+              appId         = "${{ parameters.appIds.WaterfallSkillBotJS }}"
               resourceGroup = $groups.JS
-              group = 'Waterfall'
+              group = "Waterfall"
           }
           @{
-              key           = 'EchoSkillBotPython'
-              keyComposer   = 'echoSkillBotPython' 
-              botName       = 'bffnechoskillbotpython'
-              appId         = "$env:BffnEchoSkillBotPythonAppId"
+              key           = "EchoSkillBotPython"
+              keyComposer   = "echoSkillBotPython" 
+              botName       = "bffnechoskillbotpython"
+              appId         = "${{ parameters.appIds.EchoSkillBotPython }}"
               resourceGroup = $groups.Python
-              group = 'Echo'
+              group = "Echo"
           }
           @{
-              key           = 'WaterfallSkillBotPython'
-              keyComposer   = 'waterfallSkillBotPython' 
-              botName       = 'bffnwaterfallskillbotpython'
-              appId         = "$env:BffnWaterfallSkillBotPythonAppId"
+              key           = "WaterfallSkillBotPython"
+              keyComposer   = "waterfallSkillBotPython" 
+              botName       = "bffnwaterfallskillbotpython"
+              appId         = "${{ parameters.appIds.WaterfallSkillBotPython }}"
               resourceGroup = $groups.Python
               group = "Waterfall"
           }
@@ -161,58 +177,58 @@ steps:
         # Bots Test Scenarios
         $scenarios = @(
           @{ 
-              name      = 'SingleTurn'; 
+              name      = "SingleTurn"; 
               consumers = @(
-                'SimpleHostBotComposerDotNet'
-                'SimpleHostBotDotNet',
-                'SimpleHostBotDotNet21',
-                'SimpleHostBotJS',
-                'SimpleHostBotPython'
+                "SimpleHostBotComposerDotNet"
+                "SimpleHostBotDotNet",
+                "SimpleHostBotDotNet21",
+                "SimpleHostBotJS",
+                "SimpleHostBotPython"
               );
               skills    = @(
-                'EchoSkillBotComposerDotNet',
-                'EchoSkillBotDotNet',
-                'EchoSkillBotDotNet21',
-                'EchoSkillBotDotNetV3',
-                'EchoSkillBotJS',
-                'EchoSkillBotJSV3',
-                'EchoSkillBotPython'
+                "EchoSkillBotComposerDotNet",
+                "EchoSkillBotDotNet",
+                "EchoSkillBotDotNet21",
+                "EchoSkillBotDotNetV3",
+                "EchoSkillBotJS",
+                "EchoSkillBotJSV3",
+                "EchoSkillBotPython"
               );
           }
           @{ 
-              name      = 'Waterfall'; 
+              name      = "Waterfall"; 
               consumers = @(
-                'WaterfallHostBotDotNet',
-                'WaterfallHostBotJS',
-                'WaterfallHostBotPython'
+                "WaterfallHostBotDotNet",
+                "WaterfallHostBotJS",
+                "WaterfallHostBotPython"
               );
               skills    = @(
-                'WaterfallSkillBotDotNet',
-                'WaterfallSkillBotJS',
-                'WaterfallSkillBotPython'
+                "WaterfallSkillBotDotNet",
+                "WaterfallSkillBotJS",
+                "WaterfallSkillBotPython"
               );
           }
         )
 
         # Load AppIds from KeyVault
         foreach ($skill in $skills) {
-          if(-not [string]::IsNullOrEmpty($skill.appId)){
-            continue;
+          if (-not [string]::IsNullOrEmpty($skill.appId)) {
+            continue
           }
-          $entry = az keyvault secret list --vault-name "$(InternalKeyVaultName)" --query "[?name == 'Bffn$($skill.key)AppId']" | ConvertFrom-Json;
-          $secretVault = az keyvault secret show --id $entry.id | ConvertFrom-Json;
-          $skill.appId = $secretVault.value;
+          $entry = az keyvault secret list --vault-name "${{ parameters.keyVault }}" --query "[?name == 'Bffn$($skill.key)AppId']" | ConvertFrom-Json;
+          $secretVault = az keyvault secret show --id $entry.id | ConvertFrom-Json
+          $skill.appId = $secretVault.value
         }
 
         $appsettingsPath = "tests/SkillFunctionalTests/appsettings.json"
 
-        $appsettingsTestProject = Get-Content -Raw $appsettingsPath | ConvertFrom-Json;
+        $appsettingsTestProject = Get-Content -Raw $appsettingsPath | ConvertFrom-Json
         $appsettingsTestProject.HostBotClientOptions = @{}
 
         # Set DirectLine into FunctionalTests project
         function ConfigureAppSettings ($key, $botName, $resourceGroup) {
           # Gets the Consumer DirectLine
-          $directLine = (az bot directline show --name "$($botName)$($env:ResourceSuffix)-$(DeploymentBuildSuffix)" --resource-group $resourceGroup --with-secrets true | ConvertFrom-Json).properties.properties.sites.key;
+          $directLine = (az bot directline show --name "$($botName)${{ parameters.resourceSuffix }}" --resource-group $resourceGroup --with-secrets true | ConvertFrom-Json).properties.properties.sites.key;
 
           $appsettingsTestProject.HostBotClientOptions[$key] = @{
             DirectLineSecret = $directLine
@@ -223,41 +239,41 @@ steps:
         # Script to assign Skills variables into Consumers AppSettings
         foreach ($scenario in $scenarios) {
           if ($scenario.name -ne "${{ parameters.scenario }}") {
-            continue;
+            continue
           }
 
           foreach ($consumer in $scenario.consumers) {
               $consumerBot = $consumers | Where-Object key -eq $consumer
 
               if (-not $consumerBot) {
-                continue;
+                continue
               }
 
               # Check if the Consumer bot resource exists.
-              if ((az group exists -n "$($consumerBot.resourceGroup)") -eq 'false') {
-                continue;
+              if ((az group exists -n "$($consumerBot.resourceGroup)") -eq "false") {
+                continue
               }
 
-              $resource = az webapp list --resource-group $consumerBot.resourceGroup --query "[?name=='$($consumerBot.botName)$($env:ResourceSuffix)-$(DeploymentBuildSuffix)']" | ConvertFrom-Json
+              $resource = az webapp list --resource-group $consumerBot.resourceGroup --query "[?name=='$($consumerBot.botName)${{ parameters.resourceSuffix }}']" | ConvertFrom-Json
 
               if (-not $resource) {
-                continue;
+                continue
               }
 
               ConfigureAppSettings $consumerBot.key $consumerBot.botName $consumerBot.resourceGroup
 
               # Gets the previous settings to delete it
-              $json = (az webapp config appsettings list --name "$($consumerBot.botName)$($env:ResourceSuffix)-$(DeploymentBuildSuffix)" --resource-group $consumerBot.resourceGroup) | ConvertFrom-Json
+              $json = (az webapp config appsettings list --name "$($consumerBot.botName)${{ parameters.resourceSuffix }}" --resource-group $consumerBot.resourceGroup) | ConvertFrom-Json
               $botFrameworkSkillsNames = @($json | Where-Object { $_.name -match "BotFrameworkSkills*" -or $_.name -eq "SkillHostEndpoint" }) | Select-Object -ExpandProperty name
 
               if ($botFrameworkSkillsNames.Length -gt 0) {
                 $settings = $botFrameworkSkillsNames | ForEach-Object { $_ }
-                az webapp config appsettings delete --name "$($consumerBot.botName)$($env:ResourceSuffix)-$(DeploymentBuildSuffix)" --resource-group $consumerBot.resourceGroup --setting-names $settings --output none
+                az webapp config appsettings delete --name "$($consumerBot.botName)${{ parameters.resourceSuffix }}" --resource-group $consumerBot.resourceGroup --setting-names $settings --output none
               }
 
               # Create settings list
               $properties = @(
-                "SkillHostEndpoint=https://$($consumerBot.botName)$($env:ResourceSuffix)-$(DeploymentBuildSuffix).azurewebsites.net/api/skills"
+                "SkillHostEndpoint=https://$($consumerBot.botName)${{ parameters.resourceSuffix }}.azurewebsites.net/api/skills"
               )
 
               $index = 0
@@ -266,41 +282,41 @@ steps:
                 $skillBot = $skills | Where-Object key -eq $skill
 
                 if (-not $skillBot) {
-                    continue;
+                    continue
                 }
 
                 if ($skillBot.appId.Trim().Length -eq 0) {
-                    continue;
+                    continue
                 }
 
                 # Check if the Consumer bot resource exists.
-                if ((az group exists -n "$($skillBot.resourceGroup)") -eq 'false') {
-                  continue;
+                if ((az group exists -n "$($skillBot.resourceGroup)") -eq "false") {
+                  continue
                 }
 
                 # Check if the Skill bot resource exists.
-                $resource = az webapp list --resource-group $skillBot.resourceGroup --query "[?name=='$($skillBot.botName)$($env:ResourceSuffix)-$(DeploymentBuildSuffix)']" | ConvertFrom-Json
+                $resource = az webapp list --resource-group $skillBot.resourceGroup --query "[?name=='$($skillBot.botName)${{ parameters.resourceSuffix }}']" | ConvertFrom-Json
 
                 if (-not $resource) {
-                    continue;
+                    continue
                 }
 
                 switch ($consumerBot.configType) {
                     $types.Appsettings { 
-                      $properties += "BotFrameworkSkills:$($index):Id=$($skillBot.key)";
-                      $properties += "BotFrameworkSkills:$($index):AppId=$($skillBot.appId)";
-                      $properties += "BotFrameworkSkills:$($index):SkillEndpoint=https://$($skillBot.botName)$($env:ResourceSuffix)-$(DeploymentBuildSuffix).azurewebsites.net/api/messages";
+                      $properties += "BotFrameworkSkills:$($index):Id=$($skillBot.key)"
+                      $properties += "BotFrameworkSkills:$($index):AppId=$($skillBot.appId)"
+                      $properties += "BotFrameworkSkills:$($index):SkillEndpoint=https://$($skillBot.botName)${{ parameters.resourceSuffix }}.azurewebsites.net/api/messages";
                       $properties += "BotFrameworkSkills:$($index):Group=$($skillBot.group)"
                     }
                     $types.Env { 
-                      $properties += "skill_$($skillBot.key)_appId=$($skillBot.appId)";
-                      $properties += "skill_$($skillBot.key)_endpoint=https://$($skillBot.botName)$($env:ResourceSuffix)-$(DeploymentBuildSuffix).azurewebsites.net/api/messages";
+                      $properties += "skill_$($skillBot.key)_appId=$($skillBot.appId)"
+                      $properties += "skill_$($skillBot.key)_endpoint=https://$($skillBot.botName)${{ parameters.resourceSuffix }}.azurewebsites.net/api/messages";
                       $properties += "skill_$($skillBot.key)_group=$($skillBot.group)"
                     }
                     $types.Composer {
                       # NOTE: Composer uses different capitalization for the skill keys.
-                      $properties += "skill__$($skillBot.keyComposer)__msAppId=$($skillBot.appId)";
-                      $properties += "skill__$($skillBot.keyComposer)__endpointUrl=https://$($skillBot.botName)$($env:ResourceSuffix)-$(DeploymentBuildSuffix).azurewebsites.net/api/messages";
+                      $properties += "skill__$($skillBot.keyComposer)__msAppId=$($skillBot.appId)"
+                      $properties += "skill__$($skillBot.keyComposer)__endpointUrl=https://$($skillBot.botName)${{ parameters.resourceSuffix }}.azurewebsites.net/api/messages";
                     }
                 }
 
@@ -309,16 +325,16 @@ steps:
 
               $settings = $properties | ForEach-Object { $_ }
 
-              $appsettings = az webapp config appsettings set --name "$($consumerBot.botName)$($env:ResourceSuffix)-$(DeploymentBuildSuffix)" --resource-group $consumerBot.resourceGroup --settings $settings | ConvertFrom-Json
+              $appsettings = az webapp config appsettings set --name "$($consumerBot.botName)${{ parameters.resourceSuffix }}" --resource-group $consumerBot.resourceGroup --settings $settings | ConvertFrom-Json
 
-              Write-Host "`nConsumer AppSettings: $($consumerBot.key)";
+              Write-Host "`nConsumer AppSettings: $($consumerBot.key)"
 
-              $appsettings | Where-Object {$_.name -eq 'MicrosoftAppPassword'} | ForEach-Object {$_.value = "***"}
+              $appsettings | Where-Object {$_.name -eq "MicrosoftAppPassword"} | ForEach-Object {$_.value = "***"}
               $appsettings
           }
         }
 
-        $appsettingsTestProject | ConvertTo-Json | Set-Content $appsettingsPath;
+        $appsettingsTestProject | ConvertTo-Json | Set-Content $appsettingsPath
 
-        Write-Host "`nTest Project AppSettings: $($consumerBot.key)";
+        Write-Host "`nTest Project AppSettings: $($consumerBot.key)"
         $appsettingsTestProject.HostBotClientOptions
