@@ -13,14 +13,20 @@ jobs:
       - template: pythonBotsBuild-CI.yml
 
     - job: "BuildDotnetBots"
-      variables:
-        SolutionDir: "$(Build.SourcesDirectory)/Bots/DotNet/"
       steps: 
       - template: dotnetBotsBuild-CI.yml
+        paramaters:
+          buildConfiguration: "$(BuildConfiguration)"
+          buildPlatform: "$(BuildPlatform)"
+          solutionDir: "$(Build.SourcesDirectory)/Bots/DotNet/"
 
     - job: "BuildSkillsFunctionalTests"
       steps: 
       - template: functionalTestsBuild-CI.yml
+        parameters:
+          buildConfiguration: "$(BuildConfiguration)"
+          buildNumber: "$(Build.BuildNumber)"
+          buildPlatform: "$(BuildPlatform)"
 
 pool:
     vmImage: "windows-2019"

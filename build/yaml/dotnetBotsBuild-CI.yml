@@ -1,3 +1,8 @@
+parameters:
+  buildConfiguration: ""
+  buildPlatform: ""
+  solutionDir: ""
+
 steps:
 - task: UseDotNet@2
   displayName: "Use .Net Core sdk 2.1.x"
@@ -16,15 +21,15 @@ steps:
   displayName: "NuGet restore"
   inputs:
     restoreSolution: "Bots/DotNet/FunctionalTestsBots.sln"
-    restoreDirectory: "$(SolutionDir)packages"
+    restoreDirectory: "${{ parameters.solutionDir }}packages"
 
 - task: MSBuild@1
   displayName: "Build"
   inputs:
     solution: "Bots/DotNet/FunctionalTestsBots.sln"
     vsVersion: 16.0
-    platform: "$(BuildPlatform)"
-    configuration: "$(BuildConfiguration)"
+    platform: "${{ parameters.buildPlatform }}"
+    configuration: "${{ parameters.buildConfiguration }}"
 
 - task: PublishBuildArtifacts@1
   displayName: "Publish Artifact: build folder"

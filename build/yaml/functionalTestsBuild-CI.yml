@@ -1,3 +1,8 @@
+parameters:
+  buildConfiguration: ""
+  buildNumber: ""
+  buildPlatform: ""
+
 steps:
 - task: UseDotNet@2
   displayName: "Use .Net Core sdk 2.1.x"
@@ -22,8 +27,8 @@ steps:
   inputs:
     solution: "SkillFunctionalTests.sln"
     vsVersion: 16.0
-    platform: "$(BuildPlatform)"
-    configuration: "$(BuildConfiguration)"
+    platform: "${{ parameters.buildPlatform }}"
+    configuration: "${{ parameters.buildConfiguration }}"
 
 - task: DotNetCoreCLI@2
   displayName: 'Run Unit Tests'
@@ -31,7 +36,7 @@ steps:
     command: test
     projects: 'Tests/TranscriptTestRunnerTests/TranscriptTestRunnerTests.csproj'
     testRunTitle: 'FunctionalTests-CI-Results-$(Build.BuildNumber)'
-    arguments: '-v n --configuration $(BuildConfiguration) --no-build --no-restore --collect "Code Coverage" --logger "trx;LogFileName=FunctionalTests-CI-Results-$(Build.BuildNumber).trx"'
+    arguments: '-v n --configuration ${{ parameters.buildConfiguration }} --no-build --no-restore --collect "Code Coverage" --logger "trx;LogFileName=FunctionalTests-CI-Results-${{ parameters.buildNumber }}.trx"'
 
 - task: PublishBuildArtifacts@1
   displayName: "Publish Artifact: build folder"
