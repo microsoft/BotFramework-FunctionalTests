@@ -1,15 +1,15 @@
 parameters:
-  dependsOn: ""
-  azureSubscription: ""
-  resourceGroup: ""
-  bots: []
-  botPricingTier: ""
-  resourceSuffix: ""
+  appInsight: ""
   appServicePlan: ""
   appServicePlanRG: ""
-  appInsight: ""
+  azureSubscription: ""
+  bots: []
+  botPricingTier: ""
   connectionName: ""
+  dependsOn: ""
   keyVault: ""
+  resourceGroup: ""
+  resourceSuffix: ""
 
 stages:
 - ${{ each bot in parameters.bots }}:
@@ -37,9 +37,9 @@ stages:
           # Gets Bot App Registration credentials from KeyVault or Pipeline Variables
           - template: ../common/getAppRegistration.yml
             parameters:
-              azureSubscription: "${{ parameters.azureSubscription }}"
               appId: ${{ bot.appId }}
               appSecret: ${{ bot.appSecret }}
+              azureSubscription: "${{ parameters.azureSubscription }}"
               botName: "${{ bot.name }}"
               keyVault: "${{ parameters.keyVault }}"
 
@@ -74,18 +74,18 @@ stages:
           # Evaluate dependencies source and version
           - template: evaluateDependenciesVariables.yml
             parameters:
+              botType: "${{ bot.type }}"
               registry: "${{ bot.dependenciesRegistry }}"
               version: "${{ bot.dependenciesVersion }}"
-              botType: "${{ bot.type }}"
 
           # Start of DotNet Install & Build
           - ${{ if in(bot.type, 'Host', 'Skill') }}:
             # Install dependencies
             - template: installDependencies.yml
               parameters:
+                project: "${{ bot.project }}"
                 source: "$(DependenciesSource)"
                 version: "$(DependenciesVersionNumber)"
-                project: "${{ bot.project }}"
                 packages:
                   Microsoft.Bot.Builder.Dialogs 
                   Microsoft.Bot.Builder.Integration.AspNet.Core
@@ -156,27 +156,27 @@ stages:
           # Create App Service and Bot Channel Registration
           - template: ../common/createAppService.yml
             parameters:
-              azureSubscription: "${{ parameters.azureSubscription }}"
               appId: $(AppId)
+              appInsight: "${{ parameters.appInsight }}"
               appSecret:  $(AppSecret)
-              botName: "${{ bot.name }}"
-              botGroup: "${{ parameters.resourceGroup }}"
-              botPricingTier: "${{ parameters.botPricingTier }}"
-              resourceSuffix: "${{ parameters.resourceSuffix }}"
               appServicePlan: "${{ parameters.appServicePlan }}"
               appServicePlanRG: "${{ parameters.appServicePlanRG }}"
-              appInsight: "${{ parameters.appInsight }}"
+              azureSubscription: "${{ parameters.azureSubscription }}"
+              botGroup: "${{ parameters.resourceGroup }}"
+              botName: "${{ bot.name }}"
+              botPricingTier: "${{ parameters.botPricingTier }}"
+              resourceSuffix: "${{ parameters.resourceSuffix }}"
               templateFile: "build/templates/template-bot-resources.json"
 
           # Configure OAuth
           - ${{ if eq(bot.type, 'Skill') }}:
             - template: ../common/configureOAuth.yml
               parameters:
-                azureSubscription: "${{ parameters.azureSubscription }}"
                 appId: $(AppId)
                 appSecret:  $(AppSecret)
-                botName: "${{ bot.name }}"
+                azureSubscription: "${{ parameters.azureSubscription }}"
                 botGroup: "${{ parameters.resourceGroup }}"
+                botName: "${{ bot.name }}"
                 connectionName: "${{ parameters.connectionName }}"
                 resourceSuffix: "${{ parameters.resourceSuffix }}"
 
@@ -184,8 +184,8 @@ stages:
           - template: ../common/zipDeploy.yml
             parameters:
               azureSubscription: "${{ parameters.azureSubscription }}"
-              botName: "${{ bot.name }}"
               botGroup: "${{ parameters.resourceGroup }}"
+              botName: "${{ bot.name }}"
               source: "$(System.DefaultWorkingDirectory)/build/${{ bot.name }}/${{ bot.name }}.zip"
               resourceSuffix: "${{ parameters.resourceSuffix }}"
 
@@ -194,6 +194,6 @@ stages:
             - template: ../common/createDirectLine.yml
               parameters:
                 azureSubscription: "${{ parameters.azureSubscription }}"
-                botName: "${{ bot.name }}"
                 botGroup: "${{ parameters.resourceGroup }}"
+                botName: "${{ bot.name }}"
                 resourceSuffix: "${{ parameters.resourceSuffix }}"

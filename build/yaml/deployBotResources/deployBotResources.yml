@@ -70,7 +70,6 @@ variables:
   # DependenciesVersionSkillsV3: (optional) Version of the dependency packages for the skill v3 bots.
 
   ## Internal variables
-  InternalResourceSuffix: $[coalesce(variables['ResourceSuffix'], '')]
   InternalAppInsightsName: 'bffnappinsights$(InternalResourceSuffix)'
   InternalAppServicePlanLinuxName: $[coalesce(variables['AppServicePlanNameLinux'], 'bffnbotsappservicelinux$(InternalResourceSuffix)')]
   InternalAppServicePlanLinuxResourceGroup: $[coalesce(variables['AppServicePlanGroupLinux'], 'bffnshared-linux')]
@@ -78,6 +77,7 @@ variables:
   InternalAppServicePlanWindowsResourceGroup: $[coalesce(variables['AppServicePlanGroup'], 'bffnshared')]
   InternalKeyVaultName: 'bffnbotkeyvault$(InternalResourceSuffix)'
   InternalResourceGroupName: $[coalesce(variables['ResourceGroup'], 'bffnbots')]
+  InternalResourceSuffix: $[coalesce(variables['ResourceSuffix'], '')]
 
 
 stages:
@@ -101,16 +101,16 @@ stages:
 # DotNet
   - template: dotnet/deploy.yml
     parameters:
-      dependsOn: "Prepare_DotNetGroup"
-      azureSubscription: "$(AzureSubscription)"
-      resourceGroup: "$(InternalResourceGroupName)-DotNet"
-      botPricingTier: $env:BotPricingTier
-      resourceSuffix: $(InternalResourceSuffix)
+      appInsight: "$(InternalAppInsightsName)"
       appServicePlan: "$(InternalAppServicePlanWindowsName)"
       appServicePlanRG: "$(InternalAppServicePlanWindowsResourceGroup)"
-      appInsight: "$(InternalAppInsightsName)"
+      azureSubscription: "$(AzureSubscription)"
+      botPricingTier: $env:BotPricingTier
       connectionName: $env:ConnectionName
+      dependsOn: "Prepare_DotNetGroup"
       keyVault: "$(InternalKeyVaultName)"
+      resourceGroup: "$(InternalResourceGroupName)-DotNet"
+      resourceSuffix: $(InternalResourceSuffix)
       bots:
         - name: "bffnsimplehostbotdotnet"
           type: "Host"
@@ -198,15 +198,15 @@ stages:
 # DotNet Composer
   - template: dotnet/deployComposer.yml
     parameters:
-      dependsOn: "Prepare_DotNetGroup"
-      azureSubscription: "$(AzureSubscription)"
-      resourceGroup: "$(InternalResourceGroupName)-DotNet"
-      botPricingTier: $env:BotPricingTier
-      resourceSuffix: $(InternalResourceSuffix)
+      appInsight: "$(InternalAppInsightsName)"
       appServicePlan: "$(InternalAppServicePlanWindowsName)"
       appServicePlanRG: "$(InternalAppServicePlanWindowsResourceGroup)"
-      appInsight: "$(InternalAppInsightsName)"
+      azureSubscription: "$(AzureSubscription)"
+      botPricingTier: $env:BotPricingTier
+      dependsOn: "Prepare_DotNetGroup"
       keyVault: "$(InternalKeyVaultName)"
+      resourceGroup: "$(InternalResourceGroupName)-DotNet"
+      resourceSuffix: $(InternalResourceSuffix)
       bots:
         - name: "bffnsimplehostbotcomposerdotnet"
           type: "Host"
@@ -233,16 +233,16 @@ stages:
 # JS
   - template: js/deploy.yml
     parameters:
-      dependsOn: "Prepare_JSGroup"
-      azureSubscription: "$(AzureSubscription)"
-      resourceGroup: "$(InternalResourceGroupName)-JS"
-      botPricingTier: $env:BotPricingTier
-      resourceSuffix: $(InternalResourceSuffix)
+      appInsight: "$(InternalAppInsightsName)"
       appServicePlan: "$(InternalAppServicePlanWindowsName)"
       appServicePlanRG: "$(InternalAppServicePlanWindowsResourceGroup)"
-      appInsight: "$(InternalAppInsightsName)"
+      azureSubscription: "$(AzureSubscription)"
+      botPricingTier: $env:BotPricingTier
       connectionName: $env:ConnectionName
+      dependsOn: "Prepare_JSGroup"
       keyVault: "$(InternalKeyVaultName)"
+      resourceGroup: "$(InternalResourceGroupName)-JS"
+      resourceSuffix: $(InternalResourceSuffix)
       bots:
         - name: "bffnsimplehostbotjs"
           type: "Host"
@@ -297,15 +297,15 @@ stages:
 # Python
   - template: python/deploy.yml
     parameters:
-      dependsOn: "Prepare_PythonGroup"
-      azureSubscription: "$(AzureSubscription)"
-      resourceGroup: "$(InternalResourceGroupName)-Python"
-      botPricingTier: $env:BOTPRICINGTIER
-      resourceSuffix: "$(InternalResourceSuffix)"
       appServicePlan: "$(InternalAppServicePlanLinuxName)"
       appServicePlanRG: "$(InternalAppServicePlanLinuxResourceGroup)"
+      azureSubscription: "$(AzureSubscription)"
+      botPricingTier: $env:BOTPRICINGTIER
       connectionName: $env:CONNECTIONNAME
+      dependsOn: "Prepare_PythonGroup"
       keyVault: "$(InternalKeyVaultName)"
+      resourceGroup: "$(InternalResourceGroupName)-Python"
+      resourceSuffix: "$(InternalResourceSuffix)"
       bots:
         - name: "bffnsimplehostbotpython"
           type: "Host"

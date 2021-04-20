@@ -1,7 +1,7 @@
 parameters:
+  botType: ""
   registry: ""
   version: ""
-  botType: ""
 
 steps:
   - powershell: |

@@ -1,15 +1,15 @@
 parameters:
-  azureSubscription: ""
   appId: ""
+  appInsight: ""
   appSecret: ""
-  botName: ""
-  botGroup: ""
-  botPricingTier: ""
-  resourceSuffix: ""
   appServicePlan: ""
   appServicePlanRG: ""
-  appInsight: ""
+  azureSubscription: ""
+  botGroup: ""
+  botName: ""
+  botPricingTier: ""
   templateFile: ""
+  resourceSuffix: ""
 
 steps:
   - task: AzureCLI@2

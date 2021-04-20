@@ -1,8 +1,8 @@
 parameters:
-  version: ""
-  source: ""
-  project: {}
   packages: []
+  project: {}
+  source: ""
+  version: ""
 
 steps:
   - powershell: |

@@ -1,7 +1,7 @@
 parameters:
   azureSubscription: ""
-  botName: ""
   botGroup: ""
+  botName: ""
   source: ""
   resourceSuffix: ""
 
