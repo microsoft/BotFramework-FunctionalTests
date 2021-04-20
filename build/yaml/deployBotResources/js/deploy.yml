@@ -30,16 +30,21 @@ stages:
 
           # Prepare .env file, deleting all the declared skills, so it uses only the settings define in Azure
           - ${{ if eq(bot.type, 'Host') }}:
-            - powershell: |
-                $file = "${{ bot.project.directory }}/.env"
-                $content = Get-Content $file
-                $content | ForEach-Object {
-                  $line = $_
-                  if ($line.Trim().Length -gt 0 -and -not $line.Trim().ToLower().StartsWith('skill_')) {
-                    $line
-                  }
-                } | Set-Content $file;
+            - task: PowerShell@2
               displayName: 'Prepare .env file'
+              inputs:
+                targetType: inline
+                workingDirectory: '$(System.DefaultWorkingDirectory)/${{ bot.project.directory }}'
+                failOnStderr: true
+                script: |
+                  $file = "./.env"
+                  $content = Get-Content $file
+                  $content | ForEach-Object {
+                    $line = $_
+                    if ($line.Trim().Length -gt 0 -and -not $line.Trim().ToLower().StartsWith('skill_')) {
+                      $line
+                    }
+                  } | Set-Content $file;
 
           # Evaluate dependencies source and version
           - template: evaluateDependenciesVariables.yml
@@ -64,28 +69,70 @@ stages:
                 botName: '${{ bot.displayName }}'
               version: "$(DependenciesVersionNumber)"
 
-          # Set dependencies source and version
-          - powershell: |
-              Add-Content '${{ bot.project.directory }}/deployment-scripts/.deployment' "`nREGISTRY_SOURCE = $(DependenciesSource)"
-              Add-Content '${{ bot.project.directory }}/deployment-scripts/.deployment' "`nBOT_BUILDER_PACKAGE_VERSION = $(DependenciesVersionNumber)"
-              Get-ChildItem -Path '${{ bot.project.directory }}/'
-              Get-Content -Path '${{ bot.project.directory }}/deployment-scripts/.deployment'
-            failOnStderr: true
-            displayName: 'Set source and version'
+          # Set BotBuilder source and version
+          - task: PowerShell@2
+            displayName: 'Set BotBuilder source and version'
+            inputs:
+              targetType: inline
+              workingDirectory: '$(System.DefaultWorkingDirectory)/${{ bot.project.directory }}'
+              failOnStderr: true
+              script: |
+                $registry = "$(DependenciesSource)";
+                $version = "$(DependenciesVersionNumber)";
+                $packagejsonPath = "./package.json";
+
+                $packagejson = Get-Content $packagejsonPath | ConvertFrom-Json
+                $dependencies = @{}
+
+                $packagejson.dependencies.psobject.properties | ForEach-Object {
+                  $dependencies[$_.Name] = if ($_.Name -match "botbuilder*") { $version } else { $_.Value }
+                }
+
+                $packagejson.dependencies = $dependencies
+                
+                Set-Content $packagejsonPath -Value ($packagejson | ConvertTo-Json)
+
+                Write-Host "Updated BotBuilder packages version:";
+                $dependencies
+
+                Write-Host "`nUsing the registry source: $registry";
+                New-Item -Path . -Name ".npmrc" -ItemType "file" -Value "registry=$registry";
+
+          # Install Packages
+          - task: Npm@1
+            displayName: 'Install dependencies'
+            inputs:
+              command: 'install'
+              workingDir: '$(System.DefaultWorkingDirectory)/${{ bot.project.directory }}'
+              customRegistries: 'useNpmrc'
+              verbose: true
 
           # Prepate bot
-          - task: AzureCLI@1
+          - task: AzureCLI@2
             displayName: 'Prepare Bot'
             inputs:
               azureSubscription: $(AzureSubscription)
+              scriptType: pscore
               scriptLocation: inlineScript
-              inlineScript: 'call az bot prepare-deploy --code-dir "${{ bot.project.directory }}" --lang Javascript'
+              inlineScript: 'az bot prepare-deploy --code-dir "${{ bot.project.directory }}" --lang Javascript'
 
           # Zip bot
-          - powershell: |
-              move-item -path '${{ bot.project.directory }}/deployment-scripts/*' -destination '${{ bot.project.directory }}'
-              7z.exe a -tzip '$(System.DefaultWorkingDirectory)/${{ bot.name }}.zip' '$(System.DefaultWorkingDirectory)/${{ bot.project.directory }}/*' -aoa
-            displayName: 'Zip Bot'
+          - task: ArchiveFiles@2
+            displayName: 'Zip bot'
+            inputs:
+              rootFolderOrFile: '$(System.DefaultWorkingDirectory)/${{ bot.project.directory }}'
+              includeRootFolder: false
+              archiveType: 'zip'
+              archiveFile: '$(System.DefaultWorkingDirectory)/build/${{ bot.name }}.zip'
+              replaceExistingArchive: true
+              verbose: true
+
+          # Upload zip to artifacts in case we want to debug it
+          - task: PublishBuildArtifacts@1
+            displayName: 'Publish zip package'
+            inputs:
+              pathToPublish: '$(System.DefaultWorkingDirectory)/build/${{ bot.name }}.zip'
+              artifactName: javascript-$(Build.BuildId)
 
           # Create App Service and Bot Channel Registration
           - template: ../common/createAppService.yml
@@ -95,6 +142,16 @@ stages:
               botName: '${{ bot.name }}'
               botGroup: '${{ parameters.resourceGroup }}'
 
+          # Deploy bot
+          - task: AzureWebApp@1
+            displayName: 'Deploy Azure Web App : ${{ bot.name }}-$(Build.BuildId)'
+            inputs:
+              azureSubscription: $(AzureSubscription)
+              appName: '${{ bot.name }}-$(Build.BuildId)'
+              resourceGroupName: '${{ parameters.resourceGroup }}'
+              package: '$(System.DefaultWorkingDirectory)/build/${{ bot.name }}.zip'
+              deploymentMethod: runFromPackage
+
           # Configure OAuth
           - ${{ if eq(bot.type, 'Skill') }}:
             - template: ../common/configureOAuth.yml
@@ -103,13 +160,6 @@ stages:
                 appSecret:  $(AppSecret)
                 botName: '${{ bot.name }}'
                 botGroup: '${{ parameters.resourceGroup }}'
-
-          # Deploy bot
-          - template: ../common/zipDeploy.yml
-            parameters:
-              botName: '${{ bot.name }}'
-              botGroup: '${{ parameters.resourceGroup }}'
-              source: '$(System.DefaultWorkingDirectory)/${{ bot.name }}.zip'
 
           # Create DirectLine Channel Hosts
           - ${{ if eq(bot.type, 'Host') }}:
