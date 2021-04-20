@@ -15,7 +15,7 @@ jobs:
     - job: "BuildDotnetBots"
       steps: 
       - template: dotnetBotsBuild-CI.yml
-        paramaters:
+        parameters:
           buildConfiguration: "$(BuildConfiguration)"
           buildPlatform: "$(BuildPlatform)"
           solutionDir: "$(Build.SourcesDirectory)/Bots/DotNet/"
