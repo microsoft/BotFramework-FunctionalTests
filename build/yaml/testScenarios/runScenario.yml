@@ -1,39 +1,59 @@
 parameters:
+  appIds:
+    EchoSkillBotComposerDotNet: ""
+    EchoSkillBotDotNet: ""
+    EchoSkillBotDotNet21: ""
+    EchoSkillBotDotNetV3: ""
+    EchoSkillBotJS: ""
+    EchoSkillBotJSV3: ""
+    EchoSkillBotPython: ""
+    WaterfallSkillBotDotNet: ""
+    WaterfallSkillBotJS: ""
+    WaterfallSkillBotPython: ""
+  azureSubscription: ""
+  buildConfiguration: ""
+  buildIdSuffix: ""
+  keyVault: ""
+  resourceGroup: ""
+  resourceSuffix: ""
   scenarios: []
 
 stages:
   - ${{ each scenario in parameters.scenarios }}:
     - stage: "${{ scenario.name }}"
       displayName: "Test ${{ scenario.name }} Scenario"
-      ${{ if eq(scenario.dependsOn, '') }}:
-        dependsOn: "Download_Variables"
-      ${{ if ne(scenario.dependsOn, '') }}:
-        dependsOn: ["Download_Variables", "${{ scenario.dependsOn }}"]
+      dependsOn: "${{ scenario.dependsOn }}"
       jobs:
         - job: Test
           variables:
-            DeploymentBuildSuffix: $[ stageDependencies.Download_Variables.Download_Variables.outputs['Set_Variables.DeploymentBuildSuffix'] ]
+            BuildIdSuffix: "${{ parameters.buildIdSuffix }}"
           steps:
             - template: configureConsumers.yml
               parameters:
-                scenario: ${{ scenario.name }}
+                appIds: "${{ parameters.appIds }}"
+                azureSubscription: "${{ parameters.azureSubscription }}"
+                keyVault: "${{ parameters.keyVault }}"
+                resourceGroup: "${{ parameters.resourceGroup }}"
+                resourceSuffix: "${{ parameters.resourceSuffix }}$(BuildIdSuffix)"
+                scenario: "${{ scenario.name }}"
 
             - task: UseDotNet@2
-              displayName: 'Use .Net Core sdk 3.1.x'
+              displayName: "Use .Net Core sdk 3.1.x"
               inputs:
                 version: 3.1.x
 
             - task: DotNetCoreCLI@2
-              displayName: 'Build'
+              displayName: "Build"
               inputs:
                 command: build
                 publishWebProjects: false
-                projects: 'Tests/SkillFunctionalTests/SkillFunctionalTests.csproj'
-                arguments: '-v n --configuration $(BuildConfiguration)'
+                projects: "Tests/SkillFunctionalTests/SkillFunctionalTests.csproj"
+                arguments: "-v n --configuration ${{ parameters.buildConfiguration }}"
 
             - task: DotNetCoreCLI@2
-              displayName: 'DotNet Test'
+              displayName: "DotNet Test"
               inputs:
                 command: test
-                projects: 'Tests/SkillFunctionalTests/SkillFunctionalTests.csproj'
-                arguments: "-v n --configuration $(BuildConfiguration) --no-build --no-restore --filter TestCategory!=IgnoreInAutomatedBuild&TestCategory=${{ join('|TestCategory=', scenario.testCategories) }}"
+                testRunTitle: "SkillFunctionalTests-${{ scenario.name }}-$(Build.BuildNumber)"
+                projects: "Tests/SkillFunctionalTests/SkillFunctionalTests.csproj"
+                arguments: "-v n --configuration ${{ parameters.buildConfiguration }} --no-build --no-restore --logger trx;LogFileName=SkillFunctionalTests-${{ scenario.name }}-$(Build.BuildNumber).trx --filter TestCategory!=IgnoreInAutomatedBuild&TestCategory=${{ join('|TestCategory=', scenario.testCategories) }}"

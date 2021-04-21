@@ -1,22 +1,38 @@
 parameters:
+  appIds:
+    EchoSkillBotComposerDotNet: ""
+    EchoSkillBotDotNet: ""
+    EchoSkillBotDotNet21: ""
+    EchoSkillBotDotNetV3: ""
+    EchoSkillBotJS: ""
+    EchoSkillBotJSV3: ""
+    EchoSkillBotPython: ""
+    WaterfallSkillBotDotNet: ""
+    WaterfallSkillBotJS: ""
+    WaterfallSkillBotPython: ""
+  azureSubscription: ""
+  keyVault: ""
+  resourceGroup: ""
+  resourceSuffix: ""
   scenario: ""
 
 steps:
   - task: AzureCLI@2
-    displayName: Set Consumers AppSettings
+    displayName: "Set Consumers AppSettings"
     inputs:
-      azureSubscription: $(AzureSubscription)
+      azureSubscription: ${{ parameters.azureSubscription }}
       scriptType: pscore
       scriptLocation: inlineScript
       failOnStderr: true
       inlineScript: |
         # Global Variables
         $scenario = "${{ parameters.scenario }}";
-        $resourceGroup = "$(InternalResourceGroupName)";
-        $keyVault = "$(InternalKeyVaultName)";
-        $suffix = "$($env:ResourceSuffix)-$(DeploymentBuildSuffix)";
+        $resourceGroup = "${{ parameters.resourceGroup }}";
+        $keyVault = "${{ parameters.keyVault }}";
+        $suffix = "${{ parameters.resourceSuffix }}";
 
         # Helper Functions.
+
         $noBotsFoundMessage = "No bots were found in the configuration.";
 
         function AddTimeStamp {
@@ -89,7 +105,7 @@ steps:
           $scenarioSelected = $scenarios | Where-Object { $_.name -eq $scenario }
 
           if (-not $scenarioSelected) {
-            Write-Host $(AddTimeStamp -text "$($scneario): Unable to find the Test Scenario.");
+            Write-Host $(AddTimeStamp -text "$($scenario): Unable to find the Test Scenario.");
             return @();
           }
 
@@ -409,7 +425,7 @@ steps:
             key           = "EchoSkillBotDotNet"
             keyComposer   = "echoSkillBotDotNet" 
             botName       = "bffnechoskillbotdotnet"
-            appId         = "$env:BffnEchoSkillBotDotNetAppId"
+            appId         = "${{ parameters.appIds.EchoSkillBotDotNet }}"
             resourceGroup = $groups.DotNet
             group         = "Echo"
           }
@@ -417,7 +433,7 @@ steps:
             key           = "EchoSkillBotDotNet21"
             keyComposer   = "echoSkillBotDotNet21" 
             botName       = "bffnechoskillbotdotnet21"
-            appId         = "$env:BffnEchoSkillBotDotNet21AppId"
+            appId         = "${{ parameters.appIds.EchoSkillBotDotNet21 }}"
             resourceGroup = $groups.DotNet
             group         = "Echo"
           }
@@ -425,7 +441,7 @@ steps:
             key           = "EchoSkillBotDotNetV3"
             keyComposer   = "echoSkillBotDotNetV3" 
             botName       = "bffnechoskillbotdotnetv3"
-            appId         = "$env:BffnEchoSkillBotDotNetV3AppId"
+            appId         = "${{ parameters.appIds.EchoSkillBotDotNetV3 }}"
             resourceGroup = $groups.DotNet
             group         = "Echo"
           }
@@ -433,7 +449,7 @@ steps:
             key           = "EchoSkillBotComposerDotNet"
             keyComposer   = "echoSkillBotComposerDotNet" 
             botName       = "bffnechoskillbotcomposerdotnet"
-            appId         = "$env:BffnEchoSkillBotComposerDotNetAppId"
+            appId         = "${{ parameters.appIds.EchoSkillBotComposerDotNet }}"
             resourceGroup = $groups.DotNet
             group         = "Echo"
           }
@@ -441,7 +457,7 @@ steps:
             key           = "WaterfallSkillBotDotNet"
             keyComposer   = "waterfallSkillBotDotNet" 
             botName       = "bffnwaterfallskillbotdotnet"
-            appId         = "$env:BffnWaterfallSkillBotDotNetAppId"
+            appId         = "${{ parameters.appIds.WaterfallSkillBotDotNet }}"
             resourceGroup = $groups.DotNet
             group         = "Waterfall"
           }
@@ -449,7 +465,7 @@ steps:
             key           = "EchoSkillBotJS"
             keyComposer   = "echoSkillBotJs" 
             botName       = "bffnechoskillbotjs"
-            appId         = "$env:BffnEchoSkillBotJSAppId"
+            appId         = "${{ parameters.appIds.EchoSkillBotJS }}"
             resourceGroup = $groups.JS
             group         = "Echo"
           }
@@ -457,7 +473,7 @@ steps:
             key           = "EchoSkillBotJSV3"
             keyComposer   = "echoSkillBotJsV3" 
             botName       = "bffnechoskillbotjsv3"
-            appId         = "$env:BffnEchoSkillBotJSV3AppId"
+            appId         = "${{ parameters.appIds.EchoSkillBotJSV3 }}"
             resourceGroup = $groups.JS
             group         = "Echo"
           }
@@ -465,7 +481,7 @@ steps:
             key           = "WaterfallSkillBotJS"
             keyComposer   = "waterfallSkillBotJS" 
             botName       = "bffnwaterfallskillbotjs"
-            appId         = "$env:BffnWaterfallSkillBotJSAppId"
+            appId         = "${{ parameters.appIds.WaterfallSkillBotJS }}"
             resourceGroup = $groups.JS
             group         = "Waterfall"
           }
@@ -473,7 +489,7 @@ steps:
             key           = "EchoSkillBotPython"
             keyComposer   = "echoSkillBotPython" 
             botName       = "bffnechoskillbotpython"
-            appId         = "$env:BffnEchoSkillBotPythonAppId"
+            appId         = "${{ parameters.appIds.EchoSkillBotPython }}"
             resourceGroup = $groups.Python
             group         = "Echo"
           }
@@ -481,7 +497,7 @@ steps:
             key           = "WaterfallSkillBotPython"
             keyComposer   = "waterfallSkillBotPython" 
             botName       = "bffnwaterfallskillbotpython"
-            appId         = "$env:BffnWaterfallSkillBotPythonAppId"
+            appId         = "${{ parameters.appIds.WaterfallSkillBotPython }}"
             resourceGroup = $groups.Python
             group         = "Waterfall"
           }
