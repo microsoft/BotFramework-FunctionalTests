@@ -3,12 +3,12 @@
     {
       "type": "message",
       "role": "bot",
-      "text": "Attachment \"${FileName}\" has been received and saved to ${BotsTempFolder}\r\n",
+      "text": "Attachment \"${FileName}\" has been received.\r\nFile content: GUID:${TestGuid}\r\n\r\n",
       "assertions": [
         "type == 'message'",
         "from.role == 'bot'",
         "recipient.role == 'user'",
-        "text == 'Attachment \"${FileName}\" has been received and saved to ${BotsTempFolder}\r\n'",
+        "startsWith(text, 'Attachment \"${FileName}\" has been received.\r\nFile content: GUID:${TestGuid}')",
         "inputHint == 'acceptingInput'"
       ]
     },

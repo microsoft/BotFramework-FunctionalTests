@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -39,26 +40,26 @@ namespace SkillFunctionalTests.FileUpload
             var hostBots = new List<HostBot>
             {
                 HostBot.WaterfallHostBotDotNet,
+                HostBot.WaterfallHostBotJS,
+                HostBot.WaterfallHostBotPython
 
-                // TODO: Enable these when the ports to JS, Python and composer are ready
-                //HostBotNames.WaterfallHostBotJS,
-                //HostBotNames.WaterfallHostBotPython,
+                // TODO: Enable these when the port to composer is ready
                 //HostBotNames.ComposerHostBotDotNet
             };
 
             var targetSkills = new List<string>
             {
                 SkillBotNames.WaterfallSkillBotDotNet,
+                SkillBotNames.WaterfallSkillBotJS,
+                SkillBotNames.WaterfallSkillBotPython
 
-                // TODO: Enable these when the ports to JS, Python and composer are ready
-                //SkillBotNames.WaterfallSkillBotJS,
-                //SkillBotNames.WaterfallSkillBotPython,
+                // TODO: Enable these when the port to composer is ready
                 //SkillBotNames.ComposerSkillBotDotNet
             };
 
             var scripts = new List<string>
             {
-                "FileUpload1.json",
+                "FileUpload1.json"
             };
 
             var testCaseBuilder = new TestCaseBuilder();
@@ -74,6 +75,7 @@ namespace SkillFunctionalTests.FileUpload
         public async Task RunTestCases(TestCaseDataObject testData)
         {
             const string fileName = "TestFile.txt";
+            var testGuid = Guid.NewGuid().ToString();
             var testCase = testData.GetObject<TestCase>();
             Logger.LogInformation(JsonConvert.SerializeObject(testCase, Formatting.Indented));
 
@@ -86,14 +88,19 @@ namespace SkillFunctionalTests.FileUpload
                 { "DeliveryMode", testCase.DeliveryMode },
                 { "TargetSkill", testCase.TargetSkill },
                 { "FileName", fileName },
-                
-                // Temp folder where the bots deployed in Azure save the uploaded file. Change the path to run the tests against local bots.
-                { "BotsTempFolder", $"\\\"D:\\\\local\\\\Temp\\\\{fileName}\\\"" }
+                { "TestGuid", testGuid }
             };
+
             await runner.RunTestAsync(Path.Combine(_testScriptsFolder, testCase.Script), testParams);
 
-            await using var file = File.OpenRead(Directory.GetCurrentDirectory() + $"/FileUpload/media/{fileName}");
+            // Create or Update testFile.
+            await using var stream = File.OpenWrite(Directory.GetCurrentDirectory() + $"/FileUpload/Media/{fileName}");
+            await using var writer = new StreamWriter(stream);
+            await writer.WriteLineAsync($"GUID:{testGuid}");
+            writer.Close();
 
+            // Upload file.
+            await using var file = File.OpenRead(Directory.GetCurrentDirectory() + $"/FileUpload/Media/{fileName}");
             await runner.UploadAsync(file);
 
             // Execute the rest of the conversation.
