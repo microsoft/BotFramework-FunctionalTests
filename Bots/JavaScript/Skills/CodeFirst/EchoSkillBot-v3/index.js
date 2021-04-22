@@ -53,7 +53,7 @@ new builder.UniversalBot(connector, function (session) {
     session.send(activity);
 
     activity = new builder.Message()
-      .code("SkillError")
+      .code('SkillError')
       .text(message);
     session.endConversation(activity);
   });
