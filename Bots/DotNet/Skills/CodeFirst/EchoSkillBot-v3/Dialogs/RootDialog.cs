@@ -22,7 +22,8 @@ namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBotv3.Dialogs
         {
             var activity = await result as Activity;
 
-            var options = new MessageOptions { 
+            var options = new MessageOptions
+            {
                 InputHint = InputHints.AcceptingInput
             };
 
