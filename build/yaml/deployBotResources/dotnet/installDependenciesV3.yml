@@ -5,24 +5,29 @@ parameters:
   version: ""
 
 steps:
-  - powershell: |
-      $version = ""
-      $source = ""
+  - task: PowerShell@2
+    displayName: 'Install dependencies'
+    inputs:
+      targetType: inline
+      workingDirectory: '$(System.DefaultWorkingDirectory)/${{ parameters.project.directory }}'
+      failOnStderr: true
+      script: |
+        $version = ""
+        $source = ""
 
-      if (-not ([string]::IsNullOrEmpty("${{ parameters.version }}"))) {
-        $version = "-Version ""${{ parameters.version }}"""
-      }
+        if (-not ([string]::IsNullOrEmpty("${{ parameters.version }}"))) {
+          $version = "-Version ""${{ parameters.version }}"""
+        }
 
-      if (-not ([string]::IsNullOrEmpty("${{ parameters.source }}"))) {
-        $source = "-Source ""${{ parameters.source }}"""
-      }
+        if (-not ([string]::IsNullOrEmpty("${{ parameters.source }}"))) {
+          $source = "-Source ""${{ parameters.source }}"""
+        }
 
-      foreach ($package in "${{ parameters.packages }}".Split()) {
-        Invoke-Expression "nuget update ""${{ parameters.project.directory }}/packages.config"" -Id $package $version $source"
-      }
-      
-      write-host "`nPackages:"
-      foreach ($package in "${{ parameters.packages }}".Split()) {
-        write-host "  - $package "
-      }
-    displayName: "Install dependencies" 
+        foreach ($package in "${{ parameters.packages }}".Split()) {
+          Invoke-Expression "nuget update ""./packages.config"" -Id $package $version $source"
+        }
+        
+        write-host "`nPackages:"
+        foreach ($package in "${{ parameters.packages }}".Split()) {
+          write-host "  - $package "
+        }

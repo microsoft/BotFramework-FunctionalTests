@@ -5,34 +5,39 @@ parameters:
   source: ""
 
 steps:
-  - powershell: |
-      $version = ""
-      $source = ""
+  - task: PowerShell@2
+    displayName: 'Install dependencies for ${{ parameters.project.name }}'
+    inputs:
+      targetType: inline
+      workingDirectory: '$(System.DefaultWorkingDirectory)/${{ parameters.project.directory }}'
+      failOnStderr: true
+      script: |
+        $version = ""
+        $source = ""
 
-      if (-not ([string]::IsNullOrEmpty("${{ parameters.version }}"))) {
-        $version = "--version ""${{ parameters.version }}"""
-      }
-
-      if (-not ([string]::IsNullOrEmpty("${{ parameters.source }}"))) {
-        $source = "--source ""${{ parameters.source }}"""
-      }
-
-      foreach ($package in "${{ parameters.packages }}".Split()) {
-        if ($package -eq "Microsoft.Bot.Builder.Dialogs.Debugging") {
-          $versionAux = $version
-          $version = $version.replace("daily", "daily.preview")
+        if (-not ([string]::IsNullOrEmpty("${{ parameters.version }}"))) {
+          $version = "--version ""${{ parameters.version }}"""
         }
 
-        Invoke-Expression "dotnet add ""${{ parameters.project.directory }}/${{ parameters.project.name }}"" package $version $source $package"
-        
-        if (-not ([string]::IsNullOrEmpty("$versionAux"))) {
-          $version = $versionAux
-          $versionAux = ""
+        if (-not ([string]::IsNullOrEmpty("${{ parameters.source }}"))) {
+          $source = "--source ""${{ parameters.source }}"""
         }
-      }
 
-      write-host " `nPackages:"
-      foreach ($package in "${{ parameters.packages }}".Split()) {
-        write-host "  - $package"
-      }
-    displayName: "Install dependencies for ${{ parameters.project.name }}" 
+        foreach ($package in "${{ parameters.packages }}".Split()) {
+          if ($package -eq "Microsoft.Bot.Builder.Dialogs.Debugging") {
+            $versionAux = $version
+            $version = $version.replace("daily", "daily.preview")
+          }
+
+          Invoke-Expression "dotnet add ""./${{ parameters.project.name }}"" package $version $source $package"
+          
+          if (-not ([string]::IsNullOrEmpty("$versionAux"))) {
+            $version = $versionAux
+            $versionAux = ""
+          }
+        }
+
+        write-host " `nPackages:"
+        foreach ($package in "${{ parameters.packages }}".Split()) {
+          write-host "  - $package"
+        }

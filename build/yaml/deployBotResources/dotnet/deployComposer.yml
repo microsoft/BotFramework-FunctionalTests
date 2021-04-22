@@ -1,15 +1,13 @@
 parameters:
+  appInsight: ""
   appServicePlan: ""
   appServicePlanRG: ""
-  appInsight: ""
   azureSubscription: ""
-  bots: []
   botPricingTier: ""
+  bots: []
+  buildPath: "build-composer"
   dependsOn: ""
   keyVault: ""
-  output:
-    path: "build-composer"
-    zip: "build"
   resourceGroup: ""
   resourceSuffix: ""
 
@@ -149,22 +147,61 @@ stages:
               command: publish
               publishWebProjects: false
               projects: "${{ bot.project.directory }}/runtime/azurewebapp/Microsoft.BotFramework.Composer.WebApp.csproj"
-              arguments: "-c release -o ${{ parameters.output.path }}"
+              arguments: "-c release -o ${{ parameters.buildPath }}"
               modifyOutputPath: false
               zipAfterPublish: false
 
-          # Arrange composer folders & files
-          - powershell: |
-              $composerDialogs = "${{ parameters.output.path }}/ComposerDialogs"
-              Remove-Item $composerDialogs -Recurse -ErrorAction Ignore
+          # Get BotBuilder package version
+          - task: PowerShell@2
+            displayName: 'Get BotBuilder Version'
+            inputs:
+              targetType: inline
+              workingDirectory: '$(System.DefaultWorkingDirectory)/${{ bot.project.directory }}'
+              failOnStderr: true
+              script: |
+                [XML]$data = Get-Content "./runtime/azurewebapp/Microsoft.BotFramework.Composer.WebApp.csproj";
+                $package = $data.Project.ItemGroup.PackageReference | Where-Object { $_.Include -eq "Microsoft.Bot.Builder.Integration.AspNet.Core" };
+                Write-Host "##vso[task.setvariable variable=BotBuilderVersionNumber]$($package.version)";
 
-              Copy-Item -Path (Get-Item -Path ${{ bot.project.directory }}/* -Exclude ("runtime", "scripts", "*.ps1", "readme.md", "*.botproj", ".gitignore")).FullName -Destination $composerDialogs -Recurse -Force -Container
-            displayName: "Prepare Composer"
+          # Tag BotBuilder package version
+          - template: ../common/tagBotBuilderVersion.yml
+            parameters:
+              ${{ if eq(bot.displayName, '') }}:
+                botName: '${{ bot.name }}'
+              ${{ if ne(bot.displayName, '') }}:
+                botName: '${{ bot.displayName }}'
+              version: "$(BotBuilderVersionNumber)"
+
+          # Arrange composer folders & files
+          - task: PowerShell@2
+            displayName: 'Prepare Composer'
+            inputs:
+              targetType: inline
+              workingDirectory: '$(System.DefaultWorkingDirectory)/${{ bot.project.directory }}'
+              failOnStderr: true
+              script: |
+                $composerDialogs = "$(System.DefaultWorkingDirectory)/${{ parameters.buildPath }}/ComposerDialogs"
+                Remove-Item $composerDialogs -Recurse -ErrorAction Ignore
+
+                Copy-Item -Path (Get-Item -Path ./* -Exclude ("runtime", "scripts", "*.ps1", "readme.md", "*.botproj", ".gitignore")).FullName -Destination $composerDialogs -Recurse -Force -Container
 
           # Zip bot
-          - powershell: |
-              7z.exe a -tzip "${{ parameters.output.path }}/${{ parameters.output.zip }}.zip" "$(System.DefaultWorkingDirectory)/${{ parameters.output.path }}/*" -aoa
-            displayName: "Zip bot"
+          - task: ArchiveFiles@2
+            displayName: 'Zip bot'
+            inputs:
+              rootFolderOrFile: '$(System.DefaultWorkingDirectory)/${{ parameters.buildPath }}'
+              includeRootFolder: false
+              archiveType: 'zip'
+              archiveFile: '$(System.DefaultWorkingDirectory)/${{ parameters.buildPath }}/${{ bot.name }}.zip'
+              replaceExistingArchive: true
+              verbose: true
+
+          # Upload zip to artifacts in case we want to debug it
+          - task: PublishBuildArtifacts@1
+            displayName: 'Publish zip package'
+            inputs:
+              pathToPublish: '$(System.DefaultWorkingDirectory)/${{ parameters.buildPath }}/${{ bot.name }}.zip'
+              artifactName: dotnet-$(Build.BuildId)
 
           # Create App Service and Bot Channel Registration
           - template: ../common/createAppService.yml
@@ -182,13 +219,14 @@ stages:
               templateFile: "build/templates/template-bot-resources.json"
 
           # Deploy bot
-          - template: ../common/zipDeploy.yml
-            parameters:
+          - task: AzureWebApp@1
+            displayName: 'Deploy Azure Web App : ${{ bot.name }}-$(Build.BuildId)'
+            inputs:
               azureSubscription: "${{ parameters.azureSubscription }}"
-              botGroup: "${{ parameters.resourceGroup }}"
-              botName: "${{ bot.name }}"
-              source: "${{ parameters.output.path }}/${{ parameters.output.zip }}.zip"
-              resourceSuffix: "${{ parameters.resourceSuffix }}"
+              appName: '${{ bot.name }}${{ parameters.resourceSuffix }}-$(Build.BuildId)'
+              resourceGroupName: '${{ parameters.resourceGroup }}'
+              package: '$(System.DefaultWorkingDirectory)/${{ parameters.buildPath }}/${{ bot.name }}.zip'
+              deploymentMethod: runFromPackage
 
           # Create DirectLine Channel Hosts
           - ${{ if eq(bot.type, 'Host') }}:
