@@ -19,6 +19,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Authentication
         private readonly List<string> _allowedSkills;
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="AllowedSkillsClaimsValidator"/> class.
         /// Loads the appIds for the configured skills. Only allows responses from skills it has configured.
         /// </summary>
         /// <param name="skillsConfig">The list of configured skills.</param>

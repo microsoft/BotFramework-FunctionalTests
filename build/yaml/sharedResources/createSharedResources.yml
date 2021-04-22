@@ -34,7 +34,7 @@ stages:
         displayName: 'Create $(InternalResourceGroupName)'
         inputs:
           azureSubscription: $(AzureSubscription)
-          scriptType: ps
+          scriptType: pscore
           scriptLocation: inlineScript
           inlineScript: 'az group create --name "$(InternalResourceGroupName)" --location "westus"'
 
@@ -50,7 +50,7 @@ stages:
         displayName: 'Create $(InternalResourceGroupName)-linux'
         inputs:
           azureSubscription: $(AzureSubscription)
-          scriptType: ps
+          scriptType: pscore
           scriptLocation: inlineScript
           inlineScript: 'az group create --name "$(InternalResourceGroupName)-linux" --location "westus"'
 
@@ -65,7 +65,7 @@ stages:
         displayName: 'Deploy CosmosDB'
         inputs:
           azureSubscription: $(AzureSubscription)
-          scriptType: ps
+          scriptType: pscore
           scriptLocation: inlineScript
           inlineScript: 'az deployment group create --name "$(InternalCosmosDBName)" --resource-group "$(InternalResourceGroupName)" --template-file build/templates/template-cosmosdb-resources.json --parameters accountName="$(InternalCosmosDBName)" databaseName="$(InternalCosmosDBName)"'
 
@@ -80,7 +80,7 @@ stages:
         displayName: 'Deploy Key Vault'
         inputs:
           azureSubscription: $(AzureSubscription)
-          scriptType: ps
+          scriptType: pscore
           scriptLocation: inlineScript
           inlineScript: 'az deployment group create --name "$(InternalKeyVaultName)" --resource-group "$(InternalResourceGroupName)" --template-file build/templates/template-key-vault-resources.json --parameters keyVaultName="$(InternalKeyVaultName)" objectId="$(KeyVaultObjectId)"'
 
@@ -107,7 +107,7 @@ stages:
         displayName: 'Deploy App Service Plan (Windows)'
         inputs:
           azureSubscription: $(AzureSubscription)
-          scriptType: ps
+          scriptType: pscore
           scriptLocation: inlineScript
           inlineScript: |
             $appServicePlanPricingTier = if($env:AppServicePlanPricingTier) { "newAppServicePlanSku=$env:AppServicePlanPricingTier" };
@@ -125,7 +125,7 @@ stages:
         displayName: 'Deploy App Service Plan (Linux)'
         inputs:
           azureSubscription: $(AzureSubscription)
-          scriptType: ps
+          scriptType: pscore
           scriptLocation: inlineScript
           inlineScript: |
             $appServicePlanPricingTier = if($env:AppServicePlanPricingTier) { "newAppServicePlanSku=$env:AppServicePlanPricingTier" };
@@ -143,6 +143,6 @@ stages:
         displayName: 'Deploy App Insights'
         inputs:
           azureSubscription: $(AzureSubscription)
-          scriptType: ps
+          scriptType: pscore
           scriptLocation: inlineScript
           inlineScript: 'az deployment group create --name "$(InternalAppInsightsName)" --resource-group "$(InternalResourceGroupName)" --template-file build/templates/template-app-insights-resources.json --parameters appInsightsName="$(InternalAppInsightsName)"'

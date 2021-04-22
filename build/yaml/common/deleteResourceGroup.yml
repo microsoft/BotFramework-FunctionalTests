@@ -6,7 +6,7 @@ steps:
     displayName: 'Delete pre-existing Resource Group'
     inputs:
       azureSubscription: $(AzureSubscription)
-      scriptType: ps
+      scriptType: pscore
       scriptLocation: inlineScript
       inlineScript: |
         Write-Host "Looking for '${{ parameters.name }}'...";

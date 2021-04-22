@@ -20,6 +20,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot.Authentication
         private readonly List<string> _allowedCallers;
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="AllowedCallersClaimsValidator"/> class.
         /// Loads the appIds for the configured callers. Only allows access to callers it has configured.
         /// </summary>
         /// <param name="config">The list of configured callers.</param>
