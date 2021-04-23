@@ -6,7 +6,6 @@ const { ComponentDialog, ChoicePrompt, ChoiceFactory, DialogTurnStatus, Waterfal
 const { SsoSignInDialog } = require('./ssoSignInDialog');
 
 const ACTION_STEP_PROMPT = 'ActionStepPrompt';
-const DELIVERY_PROMPT = 'DeliveryModePrompt';
 const SSO_SIGNIN_DIALOG = 'SsoSignInDialog';
 const WATERFALL_DIALOG = 'WaterfallDialog';
 
@@ -45,7 +44,7 @@ class SsoDialog extends ComponentDialog {
     const messageText = 'What SSO action do you want to perform?';
     const repromptMessageText = 'That was not a valid choice, please select a valid choice.';
 
-    return stepContext.prompt(DELIVERY_PROMPT, {
+    return stepContext.prompt(ACTION_STEP_PROMPT, {
       prompt: MessageFactory.text(messageText, messageText, InputHints.ExpectingInput),
       retryPrompt: MessageFactory.text(repromptMessageText, repromptMessageText, InputHints.ExpectingInput),
       choices: await this.getPromptChoices(stepContext)

@@ -42,12 +42,17 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.FileUp
             {
                 var remoteFileUrl = file.ContentUrl;
                 var localFileName = Path.Combine(Path.GetTempPath(), file.Name);
+                string fileContent;
+
                 using (var webClient = new WebClient())
                 {
                     webClient.DownloadFile(remoteFileUrl, localFileName);
+                    using var reader = new StreamReader(localFileName);
+                    fileContent = await reader.ReadToEndAsync();
                 }
 
-                fileText += $"Attachment \"{file.Name}\" has been received and saved to \"{localFileName}\"\r\n";
+                fileText += $"Attachment \"{file.Name}\" has been received.\r\n";
+                fileText += $"File content: {fileContent}\r\n";
             }
 
             await stepContext.Context.SendActivityAsync(MessageFactory.Text(fileText), cancellationToken);
