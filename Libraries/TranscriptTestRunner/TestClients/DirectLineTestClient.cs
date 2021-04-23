@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -20,6 +21,7 @@ using Newtonsoft.Json;
 using TranscriptTestRunner.Authentication;
 using Activity = Microsoft.Bot.Connector.DirectLine.Activity;
 using ActivityTypes = Microsoft.Bot.Schema.ActivityTypes;
+using Attachment = Microsoft.Bot.Connector.DirectLine.Attachment;
 using BotActivity = Microsoft.Bot.Schema.Activity;
 using BotChannelAccount = Microsoft.Bot.Schema.ChannelAccount;
 using ChannelAccount = Microsoft.Bot.Connector.DirectLine.ChannelAccount;
@@ -95,11 +97,28 @@ namespace TranscriptTestRunner.TestClients
                 }
             }
 
+            var attachments = new List<Attachment>();
+
+            if (activity.Attachments != null && activity.Attachments.Any())
+            {
+                foreach (var item in activity.Attachments)
+                {
+                    attachments.Add(new Attachment
+                    {
+                        ContentType = item.ContentType,
+                        ContentUrl = item.ContentUrl,
+                        Content = item.Content,
+                        Name = item.Name
+                    });
+                }
+            }
+
             var activityPost = new Activity
             {
                 From = new ChannelAccount(_user),
                 Text = activity.Text,
-                Type = activity.Type
+                Type = activity.Type,
+                Attachments = attachments,
             };
 
             _logger.LogDebug($"{DateTime.Now} Sending activity to conversation {_conversation.ConversationId}");
@@ -149,6 +168,12 @@ namespace TranscriptTestRunner.TestClients
         {
             Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        /// <inheritdoc/>
+        public override async Task UploadAsync(Stream file, CancellationToken cancellationToken)
+        {
+            await _dlClient.Conversations.UploadAsync(_conversation.ConversationId, file, _user, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>

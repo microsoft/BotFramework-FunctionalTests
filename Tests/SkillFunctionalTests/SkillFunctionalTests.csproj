@@ -36,6 +36,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="**/Media/**/**">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="**/TestScripts/**/*.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
