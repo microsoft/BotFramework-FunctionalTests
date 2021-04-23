@@ -23,6 +23,7 @@ const { SkillConversationIdFactory } = require('./skillConversationIdFactory');
 const { allowedSkillsClaimsValidator } = require('./authentication/allowedSkillsClaimsValidator');
 const { MainDialog } = require('./dialogs/mainDialog');
 const { LoggerMiddleware } = require('./middleware/loggerMiddleware');
+const { TokenExchangeSkillHandler } = require('./TokenExchangeSkillHandler');
 
 // Create adapter.
 // See https://aka.ms/about-bot-adapter to learn more about adapters.
@@ -162,7 +163,7 @@ server.post('/api/messages', (req, res) => {
 
 // Create and initialize the skill classes
 const authConfig = new AuthenticationConfiguration([], allowedSkillsClaimsValidator);
-const handler = new SkillHandler(adapter, bot, conversationIdFactory, credentialProvider, authConfig);
+const handler = new TokenExchangeSkillHandler(adapter, bot, conversationIdFactory, skillsConfig, skillClient, credentialProvider, authConfig);
 const skillEndpoint = new ChannelServiceRoutes(handler);
 skillEndpoint.register(server, '/api/skills');
 
