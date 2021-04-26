@@ -1,7 +1,15 @@
 parameters:
-  azureSubscription: ""
-  keyVault: ""
-  resourceSuffix: ""
+- name: azureSubscription
+  displayName: Azure Service Connection
+  type: string
+
+- name: keyVault
+  displayName: KeyVault name
+  type: string
+
+- name: resourceSuffix
+  displayName: Azure resources' name suffix 
+  type: string
 
 steps:
   - task: AzureCLI@2
