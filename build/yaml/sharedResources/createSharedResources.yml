@@ -100,6 +100,9 @@ stages:
           azureSubscription: $(AZURESUBSCRIPTION)
           keyVault: "$(INTERNALKEYVAULTNAME)"
           resourceSuffix: $env:RESOURCESUFFIX
+          servicePrincipalId: $env:SERVICEPRINCIPALID
+          servicePrincipalKey: $env:SERVICEPRINCIPALKEY
+          tenantId: $env:TENANTID
 
 - stage: Create_App_Service_Plan_Windows
   displayName: "Create App Service Plan (Windows)"
