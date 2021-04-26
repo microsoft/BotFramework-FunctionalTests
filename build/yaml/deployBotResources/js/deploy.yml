@@ -62,8 +62,8 @@ stages:
           - template: evaluateDependenciesVariables.yml
             parameters:
               botType: "${{ bot.type }}"
-              registry: "${{ bot.dependenciesRegistry }}"
-              version: "${{ bot.dependenciesVersion }}"
+              registry: "${{ bot.dependency.registry }}"
+              version: "${{ bot.dependency.version }}"
 
           # Tag BotBuilder version
           - template: ../common/tagBotBuilderVersion.yml

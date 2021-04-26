@@ -26,19 +26,17 @@
 | **AppServicePlanNameLinux** | Create Shared Resources | Name of the App Service Plan for Python. |
 | **AppServicePlanGroup** | Create Shared Resources | Name of the resource group containing the App Service Plan for DotNet and JS. |
 | **AppServicePlanName** | Create Shared Resources | Name of the App Service Plan for DotNet and JS. |
-| **AzureDeploymentPassword** | [Webapp Deployment User](https://docs.microsoft.com/en-us/cli/azure/webapp/deployment/user?view=azure-cli-latest#az-webapp-deployment-user-set) | Azure Deployment Password, required to deploy Python bots. Click [here](./createWebAppDeploymentCredentials.md) to see how to set it up. |
-| **AzureDeploymentUser** | [Webapp Deployment User](https://docs.microsoft.com/en-us/cli/azure/webapp/deployment/user?view=azure-cli-latest#az-webapp-deployment-user-set) | Azure Deployment User, required to deploy Python bots. Click [here](./createWebAppDeploymentCredentials.md) to see how to how to set it up. |
 | **AzureSubscription** | Azure DevOps | Name of the Azure Resource Manager Service Connection configured in the DevOps organization. Click [here](./addARMServiceConnection.md) to see how to set it up. |
 | **ResourceGroup** | User | Prefix of the resource groups where the bots will be deployed. |
 | **[BotName](#botnames) + AppId** | [App Registration Portal](https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade) | (optional) App ID to use. If not configured, will be retrieved from the key vault. |
 | **[BotName](#botnames) + AppSecret** | [App Registration Portal](https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade) | (optional) App Secret to use. If not configured, will be retrieved from the key vault. |
 | **BotPricingTier** | User | (optional) Pricing tier for the Web App resources. **Possible values are: F0 (default), S1.** |
-| **DependenciesRegistryHosts** | User | (optional) Source from which the Bot Builder dependencies will be downloaded for all host bots. **Possible values are: Artifacts (default), MyGet, NuGet, or specific sources.** |
-| **DependenciesRegistrySkills** | User | (optional) Source from which the Bot Builder dependencies will be downloaded for all skill bots. **Possible values are: Artifacts (default), MyGet, NuGet, or specific sources.** |
-| **DependenciesRegistrySkillsV3** | User | (optional) Source from which the Bot Builder dependencies will be downloaded for all V3 skill bots. **Possible values are: Artifacts, MyGet (default), NuGet, or specific sources.** |
-| **DependeciesVersionHosts** | User | (optional) Bot Builder dependency version to use for all hosts. **Possible values are: Latest (default), Stable, or specific version numbers.** |
-| **DependeciesVersionSkills** | User | (optional) Bot Builder dependency version to use for all hosts. **Possible values are: Latest (default), Stable, or specific version numbers.** |
-| **DependeciesVersionSkillsV3** | User | (optional) Bot Builder dependency version to use for all hosts. **Possible values are: Latest (default), Stable, or specific version numbers.** |
+| **DependenciesRegistry+[Language](#dependency-variables-language)+Hosts** | User | (optional) Source from which the Bot Builder dependencies will be downloaded for selected host bots. [**More info**](#dependency-variables-language) |
+| **DependenciesRegistry+[Language](#dependency-variables-language)+Skills** | User | (optional) Source from which the Bot Builder dependencies will be downloaded for selected skill bots. [**More info**](#dependency-variables-language) |
+| **DependenciesRegistry+[Language](#dependency-variables-language)+SkillsV3** | User | (optional) Source from which the Bot Builder dependencies will be downloaded for selected V3 skill bots. [**More info**](#dependency-variables-language) |
+| **DependeciesVersion+[Language](#dependency-variables-language)+Hosts** | User | (optional) Bot Builder dependency version to use for selected host bots. **Possible values are: Latest (default), Stable, or specific version numbers.** |
+| **DependeciesVersion+[Language](#dependency-variables-language)+Skills** | User | (optional) Bot Builder dependency version to use for selected skill bots. **Possible values are: Latest (default), Stable, or specific version numbers.** |
+| **DependeciesVersion+[Language](#dependency-variables-language)+SkillsV3** | User | (optional) Bot Builder dependency version to use for selected V3 skill bots. **Possible values are: Latest (default), Stable, or specific version numbers.** |
 | **ResourceSuffix** | Create Shared Resources | (optional) Suffix to add to the resource names to avoid collisions. |
 
 ## 03 - Run Test Scenarios Pipeline
@@ -67,7 +65,32 @@
 | **SharedResourceGroup** | Create Shared Resources | Name for the resource groups that contains the shared resources. |
 | **ResourceSuffix** | Create Shared Resources | (optional) Suffix added to the resource names. |
 
-## BotNames
+### Dependency Variables
+
+These are the available lenguages for the dependencies registry and version variables:
+
+You can choose one of the following options to select the package's feed, if not declared or empty, default will be used.
+
+- DotNet
+  - Artifacts (default)
+  - MyGet (default for V3 skill)
+  - NuGet
+  - Custom feed url
+- JS
+  - MyGet (default)
+  - Npm
+  - Custom feed url
+- Python (Not available for SkillsV3)
+  - Artifacts (default)
+  - Pypi
+  - Test.Pypi
+  - Custom feed url
+
+Example: `DependenciesRegistryDotNetHosts = NuGet`
+
+Note: npm and nuget feeds only supports stable versions, fill the corresponding variable with a specific version or set it to `stable`.
+
+### BotNames
 
 As of now, these are the bots available. This list will be expanded in the future.
 

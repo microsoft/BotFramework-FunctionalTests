@@ -62,8 +62,8 @@ stages:
             parameters:
               botType: "${{ bot.type }}"
               project: "${{ bot.project }}"
-              registry: "${{ bot.dependenciesRegistry }}"
-              version: "${{ bot.dependenciesVersion }}"
+              registry: "${{ bot.dependency.registry }}"
+              version: "${{ bot.dependency.version }}"
 
           # Tag BotBuilder package version
           - template: ../common/tagBotBuilderVersion.yml

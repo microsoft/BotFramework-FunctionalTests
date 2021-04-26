@@ -10,21 +10,27 @@ steps:
       $source = ""
 
       if (-not ([string]::IsNullOrEmpty("${{ parameters.version }}"))) {
-        $version = "--version ""${{ parameters.version }}"""
+        $version = "--version ${{ parameters.version }}"
       }
 
       if (-not ([string]::IsNullOrEmpty("${{ parameters.source }}"))) {
-        $source = "--source ""${{ parameters.source }}"""
+        $source = "--source ${{ parameters.source }}"
       }
 
       foreach ($package in "${{ parameters.packages }}".Split()) {
         if ($package -eq "Microsoft.Bot.Builder.Dialogs.Debugging") {
           $versionAux = $version
-          $version = $version.replace("daily", "daily.preview")
+          if ($version -Match "rc") {
+            $version = "$version.preview"
+          } elseif ($version -Match "daily") {
+            $version = $version.replace("daily", "daily.preview")
+          } else {
+            $version = "$version-preview"
+          }
         }
 
         Invoke-Expression "dotnet add ""${{ parameters.project.directory }}/${{ parameters.project.name }}"" package $version $source $package"
-        
+
         if (-not ([string]::IsNullOrEmpty("$versionAux"))) {
           $version = $versionAux
           $versionAux = ""

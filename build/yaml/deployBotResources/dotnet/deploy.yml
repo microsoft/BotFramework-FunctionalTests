@@ -75,8 +75,8 @@ stages:
           - template: evaluateDependenciesVariables.yml
             parameters:
               botType: "${{ bot.type }}"
-              registry: "${{ bot.dependenciesRegistry }}"
-              version: "${{ bot.dependenciesVersion }}"
+              registry: "${{ bot.dependency.registry }}"
+              version: "${{ bot.dependency.version }}"
 
           # Start of DotNet Install & Build
           - ${{ if in(bot.type, 'Host', 'Skill') }}:
@@ -87,7 +87,7 @@ stages:
                 source: "$(DependenciesSource)"
                 version: "$(DependenciesVersionNumber)"
                 packages:
-                  Microsoft.Bot.Builder.Dialogs 
+                  Microsoft.Bot.Builder.Dialogs
                   Microsoft.Bot.Builder.Integration.AspNet.Core
 
             # Build Bot

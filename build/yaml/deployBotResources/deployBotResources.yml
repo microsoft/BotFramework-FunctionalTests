@@ -62,12 +62,22 @@ variables:
   # ConnectionName: (optional) Name for the OAuth connection to use in the skill bots.
 
   ## Package Dependencies (define in Azure)
-  # DependenciesRegistryHosts: (optional) Registry to download the dependency packages for the host bots.
-  # DependenciesRegistrySkills: (optional) Registry to download the dependency packages for the skill bots.
-  # DependenciesRegistrySkillsV3: (optional) Registry to download the dependency packages for the skill v3 bots.
-  # DependenciesVersionHosts: (optional) Version of the dependency packages for the host bots.
-  # DependenciesVersionSkills: (optional) Version of the dependency packages for the skill bots.
-  # DependenciesVersionSkillsV3: (optional) Version of the dependency packages for the skill v3 bots.
+  # DependenciesRegistryDotNetHosts: (optional) Registry to download the dependency packages for the DotNet host bots.
+  # DependenciesRegistryDotNetSkills: (optional) Registry to download the dependency packages for the DotNet skill bots.
+  # DependenciesRegistryDotNetSkillsV3: (optional) Registry to download the dependency packages for the DotNet v3 skill bots.
+  # DependenciesVersionDotNetHosts: (optional) Version of the dependency packages for the DotNet host bots.
+  # DependenciesVersionDotNetSkills: (optional) Version of the dependency packages for the DotNet skill bots.
+  # DependenciesVersionDotNetSkillsV3: (optional) Version of the dependency packages for the DotNet v3 skill bots.
+  # DependenciesRegistryJSHosts: (optional) Registry to download the dependency packages for the JS host bots.
+  # DependenciesRegistryJSSkills: (optional) Registry to download the dependency packages for the JS skill bots.
+  # DependenciesRegistryJSSkillsV3: (optional) Registry to download the dependency packages for the JS v3 skill bots.
+  # DependenciesVersionJSHosts: (optional) Version of the dependency packages for the JS host bots.
+  # DependenciesVersionJSSkills: (optional) Version of the dependency packages for the JS skill bots.
+  # DependenciesVersionJSSkillsV3: (optional) Version of the dependency packages for the JS skill v3 bots.
+  # DependenciesRegistryPythonHosts: (optional) Registry to download the dependency packages for the Python host bots.
+  # DependenciesRegistryPythonSkills: (optional) Registry to download the dependency packages for the Python skill bots.
+  # DependenciesVersionPythonHosts: (optional) Version of the dependency packages for the Python host bots.
+  # DependenciesVersionPythonSkills: (optional) Version of the dependency packages for the Python skill bots.
 
   ## Internal variables
   InternalAppInsightsName: 'bffnappinsights$(InternalResourceSuffix)'
@@ -121,8 +131,9 @@ stages:
             directory: 'Bots/DotNet/Consumers/CodeFirst/SimpleHostBot'
             name: "SimpleHostBot.csproj"
             netCoreVersion: "3.1.x"
-          dependenciesRegistry: "$($env:DependenciesRegistryHosts)"
-          dependenciesVersion: "$($env:DependenciesVersionHosts)"
+          dependency:
+            registry: $env:DependenciesRegistryDotNetHosts
+            version: $env:DependenciesVersionDotNetHosts
 
         - name: "bffnsimplehostbotdotnet21"
           type: "Host"
@@ -133,8 +144,9 @@ stages:
             directory: 'Bots/DotNet/Consumers/CodeFirst/SimpleHostBot-2.1'
             name: "SimpleHostBot-2.1.csproj"
             netCoreVersion: "2.1.x"
-          dependenciesRegistry: "$($env:DependenciesRegistryHosts)"
-          dependenciesVersion: "$($env:DependenciesVersionHosts)"
+          dependency:
+            registry: $env:DependenciesRegistryDotNetHosts
+            version: $env:DependenciesVersionDotNetHosts
 
         - name: "bffnechoskillbotdotnet"
           type: "Skill"
@@ -145,8 +157,9 @@ stages:
             directory: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot'
             name: "EchoSkillBot.csproj"
             netCoreVersion: "3.1.x"
-          dependenciesRegistry: "$($env:DependenciesRegistrySkills)"
-          dependenciesVersion: "$($env:DependenciesVersionSkills)"
+          dependency:
+            registry: $env:DependenciesRegistryDotNetSkills
+            version: $env:DependenciesVersionDotNetSkills
 
         - name: "bffnechoskillbotdotnet21"
           type: "Skill"
@@ -157,8 +170,9 @@ stages:
             directory: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot-2.1'
             name: "EchoSkillBot-2.1.csproj"
             netCoreVersion: "2.1.x"
-          dependenciesRegistry: "$($env:DependenciesRegistrySkills)"
-          dependenciesVersion: "$($env:DependenciesVersionSkills)"
+          dependency:
+            registry: $env:DependenciesRegistryDotNetSkills
+            version: $env:DependenciesVersionDotNetSkills
 
         - name: "bffnechoskillbotdotnetv3"
           type: "SkillV3"
@@ -168,8 +182,9 @@ stages:
           project:
             directory: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3'
             name: "EchoSkillBot-v3.csproj"
-          dependenciesRegistry: "$($env:DependenciesRegistrySkillsV3)"
-          dependenciesVersion: "$($env:DependenciesVersionSkillsV3)"
+          dependency:
+            registry: $env:DependenciesRegistryDotNetSkillsV3
+            version: $env:DependenciesVersionDotNetSkillsV3
 
         - name: "bffnwaterfallhostbotdotnet"
           type: "Host"
@@ -180,8 +195,9 @@ stages:
             directory: 'Bots/DotNet/Consumers/CodeFirst/WaterfallHostBot'
             name: "WaterfallHostBot.csproj"
             netCoreVersion: "3.1.x"
-          dependenciesRegistry: "$($env:DependenciesRegistryHosts)"
-          dependenciesVersion: "$($env:DependenciesVersionHosts)"
+          dependency:
+            registry: $env:DependenciesRegistryDotNetHosts
+            version: $env:DependenciesVersionDotNetHosts
 
         - name: "bffnwaterfallskillbotdotnet"
           type: "Skill"
@@ -192,8 +208,9 @@ stages:
             directory: 'Bots/DotNet/Skills/CodeFirst/WaterfallSkillBot'
             name: "WaterfallSkillBot.csproj"
             netCoreVersion: "3.1.x"
-          dependenciesRegistry: "$($env:DependenciesRegistrySkills)"
-          dependenciesVersion: "$($env:DependenciesVersionSkills)"
+          dependency:
+            registry: $env:DependenciesRegistryDotNetSkills
+            version: $env:DependenciesVersionDotNetSkills
 
 # DotNet Composer
   - template: dotnet/deployComposer.yml
@@ -216,8 +233,9 @@ stages:
           project: 
             directory: 'Bots/DotNet/Consumers/Composer/SimpleHostBotComposer'
             netCoreVersion: "3.1.x"
-          dependenciesRegistry: "$($env:DependenciesRegistryHosts)"
-          dependenciesVersion: "$($env:DependenciesVersionHosts)"
+          dependency:
+            registry: $env:DependenciesRegistryDotNetHosts
+            version: $env:DependenciesVersionDotNetHosts
 
         - name: "bffnechoskillbotcomposerdotnet"
           type: "Skill"
@@ -227,8 +245,9 @@ stages:
           project: 
             directory: 'Bots/DotNet/Skills/Composer/EchoSkillBotComposer'
             netCoreVersion: "3.1.x"
-          dependenciesRegistry: "$($env:DependenciesRegistrySkills)"
-          dependenciesVersion: "$($env:DependenciesVersionSkills)"
+          dependency:
+            registry: $env:DependenciesRegistryDotNetSkills
+            version: $env:DependenciesVersionDotNetSkills
 
 # JS
   - template: js/deploy.yml
@@ -251,8 +270,9 @@ stages:
           appSecret: $(BffnSimpleHostBotJSAppSecret)
           project:
             directory: 'Bots/JavaScript/Consumers/CodeFirst/SimpleHostBot'
-          dependenciesRegistry: "$($env:DependenciesRegistryHosts)"
-          dependenciesVersion: "$($env:DependenciesVersionHosts)"
+          dependency:
+            registry: $env:DependenciesRegistryJSHosts
+            version: $env:DependenciesVersionJSSHosts
 
         - name: "bffnechoskillbotjs"
           type: "Skill"
@@ -261,8 +281,9 @@ stages:
           appSecret: $(BffnEchoSkillBotJSAppSecret)
           project: 
             directory: 'Bots/JavaScript/Skills/CodeFirst/EchoSkillBot'
-          dependenciesRegistry: "$($env:DependenciesRegistrySkills)"
-          dependenciesVersion: "$($env:DependenciesVersionSkills)"
+          dependency:
+            registry: $env:DependenciesRegistryJSSkills
+            version: $env:DependenciesVersionJSSkills
 
         - name: "bffnechoskillbotjsv3"
           type: "SkillV3"
@@ -271,8 +292,9 @@ stages:
           appSecret: $(BffnEchoSkillBotJSV3AppSecret)
           project:
             directory: 'Bots/JavaScript/Skills/CodeFirst/EchoSkillBot-v3'
-          dependenciesRegistry: "$($env:DependenciesRegistrySkillsV3)"
-          dependenciesVersion: "$($env:DependenciesVersionSkillsV3)"
+          dependency:
+            registry: $env:DependenciesRegistryJSSkillsV3
+            version: $env:DependenciesVersionJSSkillsV3
 
         - name: "bffnwaterfallhostbotjs"
           type: "Host"
@@ -281,8 +303,9 @@ stages:
           appSecret: $(BffnWaterfallHostBotJSAppSecret)
           project:
             directory: 'Bots/JavaScript/Consumers/CodeFirst/WaterfallHostBot'
-          dependenciesRegistry: "$($env:DependenciesRegistryHosts)"
-          dependenciesVersion: "$($env:DependenciesVersionHosts)"
+          dependency:
+            registry: $env:DependenciesRegistryJSHosts
+            version: $env:DependenciesVersionJSSHosts
 
         - name: "bffnwaterfallskillbotjs"
           type: "Skill"
@@ -291,8 +314,9 @@ stages:
           appSecret: $(BffnWaterfallSkillBotJSAppSecret)
           project: 
             directory: 'Bots/JavaScript/Skills/CodeFirst/WaterfallSkillBot'
-          dependenciesRegistry: "$($env:DependenciesRegistrySkills)"
-          dependenciesVersion: "$($env:DependenciesVersionSkills)"
+          dependency:
+            registry: $env:DependenciesRegistryJSSkills
+            version: $env:DependenciesVersionJSSkills
 
 # Python
   - template: python/deploy.yml
@@ -314,8 +338,9 @@ stages:
           appSecret: $(BffnSimpleHostBotPythonAppSecret)
           project:
             directory: 'Bots/Python/Consumers/CodeFirst/SimpleHostBot'
-          dependenciesRegistry: "$($env:DependenciesRegistryHosts)"
-          dependenciesVersion: "$($env:DependenciesVersionHosts)"
+          dependency:
+            registry: $env:DEPENDENCIESREGISTRYPYTHONHOSTS
+            version: $env:DEPENDENCIESVERSIONPYTHONHOSTS
 
         - name: "bffnechoskillbotpython"
           type: "Skill"
@@ -324,8 +349,9 @@ stages:
           appSecret: $(BffnEchoSkillBotPythonAppSecret)
           project: 
             directory: 'Bots/Python/Skills/CodeFirst/EchoSkillBot'
-          dependenciesRegistry: "$($env:DependenciesRegistrySkills)"
-          dependenciesVersion: "$($env:DependenciesVersionSkills)"
+          dependency:
+            registry: $env:DEPENDENCIESREGISTRYPYTHONSKILLS
+            version: $env:DEPENDENCIESVERSIONPYTHONSKILLS
 
         - name: "bffnwaterfallhostbotpython"
           type: "Host"
@@ -334,8 +360,9 @@ stages:
           appSecret: $(BffnWaterfallHostBotPythonAppSecret)
           project:
             directory: 'Bots/Python/Consumers/CodeFirst/WaterfallHostBot'
-          dependenciesRegistry: "$($env:DependenciesRegistryHosts)"
-          dependenciesVersion: "$($env:DependenciesVersionHosts)"
+          dependency:
+            registry: $env:DEPENDENCIESREGISTRYPYTHONHOSTS
+            version: $env:DEPENDENCIESVERSIONPYTHONHOSTS
 
         - name: "bffnwaterfallskillbotpython"
           type: "Skill"
@@ -344,8 +371,9 @@ stages:
           appSecret: $(BffnWaterfallSkillBotPythonAppSecret)
           project: 
             directory: 'Bots/Python/Skills/CodeFirst/WaterfallSkillBot'
-          dependenciesRegistry: "$($env:DependenciesRegistrySkills)"
-          dependenciesVersion: "$($env:DependenciesVersionSkills)"
+          dependency:
+            registry: $env:DEPENDENCIESREGISTRYPYTHONSKILLS
+            version: $env:DEPENDENCIESVERSIONPYTHONSKILLS
 
 # Publish variables
   - stage: "Publish_Variables"
