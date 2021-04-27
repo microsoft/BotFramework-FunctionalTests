@@ -31,13 +31,18 @@
 | **[BotName](#botnames) + AppId** | [App Registration Portal](https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade) | (optional) App ID to use. If not configured, will be retrieved from the key vault. |
 | **[BotName](#botnames) + AppSecret** | [App Registration Portal](https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade) | (optional) App Secret to use. If not configured, will be retrieved from the key vault. |
 | **BotPricingTier** | User | (optional) Pricing tier for the Web App resources. **Possible values are: F0 (default), S1.** |
-| **DependenciesRegistry+[Language](#dependency-variables-language)+Hosts** | User | (optional) Source from which the Bot Builder dependencies will be downloaded for selected host bots. [**More info**](#dependency-variables-language) |
-| **DependenciesRegistry+[Language](#dependency-variables-language)+Skills** | User | (optional) Source from which the Bot Builder dependencies will be downloaded for selected skill bots. [**More info**](#dependency-variables-language) |
-| **DependenciesRegistry+[Language](#dependency-variables-language)+SkillsV3** | User | (optional) Source from which the Bot Builder dependencies will be downloaded for selected V3 skill bots. [**More info**](#dependency-variables-language) |
-| **DependeciesVersion+[Language](#dependency-variables-language)+Hosts** | User | (optional) Bot Builder dependency version to use for selected host bots. **Possible values are: Latest (default), Stable, or specific version numbers.** |
-| **DependeciesVersion+[Language](#dependency-variables-language)+Skills** | User | (optional) Bot Builder dependency version to use for selected skill bots. **Possible values are: Latest (default), Stable, or specific version numbers.** |
-| **DependeciesVersion+[Language](#dependency-variables-language)+SkillsV3** | User | (optional) Bot Builder dependency version to use for selected V3 skill bots. **Possible values are: Latest (default), Stable, or specific version numbers.** |
 | **ResourceSuffix** | Create Shared Resources | (optional) Suffix to add to the resource names to avoid collisions. |
+
+The following parameters will be displayed in the run pipeline blade.
+
+| Parameter Name | Source | Description |
+| - | - | - |
+| **[Language](#dependency-variables-language) Hosts Registry** | User | (optional) Source from which the Bot Builder dependencies will be downloaded for selected host bots. [**More info**](#dependency-variables-language) |
+| **[Language](#dependency-variables-language) Skills Registry** | User | (optional) Source from which the Bot Builder dependencies will be downloaded for selected skill bots. [**More info**](#dependency-variables-language) |
+| **[Language](#dependency-variables-language) Skills V3 Registry** | User | (optional) Source from which the Bot Builder dependencies will be downloaded for selected V3 skill bots. [**More info**](#dependency-variables-language) |
+| **[Language](#dependency-variables-language) Hosts Version** | User | (optional) Bot Builder dependency version to use for selected host bots. **Possible values are: Latest (default), Stable, or specific version numbers.** |
+| **[Language](#dependency-variables-language) Skills Version** | User | (optional) Bot Builder dependency version to use for selected skill bots. **Possible values are: Latest (default), Stable, or specific version numbers.** |
+| **[Language](#dependency-variables-language) Skills V3 Version** | User | (optional) Bot Builder dependency version to use for selected V3 skill bots. **Possible values are: Latest (default), Stable, or specific version numbers.** |
 
 ## 03 - Run Test Scenarios Pipeline
 
@@ -69,24 +74,21 @@
 
 These are the available lenguages for the dependencies registry and version variables:
 
-You can choose one of the following options to select the package's feed, if not declared or empty, default will be used.
+You can choose between one of the following options to select the package's feed.
 
 - DotNet
   - Artifacts (default)
   - MyGet (default for V3 skill)
   - NuGet
-  - Custom feed url
 - JS
   - MyGet (default)
   - Npm
-  - Custom feed url
 - Python (Not available for SkillsV3)
   - Artifacts (default)
   - Pypi
   - Test.Pypi
-  - Custom feed url
 
-Example: `DependenciesRegistryDotNetHosts = NuGet`
+The version parameters support LATEST (default), STABLE, or a specific version.
 
 Note: npm and nuget feeds only supports stable versions, fill the corresponding variable with a specific version or set it to `stable`.
 
