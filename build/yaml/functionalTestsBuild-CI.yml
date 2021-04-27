@@ -1,7 +1,11 @@
 parameters:
-  buildConfiguration: ""
-  buildNumber: ""
-  buildPlatform: ""
+  - name: buildConfiguration
+    displayName: Build Configuration
+    type: string
+
+  - name: buildPlatform
+    displayName: Build Platform
+    type: string
 
 steps:
 - task: UseDotNet@2
@@ -35,8 +39,8 @@ steps:
   inputs:
     command: test
     projects: 'Tests/TranscriptTestRunnerTests/TranscriptTestRunnerTests.csproj'
-    testRunTitle: 'FunctionalTests-CI-Results-$(Build.BuildNumber)'
-    arguments: '-v n --configuration ${{ parameters.buildConfiguration }} --no-build --no-restore --collect "Code Coverage" --logger "trx;LogFileName=FunctionalTests-CI-Results-${{ parameters.buildNumber }}.trx"'
+    testRunTitle: 'FunctionalTests-CI-Results-$(BUILD.BUILDNUMBER)'
+    arguments: '-v n --configuration ${{ parameters.buildConfiguration }} --no-build --no-restore --collect "Code Coverage" --logger "trx;LogFileName=FunctionalTests-CI-Results-$(BUILD.BUILDNUMBER).trx"'
 
 - task: PublishBuildArtifacts@1
   displayName: "Publish Artifact: build folder"

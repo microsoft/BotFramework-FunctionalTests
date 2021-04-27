@@ -16,17 +16,16 @@ jobs:
       steps: 
       - template: dotnetBotsBuild-CI.yml
         parameters:
-          buildConfiguration: "$(BuildConfiguration)"
-          buildPlatform: "$(BuildPlatform)"
-          solutionDir: "$(Build.SourcesDirectory)/Bots/DotNet/"
+          buildConfiguration: "$(BUILDCONFIGURATION)"
+          buildPlatform: "$(BUILDPLATFORM)"
+          solutionDir: "$(BUILD.SOURCESDIRECTORY)/Bots/DotNet/"
 
     - job: "BuildSkillsFunctionalTests"
       steps: 
       - template: functionalTestsBuild-CI.yml
         parameters:
-          buildConfiguration: "$(BuildConfiguration)"
-          buildNumber: "$(Build.BuildNumber)"
-          buildPlatform: "$(BuildPlatform)"
+          buildConfiguration: "$(BUILDCONFIGURATION)"
+          buildPlatform: "$(BUILDPLATFORM)"
 
 pool:
     vmImage: "windows-2019"

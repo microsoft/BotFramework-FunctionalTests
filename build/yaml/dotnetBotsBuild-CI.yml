@@ -1,7 +1,15 @@
 parameters:
-  buildConfiguration: ""
-  buildPlatform: ""
-  solutionDir: ""
+  - name: buildConfiguration
+    displayName: Build Configuration
+    type: string
+
+  - name: buildPlatform
+    displayName: Build Platfrom
+    type: string
+
+  - name: solutionDir
+    displayName: Solution Directory
+    type: string
 
 steps:
 - task: UseDotNet@2
