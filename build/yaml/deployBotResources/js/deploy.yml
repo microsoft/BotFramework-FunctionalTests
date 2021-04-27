@@ -1,15 +1,47 @@
 parameters:
-  appInsight: ""
-  appServicePlan: ""
-  appServicePlanRG: ""
-  azureSubscription: ""
-  bots: []
-  botPricingTier: ""
-  connectionName: ""
-  dependsOn: ""
-  keyVault: ""
-  resourceGroup: ""
-  resourceSuffix: ""
+  - name: appInsight
+    displayName: Azure Application Insight name
+    type: string
+
+  - name: appServicePlan
+    displayName: App Service Plan name
+    type: string
+
+  - name: appServicePlanRG
+    displayName: App Service Plan Resource Group
+    type: string
+
+  - name: azureSubscription
+    displayName: Azure Subscription
+    type: string
+
+  - name: bots
+    displayName: Bots
+    type: object
+
+  - name: botPricingTier
+    displayName: Bot Pricing Tier
+    type: string
+
+  - name: connectionName
+    displayName: Connection Name
+    type: string
+
+  - name: dependsOn
+    displayName: Depends On
+    type: string
+
+  - name: keyVault
+    displayName: Key Vault
+    type: string
+
+  - name: resourceGroup
+    displayName: Resource Group
+    type: string
+
+  - name: resourceSuffix
+    displayName: Resource Suffix
+    type: string
 
 stages:
 - ${{ each bot in parameters.bots }}:
@@ -144,7 +176,7 @@ stages:
             parameters:
               appId: $(AppId)
               appInsight: "${{ parameters.appInsight }}"
-              appSecret:  $(AppSecret)
+              appSecret: $(AppSecret)
               appServicePlan: "${{ parameters.appServicePlan }}"
               appServicePlanRG: "${{ parameters.appServicePlanRG }}"
               azureSubscription: "${{ parameters.azureSubscription }}"
@@ -169,7 +201,7 @@ stages:
             - template: ../common/configureOAuth.yml
               parameters:
                 appId: $(AppId)
-                appSecret:  $(AppSecret)
+                appSecret: $(AppSecret)
                 azureSubscription: "${{ parameters.azureSubscription }}"
                 botGroup: "${{ parameters.resourceGroup }}"
                 botName: "${{ bot.name }}"
