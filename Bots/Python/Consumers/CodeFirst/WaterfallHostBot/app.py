@@ -16,7 +16,6 @@ from botbuilder.core.integration import (
     aiohttp_channel_service_routes,
     aiohttp_error_middleware,
 )
-from botbuilder.core.skills import SkillHandler
 from botbuilder.schema import Activity
 from botbuilder.integration.aiohttp.skills import SkillHttpClient
 from botframework.connector.auth import (
@@ -30,6 +29,7 @@ from dialogs import MainDialog
 from skills_configuration import DefaultConfig, SkillsConfiguration
 from adapter_with_error_handler import AdapterWithErrorHandler
 from skill_conversation_id_factory import SkillConversationIdFactory
+from token_exchange_skill_handler import TokenExchangeSkillHandler
 
 CONFIG = DefaultConfig()
 SKILL_CONFIG = SkillsConfiguration()
@@ -60,7 +60,16 @@ DIALOG = MainDialog(CONVERSATION_STATE, ID_FACTORY, CLIENT, SKILL_CONFIG, CONFIG
 # Create the Bot
 BOT = RootBot(CONVERSATION_STATE, DIALOG)
 
-SKILL_HANDLER = SkillHandler(ADAPTER, BOT, ID_FACTORY, CREDENTIAL_PROVIDER, AUTH_CONFIG)
+SKILL_HANDLER = TokenExchangeSkillHandler(
+    ADAPTER,
+    BOT,
+    CONFIG,
+    ID_FACTORY,
+    SKILL_CONFIG,
+    CLIENT,
+    CREDENTIAL_PROVIDER,
+    AUTH_CONFIG,
+)
 
 
 # Listen for incoming requests on /api/messages
