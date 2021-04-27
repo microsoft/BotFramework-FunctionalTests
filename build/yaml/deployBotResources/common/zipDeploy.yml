@@ -27,4 +27,4 @@ steps:
       scriptType: pscore
       scriptLocation: inlineScript
       inlineScript: |
-        az webapp deployment source config-zip --resource-group "${{ parameters.botGroup }}" --name "${{ parameters.botName }}${{ parameters.resourceSuffix }}-$(Build.BuildId)" --src "${{ parameters.source }}"
+        az webapp deployment source config-zip --resource-group "${{ parameters.botGroup }}" --name "${{ parameters.botName }}${{ parameters.resourceSuffix }}-$(BUILD.BUILDID)" --src "${{ parameters.source }}"

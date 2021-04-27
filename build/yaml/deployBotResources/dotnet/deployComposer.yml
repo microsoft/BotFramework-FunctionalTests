@@ -95,8 +95,8 @@ stages:
               project: 
                 directory: "${{ bot.project.directory }}/runtime/azurewebapp/"
                 name: "Microsoft.BotFramework.Composer.WebApp.csproj"
-              registry: "$(DependenciesSource)"
-              version: "$(DependenciesVersionNumber)"
+              registry: "$(DEPENDENCIESSOURCE)"
+              version: "$(DEPENDENCIESVERSIONNUMBER)"
               packages:
                 Microsoft.Bot.Builder
                 Microsoft.Bot.Builder.AI.Luis
@@ -117,8 +117,8 @@ stages:
               project: 
                 directory: "${{ bot.project.directory }}/runtime/azurefunctions/"
                 name: "Microsoft.BotFramework.Composer.Functions.csproj"
-              registry: "$(DependenciesSource)"
-              version: "$(DependenciesVersionNumber)"
+              registry: "$(DEPENDENCIESSOURCE)"
+              version: "$(DEPENDENCIESVERSIONNUMBER)"
               packages:
                 Microsoft.Bot.Builder
                 Microsoft.Bot.Builder.AI.Luis
@@ -139,8 +139,8 @@ stages:
               project:
                 directory: "${{ bot.project.directory }}/runtime/customaction/"
                 name: "Microsoft.BotFramework.Composer.CustomAction.csproj"
-              registry: "$(DependenciesSource)"
-              version: "$(DependenciesVersionNumber)"
+              registry: "$(DEPENDENCIESSOURCE)"
+              version: "$(DEPENDENCIESVERSIONNUMBER)"
               packages:
                 Microsoft.Bot.Builder.Dialogs.Adaptive
 
@@ -150,8 +150,8 @@ stages:
               project: 
                 directory: "${{ bot.project.directory }}/runtime/core/"
                 name: "Microsoft.BotFramework.Composer.Core.csproj"
-              registry: "$(DependenciesSource)"
-              version: "$(DependenciesVersionNumber)"
+              registry: "$(DEPENDENCIESSOURCE)"
+              version: "$(DEPENDENCIESVERSIONNUMBER)"
               packages:
                 Microsoft.Bot.Builder
                 Microsoft.Bot.Builder.AI.Luis
@@ -196,15 +196,15 @@ stages:
 
           # Zip bot
           - powershell: |
-              7z.exe a -tzip "${{ parameters.output.path }}/${{ parameters.output.zip }}.zip" "$(System.DefaultWorkingDirectory)/${{ parameters.output.path }}/*" -aoa
+              7z.exe a -tzip "${{ parameters.output.path }}/${{ parameters.output.zip }}.zip" "$(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ parameters.output.path }}/*" -aoa
             displayName: "Zip bot"
 
           # Create App Service and Bot Channel Registration
           - template: ../common/createAppService.yml
             parameters:
-              appId: $(AppId)
+              appId: $(APPID)
               appInsight: "${{ parameters.appInsight }}"
-              appSecret:  $(AppSecret)
+              appSecret:  $(APPSECRET)
               appServicePlan: "${{ parameters.appServicePlan }}"
               appServicePlanRG: "${{ parameters.appServicePlanRG }}"
               azureSubscription: "${{ parameters.azureSubscription }}"

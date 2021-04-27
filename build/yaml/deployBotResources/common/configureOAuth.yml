@@ -38,8 +38,8 @@ steps:
         $connectionName = if([string]::IsNullOrEmpty("${{ parameters.connectionName }}")) { "TestOAuthProvider" } Else { "${{ parameters.connectionName }}" };
 
         # Create OAuth Connection.
-        az bot show -g "${{ parameters.botGroup }}" -n "${{ parameters.botName }}${{ parameters.resourceSuffix }}-$(Build.BuildId)"
-        az bot authsetting create -g "${{ parameters.botGroup }}" -n "${{ parameters.botName }}${{ parameters.resourceSuffix }}-$(Build.BuildId)" -c $connectionName --client-id="${{ parameters.appId }}" --client-secret="${{ parameters.appSecret }}" --service "oauth2" --provider-scope-string '""' --parameters authorizationUrl=https://webjobs.botframework.com/api/testauthprovider/authorize tokenUrl=https://webjobs.botframework.com/api/testauthprovider/token refreshUrl=https://webjobs.botframework.com/api/testauthprovider/refresh clientId="${{ parameters.appId }}" clientSecret="${{ parameters.appSecret }}"
+        az bot show -g "${{ parameters.botGroup }}" -n "${{ parameters.botName }}${{ parameters.resourceSuffix }}-$(BUILD.BUILDID)"
+        az bot authsetting create -g "${{ parameters.botGroup }}" -n "${{ parameters.botName }}${{ parameters.resourceSuffix }}-$(BUILD.BUILDID)" -c $connectionName --client-id="${{ parameters.appId }}" --client-secret="${{ parameters.appSecret }}" --service "oauth2" --provider-scope-string '""' --parameters authorizationUrl=https://webjobs.botframework.com/api/testauthprovider/authorize tokenUrl=https://webjobs.botframework.com/api/testauthprovider/token refreshUrl=https://webjobs.botframework.com/api/testauthprovider/refresh clientId="${{ parameters.appId }}" clientSecret="${{ parameters.appSecret }}"
 
         # Add ConnectionName to Azure AppSettings.
-        az webapp config appsettings set --name "${{ parameters.botName }}${{ parameters.resourceSuffix }}-$(Build.BuildId)" --resource-group ${{ parameters.botGroup }} --settings "ConnectionName=$connectionName" --output none
+        az webapp config appsettings set --name "${{ parameters.botName }}${{ parameters.resourceSuffix }}-$(BUILD.BUILDID)" --resource-group ${{ parameters.botGroup }} --settings "ConnectionName=$connectionName" --output none

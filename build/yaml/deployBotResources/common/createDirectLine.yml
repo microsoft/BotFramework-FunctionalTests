@@ -23,4 +23,4 @@ steps:
     scriptType: pscore
     scriptLocation: inlineScript
     inlineScript: |
-      az bot directline create -n "${{ parameters.botName }}${{ parameters.resourceSuffix }}-$(Build.BuildId)" -g "${{ parameters.botGroup }}"
+      az bot directline create -n "${{ parameters.botName }}${{ parameters.resourceSuffix }}-$(BUILD.BUILDID)" -g "${{ parameters.botGroup }}"
