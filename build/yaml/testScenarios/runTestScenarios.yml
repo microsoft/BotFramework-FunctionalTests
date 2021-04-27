@@ -70,6 +70,7 @@ stages:
             - Attachments
             - CardActions
             - ProactiveMessages
+            - FileUpload
             - SignIn
 
         - name: SingleTurn
