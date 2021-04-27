@@ -4,7 +4,7 @@ parameters:
     type: string
 
   - name: appSecret
-    displayName: Bot App Secret
+    displayName: Bot's App Registration Secret
     type: string
 
   - name: azureSubscription

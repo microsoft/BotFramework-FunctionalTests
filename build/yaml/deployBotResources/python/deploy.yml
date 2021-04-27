@@ -8,7 +8,7 @@ parameters:
     type: string
 
   - name: azureSubscription
-    displayName: Azure Subscription
+    displayName: Azure Service Connection
     type: string
 
   - name: bots
@@ -20,7 +20,7 @@ parameters:
     type: string
 
   - name: connectionName
-    displayName: Connection Name
+    displayName: OAuth Connection Name
     type: string
 
   - name: dependsOn
@@ -28,7 +28,7 @@ parameters:
     type: string
 
   - name: keyVault
-    displayName: Key Vault
+    displayName: Key Vault name
     type: string
 
   - name: resourceGroup
@@ -36,7 +36,7 @@ parameters:
     type: string
 
   - name: resourceSuffix
-    displayName: Resource Suffix
+    displayName: Azure resources' name suffix
     type: string
 
 stages:
@@ -101,13 +101,13 @@ stages:
                 botName: "${{ bot.name }}"
               ${{ if ne(bot.displayName, '') }}:
                 botName: "${{ bot.displayName }}"
-              version: "$(DependenciesVersionNumber)"
+              version: "$(DEPENDENCIESVERSIONNUMBER)"
 
           # Create App Service and Bot Channel Registration
           - template: ../common/createAppService.yml
             parameters:
-              appId: $(AppId)
-              appSecret: $(AppSecret)
+              appId: $(APPID)
+              appSecret: $(APPSECRET)
               appServicePlan: "${{ parameters.appServicePlan }}"
               appServicePlanRG: "${{ parameters.appServicePlanRG }}"
               azureSubscription: "${{ parameters.azureSubscription }}"
@@ -121,8 +121,8 @@ stages:
           - ${{ if eq(bot.type, 'Skill') }}:
             - template: ../common/configureOAuth.yml
               parameters:
-                appId: $(AppId)
-                appSecret: $(AppSecret)
+                appId: $(APPID)
+                appSecret: $(APPSECRET)
                 azureSubscription: "${{ parameters.azureSubscription }}"
                 botGroup: "${{ parameters.resourceGroup }}"
                 botName: "${{ bot.name }}"
@@ -141,17 +141,17 @@ stages:
                 source antenv/bin/activate
                 python -m pip install --upgrade pip
                 pip install -r requirements.txt
-            workingDirectory: $(System.DefaultWorkingDirectory)/${{ bot.project.directory }}
+            workingDirectory: $(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ bot.project.directory }}
             displayName: "Build Python app"
 
           # Zip bot
           - task: ArchiveFiles@2
             displayName: "Zip bot"
             inputs:
-              rootFolderOrFile: "$(System.DefaultWorkingDirectory)/${{ bot.project.directory }}"
+              rootFolderOrFile: "$(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ bot.project.directory }}"
               includeRootFolder: false
               archiveType: "zip"
-              archiveFile: "$(System.DefaultWorkingDirectory)/build/${{ bot.name }}.zip"
+              archiveFile: "$(SYSTEM.DEFAULTWORKINGDIRECTORY)/build/${{ bot.name }}.zip"
               replaceExistingArchive: true
               verbose: true
 
@@ -159,15 +159,15 @@ stages:
           - task: PublishBuildArtifacts@1
             displayName: "Publish zip package"
             inputs:
-              pathToPublish: "$(System.DefaultWorkingDirectory)/build/${{ bot.name }}.zip"
-              artifactName: python-$(Build.BuildId)
+              pathToPublish: "$(SYSTEM.DEFAULTWORKINGDIRECTORY)/build/${{ bot.name }}.zip"
+              artifactName: python-$(BUILD.BUILDID)
             
           # Deploy bot
           - task: AzureWebApp@1
-            displayName: "Deploy Azure Web App : ${{ bot.name }}-$(Build.BuildId)"
+            displayName: "Deploy Azure Web App : ${{ bot.name }}-$(BUILD.BUILDID)"
             inputs:
               azureSubscription: "${{ parameters.azureSubscription }}"
-              appName: "${{ bot.name }}${{ parameters.resourceSuffix }}-$(Build.BuildId)"
+              appName: "${{ bot.name }}${{ parameters.resourceSuffix }}-$(BUILD.BUILDID)"
               appType: webAppLinux
               resourceGroupName: "${{ parameters.resourceGroup }}"
               package: "$(System.DefaultWorkingDirectory)/build/${{ bot.name }}.zip"

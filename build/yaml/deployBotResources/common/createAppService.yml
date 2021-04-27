@@ -37,7 +37,7 @@ parameters:
     type: string
 
   - name: templateFile
-    displayName: Tempate File Location
+    displayName: Template File Location
     type: string
 
   - name: resourceSuffix

@@ -67,12 +67,12 @@ The following parameters will be displayed in the run pipeline blade.
 | - | - | - |
 | **AzureSubscription** | Azure DevOps | Name of the Azure Resource Manager Service Connection configured in the DevOps organization. Click [here](./addARMServiceConnection.md) to see how to set it up. |
 | **DeployResourceGroup** | Deploy Bot Resources  | Prefix of the resource groups where the bots were deployed. |
-| **SharedResourceGroup** | Create Shared Resources | Name for the resource groups that contains the shared resources. |
+| **SharedResourceGroup** | Create Shared Resources | Name for the resource groups that contain the shared resources. |
 | **ResourceSuffix** | Create Shared Resources | (optional) Suffix added to the resource names. |
 
 ### Dependency Variables
 
-These are the available lenguages for the dependencies registry and version variables:
+These are the available languages for the dependencies registry and version variables:
 
 You can choose between one of the following options to select the package's feed.
 
@@ -90,7 +90,7 @@ You can choose between one of the following options to select the package's feed
 
 The version parameters support LATEST (default), STABLE, or a specific version.
 
-Note: npm and nuget feeds only supports stable versions, fill the corresponding variable with a specific version or set it to `stable`.
+Note: Npm and NuGet feeds only support stable versions, fill the corresponding variable with a specific version or set it to `stable`.
 
 ### BotNames
 

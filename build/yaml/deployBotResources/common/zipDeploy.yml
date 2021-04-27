@@ -1,6 +1,6 @@
 parameters:
   - name: azureSubscription
-    displayName: Azure Subscription
+    displayName: Azure Service Connection
     type: string
 
   - name: botGroup
@@ -16,7 +16,7 @@ parameters:
     type: string
 
   - name: resourceSuffix
-    displayName: Resource Suffix
+    displayName: Azure resources' name suffix
     type: string
 
 steps:
