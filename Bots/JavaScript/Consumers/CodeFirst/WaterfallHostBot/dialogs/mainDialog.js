@@ -229,7 +229,7 @@ class MainDialog extends ComponentDialog {
 
     if (skillActivity.name === 'Sso') {
       // Special case, we start the SSO dialog to prepare the host to call the skill.
-      return stepContext.beginDialog(`${SSO_DIALOG_PREFIX}${selectedSkill.Id}`);
+      return stepContext.beginDialog(`${SSO_DIALOG_PREFIX}${selectedSkill.id}`);
     }
 
     // We are manually creating the activity to send to the skill; ensure we add the ChannelData and Properties
@@ -304,7 +304,7 @@ class MainDialog extends ComponentDialog {
   addSsoDialogs () {
     const addDialogs = (name, connectionName) => Object.values(this.dialogs.dialogs)
       .filter(({ id }) => id.startsWith(name))
-      .forEach(skill => this.addDialog(new SsoDialog(`${SSO_DIALOG_PREFIX}${skill.Id}`, skill, connectionName)));
+      .forEach(skill => this.addDialog(new SsoDialog(`${SSO_DIALOG_PREFIX}${skill.id}`, skill, connectionName)));
 
     addDialogs('WaterfallSkillBot', process.env.SsoConnectionName);
     addDialogs('TeamsSkillBot', process.env.SsoConnectionNameTeams);
