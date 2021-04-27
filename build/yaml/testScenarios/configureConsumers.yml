@@ -1,5 +1,8 @@
 parameters:
-  appIds:
+- name: appIds
+  displayName: Bot's App Registration Ids
+  type: object
+  default:
     EchoSkillBotComposerDotNet: ""
     EchoSkillBotDotNet: ""
     EchoSkillBotDotNet21: ""
@@ -10,12 +13,26 @@ parameters:
     WaterfallSkillBotDotNet: ""
     WaterfallSkillBotJS: ""
     WaterfallSkillBotPython: ""
-  azureSubscription: ""
-  keyVault: ""
-  resourceGroup: ""
-  resourceSuffix: ""
-  scenario: ""
 
+- name: azureSubscription
+  displayName: Azure Service Connection
+  type: string
+
+- name: keyVault
+  displayName: KeyVault name
+  type: string
+
+- name: resourceGroup
+  displayName: Resource Group name
+  type: string
+
+- name: resourceSuffix
+  displayName: Azure resources' name suffix
+  type: string
+
+- name: scenario
+  displayName: Test scenario
+  type: object
 
 steps:
   - task: AzureCLI@2

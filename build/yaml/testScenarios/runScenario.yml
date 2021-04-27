@@ -1,5 +1,8 @@
 parameters:
-  appIds:
+- name: appIds
+  displayName: Bot's App Registration Ids
+  type: object
+  default:
     EchoSkillBotComposerDotNet: ""
     EchoSkillBotDotNet: ""
     EchoSkillBotDotNet21: ""
@@ -10,13 +13,38 @@ parameters:
     WaterfallSkillBotDotNet: ""
     WaterfallSkillBotJS: ""
     WaterfallSkillBotPython: ""
-  azureSubscription: ""
-  buildConfiguration: ""
-  buildIdSuffix: ""
-  keyVault: ""
-  resourceGroup: ""
-  resourceSuffix: ""
-  scenarios: []
+
+- name: azureSubscription
+  displayName: Azure Service Connection
+  type: string
+
+- name: buildConfiguration
+  displayName: Build Configuration
+  type: string
+
+- name: buildIdSuffix
+  displayName: Build Id Suffix
+  type: string
+
+- name: buildNumber
+  displayName: Build Number
+  type: string
+
+- name: keyVault
+  displayName: KeyVault name
+  type: string
+
+- name: resourceGroup
+  displayName: Resource Group name
+  type: string
+
+- name: resourceSuffix
+  displayName: Azure resources' name suffix
+  type: string
+
+- name: scenarios
+  displayName: test scenarios
+  type: object
 
 stages:
   - ${{ each scenario in parameters.scenarios }}:
@@ -34,7 +62,7 @@ stages:
                 azureSubscription: "${{ parameters.azureSubscription }}"
                 keyVault: "${{ parameters.keyVault }}"
                 resourceGroup: "${{ parameters.resourceGroup }}"
-                resourceSuffix: "${{ parameters.resourceSuffix }}$(BuildIdSuffix)"
+                resourceSuffix: "${{ parameters.resourceSuffix }}$(BUILDIDSUFFIX)"
                 scenario: "${{ scenario.name }}"
 
             - task: UseDotNet@2
@@ -54,6 +82,6 @@ stages:
               displayName: "DotNet Test"
               inputs:
                 command: test
-                testRunTitle: "SkillFunctionalTests-${{ scenario.name }}-$(Build.BuildNumber)"
+                testRunTitle: "SkillFunctionalTests-${{ scenario.name }}-${{ parameters.buildNumber }}"
                 projects: "Tests/SkillFunctionalTests/SkillFunctionalTests.csproj"
-                arguments: "-v n --configuration ${{ parameters.buildConfiguration }} --no-build --no-restore --logger trx;LogFileName=SkillFunctionalTests-${{ scenario.name }}-$(Build.BuildNumber).trx --filter TestCategory!=IgnoreInAutomatedBuild&TestCategory=${{ join('|TestCategory=', scenario.testCategories) }}"
+                arguments: "-v n --configuration ${{ parameters.buildConfiguration }} --no-build --no-restore --logger trx;LogFileName=SkillFunctionalTests-${{ scenario.name }}-${{ parameters.buildNumber }}.trx --filter TestCategory!=IgnoreInAutomatedBuild&TestCategory=${{ join('|TestCategory=', scenario.testCategories) }}"
