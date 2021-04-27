@@ -26,10 +26,6 @@ parameters:
   displayName: Build Id Suffix
   type: string
 
-- name: buildNumber
-  displayName: Build Number
-  type: string
-
 - name: keyVault
   displayName: KeyVault name
   type: string
@@ -43,7 +39,7 @@ parameters:
   type: string
 
 - name: scenarios
-  displayName: test scenarios
+  displayName: Test Scenarios
   type: object
 
 stages:
@@ -82,6 +78,6 @@ stages:
               displayName: "DotNet Test"
               inputs:
                 command: test
-                testRunTitle: "SkillFunctionalTests-${{ scenario.name }}-${{ parameters.buildNumber }}"
+                testRunTitle: "SkillFunctionalTests-${{ scenario.name }}-$(BUILD.BUILDNUMBER)"
                 projects: "Tests/SkillFunctionalTests/SkillFunctionalTests.csproj"
-                arguments: "-v n --configuration ${{ parameters.buildConfiguration }} --no-build --no-restore --logger trx;LogFileName=SkillFunctionalTests-${{ scenario.name }}-${{ parameters.buildNumber }}.trx --filter TestCategory!=IgnoreInAutomatedBuild&TestCategory=${{ join('|TestCategory=', scenario.testCategories) }}"
+                arguments: "-v n --configuration ${{ parameters.buildConfiguration }} --no-build --no-restore --logger trx;LogFileName=SkillFunctionalTests-${{ scenario.name }}-$(BUILD.BUILDNUMBER).trx --filter TestCategory!=IgnoreInAutomatedBuild&TestCategory=${{ join('|TestCategory=', scenario.testCategories) }}"

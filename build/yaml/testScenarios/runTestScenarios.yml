@@ -9,7 +9,6 @@ pr: none
 
 variables:
   BuildConfiguration: "Debug"
-  BuildNumber: "$(BUILD.BUILDNUMBER)"
 
   ## Azure Resources (Define these variables in Azure)
   # AzureSubscription: Service Connection Name to Manage Azure resources.
@@ -84,7 +83,6 @@ stages:
       azureSubscription: "$(AZURESUBSCRIPTION)"
       buildConfiguration: "$(BUILDCONFIGURATION)"
       buildIdSuffix: $[stageDependencies.Download_Variables.Download_Variables.outputs['Set_Variables.DeploymentBuildSuffix']]
-      buildNumber: "$(BUILDNUMBER)"
       keyVault: "$(INTERNALKEYVAULTNAME)"
       resourceGroup: "$(INTERNALRESOURCEGROUPNAME)"
       resourceSuffix: "$(INTERNALRESOURCESUFFIX)"
