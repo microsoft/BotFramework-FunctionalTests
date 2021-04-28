@@ -2,12 +2,121 @@
 # Deploys the bot resources needed for the Skills Functional Tests.
 #
 
-name: "$(Build.BuildId)"
+name: "$(BUILD.BUILDID)"
 trigger: none
 pr: none
 
 pool:
   vmImage: "windows-2019"
+
+parameters:
+  - name: dependenciesVersionDotNetHosts
+    displayName: DotNet Hosts Version
+    type: string
+    default: "LATEST"
+
+  - name: dependenciesRegistryDotNetHosts
+    displayName: DotNet Hosts Registry
+    type: string
+    default: Artifacts
+    values:
+    - Artifacts
+    - MyGet
+    - NuGet
+
+  - name: dependenciesVersionDotNetSkills
+    displayName: DotNet Skills Version
+    type: string
+    default: "LATEST"
+
+  - name: dependenciesRegistryDotNetSkills
+    displayName: DotNet Skills Registry
+    type: string
+    default: Artifacts
+    values:
+    - Artifacts
+    - MyGet
+    - NuGet
+
+  - name: dependenciesVersionDotNetSkillsV3
+    displayName: DotNet Skills V3 Version
+    type: string
+    default: "LATEST"
+
+  - name: dependenciesRegistryDotNetSkillsV3
+    displayName: DotNet Skills V3 Registry
+    type: string
+    default: MyGet
+    values:
+    - MyGet
+    - NuGet
+
+  - name: dependenciesVersionJSHosts
+    displayName: JS Hosts Version
+    type: string
+    default: "LATEST"
+
+  - name: dependenciesRegistryJSHosts
+    displayName: JS Hosts Registry
+    type: string
+    default: MyGet
+    values:
+    - MyGet
+    - Npm
+
+  - name: dependenciesVersionJSSkills
+    displayName: JS Skills Version
+    type: string
+    default: "LATEST"
+
+  - name: dependenciesRegistryJSSkills
+    displayName: JS Skills Registry
+    type: string
+    default: MyGet
+    values:
+    - MyGet
+    - Npm
+
+  - name: dependenciesVersionJSSkillsV3
+    displayName: JS Skills V3 Version
+    type: string
+    default: "LATEST"
+
+  - name: dependenciesRegistryJSSkillsV3
+    displayName: JS Skills V3 Registry
+    type: string
+    default: MyGet
+    values:
+    - MyGet
+    - Npm
+
+  - name: dependenciesVersionPythonHosts
+    displayName: Python Hosts Version
+    type: string
+    default: "LATEST"
+
+  - name: dependenciesRegistryPythonHosts
+    displayName: Python Hosts Registry
+    type: string
+    default: Artifacts
+    values:
+    - Artifacts
+    - Pypi
+    - Test.Pypi
+
+  - name: dependenciesVersionPythonSkills
+    displayName: Python Skills Version
+    type: string
+    default: "LATEST"
+
+  - name: dependenciesRegistryPythonSkills
+    displayName: Python Skills Registry
+    type: string
+    default: Artifacts
+    values:
+    - Artifacts
+    - Pypi
+    - Test.Pypi
 
 variables:
   BuildConfiguration: "Debug"
@@ -61,319 +170,301 @@ variables:
   # BffnWaterfallSkillBotPythonAppSecret: (optional) App Secret for BffnWaterfallSkillBotPython bot.
   # ConnectionName: (optional) Name for the OAuth connection to use in the skill bots.
 
-  ## Package Dependencies (define in Azure)
-  # DependenciesRegistryDotNetHosts: (optional) Registry to download the dependency packages for the DotNet host bots.
-  # DependenciesRegistryDotNetSkills: (optional) Registry to download the dependency packages for the DotNet skill bots.
-  # DependenciesRegistryDotNetSkillsV3: (optional) Registry to download the dependency packages for the DotNet v3 skill bots.
-  # DependenciesVersionDotNetHosts: (optional) Version of the dependency packages for the DotNet host bots.
-  # DependenciesVersionDotNetSkills: (optional) Version of the dependency packages for the DotNet skill bots.
-  # DependenciesVersionDotNetSkillsV3: (optional) Version of the dependency packages for the DotNet v3 skill bots.
-  # DependenciesRegistryJSHosts: (optional) Registry to download the dependency packages for the JS host bots.
-  # DependenciesRegistryJSSkills: (optional) Registry to download the dependency packages for the JS skill bots.
-  # DependenciesRegistryJSSkillsV3: (optional) Registry to download the dependency packages for the JS v3 skill bots.
-  # DependenciesVersionJSHosts: (optional) Version of the dependency packages for the JS host bots.
-  # DependenciesVersionJSSkills: (optional) Version of the dependency packages for the JS skill bots.
-  # DependenciesVersionJSSkillsV3: (optional) Version of the dependency packages for the JS skill v3 bots.
-  # DependenciesRegistryPythonHosts: (optional) Registry to download the dependency packages for the Python host bots.
-  # DependenciesRegistryPythonSkills: (optional) Registry to download the dependency packages for the Python skill bots.
-  # DependenciesVersionPythonHosts: (optional) Version of the dependency packages for the Python host bots.
-  # DependenciesVersionPythonSkills: (optional) Version of the dependency packages for the Python skill bots.
-
   ## Internal variables
-  InternalAppInsightsName: 'bffnappinsights$(InternalResourceSuffix)'
-  InternalAppServicePlanLinuxName: $[coalesce(variables['AppServicePlanNameLinux'], 'bffnbotsappservicelinux$(InternalResourceSuffix)')]
-  InternalAppServicePlanLinuxResourceGroup: $[coalesce(variables['AppServicePlanGroupLinux'], 'bffnshared-linux')]
-  InternalAppServicePlanWindowsName: $[coalesce(variables['AppServicePlanName'], 'bffnbotsappservicewin$(InternalResourceSuffix)')]
-  InternalAppServicePlanWindowsResourceGroup: $[coalesce(variables['AppServicePlanGroup'], 'bffnshared')]
-  InternalKeyVaultName: 'bffnbotkeyvault$(InternalResourceSuffix)'
-  InternalResourceGroupName: $[coalesce(variables['ResourceGroup'], 'bffnbots')]
-  InternalResourceSuffix: $[coalesce(variables['ResourceSuffix'], '')]
+  InternalAppInsightsName: 'bffnappinsights$(INTERNALRESOURCESUFFIX)'
+  InternalAppServicePlanLinuxName: $[coalesce(variables['APPSERVICEPLANNAMELINUX'], 'bffnbotsappservicelinux$(INTERNALRESOURCESUFFIX)')]
+  InternalAppServicePlanLinuxResourceGroup: $[coalesce(variables['APPSERVICEPLANGROUPLINUX'], 'bffnshared-linux')]
+  InternalAppServicePlanWindowsName: $[coalesce(variables['APPSERVICEPLANNAME'], 'bffnbotsappservicewin$(INTERNALRESOURCESUFFIX)')]
+  InternalAppServicePlanWindowsResourceGroup: $[coalesce(variables['APPSERVICEPLANGROUP'], 'bffnshared')]
+  InternalKeyVaultName: 'bffnbotkeyvault$(INTERNALRESOURCESUFFIX)'
+  InternalResourceGroupName: $[coalesce(variables['RESOURCEGROUP'], 'bffnbots')]
+  InternalResourceSuffix: $[coalesce(variables['RESOURCESUFFIX'], '')]
 
 
 stages:
 # Resource Groups
   - template: common/prepareResources.yml
     parameters:
-      azureSubscription: "$(AzureSubscription)"
+      azureSubscription: "$(AZURESUBSCRIPTION)"
       resourceGroups: 
         - id: "Prepare_DotNetGroup"
-          name: "$(InternalResourceGroupName)-DotNet"
+          name: "$(INTERNALRESOURCEGROUPNAME)-DotNet"
           displayName: "Prepare DotNet's Resource Group"
 
         - id: "Prepare_JSGroup"
-          name: "$(InternalResourceGroupName)-JS"
+          name: "$(INTERNALRESOURCEGROUPNAME)-JS"
           displayName: "Prepare JS's Resource Group"
 
         - id: "Prepare_PythonGroup"
-          name: "$(InternalResourceGroupName)-Python"
+          name: "$(INTERNALRESOURCEGROUPNAME)-Python"
           displayName: "Prepare Python's Resource Group"
 
 # DotNet
   - template: dotnet/deploy.yml
     parameters:
-      appInsight: "$(InternalAppInsightsName)"
-      appServicePlan: "$(InternalAppServicePlanWindowsName)"
-      appServicePlanRG: "$(InternalAppServicePlanWindowsResourceGroup)"
-      azureSubscription: "$(AzureSubscription)"
-      botPricingTier: $env:BotPricingTier
-      connectionName: $env:ConnectionName
+      appInsight: "$(INTERNALAPPINSIGHTSNAME)"
+      appServicePlan: "$(INTERNALAPPSERVICEPLANWINDOWSNAME)"
+      appServicePlanRG: "$(INTERNALAPPSERVICEPLANWINDOWSRESOURCEGROUP)"
+      azureSubscription: "$(AZURESUBSCRIPTION)"
+      botPricingTier: $env:BOTPRICINGTIER
+      connectionName: $env:CONNECTIONNAME
       dependsOn: "Prepare_DotNetGroup"
-      keyVault: "$(InternalKeyVaultName)"
-      resourceGroup: "$(InternalResourceGroupName)-DotNet"
-      resourceSuffix: $(InternalResourceSuffix)
+      keyVault: "$(INTERNALKEYVAULTNAME)"
+      resourceGroup: "$(INTERNALRESOURCEGROUPNAME)-DotNet"
+      resourceSuffix: $(INTERNALRESOURCESUFFIX)
       bots:
         - name: "bffnsimplehostbotdotnet"
           type: "Host"
           displayName: "DotNet Simple Host Bot"
-          appId: $(BffnSimpleHostBotDotNetAppId)
-          appSecret: $(BffnSimpleHostBotDotNetAppSecret)
+          appId: $(BFFNSIMPLEHOSTBOTDOTNETAPPID)
+          appSecret: $(BFFNSIMPLEHOSTBOTDOTNETAPPSECRET)
           project:
             directory: 'Bots/DotNet/Consumers/CodeFirst/SimpleHostBot'
             name: "SimpleHostBot.csproj"
             netCoreVersion: "3.1.x"
           dependency:
-            registry: $env:DependenciesRegistryDotNetHosts
-            version: $env:DependenciesVersionDotNetHosts
+            registry: ${{ parameters.dependenciesRegistryDotNetHosts }}
+            version: ${{ parameters.dependenciesVersionDotNetHosts }}
 
         - name: "bffnsimplehostbotdotnet21"
           type: "Host"
           displayName: "DotNet Simple Host Bot 2.1"
-          appId: $(BffnSimpleHostBotDotNet21AppId)
-          appSecret: $(BffnSimpleHostBotDotNet21AppSecret)
+          appId: $(BFFNSIMPLEHOSTBOTDOTNET21APPID)
+          appSecret: $(BFFNSIMPLEHOSTBOTDOTNET21APPSECRET)
           project: 
             directory: 'Bots/DotNet/Consumers/CodeFirst/SimpleHostBot-2.1'
             name: "SimpleHostBot-2.1.csproj"
             netCoreVersion: "2.1.x"
           dependency:
-            registry: $env:DependenciesRegistryDotNetHosts
-            version: $env:DependenciesVersionDotNetHosts
+            registry: ${{ parameters.dependenciesRegistryDotNetHosts }}
+            version: ${{ parameters.dependenciesVersionDotNetHosts }}
 
         - name: "bffnechoskillbotdotnet"
           type: "Skill"
           displayName: "DotNet Echo Skill Bot"
-          appId: $(BffnEchoSkillBotDotNetAppId)
-          appSecret: $(BffnEchoSkillBotDotNetAppSecret)
+          appId: $(BFFNECHOSKILLBOTDOTNETAPPID)
+          appSecret: $(BFFNECHOSKILLBOTDOTNETAPPSECRET)
           project: 
             directory: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot'
             name: "EchoSkillBot.csproj"
             netCoreVersion: "3.1.x"
           dependency:
-            registry: $env:DependenciesRegistryDotNetSkills
-            version: $env:DependenciesVersionDotNetSkills
+            registry: ${{ parameters.dependenciesRegistryDotNetSkills }}
+            version: ${{ parameters.dependenciesVersionDotNetSkills }}
 
         - name: "bffnechoskillbotdotnet21"
           type: "Skill"
           displayName: "DotNet Echo Skill Bot 2.1"
-          appId: $(BffnEchoSkillBotDotNet21AppId)
-          appSecret: $(BffnEchoSkillBotDotNet21AppSecret)
+          appId: $(BFFNECHOSKILLBOTDOTNET21APPID)
+          appSecret: $(BFFNECHOSKILLBOTDOTNET21APPSECRET)
           project: 
             directory: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot-2.1'
             name: "EchoSkillBot-2.1.csproj"
             netCoreVersion: "2.1.x"
           dependency:
-            registry: $env:DependenciesRegistryDotNetSkills
-            version: $env:DependenciesVersionDotNetSkills
+            registry: ${{ parameters.dependenciesRegistryDotNetSkills }}
+            version: ${{ parameters.dependenciesVersionDotNetSkills }}
 
         - name: "bffnechoskillbotdotnetv3"
           type: "SkillV3"
           displayName: "DotNet Echo Skill Bot v3"
-          appId: $(BffnEchoSkillBotDotNetV3AppId)
-          appSecret: $(BffnEchoSkillBotDotNetV3AppSecret)
+          appId: $(BFFNECHOSKILLBOTDOTNETV3APPID)
+          appSecret: $(BFFNECHOSKILLBOTDOTNETV3APPSECRET)
           project:
             directory: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3'
             name: "EchoSkillBot-v3.csproj"
           dependency:
-            registry: $env:DependenciesRegistryDotNetSkillsV3
-            version: $env:DependenciesVersionDotNetSkillsV3
+            registry: ${{ parameters.dependenciesRegistryDotNetSkillsV3 }}
+            version: ${{ parameters.dependenciesVersionDotNetSkillsV3 }}
 
         - name: "bffnwaterfallhostbotdotnet"
           type: "Host"
           displayName: "DotNet Waterfall Host Bot"
-          appId: $(BffnWaterfallHostBotDotNetAppId)
-          appSecret: $(BffnWaterfallHostBotDotNetAppSecret)
+          appId: $(BFFNWATERFALLHOSTBOTDOTNETAPPID)
+          appSecret: $(BFFNWATERFALLHOSTBOTDOTNETAPPSECRET)
           project:
             directory: 'Bots/DotNet/Consumers/CodeFirst/WaterfallHostBot'
             name: "WaterfallHostBot.csproj"
             netCoreVersion: "3.1.x"
           dependency:
-            registry: $env:DependenciesRegistryDotNetHosts
-            version: $env:DependenciesVersionDotNetHosts
+            registry: ${{ parameters.dependenciesRegistryDotNetHosts }}
+            version: ${{ parameters.dependenciesVersionDotNetHosts }}
 
         - name: "bffnwaterfallskillbotdotnet"
           type: "Skill"
           displayName: "DotNet Waterfall Skill Bot"
-          appId: $(BffnWaterfallSkillBotDotNetAppId)
-          appSecret: $(BffnWaterfallSkillBotDotNetAppSecret)
+          appId: $(BFFNWATERFALLSKILLBOTDOTNETAPPID)
+          appSecret: $(BFFNWATERFALLSKILLBOTDOTNETAPPSECRET)
           project: 
             directory: 'Bots/DotNet/Skills/CodeFirst/WaterfallSkillBot'
             name: "WaterfallSkillBot.csproj"
             netCoreVersion: "3.1.x"
           dependency:
-            registry: $env:DependenciesRegistryDotNetSkills
-            version: $env:DependenciesVersionDotNetSkills
+            registry: ${{ parameters.dependenciesRegistryDotNetSkills }}
+            version: ${{ parameters.dependenciesVersionDotNetSkills }}
 
 # DotNet Composer
   - template: dotnet/deployComposer.yml
     parameters:
-      appInsight: "$(InternalAppInsightsName)"
-      appServicePlan: "$(InternalAppServicePlanWindowsName)"
-      appServicePlanRG: "$(InternalAppServicePlanWindowsResourceGroup)"
-      azureSubscription: "$(AzureSubscription)"
-      botPricingTier: $env:BotPricingTier
+      appInsight: "$(INTERNALAPPINSIGHTSNAME)"
+      appServicePlan: "$(INTERNALAPPSERVICEPLANWINDOWSNAME)"
+      appServicePlanRG: "$(INTERNALAPPSERVICEPLANWINDOWSRESOURCEGROUP)"
+      azureSubscription: "$(AZURESUBSCRIPTION)"
+      botPricingTier: $env:BOTPRICINGTIER
       dependsOn: "Prepare_DotNetGroup"
-      keyVault: "$(InternalKeyVaultName)"
-      resourceGroup: "$(InternalResourceGroupName)-DotNet"
-      resourceSuffix: $(InternalResourceSuffix)
+      keyVault: "$(INTERNALKEYVAULTNAME)"
+      resourceGroup: "$(INTERNALRESOURCEGROUPNAME)-DotNet"
+      resourceSuffix: $(INTERNALRESOURCESUFFIX)
       bots:
         - name: "bffnsimplehostbotcomposerdotnet"
           type: "Host"
           displayName: "DotNet Simple Composer Host Bot"
-          appId: $(BffnSimpleHostBotComposerDotNetAppId)
-          appSecret: $(BffnSimpleHostBotComposerDotNetAppSecret)
+          appId: $(BFFNSIMPLEHOSTBOTCOMPOSERDOTNETAPPID)
+          appSecret: $(BFFNSIMPLEHOSTBOTCOMPOSERDOTNETAPPSECRET)
           project: 
             directory: 'Bots/DotNet/Consumers/Composer/SimpleHostBotComposer'
             netCoreVersion: "3.1.x"
           dependency:
-            registry: $env:DependenciesRegistryDotNetHosts
-            version: $env:DependenciesVersionDotNetHosts
+            registry: ${{ parameters.dependenciesRegistryDotNetHosts }}
+            version: ${{ parameters.dependenciesVersionDotNetHosts }}
 
         - name: "bffnechoskillbotcomposerdotnet"
           type: "Skill"
           displayName: "DotNet Echo Composer Skill Bot"
-          appId: $(BffnEchoSkillBotComposerDotNetAppId)
-          appSecret: $(BffnEchoSkillBotComposerDotNetAppSecret)
+          appId: $(BFFNECHOSKILLBOTCOMPOSERDOTNETAPPID)
+          appSecret: $(BFFNECHOSKILLBOTCOMPOSERDOTNETAPPSECRET)
           project: 
             directory: 'Bots/DotNet/Skills/Composer/EchoSkillBotComposer'
             netCoreVersion: "3.1.x"
           dependency:
-            registry: $env:DependenciesRegistryDotNetSkills
-            version: $env:DependenciesVersionDotNetSkills
+            registry: ${{ parameters.dependenciesRegistryDotNetSkills }}
+            version: ${{ parameters.dependenciesVersionDotNetSkills }}
 
 # JS
   - template: js/deploy.yml
     parameters:
-      appInsight: "$(InternalAppInsightsName)"
-      appServicePlan: "$(InternalAppServicePlanWindowsName)"
-      appServicePlanRG: "$(InternalAppServicePlanWindowsResourceGroup)"
-      azureSubscription: "$(AzureSubscription)"
-      botPricingTier: $env:BotPricingTier
-      connectionName: $env:ConnectionName
+      appInsight: "$(INTERNALAPPINSIGHTSNAME)"
+      appServicePlan: "$(INTERNALAPPSERVICEPLANWINDOWSNAME)"
+      appServicePlanRG: "$(INTERNALAPPSERVICEPLANWINDOWSRESOURCEGROUP)"
+      azureSubscription: "$(AZURESUBSCRIPTION)"
+      botPricingTier: $env:BOTPRICINGTIER
+      connectionName: $env:CONNECTIONNAME
       dependsOn: "Prepare_JSGroup"
-      keyVault: "$(InternalKeyVaultName)"
-      resourceGroup: "$(InternalResourceGroupName)-JS"
-      resourceSuffix: $(InternalResourceSuffix)
+      keyVault: "$(INTERNALKEYVAULTNAME)"
+      resourceGroup: "$(INTERNALRESOURCEGROUPNAME)-JS"
+      resourceSuffix: $(INTERNALRESOURCESUFFIX)
       bots:
         - name: "bffnsimplehostbotjs"
           type: "Host"
           displayName: "JS Simple Host Bot"
-          appId: $(BffnSimpleHostBotJSAppId)
-          appSecret: $(BffnSimpleHostBotJSAppSecret)
+          appId: $(BFFNSIMPLEHOSTBOTJSAPPID)
+          appSecret: $(BFFNSIMPLEHOSTBOTJSAPPSECRET)
           project:
             directory: 'Bots/JavaScript/Consumers/CodeFirst/SimpleHostBot'
           dependency:
-            registry: $env:DependenciesRegistryJSHosts
-            version: $env:DependenciesVersionJSSHosts
+            registry: ${{ parameters.dependenciesRegistryJSHosts }}
+            version: ${{ parameters.dependenciesVersionJSHosts }}
 
         - name: "bffnechoskillbotjs"
           type: "Skill"
           displayName: "JS Echo Skill Bot"
-          appId: $(BffnEchoSkillBotJSAppId)
-          appSecret: $(BffnEchoSkillBotJSAppSecret)
+          appId: $(BFFNECHOSKILLBOTJSAPPID)
+          appSecret: $(BFFNECHOSKILLBOTJSAPPSECRET)
           project: 
             directory: 'Bots/JavaScript/Skills/CodeFirst/EchoSkillBot'
           dependency:
-            registry: $env:DependenciesRegistryJSSkills
-            version: $env:DependenciesVersionJSSkills
+            registry: ${{ parameters.dependenciesRegistryJSSkills }}
+            version: ${{ parameters.dependenciesVersionJSSkills }}
 
         - name: "bffnechoskillbotjsv3"
           type: "SkillV3"
           displayName: "JS Echo Skill Bot v3"
-          appId: $(BffnEchoSkillBotJSV3AppId)
-          appSecret: $(BffnEchoSkillBotJSV3AppSecret)
+          appId: $(BFFNECHOSKILLBOTJSV3APPID)
+          appSecret: $(BFFNECHOSKILLBOTJSV3APPSECRET)
           project:
             directory: 'Bots/JavaScript/Skills/CodeFirst/EchoSkillBot-v3'
           dependency:
-            registry: $env:DependenciesRegistryJSSkillsV3
-            version: $env:DependenciesVersionJSSkillsV3
+            registry: ${{ parameters.dependenciesRegistryJSSkillsV3 }}
+            version: ${{ parameters.dependenciesVersionJSSkillsV3 }}
 
         - name: "bffnwaterfallhostbotjs"
           type: "Host"
           displayName: "JS Waterfall Host Bot"
-          appId: $(BffnWaterfallHostBotJSAppId)
-          appSecret: $(BffnWaterfallHostBotJSAppSecret)
+          appId: $(BFFNWATERFALLHOSTBOTJSAPPID)
+          appSecret: $(BFFNWATERFALLHOSTBOTJSAPPSECRET)
           project:
             directory: 'Bots/JavaScript/Consumers/CodeFirst/WaterfallHostBot'
           dependency:
-            registry: $env:DependenciesRegistryJSHosts
-            version: $env:DependenciesVersionJSSHosts
+            registry: ${{ parameters.dependenciesRegistryJSHosts }}
+            version: ${{ parameters.dependenciesVersionJSHosts }}
 
         - name: "bffnwaterfallskillbotjs"
           type: "Skill"
           displayName: "JS Waterfall Skill Bot"
-          appId: $(BffnWaterfallSkillBotJSAppId)
-          appSecret: $(BffnWaterfallSkillBotJSAppSecret)
+          appId: $(BFFNWATERFALLSKILLBOTJSAPPID)
+          appSecret: $(BFFNWATERFALLSKILLBOTJSAPPSECRET)
           project: 
             directory: 'Bots/JavaScript/Skills/CodeFirst/WaterfallSkillBot'
           dependency:
-            registry: $env:DependenciesRegistryJSSkills
-            version: $env:DependenciesVersionJSSkills
+            registry: ${{ parameters.dependenciesRegistryJSSkills }}
+            version: ${{ parameters.dependenciesVersionJSSkills }}
 
 # Python
   - template: python/deploy.yml
     parameters:
-      appServicePlan: "$(InternalAppServicePlanLinuxName)"
-      appServicePlanRG: "$(InternalAppServicePlanLinuxResourceGroup)"
-      azureSubscription: "$(AzureSubscription)"
+      appServicePlan: "$(INTERNALAPPSERVICEPLANLINUXNAME)"
+      appServicePlanRG: "$(INTERNALAPPSERVICEPLANLINUXRESOURCEGROUP)"
+      azureSubscription: "$(AZURESUBSCRIPTION)"
       botPricingTier: $env:BOTPRICINGTIER
       connectionName: $env:CONNECTIONNAME
       dependsOn: "Prepare_PythonGroup"
-      keyVault: "$(InternalKeyVaultName)"
-      resourceGroup: "$(InternalResourceGroupName)-Python"
-      resourceSuffix: "$(InternalResourceSuffix)"
+      keyVault: "$(INTERNALKEYVAULTNAME)"
+      resourceGroup: "$(INTERNALRESOURCEGROUPNAME)-Python"
+      resourceSuffix: "$(INTERNALRESOURCESUFFIX)"
       bots:
         - name: "bffnsimplehostbotpython"
           type: "Host"
           displayName: "Python Simple Host Bot"
-          appId: $(BffnSimpleHostBotPythonAppId)
-          appSecret: $(BffnSimpleHostBotPythonAppSecret)
+          appId: $(BFFNSIMPLEHOSTBOTPYTHONAPPID)
+          appSecret: $(BFFNSIMPLEHOSTBOTPYTHONAPPSECRET)
           project:
             directory: 'Bots/Python/Consumers/CodeFirst/SimpleHostBot'
           dependency:
-            registry: $env:DEPENDENCIESREGISTRYPYTHONHOSTS
-            version: $env:DEPENDENCIESVERSIONPYTHONHOSTS
+            registry: ${{ parameters.dependenciesRegistryPythonHosts }}
+            version: ${{ parameters.dependenciesVersionPythonHosts }}
 
         - name: "bffnechoskillbotpython"
           type: "Skill"
           displayName: "Python Echo Skill Bot"
-          appId: $(BffnEchoSkillBotPythonAppId)
-          appSecret: $(BffnEchoSkillBotPythonAppSecret)
+          appId: $(BFFNECHOSKILLBOTPYTHONAPPID)
+          appSecret: $(BFFNECHOSKILLBOTPYTHONAPPSECRET)
           project: 
             directory: 'Bots/Python/Skills/CodeFirst/EchoSkillBot'
           dependency:
-            registry: $env:DEPENDENCIESREGISTRYPYTHONSKILLS
-            version: $env:DEPENDENCIESVERSIONPYTHONSKILLS
+            registry: ${{ parameters.dependenciesRegistryPythonSkills }}
+            version: ${{ parameters.dependenciesVersionPythonSkills }}
 
         - name: "bffnwaterfallhostbotpython"
           type: "Host"
           displayName: "Python Waterfall Host Bot"
-          appId: $(BffnWaterfallHostBotPythonAppId)
-          appSecret: $(BffnWaterfallHostBotPythonAppSecret)
+          appId: $(BFFNWATERFALLHOSTBOTPYTHONAPPID)
+          appSecret: $(BFFNWATERFALLHOSTBOTPYTHONAPPSECRET)
           project:
             directory: 'Bots/Python/Consumers/CodeFirst/WaterfallHostBot'
           dependency:
-            registry: $env:DEPENDENCIESREGISTRYPYTHONHOSTS
-            version: $env:DEPENDENCIESVERSIONPYTHONHOSTS
+            registry: ${{ parameters.dependenciesRegistryPythonHosts }}
+            version: ${{ parameters.dependenciesVersionPythonHosts }}
 
         - name: "bffnwaterfallskillbotpython"
           type: "Skill"
           displayName: "Python Waterfall Skill Bot"
-          appId: $(BffnWaterfallSkillBotPythonAppId)
-          appSecret: $(BffnWaterfallSkillBotPythonAppSecret)
+          appId: $(BFFNWATERFALLSKILLBOTPYTHONAPPID)
+          appSecret: $(BFFNWATERFALLSKILLBOTPYTHONAPPSECRET)
           project: 
             directory: 'Bots/Python/Skills/CodeFirst/WaterfallSkillBot'
           dependency:
-            registry: $env:DEPENDENCIESREGISTRYPYTHONSKILLS
-            version: $env:DEPENDENCIESVERSIONPYTHONSKILLS
+            registry: ${{ parameters.dependenciesRegistryPythonSkills }}
+            version: ${{ parameters.dependenciesVersionPythonSkills }}
 
 # Publish variables
   - stage: "Publish_Variables"
@@ -385,15 +476,15 @@ stages:
         steps:
           - powershell: |
               $variables = @{
-                deploymentBuildSuffix = "$(Build.BuildId)"
+                deploymentBuildSuffix = "$(BUILD.BUILDID)"
               }
               Write-Host $variables
-              New-Item -Path "$(System.DefaultWorkingDirectory)" -Name "variables" -ItemType "directory"
-              $variables | ConvertTo-Json | Out-File "$(System.DefaultWorkingDirectory)/Variables/variables.json"
+              New-Item -Path "$(SYSTEM.DEFAULTWORKINGDIRECTORY)" -Name "variables" -ItemType "directory"
+              $variables | ConvertTo-Json | Out-File "$(SYSTEM.DEFAULTWORKINGDIRECTORY)/Variables/variables.json"
             displayName: "Create Variables file"
 
           - task: PublishPipelineArtifact@1
             displayName: "Publish Variables as artifact"
             inputs:
-              targetPath: "$(System.DefaultWorkingDirectory)/variables"
+              targetPath: "$(SYSTEM.DEFAULTWORKINGDIRECTORY)/variables"
               artifactName: Variables

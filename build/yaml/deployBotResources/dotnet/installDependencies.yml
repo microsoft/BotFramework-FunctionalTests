@@ -1,8 +1,19 @@
 parameters:
-  packages: []
-  project: {}
-  version: ""
-  source: ""
+  - name: packages
+    displayName: Dependency Packages
+    type: object
+
+  - name: project
+    displayName: Project
+    type: object
+
+  - name: registry
+    displayName: Registry source
+    type: string
+
+  - name: version
+    displayName: Version number
+    type: string
 
 steps:
   - powershell: |
@@ -13,8 +24,8 @@ steps:
         $version = "--version ${{ parameters.version }}"
       }
 
-      if (-not ([string]::IsNullOrEmpty("${{ parameters.source }}"))) {
-        $source = "--source ${{ parameters.source }}"
+      if (-not ([string]::IsNullOrEmpty("${{ parameters.registry }}"))) {
+        $source = "--source ${{ parameters.registry }}"
       }
 
       foreach ($package in "${{ parameters.packages }}".Split()) {

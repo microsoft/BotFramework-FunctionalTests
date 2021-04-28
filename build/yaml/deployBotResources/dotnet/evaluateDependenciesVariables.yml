@@ -1,7 +1,15 @@
 parameters:
-  botType: ""
-  registry: ""
-  version: ""
+  - name: botType
+    displayName: Bot type
+    type: string
+
+  - name: registry
+    displayName: Registry source
+    type: string
+
+  - name: version
+    displayName: Version number
+    type: string
 
 steps:
   - powershell: |

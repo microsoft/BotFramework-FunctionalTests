@@ -1,8 +1,19 @@
 parameters:
-  botType: ""
-  project: {}
-  registry: ""
-  version: ""
+  - name: botType
+    displayName: Bot type
+    type: string
+
+  - name: source
+    displayName: Bot Source Location
+    type: string
+
+  - name: registry
+    displayName: Registry source
+    type: string
+
+  - name: version
+    displayName: Version number
+    type: string
 
 steps:
   - task: PowerShell@2
@@ -56,7 +67,7 @@ steps:
           }
 
           #Add the $source source at the beginning of requirements
-          $file = "${{ parameters.project.directory }}/requirements.txt"
+          $file = "${{ parameters.source }}/requirements.txt"
           $content = @(Get-Content $file)
           $line = "$preFag --index-url $source --extra-index-url $extraSource".Trim()
           Set-Content -Path $file -Value $line

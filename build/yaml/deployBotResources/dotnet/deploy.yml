@@ -1,15 +1,47 @@
 parameters:
-  appInsight: ""
-  appServicePlan: ""
-  appServicePlanRG: ""
-  azureSubscription: ""
-  bots: []
-  botPricingTier: ""
-  connectionName: ""
-  dependsOn: ""
-  keyVault: ""
-  resourceGroup: ""
-  resourceSuffix: ""
+  - name: appInsight
+    displayName: Azure Application Insight name
+    type: string
+
+  - name: appServicePlan
+    displayName: App Service Plan name
+    type: string
+
+  - name: appServicePlanRG
+    displayName: App Service Plan Resource Group
+    type: string
+
+  - name: azureSubscription
+    displayName: Azure Service Connection
+    type: string
+
+  - name: bots
+    displayName: Bots
+    type: object
+
+  - name: botPricingTier
+    displayName: Bot Pricing Tier
+    type: string
+
+  - name: connectionName
+    displayName: OAuth Connection Name
+    type: string
+
+  - name: dependsOn
+    displayName: Depends On
+    type: string
+
+  - name: keyVault
+    displayName: Key Vault name
+    type: string
+
+  - name: resourceGroup
+    displayName: Resource Group
+    type: string
+
+  - name: resourceSuffix
+    displayName: Azure resources' name suffix
+    type: string
 
 stages:
 - ${{ each bot in parameters.bots }}:
@@ -23,7 +55,7 @@ stages:
       - job: "Deploy"
         ${{ if eq(bot.type, 'SkillV3') }}:
           variables:
-            SolutionDir: "$(Build.SourcesDirectory)/Bots/DotNet/"
+            SolutionDir: "$(BUILD.SOURCESDIRECTORY)/Bots/DotNet/"
         displayName: "Deploy steps"
         steps:
           # Delete Bot Resources
@@ -69,7 +101,7 @@ stages:
               displayName: "NuGet restore"
               inputs:
                 restoreSolution: "${{ bot.project.directory }}/${{ bot.project.name }}"
-                restoreDirectory: "$(SolutionDir)packages"
+                restoreDirectory: "$(SOLUTIONDIR)packages"
 
           # Evaluate dependencies source and version
           - template: evaluateDependenciesVariables.yml
@@ -84,8 +116,8 @@ stages:
             - template: installDependencies.yml
               parameters:
                 project: "${{ bot.project }}"
-                source: "$(DependenciesSource)"
-                version: "$(DependenciesVersionNumber)"
+                registry: "$(DEPENDENCIESSOURCE)"
+                version: "$(DEPENDENCIESVERSIONNUMBER)"
                 packages:
                   Microsoft.Bot.Builder.Dialogs
                   Microsoft.Bot.Builder.Integration.AspNet.Core
@@ -97,7 +129,7 @@ stages:
                 command: publish
                 publishWebProjects: false
                 projects: "${{ bot.project.directory }}/${{ bot.project.name }}"
-                arguments: "--output $(System.DefaultWorkingDirectory)/build/${{ bot.name }}"
+                arguments: "--output $(SYSTEM.DEFAULTWORKINGDIRECTORY)/build/${{ bot.name }}"
                 modifyOutputPath: false
 
             # Get BotBuilder package version
@@ -114,8 +146,8 @@ stages:
             # Install dependencies
             - template: installDependenciesV3.yml
               parameters:
-                source: "$(DependenciesSource)"
-                version: "$(DependenciesVersionNumber)"
+                registry: "$(DEPENDENCIESSOURCE)"
+                version: "$(DEPENDENCIESVERSIONNUMBER)"
                 project: "${{ bot.project }}"
                 packages:
                   Microsoft.Bot.Builder
@@ -128,19 +160,19 @@ stages:
               inputs:
                 solution: "${{ bot.project.directory }}/${{ bot.project.name }}"
                 vsVersion: 16.0
-                platform: "$(BuildPlatform)"
-                configuration: "$(BuildConfiguration)"
+                platform: "$(BUILDPLATFORM)"
+                configuration: "$(BUILDCONFIGURATION)"
 
             # Get BotBuilder version
             - powershell: |
-                $result = @(Get-ChildItem "$(SolutionDir)packages\Microsoft.Bot.Builder.[0-9]*" -directory | Sort LastWriteTime -Descending)
+                $result = @(Get-ChildItem "$(SOLUTIONDIR)packages\Microsoft.Bot.Builder.[0-9]*" -directory | Sort LastWriteTime -Descending)
                 $version = $result[0].Name.Replace("Microsoft.Bot.Builder.", "")
                 Write-Host "##vso[task.setvariable variable=BotBuilderVersionNumber]$($version)"
               displayName: "Get BotBuilder Version"
 
             # Zip bot
             - powershell: |
-                7z.exe a -tzip "$(System.DefaultWorkingDirectory)/build/${{ bot.name }}/${{ bot.name }}.zip" "$(System.DefaultWorkingDirectory)/${{ bot.project.directory }}/*" -aoa
+                7z.exe a -tzip "$(SYSTEM.DEFAULTWORKINGDIRECTORY)/build/${{ bot.name }}/${{ bot.name }}.zip" "$(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ bot.project.directory }}/*" -aoa
               displayName: "Zip bot"
           # End of DotNet v3 Install, Build
 
@@ -151,14 +183,14 @@ stages:
                 botName: "${{ bot.name }}"
               ${{ if ne(bot.displayName, '') }}:
                 botName: "${{ bot.displayName }}"
-              version: "$(BotBuilderVersionNumber)"
+              version: "$(BOTBUILDERVERSIONNUMBER)"
 
           # Create App Service and Bot Channel Registration
           - template: ../common/createAppService.yml
             parameters:
-              appId: $(AppId)
+              appId: $(APPID)
               appInsight: "${{ parameters.appInsight }}"
-              appSecret:  $(AppSecret)
+              appSecret: $(APPSECRET)
               appServicePlan: "${{ parameters.appServicePlan }}"
               appServicePlanRG: "${{ parameters.appServicePlanRG }}"
               azureSubscription: "${{ parameters.azureSubscription }}"
@@ -172,8 +204,8 @@ stages:
           - ${{ if eq(bot.type, 'Skill') }}:
             - template: ../common/configureOAuth.yml
               parameters:
-                appId: $(AppId)
-                appSecret:  $(AppSecret)
+                appId: $(APPID)
+                appSecret: $(APPSECRET)
                 azureSubscription: "${{ parameters.azureSubscription }}"
                 botGroup: "${{ parameters.resourceGroup }}"
                 botName: "${{ bot.name }}"
@@ -186,7 +218,7 @@ stages:
               azureSubscription: "${{ parameters.azureSubscription }}"
               botGroup: "${{ parameters.resourceGroup }}"
               botName: "${{ bot.name }}"
-              source: "$(System.DefaultWorkingDirectory)/build/${{ bot.name }}/${{ bot.name }}.zip"
+              source: "$(SYSTEM.DEFAULTWORKINGDIRECTORY)/build/${{ bot.name }}/${{ bot.name }}.zip"
               resourceSuffix: "${{ parameters.resourceSuffix }}"
 
           # Create DirectLine Channel Hosts

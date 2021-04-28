@@ -1,17 +1,50 @@
 parameters:
-  appServicePlan: ""
-  appServicePlanRG: ""
-  appInsight: ""
-  azureSubscription: ""
-  bots: []
-  botPricingTier: ""
-  dependsOn: ""
-  keyVault: ""
-  output:
-    path: "build-composer"
-    zip: "build"
-  resourceGroup: ""
-  resourceSuffix: ""
+  - name: appInsight
+    displayName: Azure Application Insight name
+    type: string
+
+  - name: appServicePlan
+    displayName: App Service Plan name
+    type: string
+
+  - name: appServicePlanRG
+    displayName: App Service Plan Resource Group
+    type: string
+
+  - name: azureSubscription
+    displayName: Azure Service Connection
+    type: string
+
+  - name: bots
+    displayName: Bots
+    type: object
+
+  - name: botPricingTier
+    displayName: Bot Pricing Tier
+    type: string
+
+  - name: dependsOn
+    displayName: Depends On
+    type: string
+
+  - name: keyVault
+    displayName: Key Vault name
+    type: string
+
+  - name: output
+    displayName: Output location
+    type: object
+    default:
+      path: "build-composer"
+      zip: "build"
+
+  - name: resourceGroup
+    displayName: Resource Group
+    type: string
+
+  - name: resourceSuffix
+    displayName: Azure resources' name suffix
+    type: string
 
 stages:
 - ${{ each bot in parameters.bots }}:
@@ -62,8 +95,8 @@ stages:
               project: 
                 directory: "${{ bot.project.directory }}/runtime/azurewebapp/"
                 name: "Microsoft.BotFramework.Composer.WebApp.csproj"
-              source: "$(DependenciesSource)"
-              version: "$(DependenciesVersionNumber)"
+              registry: "$(DEPENDENCIESSOURCE)"
+              version: "$(DEPENDENCIESVERSIONNUMBER)"
               packages:
                 Microsoft.Bot.Builder
                 Microsoft.Bot.Builder.AI.Luis
@@ -84,8 +117,8 @@ stages:
               project: 
                 directory: "${{ bot.project.directory }}/runtime/azurefunctions/"
                 name: "Microsoft.BotFramework.Composer.Functions.csproj"
-              source: "$(DependenciesSource)"
-              version: "$(DependenciesVersionNumber)"
+              registry: "$(DEPENDENCIESSOURCE)"
+              version: "$(DEPENDENCIESVERSIONNUMBER)"
               packages:
                 Microsoft.Bot.Builder
                 Microsoft.Bot.Builder.AI.Luis
@@ -106,8 +139,8 @@ stages:
               project:
                 directory: "${{ bot.project.directory }}/runtime/customaction/"
                 name: "Microsoft.BotFramework.Composer.CustomAction.csproj"
-              source: "$(DependenciesSource)"
-              version: "$(DependenciesVersionNumber)"
+              registry: "$(DEPENDENCIESSOURCE)"
+              version: "$(DEPENDENCIESVERSIONNUMBER)"
               packages:
                 Microsoft.Bot.Builder.Dialogs.Adaptive
 
@@ -117,8 +150,8 @@ stages:
               project: 
                 directory: "${{ bot.project.directory }}/runtime/core/"
                 name: "Microsoft.BotFramework.Composer.Core.csproj"
-              source: "$(DependenciesSource)"
-              version: "$(DependenciesVersionNumber)"
+              registry: "$(DEPENDENCIESSOURCE)"
+              version: "$(DEPENDENCIESVERSIONNUMBER)"
               packages:
                 Microsoft.Bot.Builder
                 Microsoft.Bot.Builder.AI.Luis
@@ -163,15 +196,15 @@ stages:
 
           # Zip bot
           - powershell: |
-              7z.exe a -tzip "${{ parameters.output.path }}/${{ parameters.output.zip }}.zip" "$(System.DefaultWorkingDirectory)/${{ parameters.output.path }}/*" -aoa
+              7z.exe a -tzip "${{ parameters.output.path }}/${{ parameters.output.zip }}.zip" "$(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ parameters.output.path }}/*" -aoa
             displayName: "Zip bot"
 
           # Create App Service and Bot Channel Registration
           - template: ../common/createAppService.yml
             parameters:
-              appId: $(AppId)
+              appId: $(APPID)
               appInsight: "${{ parameters.appInsight }}"
-              appSecret:  $(AppSecret)
+              appSecret:  $(APPSECRET)
               appServicePlan: "${{ parameters.appServicePlan }}"
               appServicePlanRG: "${{ parameters.appServicePlanRG }}"
               azureSubscription: "${{ parameters.azureSubscription }}"
