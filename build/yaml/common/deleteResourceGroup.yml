@@ -1,6 +1,11 @@
 parameters:
-  azureSubscription: ""
-  name: ""
+- name: azureSubscription
+  displayName: Azure Service Connection
+  type: string
+
+- name: name
+  displayName: WebApp name
+  type: string
 
 steps:
   - task: AzureCLI@2
