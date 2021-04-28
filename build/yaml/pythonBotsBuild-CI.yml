@@ -9,6 +9,5 @@
     inputs:
      targetType: 'inline'
      script: |
-      python -m pip install pip==21.1;
-      find ./Bots -type f -name "requirements.txt" -exec pip install pip==21.1 -r "{}" \;
-     failOnStderr: true
+      python -m pip install pip==21.0.1;
+      find ./Bots -type f -name "requirements.txt" -exec pip install pip==21.0.1 -r "{}" \;
