@@ -1,10 +1,15 @@
 parameters:
-  botName: ''
-  version: ''
+  - name: botName
+    displayName: Bot Name
+    type: string
+
+  - name: version
+    displayName: Version number
+    type: string
 
 steps:
   - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
-    displayName: 'Tag BotBuilder Version'
+    displayName: "Tag BotBuilder Version"
     inputs:
-      tags: '${{ parameters.botName }} Version = ${{ parameters.version }}'
+      tags: "${{ parameters.botName }} Version = ${{ parameters.version }}"
     continueOnError: true
