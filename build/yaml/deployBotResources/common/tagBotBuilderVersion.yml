@@ -1,6 +1,11 @@
 parameters:
-  botName: ""
-  version: ""
+  - name: botName
+    displayName: Bot Name
+    type: string
+
+  - name: version
+    displayName: Version number
+    type: string
 
 steps:
   - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0

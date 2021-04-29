@@ -1,6 +1,11 @@
 parameters:
-  azureSubscription: ""
-  resourceGroups: []
+  - name: azureSubscription
+    displayName: Azure Service Connection
+    type: string
+
+  - name: resourceGroups
+    displayName: Resource Groups
+    type: object
 
 stages:
 - ${{ each resourceGroup in parameters.resourceGroups }}:

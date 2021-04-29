@@ -1,9 +1,23 @@
 parameters:
-  appId: ""
-  appSecret: ""
-  azureSubscription: ""
-  botName: ""
-  keyVault: ""
+  - name: appId
+    displayName: Bot's App Registration Id
+    type: string
+
+  - name: appSecret
+    displayName: Bot's App Registration Secret
+    type: string
+
+  - name: azureSubscription
+    displayName: Azure Service Connection
+    type: string
+
+  - name: botName
+    displayName: Bot Name
+    type: string
+
+  - name: keyVault
+    displayName: KeyVault name
+    type: string
 
 steps:
   - task: AzureCLI@2

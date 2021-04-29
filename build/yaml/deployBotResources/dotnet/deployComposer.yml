@@ -1,15 +1,48 @@
 parameters:
-  appInsight: ""
-  appServicePlan: ""
-  appServicePlanRG: ""
-  azureSubscription: ""
-  botPricingTier: ""
-  bots: []
-  buildPath: "build-composer"
-  dependsOn: ""
-  keyVault: ""
-  resourceGroup: ""
-  resourceSuffix: ""
+  - name: appInsight
+    displayName: Azure Application Insight name
+    type: string
+
+  - name: appServicePlan
+    displayName: App Service Plan name
+    type: string
+
+  - name: appServicePlanRG
+    displayName: App Service Plan Resource Group
+    type: string
+
+  - name: azureSubscription
+    displayName: Azure Service Connection
+    type: string
+
+  - name: botPricingTier
+    displayName: Bot Pricing Tier
+    type: string
+
+  - name: bots
+    displayName: Bots
+    type: object
+
+  - name: buildFolder
+    displayName: Build Folder
+    type: string
+    default: "build-composer"
+
+  - name: dependsOn
+    displayName: Depends On
+    type: string
+
+  - name: keyVault
+    displayName: Key Vault name
+    type: string
+
+  - name: resourceGroup
+    displayName: Resource Group
+    type: string
+
+  - name: resourceSuffix
+    displayName: Azure resources' name suffix
+    type: string
 
 stages:
 - ${{ each bot in parameters.bots }}:
@@ -51,8 +84,8 @@ stages:
           - template: evaluateDependenciesVariables.yml
             parameters:
               botType: "${{ bot.type }}"
-              registry: "${{ bot.dependenciesRegistry }}"
-              version: "${{ bot.dependenciesVersion }}"
+              registry: "${{ bot.dependency.registry }}"
+              version: "${{ bot.dependency.version }}"
 
           # Install dependencies in Microsoft.BotFramework.Composer.WebApp
           - template: installDependencies.yml
@@ -60,8 +93,8 @@ stages:
               project: 
                 directory: "${{ bot.project.directory }}/runtime/azurewebapp/"
                 name: "Microsoft.BotFramework.Composer.WebApp.csproj"
-              source: "$(DependenciesSource)"
-              version: "$(DependenciesVersionNumber)"
+              registry: "$(DEPENDENCIESSOURCE)"
+              version: "$(DEPENDENCIESVERSIONNUMBER)"
               packages:
                 Microsoft.Bot.Builder
                 Microsoft.Bot.Builder.AI.Luis
@@ -82,8 +115,8 @@ stages:
               project: 
                 directory: "${{ bot.project.directory }}/runtime/azurefunctions/"
                 name: "Microsoft.BotFramework.Composer.Functions.csproj"
-              source: "$(DependenciesSource)"
-              version: "$(DependenciesVersionNumber)"
+              registry: "$(DEPENDENCIESSOURCE)"
+              version: "$(DEPENDENCIESVERSIONNUMBER)"
               packages:
                 Microsoft.Bot.Builder
                 Microsoft.Bot.Builder.AI.Luis
@@ -104,8 +137,8 @@ stages:
               project:
                 directory: "${{ bot.project.directory }}/runtime/customaction/"
                 name: "Microsoft.BotFramework.Composer.CustomAction.csproj"
-              source: "$(DependenciesSource)"
-              version: "$(DependenciesVersionNumber)"
+              registry: "$(DEPENDENCIESSOURCE)"
+              version: "$(DEPENDENCIESVERSIONNUMBER)"
               packages:
                 Microsoft.Bot.Builder.Dialogs.Adaptive
 
@@ -115,8 +148,8 @@ stages:
               project: 
                 directory: "${{ bot.project.directory }}/runtime/core/"
                 name: "Microsoft.BotFramework.Composer.Core.csproj"
-              source: "$(DependenciesSource)"
-              version: "$(DependenciesVersionNumber)"
+              registry: "$(DEPENDENCIESSOURCE)"
+              version: "$(DEPENDENCIESVERSIONNUMBER)"
               packages:
                 Microsoft.Bot.Builder
                 Microsoft.Bot.Builder.AI.Luis
@@ -156,7 +189,7 @@ stages:
             displayName: 'Get BotBuilder Version'
             inputs:
               targetType: inline
-              workingDirectory: '$(System.DefaultWorkingDirectory)/${{ bot.project.directory }}'
+              workingDirectory: '$(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ bot.project.directory }}'
               failOnStderr: true
               script: |
                 [XML]$data = Get-Content "./runtime/azurewebapp/Microsoft.BotFramework.Composer.WebApp.csproj";
@@ -170,17 +203,17 @@ stages:
                 botName: '${{ bot.name }}'
               ${{ if ne(bot.displayName, '') }}:
                 botName: '${{ bot.displayName }}'
-              version: "$(BotBuilderVersionNumber)"
+              version: "$(BOTBUILDERVERSIONNUMBER)"
 
           # Arrange composer folders & files
           - task: PowerShell@2
             displayName: 'Prepare Composer'
             inputs:
               targetType: inline
-              workingDirectory: '$(System.DefaultWorkingDirectory)/${{ bot.project.directory }}'
+              workingDirectory: '$(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ bot.project.directory }}'
               failOnStderr: true
               script: |
-                $composerDialogs = "$(System.DefaultWorkingDirectory)/${{ parameters.buildPath }}/ComposerDialogs"
+                $composerDialogs = "$(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ parameters.buildPath }}/ComposerDialogs"
                 Remove-Item $composerDialogs -Recurse -ErrorAction Ignore
 
                 Copy-Item -Path (Get-Item -Path ./* -Exclude ("runtime", "scripts", "*.ps1", "readme.md", "*.botproj", ".gitignore")).FullName -Destination $composerDialogs -Recurse -Force -Container
@@ -189,10 +222,10 @@ stages:
           - task: ArchiveFiles@2
             displayName: 'Zip bot'
             inputs:
-              rootFolderOrFile: '$(System.DefaultWorkingDirectory)/${{ parameters.buildPath }}'
+              rootFolderOrFile: '$(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ parameters.buildPath }}'
               includeRootFolder: false
               archiveType: 'zip'
-              archiveFile: '$(System.DefaultWorkingDirectory)/${{ parameters.buildPath }}/${{ bot.name }}.zip'
+              archiveFile: '$(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ parameters.buildPath }}/${{ bot.name }}.zip'
               replaceExistingArchive: true
               verbose: true
 
@@ -200,15 +233,15 @@ stages:
           - task: PublishBuildArtifacts@1
             displayName: 'Publish zip package'
             inputs:
-              pathToPublish: '$(System.DefaultWorkingDirectory)/${{ parameters.buildPath }}/${{ bot.name }}.zip'
-              artifactName: dotnet-$(Build.BuildId)
+              pathToPublish: '$(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ parameters.buildPath }}/${{ bot.name }}.zip'
+              artifactName: dotnet-$(BUILD.BUILDID)
 
           # Create App Service and Bot Channel Registration
           - template: ../common/createAppService.yml
             parameters:
-              appId: $(AppId)
+              appId: $(APPID)
               appInsight: "${{ parameters.appInsight }}"
-              appSecret:  $(AppSecret)
+              appSecret:  $(APPSECRET)
               appServicePlan: "${{ parameters.appServicePlan }}"
               appServicePlanRG: "${{ parameters.appServicePlanRG }}"
               azureSubscription: "${{ parameters.azureSubscription }}"
@@ -220,12 +253,12 @@ stages:
 
           # Deploy bot
           - task: AzureWebApp@1
-            displayName: 'Deploy Azure Web App : ${{ bot.name }}-$(Build.BuildId)'
+            displayName: 'Deploy Azure Web App : ${{ bot.name }}-$(BUILD.BUILDID)'
             inputs:
               azureSubscription: "${{ parameters.azureSubscription }}"
-              appName: '${{ bot.name }}${{ parameters.resourceSuffix }}-$(Build.BuildId)'
+              appName: '${{ bot.name }}${{ parameters.resourceSuffix }}-$(BUILD.BUILDID)'
               resourceGroupName: '${{ parameters.resourceGroup }}'
-              package: '$(System.DefaultWorkingDirectory)/${{ parameters.buildPath }}/${{ bot.name }}.zip'
+              package: '$(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ parameters.buildPath }}/${{ bot.name }}.zip'
               deploymentMethod: runFromPackage
 
           # Create DirectLine Channel Hosts

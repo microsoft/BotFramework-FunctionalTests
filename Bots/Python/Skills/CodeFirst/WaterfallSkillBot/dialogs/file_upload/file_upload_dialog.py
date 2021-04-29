@@ -43,7 +43,7 @@ class FileUploadDialog(ComponentDialog):
             AttachmentPrompt.__name__,
             PromptOptions(
                 prompt=MessageFactory.text(
-                    "Please upload a file to continue.", InputHints.accepting_input
+                    "Please upload a file to continue.", input_hint=InputHints.accepting_input
                 ),
                 retry_prompt=MessageFactory.text("You must upload a file."),
             ),
@@ -51,6 +51,7 @@ class FileUploadDialog(ComponentDialog):
 
     async def handle_attachment_step(self, step_context: WaterfallStepContext):
         file_text = ""
+        file_content = ""
 
         for file in step_context.context.activity.attachments:
             remote_file_url = file.content_url
@@ -60,7 +61,9 @@ class FileUploadDialog(ComponentDialog):
             ) as out_file:
                 shutil.copyfileobj(response, out_file)
 
-            file_text += f'Attachment "${ file.name }" has been received and saved to "${ local_file_name }"\r\n'
+            file_content = open(local_file_name, "r").read()
+            file_text += f'Attachment "{ file.name }" has been received.\r\n'
+            file_text += f'File content: { file_content }\r\n'
 
         await step_context.context.send_activity(MessageFactory.text(file_text))
 

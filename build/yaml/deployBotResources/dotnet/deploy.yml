@@ -1,16 +1,52 @@
 parameters:
-  appInsight: ""
-  appServicePlan: ""
-  appServicePlanRG: ""
-  azureSubscription: ""
-  botPricingTier: ""
-  bots: []
-  buildPath: "build-dotnet"
-  connectionName: ""
-  dependsOn: ""
-  keyVault: ""
-  resourceGroup: ""
-  resourceSuffix: ""
+  - name: appInsight
+    displayName: Azure Application Insight name
+    type: string
+
+  - name: appServicePlan
+    displayName: App Service Plan name
+    type: string
+
+  - name: appServicePlanRG
+    displayName: App Service Plan Resource Group
+    type: string
+
+  - name: azureSubscription
+    displayName: Azure Service Connection
+    type: string
+
+  - name: botPricingTier
+    displayName: Bot Pricing Tier
+    type: string
+
+  - name: bots
+    displayName: Bots
+    type: object
+
+  - name: buildFolder
+    displayName: Build Folder
+    type: string
+    default: "build-dotnet"
+
+  - name: connectionName
+    displayName: OAuth Connection Name
+    type: string
+
+  - name: dependsOn
+    displayName: Depends On
+    type: string
+
+  - name: keyVault
+    displayName: Key Vault name
+    type: string
+
+  - name: resourceGroup
+    displayName: Resource Group
+    type: string
+
+  - name: resourceSuffix
+    displayName: Azure resources' name suffix
+    type: string
 
 stages:
 - ${{ each bot in parameters.bots }}:
@@ -24,7 +60,7 @@ stages:
       - job: "Deploy"
         ${{ if eq(bot.type, 'SkillV3') }}:
           variables:
-            SolutionDir: "$(Build.SourcesDirectory)/Bots/DotNet/"
+            SolutionDir: "$(BUILD.SOURCESDIRECTORY)/Bots/DotNet/"
         displayName: "Deploy steps"
         steps:
           # Delete Bot Resources
@@ -61,7 +97,7 @@ stages:
               displayName: 'Prepare App Settings'
               inputs:
                 targetType: inline
-                workingDirectory: '$(System.DefaultWorkingDirectory)/${{ bot.project.directory }}'
+                workingDirectory: '$(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ bot.project.directory }}'
                 failOnStderr: true
                 script: |
                   $file = "./appsettings.json"
@@ -75,14 +111,14 @@ stages:
               displayName: "NuGet restore"
               inputs:
                 restoreSolution: "${{ bot.project.directory }}/${{ bot.project.name }}"
-                restoreDirectory: "$(SolutionDir)packages"
+                restoreDirectory: "$(SOLUTIONDIR)packages"
 
           # Evaluate dependencies source and version
           - template: evaluateDependenciesVariables.yml
             parameters:
               botType: "${{ bot.type }}"
-              registry: "${{ bot.dependenciesRegistry }}"
-              version: "${{ bot.dependenciesVersion }}"
+              registry: "${{ bot.dependency.registry }}"
+              version: "${{ bot.dependency.version }}"
 
           # Start of DotNet Install & Build
           - ${{ if in(bot.type, 'Host', 'Skill') }}:
@@ -90,10 +126,10 @@ stages:
             - template: installDependencies.yml
               parameters:
                 project: "${{ bot.project }}"
-                source: "$(DependenciesSource)"
-                version: "$(DependenciesVersionNumber)"
+                registry: "$(DEPENDENCIESSOURCE)"
+                version: "$(DEPENDENCIESVERSIONNUMBER)"
                 packages:
-                  Microsoft.Bot.Builder.Dialogs 
+                  Microsoft.Bot.Builder.Dialogs
                   Microsoft.Bot.Builder.Integration.AspNet.Core
 
             # Build Bot
@@ -103,7 +139,7 @@ stages:
                 command: publish
                 publishWebProjects: false
                 projects: "${{ bot.project.directory }}/${{ bot.project.name }}"
-                arguments: "--output $(System.DefaultWorkingDirectory)/${{ parameters.buildPath }}/${{ bot.name }}"
+                arguments: "--output $(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ parameters.buildFolder }}/${{ bot.name }}"
                 modifyOutputPath: false
 
             # Get BotBuilder package version
@@ -111,7 +147,7 @@ stages:
               displayName: 'Get BotBuilder Version'
               inputs:
                 targetType: inline
-                workingDirectory: '$(System.DefaultWorkingDirectory)/${{ bot.project.directory }}'
+                workingDirectory: '$(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ bot.project.directory }}'
                 failOnStderr: true
                 script: |
                   [XML]$data = Get-Content "./${{ bot.project.name }}"
@@ -125,8 +161,8 @@ stages:
             # Install dependencies
             - template: installDependenciesV3.yml
               parameters:
-                source: "$(DependenciesSource)"
-                version: "$(DependenciesVersionNumber)"
+                registry: "$(DEPENDENCIESSOURCE)"
+                version: "$(DEPENDENCIESVERSIONNUMBER)"
                 project: "${{ bot.project }}"
                 packages:
                   Microsoft.Bot.Builder
@@ -139,8 +175,8 @@ stages:
               inputs:
                 solution: "${{ bot.project.directory }}/${{ bot.project.name }}"
                 vsVersion: 16.0
-                platform: "$(BuildPlatform)"
-                configuration: "$(BuildConfiguration)"
+                platform: "$(BUILDPLATFORM)"
+                configuration: "$(BUILDCONFIGURATION)"
 
             # Get BotBuilder version
             - task: PowerShell@2
@@ -149,7 +185,7 @@ stages:
                 targetType: inline
                 failOnStderr: true
                 script: |
-                  $result = @(Get-ChildItem "$(SolutionDir)packages\Microsoft.Bot.Builder.[0-9]*" -directory | Sort LastWriteTime -Descending)
+                  $result = @(Get-ChildItem "$(SOLUTIONDIR)packages\Microsoft.Bot.Builder.[0-9]*" -directory | Sort LastWriteTime -Descending)
                   $version = $result[0].Name.Replace("Microsoft.Bot.Builder.", "")
                   Write-Host "##vso[task.setvariable variable=BotBuilderVersionNumber]$($version)"
 
@@ -157,10 +193,10 @@ stages:
             - task: ArchiveFiles@2
               displayName: 'Zip bot'
               inputs:
-                rootFolderOrFile: '$(System.DefaultWorkingDirectory)/${{ bot.project.directory }}'
+                rootFolderOrFile: '$(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ bot.project.directory }}'
                 includeRootFolder: false
                 archiveType: 'zip'
-                archiveFile: '$(System.DefaultWorkingDirectory)/${{ parameters.buildPath }}/${{ bot.name }}/${{ bot.name }}.zip'
+                archiveFile: '$(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ parameters.buildFolder }}/${{ bot.name }}/${{ bot.name }}.zip'
                 replaceExistingArchive: true
                 verbose: true
           # End of DotNet v3 Install, Build
@@ -172,21 +208,21 @@ stages:
                 botName: "${{ bot.name }}"
               ${{ if ne(bot.displayName, '') }}:
                 botName: "${{ bot.displayName }}"
-              version: "$(BotBuilderVersionNumber)"
+              version: "$(BOTBUILDERVERSIONNUMBER)"
 
           # Upload zip to artifacts in case we want to debug it
           - task: PublishBuildArtifacts@1
             displayName: 'Publish zip package'
             inputs:
-              pathToPublish: '$(System.DefaultWorkingDirectory)/${{ parameters.buildPath }}/${{ bot.name }}/${{ bot.name }}.zip'
-              artifactName: dotnet-$(Build.BuildId)
+              pathToPublish: '$(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ parameters.buildFolder }}/${{ bot.name }}/${{ bot.name }}.zip'
+              artifactName: dotnet-$(BUILD.BUILDID)
 
           # Create App Service and Bot Channel Registration
           - template: ../common/createAppService.yml
             parameters:
-              appId: $(AppId)
+              appId: $(APPID)
               appInsight: "${{ parameters.appInsight }}"
-              appSecret:  $(AppSecret)
+              appSecret: $(APPSECRET)
               appServicePlan: "${{ parameters.appServicePlan }}"
               appServicePlanRG: "${{ parameters.appServicePlanRG }}"
               azureSubscription: "${{ parameters.azureSubscription }}"
@@ -198,20 +234,20 @@ stages:
 
           # Deploy bot
           - task: AzureWebApp@1
-            displayName: 'Deploy Azure Web App : ${{ bot.name }}-$(Build.BuildId)'
+            displayName: 'Deploy Azure Web App : ${{ bot.name }}-$(BUILD.BUILDID)'
             inputs:
               azureSubscription: "${{ parameters.azureSubscription }}"
-              appName: '${{ bot.name }}${{ parameters.resourceSuffix }}-$(Build.BuildId)'
+              appName: '${{ bot.name }}${{ parameters.resourceSuffix }}-$(BUILD.BUILDID)'
               resourceGroupName: '${{ parameters.resourceGroup }}'
-              package: '$(System.DefaultWorkingDirectory)/${{ parameters.buildPath }}/${{ bot.name }}/${{ bot.name }}.zip'
+              package: '$(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ parameters.buildFolder }}/${{ bot.name }}/${{ bot.name }}.zip'
               deploymentMethod: runFromPackage
 
           # Configure OAuth
           - ${{ if eq(bot.type, 'Skill') }}:
             - template: ../common/configureOAuth.yml
               parameters:
-                appId: $(AppId)
-                appSecret:  $(AppSecret)
+                appId: $(APPID)
+                appSecret: $(APPSECRET)
                 azureSubscription: "${{ parameters.azureSubscription }}"
                 botGroup: "${{ parameters.resourceGroup }}"
                 botName: "${{ bot.name }}"
