@@ -19,8 +19,9 @@ variables:
 
   ## Internal variables
   InternalAppInsightsName: "bffnappinsights$($env:RESOURCESUFFIX)"
-  InternalAppServicePlanLinuxName: "bffnbotsappservicelinux$($env:RESOURCESUFFIX)"
-  InternalAppServicePlanWindowsName: "bffnbotsappservicewin$($env:RESOURCESUFFIX)"
+  InternalAppServicePlanDotNetName: "bffnbotsappservicedotnet$($env:RESOURCESUFFIX)"
+  InternalAppServicePlanJSName: "bffnbotsappservicejs$($env:RESOURCESUFFIX)"
+  InternalAppServicePlanPythonName: "bffnbotsappservicepython$($env:RESOURCESUFFIX)"
   InternalCosmosDBName: "bffnbotstatedb$($env:RESOURCESUFFIX)"
   InternalKeyVaultName: "bffnbotkeyvault$($env:RESOURCESUFFIX)"
   InternalResourceGroupName: $[coalesce(variables['RESOURCEGROUPNAME'], 'bffnshared')]
@@ -104,39 +105,56 @@ stages:
           servicePrincipalKey: $env:SERVICEPRINCIPALKEY
           tenantId: $env:TENANTID
 
-- stage: Create_App_Service_Plan_Windows
-  displayName: "Create App Service Plan (Windows)"
+- stage: Create_App_Service_Plan_DotNet
+  displayName: "Create App Service Plan (DotNet)"
   dependsOn: Create_Resource_Group_Windows
   jobs:
-    - job: Deploy_App_Service_Plan_Windows
+    - job: Deploy_App_Service_Plan_DotNet
       displayName: "Deploy steps"
       steps:
       - task: AzureCLI@2
-        displayName: "Deploy App Service Plan (Windows)"
+        displayName: "Deploy App Service Plan (DotNet)"
         inputs:
           azureSubscription: $(AZURESUBSCRIPTION)
           scriptType: pscore
           scriptLocation: inlineScript
           inlineScript: |
             $appServicePlanPricingTier = if ($env:APPSERVICEPLANPRICINGTIER) { "newAppServicePlanSku=$env:APPSERVICEPLANPRICINGTIER" }
-            az deployment group create --name "$(INTERNALAPPSERVICEPLANWINDOWSNAME)" --resource-group "$(INTERNALRESOURCEGROUPNAME)" --template-file build/templates/template-service-plan-windows-resources.json --parameters $appServicePlanPricingTier newAppServicePlanName="$(INTERNALAPPSERVICEPLANWINDOWSNAME)"
+            az deployment group create --name "$(INTERNALAPPSERVICEPLANDOTNETNAME)" --resource-group "$(INTERNALRESOURCEGROUPNAME)" --template-file build/templates/template-service-plan-windows-resources.json --parameters $appServicePlanPricingTier newAppServicePlanName="$(INTERNALAPPSERVICEPLANDOTNETNAME)"
 
-- stage: Create_App_Service_Plan_Linux
-  displayName: "Create App Service Plan (Linux)"
+- stage: Create_App_Service_Plan_JS
+  displayName: "Create App Service Plan (JS)"
+  dependsOn: Create_Resource_Group_Windows
+  jobs:
+    - job: Deploy_App_Service_Plan_JS
+      displayName: "Deploy steps"
+      steps:
+      - task: AzureCLI@2
+        displayName: "Deploy App Service Plan (JS)"
+        inputs:
+          azureSubscription: $(AZURESUBSCRIPTION)
+          scriptType: pscore
+          scriptLocation: inlineScript
+          inlineScript: |
+            $appServicePlanPricingTier = if ($env:APPSERVICEPLANPRICINGTIER) { "newAppServicePlanSku=$env:APPSERVICEPLANPRICINGTIER" }
+            az deployment group create --name "$(INTERNALAPPSERVICEPLANJSNAME)" --resource-group "$(INTERNALRESOURCEGROUPNAME)" --template-file build/templates/template-service-plan-windows-resources.json --parameters $appServicePlanPricingTier newAppServicePlanName="$(INTERNALAPPSERVICEPLANJSNAME)"
+
+- stage: Create_App_Service_Plan_Python
+  displayName: "Create App Service Plan (Python)"
   dependsOn: Create_Resource_Group_Linux
   jobs:
-    - job: Deploy_App_Service_Plan_Linux
+    - job: Deploy_App_Service_Plan_Python
       displayName: "Deploy steps"
       steps:
       - task: AzureCLI@2
-        displayName: "Deploy App Service Plan (Linux)"
+        displayName: "Deploy App Service Plan (Python)"
         inputs:
           azureSubscription: $(AZURESUBSCRIPTION)
           scriptType: pscore
           scriptLocation: inlineScript
           inlineScript: |
             $appServicePlanPricingTier = if ($env:APPSERVICEPLANPRICINGTIER) { "newAppServicePlanSku=$env:APPSERVICEPLANPRICINGTIER" }
-            az deployment group create --name "$(INTERNALAPPSERVICEPLANLINUXNAME)" --resource-group "$(INTERNALRESOURCEGROUPNAME)-linux" --template-file build/templates/template-service-plan-linux-resources.json --parameters $appServicePlanPricingTier newAppServicePlanName="$(INTERNALAPPSERVICEPLANLINUXNAME)"
+            az deployment group create --name "$(INTERNALAPPSERVICEPLANPYTHONNAME)" --resource-group "$(INTERNALRESOURCEGROUPNAME)-linux" --template-file build/templates/template-service-plan-linux-resources.json --parameters $appServicePlanPricingTier newAppServicePlanName="$(INTERNALAPPSERVICEPLANPYTHONNAME)"
 
 - stage: Create_App_Insights
   displayName: "Create App Insights"
