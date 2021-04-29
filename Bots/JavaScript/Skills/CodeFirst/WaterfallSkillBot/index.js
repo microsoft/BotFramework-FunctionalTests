@@ -11,7 +11,7 @@ dotenv.config({ path: ENV_FILE });
 
 // Import required bot services.
 // See https://aka.ms/bot-services to learn more about the different parts of a bot.
-const { ActivityTypes, BotFrameworkAdapter, InputHints, MemoryStorage, ConversationState, SkillHttpClient, SkillHandler, ChannelServiceRoutes, TurnContext } = require('botbuilder');
+const { ActivityTypes, BotFrameworkAdapter, InputHints, MemoryStorage, ConversationState, SkillHttpClient, SkillHandler, ChannelServiceRoutes, TurnContext, MessageFactory } = require('botbuilder');
 const { AuthenticationConfiguration, SimpleCredentialProvider } = require('botframework-connector');
 
 const { SkillBot } = require('./bots/skillBot');
@@ -46,27 +46,37 @@ adapter.onTurnError = async (context, error) => {
   // NOTE: In production environment, you should consider logging this to Azure application insights.
   console.error(`\n [onTurnError] unhandled error: ${error}`);
 
-  // Send a message to the user
-  let onTurnErrorMessage = 'The skill encountered an error or bug.';
-  await context.sendActivity(`${onTurnErrorMessage}\n${error}`, onTurnErrorMessage, InputHints.IgnoringInput);
-  onTurnErrorMessage = 'To continue to run this bot, please fix the bot source code.';
-  await context.sendActivity(onTurnErrorMessage, onTurnErrorMessage, InputHints.ExpectingInput);
+  try {
+    const { message, stack } = error;
 
-  // Send a trace activity, which will be displayed in Bot Framework Emulator
-  await context.sendTraceActivity(
-    'OnTurnError Trace',
-        `${error}`,
-        'https://www.botframework.com/schemas/error',
-        'TurnError'
-  );
+    // Send a message to the user.
+    let errorMessageText = 'The skill encountered an error or bug.';
+    let errorMessage = MessageFactory.text(`${errorMessageText}\r\n${message}\r\n${stack}`, errorMessageText, InputHints.IgnoringInput);
+    errorMessage.value = { message, stack };
+    await context.sendActivity(errorMessage);
 
-  // Send and EndOfConversation activity to the skill caller with the error to end the conversation
-  // and let the caller decide what to do.
-  await context.sendActivity({
-    type: ActivityTypes.EndOfConversation,
-    code: 'SkillError',
-    text: error
-  });
+    errorMessageText = 'To continue to run this bot, please fix the bot source code.';
+    errorMessage = MessageFactory.text(errorMessageText, errorMessageText, InputHints.ExpectingInput);
+    await context.sendActivity(errorMessage);
+
+    // Send a trace activity, which will be displayed in Bot Framework Emulator
+    await context.sendTraceActivity(
+      'OnTurnError Trace',
+      `${error}`,
+      'https://www.botframework.com/schemas/error',
+      'TurnError'
+    );
+
+    // Send and EndOfConversation activity to the skill caller with the error to end the conversation
+    // and let the caller decide what to do.
+    await context.sendActivity({
+      type: ActivityTypes.EndOfConversation,
+      code: 'SkillError',
+      text: error
+    });
+  } catch (err) {
+    console.error(`\n [onTurnError] Exception caught in onTurnError : ${err}`);
+  }
 };
 
 const continuationParametersStore = {};
