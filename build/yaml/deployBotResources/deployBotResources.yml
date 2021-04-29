@@ -210,12 +210,12 @@ stages:
       azureSubscription: "$(AZURESUBSCRIPTION)"
       botPricingTier: $env:BOTPRICINGTIER
       connectionName: $env:CONNECTIONNAME
-      dependsOn: "Prepare_DotNetGroup"
       keyVault: "$(INTERNALKEYVAULTNAME)"
       resourceGroup: "$(INTERNALRESOURCEGROUPNAME)-DotNet"
       resourceSuffix: $(INTERNALRESOURCESUFFIX)
       bots:
         - name: "bffnsimplehostbotdotnet"
+          dependsOn: "Prepare_DotNetGroup"
           type: "Host"
           displayName: "DotNet Simple Host Bot"
           appId: $(BFFNSIMPLEHOSTBOTDOTNETAPPID)
@@ -229,6 +229,7 @@ stages:
             version: ${{ parameters.dependenciesVersionDotNetHosts }}
 
         - name: "bffnsimplehostbotdotnet21"
+          dependsOn: "Prepare_DotNetGroup"
           type: "Host"
           displayName: "DotNet Simple Host Bot 2.1"
           appId: $(BFFNSIMPLEHOSTBOTDOTNET21APPID)
@@ -242,6 +243,7 @@ stages:
             version: ${{ parameters.dependenciesVersionDotNetHosts }}
 
         - name: "bffnechoskillbotdotnet"
+          dependsOn: "Prepare_DotNetGroup"
           type: "Skill"
           displayName: "DotNet Echo Skill Bot"
           appId: $(BFFNECHOSKILLBOTDOTNETAPPID)
@@ -255,6 +257,7 @@ stages:
             version: ${{ parameters.dependenciesVersionDotNetSkills }}
 
         - name: "bffnechoskillbotdotnet21"
+          dependsOn: "Deploy_bffnsimplehostbotdotnet"
           type: "Skill"
           displayName: "DotNet Echo Skill Bot 2.1"
           appId: $(BFFNECHOSKILLBOTDOTNET21APPID)
@@ -268,6 +271,7 @@ stages:
             version: ${{ parameters.dependenciesVersionDotNetSkills }}
 
         - name: "bffnechoskillbotdotnetv3"
+          dependsOn: "Deploy_bffnsimplehostbotdotnet21"
           type: "SkillV3"
           displayName: "DotNet Echo Skill Bot v3"
           appId: $(BFFNECHOSKILLBOTDOTNETV3APPID)
@@ -280,6 +284,7 @@ stages:
             version: ${{ parameters.dependenciesVersionDotNetSkillsV3 }}
 
         - name: "bffnwaterfallhostbotdotnet"
+          dependsOn: "Deploy_bffnechoskillbotdotnet"
           type: "Host"
           displayName: "DotNet Waterfall Host Bot"
           appId: $(BFFNWATERFALLHOSTBOTDOTNETAPPID)
@@ -293,6 +298,7 @@ stages:
             version: ${{ parameters.dependenciesVersionDotNetHosts }}
 
         - name: "bffnwaterfallskillbotdotnet"
+          dependsOn: "Deploy_bffnechoskillbotdotnet21"
           type: "Skill"
           displayName: "DotNet Waterfall Skill Bot"
           appId: $(BFFNWATERFALLSKILLBOTDOTNETAPPID)
@@ -313,12 +319,12 @@ stages:
       appServicePlanRG: "$(INTERNALAPPSERVICEPLANWINDOWSRESOURCEGROUP)"
       azureSubscription: "$(AZURESUBSCRIPTION)"
       botPricingTier: $env:BOTPRICINGTIER
-      dependsOn: "Prepare_DotNetGroup"
       keyVault: "$(INTERNALKEYVAULTNAME)"
       resourceGroup: "$(INTERNALRESOURCEGROUPNAME)-DotNet"
       resourceSuffix: $(INTERNALRESOURCESUFFIX)
       bots:
         - name: "bffnsimplehostbotcomposerdotnet"
+          dependsOn: "Deploy_bffnechoskillbotdotnetv3"
           type: "Host"
           displayName: "DotNet Simple Composer Host Bot"
           appId: $(BFFNSIMPLEHOSTBOTCOMPOSERDOTNETAPPID)
@@ -331,6 +337,7 @@ stages:
             version: ${{ parameters.dependenciesVersionDotNetHosts }}
 
         - name: "bffnechoskillbotcomposerdotnet"
+          dependsOn: "Deploy_bffnwaterfallhostbotdotnet"
           type: "Skill"
           displayName: "DotNet Echo Composer Skill Bot"
           appId: $(BFFNECHOSKILLBOTCOMPOSERDOTNETAPPID)
