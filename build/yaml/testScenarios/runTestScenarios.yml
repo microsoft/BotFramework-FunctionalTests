@@ -3,7 +3,7 @@
 #
 
 # "name" here defines the build number format. Build number is accessed via $(Build.BuildNumber)
-name: $(Build.BuildId)
+name: $(BUILD.BUILDID)
 trigger: none
 pr: none
 
@@ -29,9 +29,9 @@ variables:
   # DeployBotResourcesGuid: (optional) Deploy Bot Resources pipeline GUID.
 
   ## Internal variables
-  InternalKeyVaultName: "bffnbotkeyvault$(InternalResourceSuffix)"
-  InternalResourceGroupName: $[coalesce(variables['ResourceGroup'], 'bffnbots')]
-  InternalResourceSuffix: $[coalesce(variables['ResourceSuffix'], '')]
+  InternalKeyVaultName: "bffnbotkeyvault$(INTERNALRESOURCESUFFIX)"
+  InternalResourceGroupName: $[coalesce(variables['RESOURCEGROUP'], 'bffnbots')]
+  InternalResourceSuffix: $[coalesce(variables['RESOURCESUFFIX'], '')]
 
 pool:
   vmImage: "windows-2019"
@@ -44,7 +44,7 @@ stages:
         displayName: "Download Variables"
         steps:
           - powershell: |
-              $pipelineGuid = if ([string]::IsNullOrEmpty("$env:DeployBotResourcesGuid")) { "02 - Deploy Bot Resources" } else { "$(DeployBotResourcesGuid)" }
+              $pipelineGuid = if ([string]::IsNullOrEmpty("$env:DEPLOYBOTRESOURCESGUID")) { "02 - Deploy Bot Resources" } else { "$(DEPLOYBOTRESOURCESGUID)" }
               Write-Host "Deploy Bot Resources Pipeline GUID: " $pipelineGuid
               Write-Host "##vso[task.setvariable variable=PipelineGuid]$pipelineGuid"
             displayName: "Set Deploy Bot Resources GUID"
@@ -53,15 +53,15 @@ stages:
             displayName: "Download Variables artifact"
             inputs:
               source: "specific"
-              project: "$(System.TeamProject)"
-              pipeline: "$(PipelineGuid)"
+              project: "$(SYSTEM.TEAMPROJECT)"
+              pipeline: "$(PIPELINEGUID)"
               allowPartiallySucceededBuilds: true
               allowFailedBuilds: true
               artifact: "Variables"
-              path: "$(System.DefaultWorkingDirectory)/Variables/"
+              path: "$(SYSTEM.DEFAULTWORKINGDIRECTORY)/Variables/"
 
           - powershell: |
-              $deploymentBuildSuffix = (Get-Content -Path "$(System.DefaultWorkingDirectory)/Variables/variables.json" | ConvertFrom-Json).deploymentBuildSuffix
+              $deploymentBuildSuffix = (Get-Content -Path "$(SYSTEM.DEFAULTWORKINGDIRECTORY)/Variables/variables.json" | ConvertFrom-Json).deploymentBuildSuffix
               Write-Host "Deployment Build Suffix: " $deploymentBuildSuffix
               Write-Host "##vso[task.setvariable variable=DeploymentBuildSuffix;isOutput=true]-$deploymentBuildSuffix"
             displayName: "Set variables"
@@ -70,22 +70,22 @@ stages:
   - template: runScenario.yml
     parameters:
       appIds:
-        EchoSkillBotComposerDotNet: "$(BffnEchoSkillBotComposerDotnetAppId)"
-        EchoSkillBotDotNet: "$(BffnEchoSkillBotDotNetAppId)"
-        EchoSkillBotDotNet21: "$(BffnEchoSkillBotDotNet21AppId)"
-        EchoSkillBotDotNetV3: "$(BffnEchoSkillBotDotNetV3AppId)"
-        EchoSkillBotJS: "$(BffnEchoSkillBotJSAppId)"
-        EchoSkillBotJSV3: "$(BffnEchoSkillBotJSV3AppId)"
-        EchoSkillBotPython: "$(BffnEchoSkillBotPythonAppId)"
-        WaterfallSkillBotDotNet: "$(BffnWaterfallSkillBotDotNetAppId)"
-        WaterfallSkillBotJS: "$(BffnWaterfallSkillBotJSAppId)"
-        WaterfallSkillBotPython: "$(BffnWaterfallSkillBotPythonAppId)"
-      azureSubscription: "$(AzureSubscription)"
-      buildConfiguration: "$(BuildConfiguration)"
+        EchoSkillBotComposerDotNet: "$(BFFNECHOSKILLBOTCOMPOSERDOTNETAPPID)"
+        EchoSkillBotDotNet: "$(BFFNECHOSKILLBOTDOTNETAPPID)"
+        EchoSkillBotDotNet21: "$(BFFNECHOSKILLBOTDOTNET21APPID)"
+        EchoSkillBotDotNetV3: "$(BFFNECHOSKILLBOTDOTNETV3APPID)"
+        EchoSkillBotJS: "$(BFFNECHOSKILLBOTJSAPPID)"
+        EchoSkillBotJSV3: "$(BFFNECHOSKILLBOTJSV3APPID)"
+        EchoSkillBotPython: "$(BFFNECHOSKILLBOTPYTHONAPPID)"
+        WaterfallSkillBotDotNet: "$(BFFNWATERFALLSKILLBOTDOTNETAPPID)"
+        WaterfallSkillBotJS: "$(BFFNWATERFALLSKILLBOTJSAPPID)"
+        WaterfallSkillBotPython: "$(BFFNWATERFALLSKILLBOTPYTHONAPPID)"
+      azureSubscription: "$(AZURESUBSCRIPTION)"
+      buildConfiguration: "$(BUILDCONFIGURATION)"
       buildIdSuffix: $[stageDependencies.Download_Variables.Download_Variables.outputs['Set_Variables.DeploymentBuildSuffix']]
-      keyVault: "$(InternalKeyVaultName)"
-      resourceGroup: "$(InternalResourceGroupName)"
-      resourceSuffix: "$(InternalResourceSuffix)"
+      keyVault: "$(INTERNALKEYVAULTNAME)"
+      resourceGroup: "$(INTERNALRESOURCEGROUPNAME)"
+      resourceSuffix: "$(INTERNALRESOURCESUFFIX)"
       scenarios:
         - name: Waterfall
           dependsOn: [Download_Variables]
@@ -93,6 +93,7 @@ stages:
             - Attachments
             - CardActions
             - ProactiveMessages
+            - FileUpload
             - SignIn
 
         - name: SingleTurn
