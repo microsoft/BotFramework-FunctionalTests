@@ -78,7 +78,74 @@
               "value": "[parameters('appSecret')]"
             }
           ],
-          "webSocketsEnabled": true
+          "webSocketsEnabled": true,
+          "numberOfWorkers": 1,
+          "defaultDocuments": [
+            "Default.htm",
+            "Default.html",
+            "Default.asp",
+            "index.htm",
+            "index.html",
+            "iisstart.htm",
+            "default.aspx",
+            "index.php",
+            "hostingstart.html"
+          ],
+          "netFrameworkVersion": "v4.0",
+          "linuxFxVersion": "PYTHON|3.8",
+          "requestTracingEnabled": false,
+          "remoteDebuggingEnabled": false,
+          "httpLoggingEnabled": true,
+          "logsDirectorySizeLimit": 35,
+          "detailedErrorLoggingEnabled": false,
+          "publishingUsername": "[variables('publishingUsername')]",
+          "scmType": "None",
+          "use32BitWorkerProcess": true,
+          "alwaysOn": true,
+          "appCommandLine": "gunicorn --bind 0.0.0.0 --worker-class aiohttp.worker.GunicornWebWorker --timeout 600 app:APP",
+          "managedPipelineMode": "Integrated",
+          "virtualApplications": [
+            {
+              "virtualPath": "/",
+              "physicalPath": "site\\wwwroot",
+              "preloadEnabled": true
+            }
+          ],
+          "loadBalancing": "LeastRequests",
+          "experiments": {
+            "rampUpRules": []
+          },
+          "autoHealEnabled": false,
+          "cors": {
+            "allowedOrigins": [
+              "https://botservice.hosting.portal.azure.net",
+              "https://hosting.onecloud.azure-test.net/"
+            ],
+            "supportCredentials": false
+          },
+          "localMySqlEnabled": false,
+          "ipSecurityRestrictions": [
+            {
+              "ipAddress": "Any",
+              "action": "Allow",
+              "priority": 1,
+              "name": "Allow all",
+              "description": "Allow all access"
+            }
+          ],
+          "scmIpSecurityRestrictions": [
+            {
+              "ipAddress": "Any",
+              "action": "Allow",
+              "priority": 1,
+              "name": "Allow all",
+              "description": "Allow all access"
+            }
+          ],
+          "scmIpSecurityRestrictionsUseMain": false,
+          "http20Enabled": false,
+          "minTlsVersion": "1.2",
+          "ftpsState": "AllAllowed"
         },
         "scmSiteAlsoStopped": false,
         "clientAffinityEnabled": true,
@@ -86,85 +153,6 @@
         "clientCertEnabled": false,
         "httpsOnly": false,
         "redundancyMode": "None"
-      }
-    },
-    {
-      "type": "Microsoft.Web/sites/config",
-      "apiVersion": "2020-09-01",
-      "name": "[concat(parameters('botName'), '/web')]",
-      "location": "[parameters('botLocation')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Web/sites', parameters('botName'))]"
-      ],
-      "properties": {
-        "numberOfWorkers": 1,
-        "defaultDocuments": [
-          "Default.htm",
-          "Default.html",
-          "Default.asp",
-          "index.htm",
-          "index.html",
-          "iisstart.htm",
-          "default.aspx",
-          "index.php",
-          "hostingstart.html"
-        ],
-        "netFrameworkVersion": "v4.0",
-        "linuxFxVersion": "PYTHON|3.8",
-        "requestTracingEnabled": false,
-        "remoteDebuggingEnabled": false,
-        "httpLoggingEnabled": true,
-        "logsDirectorySizeLimit": 35,
-        "detailedErrorLoggingEnabled": false,
-        "publishingUsername": "[variables('publishingUsername')]",
-        "scmType": "None",
-        "use32BitWorkerProcess": true,
-        "webSocketsEnabled": true,
-        "alwaysOn": true,
-        "appCommandLine": "gunicorn --bind 0.0.0.0 --worker-class aiohttp.worker.GunicornWebWorker --timeout 600 app:APP",
-        "managedPipelineMode": "Integrated",
-        "virtualApplications": [
-          {
-            "virtualPath": "/",
-            "physicalPath": "site\\wwwroot",
-            "preloadEnabled": true
-          }
-        ],
-        "loadBalancing": "LeastRequests",
-        "experiments": {
-          "rampUpRules": []
-        },
-        "autoHealEnabled": false,
-        "cors": {
-          "allowedOrigins": [
-            "https://botservice.hosting.portal.azure.net",
-            "https://hosting.onecloud.azure-test.net/"
-          ],
-          "supportCredentials": false
-        },
-        "localMySqlEnabled": false,
-        "ipSecurityRestrictions": [
-          {
-            "ipAddress": "Any",
-            "action": "Allow",
-            "priority": 1,
-            "name": "Allow all",
-            "description": "Allow all access"
-          }
-        ],
-        "scmIpSecurityRestrictions": [
-          {
-            "ipAddress": "Any",
-            "action": "Allow",
-            "priority": 1,
-            "name": "Allow all",
-            "description": "Allow all access"
-          }
-        ],
-        "scmIpSecurityRestrictionsUseMain": false,
-        "http20Enabled": false,
-        "minTlsVersion": "1.2",
-        "ftpsState": "AllAllowed"
       }
     },
     {
