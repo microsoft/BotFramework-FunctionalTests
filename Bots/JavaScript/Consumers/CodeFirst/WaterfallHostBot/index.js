@@ -9,7 +9,7 @@ const restify = require('restify');
 
 // Import required bot services.
 // See https://aka.ms/bot-services to learn more about the different parts of a bot.
-const { BotFrameworkAdapter, TurnContext, ActivityTypes, ChannelServiceRoutes, ConversationState, InputHints, MemoryStorage, SkillHttpClient } = require('botbuilder');
+const { BotFrameworkAdapter, TurnContext, ActivityTypes, ChannelServiceRoutes, ConversationState, InputHints, MemoryStorage, SkillHttpClient, MessageFactory } = require('botbuilder');
 const { AuthenticationConfiguration, SimpleCredentialProvider } = require('botframework-connector');
 
 // Import required bot configuration.
@@ -51,15 +51,20 @@ const onTurnErrorHandler = async (context, error) => {
 
 async function sendErrorMessage (context, error) {
   try {
+    const { message, stack } = error;
+
     // Send a message to the user.
-    let onTurnErrorMessage = 'The bot encountered an error or bug.';
-    await context.sendActivity(onTurnErrorMessage, onTurnErrorMessage, InputHints.IgnoringInput);
+    let errorMessageText = 'The bot encountered an error or bug.';
+    let errorMessage = MessageFactory.text(errorMessageText, errorMessageText, InputHints.IgnoringInput);
+    errorMessage.value = { message, stack };
+    await context.sendActivity(errorMessage);
 
-    await context.sendActivity(`Exception: ${error.message}`);
-    await context.sendActivity(error.stack);
+    await context.sendActivity(`Exception: ${message}`);
+    await context.sendActivity(stack);
 
-    onTurnErrorMessage = 'To continue to run this bot, please fix the bot source code.';
-    await context.sendActivity(onTurnErrorMessage, onTurnErrorMessage, InputHints.ExpectingInput);
+    errorMessageText = 'To continue to run this bot, please fix the bot source code.';
+    errorMessage = MessageFactory.text(errorMessageText, errorMessageText, InputHints.ExpectingInput);
+    await context.sendActivity(errorMessage);
 
     // Send a trace activity, which will be displayed in Bot Framework Emulator.
     await context.sendTraceActivity(

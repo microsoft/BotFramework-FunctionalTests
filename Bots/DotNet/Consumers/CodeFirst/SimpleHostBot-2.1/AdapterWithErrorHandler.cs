@@ -75,7 +75,11 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot21
                 // Send a message to the user
                 var errorMessageText = "The bot encountered an error or bug.";
                 var errorMessage = MessageFactory.Text(errorMessageText, errorMessageText, InputHints.IgnoringInput);
+                errorMessage.Value = exception;
                 await turnContext.SendActivityAsync(errorMessage, cancellationToken);
+
+                await turnContext.SendActivityAsync($"Exception: {exception.Message}");
+                await turnContext.SendActivityAsync(exception.ToString());
 
                 errorMessageText = "To continue to run this bot, please fix the bot source code.";
                 errorMessage = MessageFactory.Text(errorMessageText, errorMessageText, InputHints.ExpectingInput);
