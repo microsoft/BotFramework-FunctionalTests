@@ -27,23 +27,62 @@ namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBotv3.Dialogs
                 InputHint = InputHints.AcceptingInput
             };
 
-            // Send an `endOfconversation` activity if the user cancels the skill.
-            if (activity.Text.ToLower().Contains("end") || activity.Text.ToLower().Contains("stop"))
+            try
             {
-                await context.SayAsync($"Ending conversation from the skill...", options: options);
-                var endOfConversation = activity.CreateReply();
-                endOfConversation.Type = ActivityTypes.EndOfConversation;
-                endOfConversation.Code = EndOfConversationCodes.CompletedSuccessfully;
-                endOfConversation.InputHint = InputHints.AcceptingInput;
-                await context.PostAsync(endOfConversation);
+                if (activity.Type == "exception")
+                {
+                    await PostExceptionAsync(context, activity, activity.Value as Exception);
+                }
+                else if (activity.Text.ToLower().Contains("end") || activity.Text.ToLower().Contains("stop"))
+                {
+                    // Send an `endOfconversation` activity if the user cancels the skill.
+                    await context.SayAsync($"Ending conversation from the skill...", options: options);
+                    var endOfConversation = activity.CreateReply();
+                    endOfConversation.Type = ActivityTypes.EndOfConversation;
+                    endOfConversation.Code = EndOfConversationCodes.CompletedSuccessfully;
+                    endOfConversation.InputHint = InputHints.AcceptingInput;
+                    await context.PostAsync(endOfConversation);
+                }
+                else
+                {
+                    await context.SayAsync($"Echo: {activity.Text}", options: options);
+                    await context.SayAsync($"Say \"end\" or \"stop\" and I'll end the conversation and back to the parent.", options: options);
+                }
             }
-            else
+            catch (Exception exception)
             {
-                await context.SayAsync($"Echo: {activity.Text}", options: options);
-                await context.SayAsync($"Say \"end\" or \"stop\" and I'll end the conversation and back to the parent.", options: options);
+                await PostExceptionAsync(context, activity, exception);
             }
 
             context.Wait(MessageReceivedAsync);
+        }
+
+        //Send exception message and trace
+        private static async Task PostExceptionAsync(IDialogContext context, Activity reply, Exception exception)
+        {
+            // Send a message to the user
+            var errorMessageText = "The skill encountered an error or bug.";
+            var activity = reply.CreateReply();
+            activity.Text = errorMessageText + Environment.NewLine + exception;
+            activity.Speak = errorMessageText;
+            activity.InputHint = InputHints.IgnoringInput;
+            activity.Value = exception;
+            await context.PostAsync(activity);
+
+            errorMessageText = "To continue to run this bot, please fix the bot source code.";
+            activity = reply.CreateReply();
+            activity.Text = errorMessageText;
+            activity.Speak = errorMessageText;
+            activity.InputHint = InputHints.ExpectingInput;
+            await context.PostAsync(activity);
+
+            // Send and EndOfConversation activity to the skill caller with the error to end the conversation
+            // and let the caller decide what to do.
+            activity = reply.CreateReply();
+            activity.Type = ActivityTypes.EndOfConversation;
+            activity.Code = "SkillError";
+            activity.Text = exception.Message;
+            await context.PostAsync(activity);
         }
     }
 }

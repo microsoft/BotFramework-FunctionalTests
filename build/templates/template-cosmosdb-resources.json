@@ -22,7 +22,7 @@
         {
             "apiVersion": "2020-04-01",
             "kind": "GlobalDocumentDB",
-            "type": "Microsoft.DocumentDb/databaseAccounts",
+            "type": "Microsoft.DocumentDB/databaseAccounts",
             "name": "[parameters('accountName')]",
             "location": "westus",
             "properties": {

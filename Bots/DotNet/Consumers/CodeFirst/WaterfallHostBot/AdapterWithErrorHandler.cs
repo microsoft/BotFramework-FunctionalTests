@@ -56,6 +56,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot
                 // Send a message to the user.
                 var errorMessageText = "The bot encountered an error or bug.";
                 var errorMessage = MessageFactory.Text(errorMessageText, errorMessageText, InputHints.IgnoringInput);
+                errorMessage.Value = exception;
                 await turnContext.SendActivityAsync(errorMessage);
 
                 await turnContext.SendActivityAsync($"Exception: {exception.Message}");
