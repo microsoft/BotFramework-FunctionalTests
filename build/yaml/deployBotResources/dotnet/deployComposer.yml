@@ -23,10 +23,6 @@ parameters:
     displayName: Bot Pricing Tier
     type: string
 
-  - name: dependsOn
-    displayName: Depends On
-    type: string
-
   - name: keyVault
     displayName: Key Vault name
     type: string
@@ -53,7 +49,7 @@ stages:
       displayName: "${{ bot.name }}"
     ${{ if ne(bot.displayName, '') }}:
       displayName: "${{ bot.displayName }}"
-    dependsOn: "${{ parameters.dependsOn }}"
+    dependsOn: "${{ bot.dependsOn }}"
     jobs:
       - job: "Deploy"
         displayName: "Deploy steps"
