@@ -54,12 +54,19 @@ class AdapterWithErrorHandler(BotFrameworkAdapter):
         if not self._skill_client or not self._skill_config:
             return
         try:
+            exc_info = sys.exc_info()
+            stack = traceback.format_exception(*exc_info)
+
             # Send a message to the user.
             error_message_text = "The bot encountered an error or bug."
             error_message = MessageFactory.text(
                 error_message_text, error_message_text, InputHints.ignoring_input
             )
+            error_message.value = {"message": error, "stack": stack}
             await turn_context.send_activity(error_message)
+
+            await turn_context.send_activity(f"Exception: {error}")
+            await turn_context.send_activity(traceback.format_exc())
 
             error_message_text = (
                 "To continue to run this bot, please fix the bot source code."
