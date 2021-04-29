@@ -47,6 +47,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot
                 // Send a message to the user.
                 var errorMessageText = "The skill encountered an error or bug.";
                 var errorMessage = MessageFactory.Text(errorMessageText + Environment.NewLine + exception, errorMessageText, InputHints.IgnoringInput);
+                errorMessage.Value = exception;
                 await turnContext.SendActivityAsync(errorMessage);
 
                 errorMessageText = "To continue to run this bot, please fix the bot source code.";
