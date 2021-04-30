@@ -33,6 +33,31 @@ server.post('/api/messages', connector.listen());
 
 // Create your bot with a function to receive messages from the user
 new builder.UniversalBot(connector, function (session) {
+  session.on('error', function (error) {
+    const { message, stack } = error;
+
+    // Send a message to the user.
+    let errorMessageText = 'The skill encountered an error or bug.';
+    let activity = new builder.Message()
+      .text(`${errorMessageText}\r\n${message}\r\n${stack}`)
+      .speak(errorMessageText)
+      .inputHint(builder.InputHint.ignoringInput)
+      .value({ message, stack });
+    session.send(activity);
+
+    errorMessageText = 'To continue to run this bot, please fix the bot source code.';
+    activity = new builder.Message()
+      .text(errorMessageText)
+      .speak(errorMessageText)
+      .inputHint(builder.InputHint.expectingInput);
+    session.send(activity);
+
+    activity = new builder.Message()
+      .code('SkillError')
+      .text(message);
+    session.endConversation(activity);
+  });
+
   switch (session.message.text.toLowerCase()) {
     case 'end':
     case 'stop':

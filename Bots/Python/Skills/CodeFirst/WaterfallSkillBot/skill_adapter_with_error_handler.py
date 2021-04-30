@@ -35,13 +35,17 @@ class AdapterWithErrorHandler(BotFrameworkAdapter):
 
     async def _send_error_message(self, context: TurnContext, error: Exception):
         try:
+            exc_info = sys.exc_info()
+            stack = traceback.format_exception(*exc_info)
+
             # Send a message to the user.
             error_message_text = "The skill encountered an error or bug."
             error_message = MessageFactory.text(
-                f"{error_message_text}\n{error}",
+                f"{error_message_text}\r\n{error}\r\n{stack}",
                 error_message_text,
                 InputHints.ignoring_input,
             )
+            error_message.value = { "message": error, "stack": stack }
             await context.send_activity(error_message)
 
             error_message_text = (
