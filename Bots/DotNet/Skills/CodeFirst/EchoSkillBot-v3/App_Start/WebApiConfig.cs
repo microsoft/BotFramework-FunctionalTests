@@ -4,6 +4,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System.Web.Http;
+using System.Web.Http.Controllers;
 
 namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBotv3
 {
@@ -32,6 +33,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBotv3
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+            config.Services.Replace(typeof(IHttpActionInvoker), new ApiControllerActionInvokerWithErrorHandler());
         }
     }
 }

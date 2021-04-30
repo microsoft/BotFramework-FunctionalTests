@@ -62,7 +62,7 @@ class TokenExchangeSkillHandler extends SkillHandler {
       if (targetSkill) {
         const oauthCard = oauthCardAttachment.content;
 
-        if (oauthCard.tokenExchangeResource.uri) {
+        if (oauthCard && oauthCard.tokenExchangeResource && oauthCard.tokenExchangeResource.uri) {
           const context = new TurnContext(this.adapter, activity);
           context.turnState.push('BotIdentity', claimsIdentity);
 

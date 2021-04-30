@@ -1,62 +1,98 @@
 parameters:
-  dependsOn: ''
-  resourceGroup: ''
-  bots: []
-  output:
-    path: 'build-composer'
-    zip: 'build'
+  - name: appInsight
+    displayName: Azure Application Insight name
+    type: string
+
+  - name: appServicePlan
+    displayName: App Service Plan name
+    type: string
+
+  - name: appServicePlanRG
+    displayName: App Service Plan Resource Group
+    type: string
+
+  - name: azureSubscription
+    displayName: Azure Service Connection
+    type: string
+
+  - name: bots
+    displayName: Bots
+    type: object
+
+  - name: botPricingTier
+    displayName: Bot Pricing Tier
+    type: string
+
+  - name: keyVault
+    displayName: Key Vault name
+    type: string
+
+  - name: output
+    displayName: Output location
+    type: object
+    default:
+      path: "build-composer"
+      zip: "build"
+
+  - name: resourceGroup
+    displayName: Resource Group
+    type: string
+
+  - name: resourceSuffix
+    displayName: Azure resources' name suffix
+    type: string
 
 stages:
 - ${{ each bot in parameters.bots }}:
-  - stage: 'Deploy_${{ bot.name }}'
+  - stage: "Deploy_${{ bot.name }}"
     ${{ if eq(bot.displayName, '') }}:
-      displayName: '${{ bot.name }}'
+      displayName: "${{ bot.name }}"
     ${{ if ne(bot.displayName, '') }}:
-      displayName: '${{ bot.displayName }}'
-    dependsOn: '${{ parameters.dependsOn }}'
+      displayName: "${{ bot.displayName }}"
+    dependsOn: "${{ bot.dependsOn }}"
     jobs:
-      - job: 'Deploy'
-        displayName: 'Deploy steps'
+      - job: "Deploy"
+        displayName: "Deploy steps"
         steps:
           # Delete Bot Resources
           - template: ../common/deleteResources.yml
             parameters:
-              resourceGroup: '${{ parameters.resourceGroup }}'
-              resourceName: '${{ bot.name }}'
+              azureSubscription: "${{ parameters.azureSubscription }}"
+              resourceGroup: "${{ parameters.resourceGroup }}"
+              resourceName: "${{ bot.name }}"
+              resourceSuffix: "${{ parameters.resourceSuffix }}"
 
           # Gets Bot App Registration credentials from KeyVault or Pipeline Variables
           - template: ../common/getAppRegistration.yml
             parameters:
               appId: ${{ bot.appId }}
               appSecret: ${{ bot.appSecret }}
-              botName: '${{ bot.name }}'
+              azureSubscription: "${{ parameters.azureSubscription }}"
+              botName: "${{ bot.name }}"
+              keyVault: "${{ parameters.keyVault }}"
 
           # Use Net Core version
           - ${{ if ne(bot.project.netCoreVersion, '') }}:
             - task: UseDotNet@2
-              displayName: 'Use NetCore v${{ bot.project.netCoreVersion }}'
+              displayName: "Use NetCore v${{ bot.project.netCoreVersion }}"
               inputs:
-                version: '${{ bot.project.netCoreVersion }}'
+                version: "${{ bot.project.netCoreVersion }}"
 
           # Evaluate dependencies source and version
           - template: evaluateDependenciesVariables.yml
             parameters:
-              ${{ if eq(bot.type, 'Host') }}:
-                registry: "$env:DependenciesRegistryHosts"
-                version: "$env:DependenciesVersionHosts"
-              ${{ if eq(bot.type, 'Skill') }}:
-                registry: "$env:DependenciesRegistrySkills"
-                version: "$env:DependenciesVersionSkills"
-              botType: '${{ bot.type }}'
+              botType: "${{ bot.type }}"
+              registry: "${{ bot.dependency.registry }}"
+              version: "${{ bot.dependency.version }}"
 
           # Install dependencies in Microsoft.BotFramework.Composer.WebApp
           - template: installDependencies.yml
             parameters:
-              source: "$(DependenciesSource)"
-              version: "$(DependenciesVersionNumber)"
               project: 
-                directory: '${{ bot.project.directory }}/runtime/azurewebapp/'
-                name: 'Microsoft.BotFramework.Composer.WebApp.csproj'
+                directory: "${{ bot.project.directory }}/runtime/azurewebapp/"
+                name: "Microsoft.BotFramework.Composer.WebApp.csproj"
+              registry: "$(DEPENDENCIESSOURCE)"
+              version: "$(DEPENDENCIESVERSIONNUMBER)"
               packages:
                 Microsoft.Bot.Builder
                 Microsoft.Bot.Builder.AI.Luis
@@ -74,11 +110,11 @@ stages:
           # Install dependencies in Microsoft.BotFramework.Composer.Functions
           - template: installDependencies.yml
             parameters:
-              source: "$(DependenciesSource)"
-              version: "$(DependenciesVersionNumber)"
               project: 
-                directory: '${{ bot.project.directory }}/runtime/azurefunctions/'
-                name: 'Microsoft.BotFramework.Composer.Functions.csproj'
+                directory: "${{ bot.project.directory }}/runtime/azurefunctions/"
+                name: "Microsoft.BotFramework.Composer.Functions.csproj"
+              registry: "$(DEPENDENCIESSOURCE)"
+              version: "$(DEPENDENCIESVERSIONNUMBER)"
               packages:
                 Microsoft.Bot.Builder
                 Microsoft.Bot.Builder.AI.Luis
@@ -96,22 +132,22 @@ stages:
           # Install dependencies in Microsoft.BotFramework.Composer.CustomAction
           - template: installDependencies.yml
             parameters:
-              source: "$(DependenciesSource)"
-              version: "$(DependenciesVersionNumber)"
               project:
-                directory: '${{ bot.project.directory }}/runtime/customaction/'
-                name: 'Microsoft.BotFramework.Composer.CustomAction.csproj'
+                directory: "${{ bot.project.directory }}/runtime/customaction/"
+                name: "Microsoft.BotFramework.Composer.CustomAction.csproj"
+              registry: "$(DEPENDENCIESSOURCE)"
+              version: "$(DEPENDENCIESVERSIONNUMBER)"
               packages:
                 Microsoft.Bot.Builder.Dialogs.Adaptive
 
           # Install dependencies in Microsoft.BotFramework.Composer.Core
           - template: installDependencies.yml
             parameters:
-              source: "$(DependenciesSource)"
-              version: "$(DependenciesVersionNumber)"
               project: 
-                directory: '${{ bot.project.directory }}/runtime/core/'
-                name: 'Microsoft.BotFramework.Composer.Core.csproj'
+                directory: "${{ bot.project.directory }}/runtime/core/"
+                name: "Microsoft.BotFramework.Composer.Core.csproj"
+              registry: "$(DEPENDENCIESSOURCE)"
+              version: "$(DEPENDENCIESVERSIONNUMBER)"
               packages:
                 Microsoft.Bot.Builder
                 Microsoft.Bot.Builder.AI.Luis
@@ -129,20 +165,20 @@ stages:
 
           # Prepare DotNet deploy
           - task: AzureCLI@1
-            displayName: 'Prepare Deploy'
+            displayName: "Prepare Deploy"
             inputs:
-              azureSubscription: $(AzureSubscription)
+              azureSubscription: "${{ parameters.azureSubscription }}"
               scriptLocation: inlineScript
-              inlineScript: 'az bot prepare-deploy --lang Csharp --code-dir ${{ bot.project.directory }}/runtime/azurewebapp --proj-file-path Microsoft.BotFramework.Composer.WebApp.csproj --output json'
+              inlineScript: "az bot prepare-deploy --lang Csharp --code-dir ${{ bot.project.directory }}/runtime/azurewebapp --proj-file-path Microsoft.BotFramework.Composer.WebApp.csproj --output json"
 
           # Build Bot
           - task: DotNetCoreCLI@2
-            displayName: 'Build'
+            displayName: "Build"
             inputs:
               command: publish
               publishWebProjects: false
-              projects: '${{ bot.project.directory }}/runtime/azurewebapp/Microsoft.BotFramework.Composer.WebApp.csproj'
-              arguments: '-c release -o ${{ parameters.output.path }}'
+              projects: "${{ bot.project.directory }}/runtime/azurewebapp/Microsoft.BotFramework.Composer.WebApp.csproj"
+              arguments: "-c release -o ${{ parameters.output.path }}"
               modifyOutputPath: false
               zipAfterPublish: false
 
@@ -151,32 +187,43 @@ stages:
               $composerDialogs = "${{ parameters.output.path }}/ComposerDialogs"
               Remove-Item $composerDialogs -Recurse -ErrorAction Ignore
 
-              Copy-Item -Path (Get-Item -Path ${{ bot.project.directory }}/* -Exclude ('runtime', 'scripts', '*.ps1', 'readme.md', '*.botproj', '.gitignore')).FullName -Destination $composerDialogs -Recurse -Force -Container
-            displayName: 'Prepare Composer'
+              Copy-Item -Path (Get-Item -Path ${{ bot.project.directory }}/* -Exclude ("runtime", "scripts", "*.ps1", "readme.md", "*.botproj", ".gitignore")).FullName -Destination $composerDialogs -Recurse -Force -Container
+            displayName: "Prepare Composer"
 
           # Zip bot
           - powershell: |
-              7z.exe a -tzip "${{ parameters.output.path }}/${{ parameters.output.zip }}.zip" "$(System.DefaultWorkingDirectory)/${{ parameters.output.path }}/*" -aoa
-            displayName: 'Zip bot'
+              7z.exe a -tzip "${{ parameters.output.path }}/${{ parameters.output.zip }}.zip" "$(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ parameters.output.path }}/*" -aoa
+            displayName: "Zip bot"
 
           # Create App Service and Bot Channel Registration
           - template: ../common/createAppService.yml
             parameters:
-              appId: $(AppId)
-              appSecret:  $(AppSecret)
-              botName: '${{ bot.name }}'
-              botGroup: '${{ parameters.resourceGroup }}'
+              appId: $(APPID)
+              appInsight: "${{ parameters.appInsight }}"
+              appSecret:  $(APPSECRET)
+              appServicePlan: "${{ parameters.appServicePlan }}"
+              appServicePlanRG: "${{ parameters.appServicePlanRG }}"
+              azureSubscription: "${{ parameters.azureSubscription }}"
+              botGroup: "${{ parameters.resourceGroup }}"
+              botName: "${{ bot.name }}"
+              botPricingTier: "${{ parameters.botPricingTier }}"
+              resourceSuffix: "${{ parameters.resourceSuffix }}"
+              templateFile: "build/templates/template-bot-resources.json"
 
           # Deploy bot
           - template: ../common/zipDeploy.yml
             parameters:
-              botName: '${{ bot.name }}'
-              botGroup: '${{ parameters.resourceGroup }}'
+              azureSubscription: "${{ parameters.azureSubscription }}"
+              botGroup: "${{ parameters.resourceGroup }}"
+              botName: "${{ bot.name }}"
               source: "${{ parameters.output.path }}/${{ parameters.output.zip }}.zip"
+              resourceSuffix: "${{ parameters.resourceSuffix }}"
 
           # Create DirectLine Channel Hosts
           - ${{ if eq(bot.type, 'Host') }}:
             - template: ../common/createDirectLine.yml
               parameters:
-                botName: '${{ bot.name }}'
-                botGroup: '${{ parameters.resourceGroup }}'
+                azureSubscription: "${{ parameters.azureSubscription }}"
+                botGroup: "${{ parameters.resourceGroup }}"
+                botName: "${{ bot.name }}"
+                resourceSuffix: "${{ parameters.resourceSuffix }}"
