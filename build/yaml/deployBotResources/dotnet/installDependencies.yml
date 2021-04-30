@@ -52,8 +52,9 @@ steps:
             $version = $versionAux
             $versionAux = ""
           }
+        }
 
-          write-host " `nPackages:"
-          foreach ($package in "${{ parameters.packages }}".Split()) {
-            write-host "  - $package"
-          }
+        write-host " `nPackages:"
+        foreach ($package in "${{ parameters.packages }}".Split()) {
+          write-host "  - $package"
+        }
