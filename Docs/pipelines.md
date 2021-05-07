@@ -9,29 +9,30 @@
 | Variable Name | Source | Description |
 | - | - | - |
 | **AzureSubscription** | Azure DevOps | Name of the Azure Resource Manager Service Connection configured in the DevOps organization. Click [here](./addARMServiceConnection.md) to see how to set it up. |
-| **KeyVaultObjectId** | Azure | Object ID of the Service Principal configured in the pipeline. Click [here](./getServicePrincipalObjectID.md) to see how to get it. |
-| **ResourceGroupName** | User | Name for the two resource groups that will contain the shared resources. |
-| **AppServicePlanPricingTier** | User | (optional) Pricing tier for the App Service Plan. **Possible values are: F1 (default), S1.** |
-| **ResourceSuffix** | User | (optional) Suffix to add to the resource names to avoid collisions. |
+| **KeyVaultObjectId** | Azure | Suscription's Object Id to create the keyvault to store App Registrations in Azure. Click [here](./getServicePrincipalObjectID.md) to see how to get it. |
+| **AppServicePlanPricingTier** | User | (optional) Pricing Tier for App Service Plans. **Default value is F1.** |
+| **ResourceGroupName** | User | (optional) Name for the resource group that will contain the shared resources. |
+| **ResourceSuffix** | User | (optional) Suffix to add to the resources' name to avoid collisions. |
 
 ## 02 - Deploy Bot Resources Pipeline
 
-- **Description:** Creates the test bot resources to be used in the functional tests, separated in one Resource Group for each language (DotNet, JS, and Python)
-- **Schedule**: Nightly or on demand.
+- **Description:** Creates the test bot resources to be used in the functional tests, separated in a Resource Group for each language (DotNet, JS, and Python)
+- **Schedule**: Nightly or on-demand.
 - **YAML**: [build\yaml\deployBotResources\deployBotResources.yml](../build/yaml/deployBotResources/deployBotResources.yml)
 
 | Variable Name | Source | Description |
 | - | - | - |
-| **AppServicePlanGroupLinux** | Create Shared Resources | Name of the resource group containing the App Service Plan for Python. |
-| **AppServicePlanNameLinux** | Create Shared Resources | Name of the App Service Plan for Python. |
-| **AppServicePlanGroup** | Create Shared Resources | Name of the resource group containing the App Service Plan for DotNet and JS. |
-| **AppServicePlanName** | Create Shared Resources | Name of the App Service Plan for DotNet and JS. |
 | **AzureSubscription** | Azure DevOps | Name of the Azure Resource Manager Service Connection configured in the DevOps organization. Click [here](./addARMServiceConnection.md) to see how to set it up. |
-| **ResourceGroup** | User | Prefix of the resource groups where the bots will be deployed. |
+| **AppServicePlanGroup** | Create Shared Resources | (optional) Name of the Resource Group where the Windows App Service Plan is located. |
+| **AppServicePlanGroupLinux** | Create Shared Resources | (optional) Name of the Resource Group where the Linux App Service Plan is located. |
+| **AppServicePlanDotNetName** | Create Shared Resources | (optional) Name of the DotNet App Service Plan. |
+| **AppServicePlanJSName** | Create Shared Resources | (optional) Name of the JavaScript App Service Plan. |
+| **AppServicePlanPythonName** | Create Shared Resources | (optional) Name of the Python App Service Plan. |
+| **BotPricingTier** | User | (optional) Pricing tier for the Web App resources. ***Default value is F0.** |
+| **ResourceGroup** | User | (optional) Name of the Resource Group where the bots will be deployed. |
+| **ResourceSuffix** | Create Shared Resources | (optional) Suffix to add to the resources' name to avoid collisions. |
 | **[BotName](#botnames) + AppId** | [App Registration Portal](https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade) | (optional) App ID to use. If not configured, will be retrieved from the key vault. |
 | **[BotName](#botnames) + AppSecret** | [App Registration Portal](https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade) | (optional) App Secret to use. If not configured, will be retrieved from the key vault. |
-| **BotPricingTier** | User | (optional) Pricing tier for the Web App resources. **Possible values are: F0 (default), S1.** |
-| **ResourceSuffix** | Create Shared Resources | (optional) Suffix to add to the resource names to avoid collisions. |
 
 The following parameters will be displayed in the run pipeline blade.
 
@@ -53,9 +54,10 @@ The following parameters will be displayed in the run pipeline blade.
 | Variable Name | Source | Description |
 | - | - | - |
 | **AzureSubscription** | Azure DevOps | Name of the Azure Resource Manager Service Connection configured in the DevOps organization. Click [here](./addARMServiceConnection.md) to see how to set it up. |
-| **ResourceGroup** | User | Prefix of the resource groups where the bots are deployed. |
+| **ResourceGroup** | User | (optional) Name of the Resource Group where the bots are deployed. |
+| **ResourceSuffix** | Create Shared Resources | (optional) Suffix to add to the resources' name to avoid collitions. |
 | **[BotName](#botnames) + AppId** | [App Registration Portal](https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade) | (optional) App ID to use. If not configured, it will be retrieved from the key vault. |
-| **ResourceSuffix** | Create Shared Resources | (optional) Suffix added to the resource names. |
+| **ResourceSuffix** | Create Bot Resources | (optional) Deploy Bot Resources pipeline GUID. |
 
 ## 04 - Cleanup Resources Pipeline
 
@@ -66,9 +68,9 @@ The following parameters will be displayed in the run pipeline blade.
 | Variable Name | Source | Description |
 | - | - | - |
 | **AzureSubscription** | Azure DevOps | Name of the Azure Resource Manager Service Connection configured in the DevOps organization. Click [here](./addARMServiceConnection.md) to see how to set it up. |
-| **DeployResourceGroup** | Deploy Bot Resources  | Prefix of the resource groups where the bots were deployed. |
-| **SharedResourceGroup** | Create Shared Resources | Name for the resource groups that contain the shared resources. |
-| **ResourceSuffix** | Create Shared Resources | (optional) Suffix added to the resource names. |
+| **DeployResourceGroup** | Deploy Bot Resources | (optional) Name of the Resource Group containing the bots. |
+| **ResourceSuffix** | Create Shared Resources | (optional) Suffix to add to the resources' name to avoid collitions. |
+| **SharedResourceGroup** | Create Shared Resources | (optional) Name of the Resource Group containing the shared resources. |
 
 ### Dependency Variables
 
@@ -96,17 +98,32 @@ Note: Npm and NuGet feeds only support stable versions, fill the corresponding v
 
 As of now, these are the bots available. This list will be expanded in the future.
 
-- BffnSimpleHostBotDotNet
-- BffnSimpleHostBotDotNet21
-- BffnSimpleComposerHostBotDotNet
-- BffnEchoComposerSkillBotDotNet
-- BffnEchoSkillBotDotNet
-- BffnEchoSkillBotDotNet21
-- BffnEchoSkillBotDotNetV3
-- BffnWaterfallHostBotDotNet
-- BffnWaterfallSkillBotDotNet
-- BffnSimpleHostBotJS
-- BffnEchoSkillBotJS
-- BffnEchoSkillBotJSV3
-- BffnSimpleHostBotPython
-- BffnEchoSkillBotPython
+- DotNet
+  - Consumers
+    - BffnSimpleHostBotDotNet
+    - BffnSimpleHostBotDotNet21
+    - BffnSimpleComposerHostBotDotNet
+    - BffnWaterfallHostBotDotNet
+  - Skills
+    - BffnEchoSkillBotDotNet
+    - BffnEchoSkillBotDotNet21
+    - BffnEchoSkillBotDotNetV3
+    - BffnEchoComposerSkillBotDotNet
+    - BffnWaterfallSkillBotDotNet
+
+- JS
+  - Consumers
+    - BffnSimpleHostBotJS
+    - BffnWaterfallHostBotJS
+  - Skills
+    - BffnEchoSkillBotJS
+    - BffnEchoSkillBotJSV3
+    - BffnWaterfallSkillBotJS
+
+- Python
+  - Consumers
+    - BffnSimpleHostBotPython
+    - BffnWaterfallHostBotPython
+  - Skills
+    - BffnEchoSkillBotPython
+    - BffnWaterfallSkillBotPython
