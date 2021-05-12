@@ -279,23 +279,23 @@ steps:
             while($tries -gt 0) {
               $directLine = (az bot directline show --name $bot.resourceBotName --resource-group $bot.resourceGroup --with-secrets true 2>$null | ConvertFrom-Json).properties.properties.sites.key;
               if (-not [string]::IsNullOrEmpty($directLine)) {
+                $appSettings.HostBotClientOptions[$bot.key] = @{
+                  DirectLineSecret = $directLine
+                  BotId            = $bot.botName
+                }
                 break;
               }
               $tries--;
             }
+          }
 
-            if ([string]::IsNullOrEmpty($directLine)) {
-              [Console]::ForegroundColor = "red"
-              $errorMessage = AddTimeStamp -text "$($bot.key): DirectLine channel not configured."
-              [Console]::Error.WriteLine($errorMessage)
-              [Console]::ResetColor()
-              exit 1 # Force exit
-            }
-
-            $appSettings.HostBotClientOptions[$bot.key] = @{
-              DirectLineSecret = $directLine
-              BotId            = $bot.botName
-            }
+          if ($appSettings.HostBotClientOptions.count -ne $bots.length) {
+            [Console]::ForegroundColor = "red"
+            [Console]::Error.WriteLine("Some host bots' DirectLine secrets couldn't be retrieved from Azure.")
+            $config = $appSettings.HostBotClientOptions | Out-String
+            [Console]::Error.WriteLine($config)
+            [Console]::ResetColor()
+            exit 1 # Force exit
           }
 
           $appSettings | ConvertTo-Json | Set-Content $appsettingsPath;
