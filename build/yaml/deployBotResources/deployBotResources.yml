@@ -171,6 +171,16 @@ variables:
   # BffnWaterfallSkillBotPythonAppSecret: (optional) App Secret for BffnWaterfallSkillBotPython bot.
   # ConnectionName: (optional) Name for the OAuth connection to use in the skill bots.
 
+  ## DependenciesVersion (Define these variables in Azure) Possible values are: Latest (default), Stable, or specific version numbers.
+  # DependenciesVersionDotNetHosts: (optional) Bot Builder dependency version to use for DotNet host bots.
+  # DependenciesVersionDotNetSkills: (optional) Bot Builder dependency version to use for DotNet skill bots.
+  # DependenciesVersionDotNetSkillsV3: (optional) Bot Builder dependency version to use for DotNet skill V3 bots.
+  # DependenciesVersionJSHosts: (optional) Bot Builder dependency version to use for JS host bots.
+  # DependenciesVersionJSSkills: (optional) Bot Builder dependency version to use for JS skill bots.
+  # DependenciesVersionJSSkillsV3: (optional) Bot Builder dependency version to use for JS skill V3 bots.
+  # DependenciesVersionPythonHosts: (optional) Bot Builder dependency version to use for Python host bots.
+  # DependenciesVersionPythonSkills: (optional) Bot Builder dependency version to use for Python skill bots.
+
   ## Internal variables
   InternalAppInsightsName: 'bffnappinsights$(INTERNALRESOURCESUFFIX)'
   InternalAppServicePlanWindowsResourceGroup: $[coalesce(variables['APPSERVICEPLANGROUP'], 'bffnshared')]
