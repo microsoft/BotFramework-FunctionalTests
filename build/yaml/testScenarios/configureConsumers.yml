@@ -177,12 +177,11 @@ steps:
 
               if ($exists) {
                 Write-Host $(AddTimeStamp -text "$($bot.key): Resource '$($bot.resourceBotName)' found.");
-              } 
+                return $bot;
+              }
               else {
                 Write-Host $(AddTimeStamp -text "$($bot.key): Unable to find the resource '$($bot.resourceBotName)'.");
               }
-
-              return $bot;
             }
           };
         }
