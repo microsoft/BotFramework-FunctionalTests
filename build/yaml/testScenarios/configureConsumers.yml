@@ -290,11 +290,9 @@ steps:
           }
 
           if ($appSettings.HostBotClientOptions.count -ne $bots.length) {
-            [Console]::ForegroundColor = "red"
-            [Console]::Error.WriteLine("Some host bots' DirectLine secrets couldn't be retrieved from Azure.")
+            Write-Host "##vso[task.logissue type=error]Some host bots' DirectLine secrets couldn't be retrieved from Azure."
             $config = $appSettings.HostBotClientOptions | Out-String
-            [Console]::Error.WriteLine($config)
-            [Console]::ResetColor()
+            Write-Host "##vso[task.logissue type=error]$config"
             exit 1 # Force exit
           }
 
