@@ -13,7 +13,7 @@ parameters:
   - name: dependenciesVersionDotNetHosts
     displayName: DotNet Hosts Version
     type: string
-    default: "LATEST"
+    default: $env:DEPENDENCIESVERSIONDOTNETHOSTS
 
   - name: dependenciesRegistryDotNetHosts
     displayName: DotNet Hosts Registry
@@ -27,7 +27,7 @@ parameters:
   - name: dependenciesVersionDotNetSkills
     displayName: DotNet Skills Version
     type: string
-    default: "LATEST"
+    default: $env:DEPENDENCIESVERSIONDOTNETSKILLS
 
   - name: dependenciesRegistryDotNetSkills
     displayName: DotNet Skills Registry
@@ -41,7 +41,7 @@ parameters:
   - name: dependenciesVersionDotNetSkillsV3
     displayName: DotNet Skills V3 Version
     type: string
-    default: "LATEST"
+    default: $env:DEPENDENCIESVERSIONDOTNETSKILLSV3
 
   - name: dependenciesRegistryDotNetSkillsV3
     displayName: DotNet Skills V3 Registry
@@ -54,7 +54,7 @@ parameters:
   - name: dependenciesVersionJSHosts
     displayName: JS Hosts Version
     type: string
-    default: "LATEST"
+    default: $env:DEPENDENCIESVERSIONJSHOSTS
 
   - name: dependenciesRegistryJSHosts
     displayName: JS Hosts Registry
@@ -67,7 +67,7 @@ parameters:
   - name: dependenciesVersionJSSkills
     displayName: JS Skills Version
     type: string
-    default: "LATEST"
+    default: $env:DEPENDENCIESVERSIONJSSKILLS
 
   - name: dependenciesRegistryJSSkills
     displayName: JS Skills Registry
@@ -80,7 +80,7 @@ parameters:
   - name: dependenciesVersionJSSkillsV3
     displayName: JS Skills V3 Version
     type: string
-    default: "LATEST"
+    default: $env:DEPENDENCIESVERSIONJSSKILLSV3
 
   - name: dependenciesRegistryJSSkillsV3
     displayName: JS Skills V3 Registry
@@ -93,7 +93,7 @@ parameters:
   - name: dependenciesVersionPythonHosts
     displayName: Python Hosts Version
     type: string
-    default: "LATEST"
+    default: $env:DEPENDENCIESVERSIONPYTHONHOSTS
 
   - name: dependenciesRegistryPythonHosts
     displayName: Python Hosts Registry
@@ -107,7 +107,7 @@ parameters:
   - name: dependenciesVersionPythonSkills
     displayName: Python Skills Version
     type: string
-    default: "LATEST"
+    default: $env:DEPENDENCIESVERSIONPYTHONSKILLS
 
   - name: dependenciesRegistryPythonSkills
     displayName: Python Skills Registry
@@ -170,6 +170,16 @@ variables:
   # BffnWaterfallSkillBotPythonAppId: (optional) App Id for BffnWaterfallSkillBotPython bot.
   # BffnWaterfallSkillBotPythonAppSecret: (optional) App Secret for BffnWaterfallSkillBotPython bot.
   # ConnectionName: (optional) Name for the OAuth connection to use in the skill bots.
+
+  ## DependenciesVersion (Define these variables in Azure) Possible values are: Latest (default), Stable, or specific version numbers.
+  # DependenciesVersionDotNetHosts: (optional) Bot Builder dependency version to use for DotNet host bots.
+  # DependenciesVersionDotNetSkills: (optional) Bot Builder dependency version to use for DotNet skill bots.
+  # DependenciesVersionDotNetSkillsV3: (optional) Bot Builder dependency version to use for DotNet skill V3 bots.
+  # DependenciesVersionJSHosts: (optional) Bot Builder dependency version to use for JS host bots.
+  # DependenciesVersionJSSkills: (optional) Bot Builder dependency version to use for JS skill bots.
+  # DependenciesVersionJSSkillsV3: (optional) Bot Builder dependency version to use for JS skill V3 bots.
+  # DependenciesVersionPythonHosts: (optional) Bot Builder dependency version to use for Python host bots.
+  # DependenciesVersionPythonSkills: (optional) Bot Builder dependency version to use for Python skill bots.
 
   ## Internal variables
   InternalAppInsightsName: 'bffnappinsights$(INTERNALRESOURCESUFFIX)'
