@@ -43,14 +43,14 @@ const adapter = new BotFrameworkAdapter({
     agentSettings: {
       http: new http.Agent({
         keepAlive: true,
-        maxTotalSockets: maxTotalSockets(1024, 4, 0.3),
+        maxTotalSockets: maxTotalSockets(1024, 4, 0.3)
       }),
       https: new https.Agent({
         keepAlive: true,
-        maxTotalSockets: maxTotalSockets(1024, 4, 0.7),
-      }),
-    },
-  },
+        maxTotalSockets: maxTotalSockets(1024, 4, 0.7)
+      })
+    }
+  }
 });
 
 // Use the logger middleware to log messages. The default logger argument for LoggerMiddleware is Node's console.log().
