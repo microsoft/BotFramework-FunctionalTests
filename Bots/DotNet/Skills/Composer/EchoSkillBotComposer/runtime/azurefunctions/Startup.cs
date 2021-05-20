@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
 using Microsoft.ApplicationInsights.Extensibility;
@@ -25,11 +25,11 @@ using Microsoft.BotFramework.Composer.Core.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using SkillConversationIdFactory = Microsoft.BotFramework.Composer.Core.SkillConversationIdFactory;
 
 [assembly: FunctionsStartup(typeof(Microsoft.BotFramework.Composer.Functions.Startup))]
 
