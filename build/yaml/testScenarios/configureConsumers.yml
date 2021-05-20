@@ -177,12 +177,11 @@ steps:
 
               if ($exists) {
                 Write-Host $(AddTimeStamp -text "$($bot.key): Resource '$($bot.resourceBotName)' found.");
-              } 
+                return $bot;
+              }
               else {
                 Write-Host $(AddTimeStamp -text "$($bot.key): Unable to find the resource '$($bot.resourceBotName)'.");
               }
-
-              return $bot;
             }
           };
         }
@@ -273,12 +272,27 @@ steps:
             $bot = $_;
 
             Write-Host $(AddTimeStamp -text "$($bot.key): Getting the DirectLine secret.");
-            $directLine = (az bot directline show --name $bot.resourceBotName --resource-group $bot.resourceGroup --with-secrets true 2>$null | ConvertFrom-Json).properties.properties.sites.key;
-                    
-            $appSettings.HostBotClientOptions[$bot.key] = @{
-              DirectLineSecret = $directLine
-              BotId            = $bot.botName
+            $tries = 3;
+            $directLine = "";
+
+            while($tries -gt 0) {
+              $directLine = (az bot directline show --name $bot.resourceBotName --resource-group $bot.resourceGroup --with-secrets true 2>$null | ConvertFrom-Json).properties.properties.sites.key;
+              if (-not [string]::IsNullOrEmpty($directLine)) {
+                $appSettings.HostBotClientOptions[$bot.key] = @{
+                  DirectLineSecret = $directLine
+                  BotId            = $bot.botName
+                }
+                break;
+              }
+              $tries--;
             }
+          }
+
+          if ($appSettings.HostBotClientOptions.count -ne $bots.length) {
+            Write-Host "##vso[task.logissue type=error]Some host bots' DirectLine secrets couldn't be retrieved from Azure."
+            $config = $appSettings.HostBotClientOptions | Out-String
+            Write-Host "##vso[task.logissue type=error]$config"
+            exit 1 # Force exit
           }
 
           $appSettings | ConvertTo-Json | Set-Content $appsettingsPath;
