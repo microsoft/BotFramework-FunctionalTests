@@ -3,7 +3,6 @@
 ## Main documents
 
 - [Pipelines](./pipelines.md)
-- [Pipelines (Legacy)](./pipelinesLegacy.md)
 
 ## Guides
 
