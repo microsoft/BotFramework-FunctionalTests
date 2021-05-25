@@ -83,91 +83,16 @@ stages:
               registry: "${{ bot.dependency.registry }}"
               version: "${{ bot.dependency.version }}"
 
-          # Install dependencies in Microsoft.BotFramework.Composer.WebApp
+          # Start of DotNet Install & Build
           - template: installDependencies.yml
             parameters:
-              project: 
-                directory: "${{ bot.project.directory }}/runtime/azurewebapp/"
-                name: "Microsoft.BotFramework.Composer.WebApp.csproj"
+              project: "${{ bot.project }}"
               registry: "$(DEPENDENCIESSOURCE)"
               version: "$(DEPENDENCIESVERSIONNUMBER)"
               packages:
-                Microsoft.Bot.Builder
                 Microsoft.Bot.Builder.AI.Luis
                 Microsoft.Bot.Builder.AI.QnA
-                Microsoft.Bot.Builder.ApplicationInsights
-                Microsoft.Bot.Builder.Azure
-                Microsoft.Bot.Builder.Dialogs.Declarative
-                Microsoft.Bot.Builder.Dialogs.Adaptive
-                Microsoft.Bot.Builder.Dialogs.Debugging
-                Microsoft.Bot.Builder.Integration.ApplicationInsights.Core
-                Microsoft.Bot.Builder.Integration.AspNet.Core
-                Microsoft.Bot.Builder.Dialogs
-                Microsoft.Bot.Connector
-
-          # Install dependencies in Microsoft.BotFramework.Composer.Functions
-          - template: installDependencies.yml
-            parameters:
-              project: 
-                directory: "${{ bot.project.directory }}/runtime/azurefunctions/"
-                name: "Microsoft.BotFramework.Composer.Functions.csproj"
-              registry: "$(DEPENDENCIESSOURCE)"
-              version: "$(DEPENDENCIESVERSIONNUMBER)"
-              packages:
-                Microsoft.Bot.Builder
-                Microsoft.Bot.Builder.AI.Luis
-                Microsoft.Bot.Builder.AI.QnA
-                Microsoft.Bot.Builder.ApplicationInsights
-                Microsoft.Bot.Builder.Azure
-                Microsoft.Bot.Builder.Dialogs.Adaptive
-                Microsoft.Bot.Builder.Dialogs.Debugging
-                Microsoft.Bot.Builder.Dialogs.Declarative
-                Microsoft.Bot.Builder.Integration.ApplicationInsights.Core
-                Microsoft.Bot.Builder.Integration.AspNet.Core
-                Microsoft.Bot.Builder.Dialogs
-                Microsoft.Bot.Connector
-
-          # Install dependencies in Microsoft.BotFramework.Composer.CustomAction
-          - template: installDependencies.yml
-            parameters:
-              project:
-                directory: "${{ bot.project.directory }}/runtime/customaction/"
-                name: "Microsoft.BotFramework.Composer.CustomAction.csproj"
-              registry: "$(DEPENDENCIESSOURCE)"
-              version: "$(DEPENDENCIESVERSIONNUMBER)"
-              packages:
-                Microsoft.Bot.Builder.Dialogs.Adaptive
-
-          # Install dependencies in Microsoft.BotFramework.Composer.Core
-          - template: installDependencies.yml
-            parameters:
-              project: 
-                directory: "${{ bot.project.directory }}/runtime/core/"
-                name: "Microsoft.BotFramework.Composer.Core.csproj"
-              registry: "$(DEPENDENCIESSOURCE)"
-              version: "$(DEPENDENCIESVERSIONNUMBER)"
-              packages:
-                Microsoft.Bot.Builder
-                Microsoft.Bot.Builder.AI.Luis
-                Microsoft.Bot.Builder.AI.QnA
-                Microsoft.Bot.Builder.ApplicationInsights
-                Microsoft.Bot.Builder.Azure
-                Microsoft.Bot.Builder.Azure.Blobs
-                Microsoft.Bot.Builder.Dialogs.Adaptive
-                Microsoft.Bot.Builder.Dialogs.Debugging
-                Microsoft.Bot.Builder.Dialogs.Declarative
-                Microsoft.Bot.Builder.Integration.ApplicationInsights.Core
-                Microsoft.Bot.Builder.Integration.AspNet.Core
-                Microsoft.Bot.Builder.Dialogs
-                Microsoft.Bot.Connector
-
-          # Prepare DotNet deploy
-          - task: AzureCLI@1
-            displayName: "Prepare Deploy"
-            inputs:
-              azureSubscription: "${{ parameters.azureSubscription }}"
-              scriptLocation: inlineScript
-              inlineScript: "az bot prepare-deploy --lang Csharp --code-dir ${{ bot.project.directory }}/runtime/azurewebapp --proj-file-path Microsoft.BotFramework.Composer.WebApp.csproj --output json"
+                Microsoft.Bot.Builder.Dialogs.Adaptive.Runtime
 
           # Build Bot
           - task: DotNetCoreCLI@2
@@ -175,10 +100,9 @@ stages:
             inputs:
               command: publish
               publishWebProjects: false
-              projects: "${{ bot.project.directory }}/runtime/azurewebapp/Microsoft.BotFramework.Composer.WebApp.csproj"
-              arguments: "-c release -o ${{ parameters.buildFolder }}"
+              projects: "${{ bot.project.directory }}/${{ bot.project.name }}"
+              arguments: "--output $(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ parameters.buildFolder }}/${{ bot.name }}"
               modifyOutputPath: false
-              zipAfterPublish: false
 
           # Get BotBuilder package version
           - task: PowerShell@2
@@ -188,48 +112,24 @@ stages:
               workingDirectory: '$(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ bot.project.directory }}'
               failOnStderr: true
               script: |
-                [XML]$data = Get-Content "./runtime/azurewebapp/Microsoft.BotFramework.Composer.WebApp.csproj";
-                $package = $data.Project.ItemGroup.PackageReference | Where-Object { $_.Include -eq "Microsoft.Bot.Builder.Integration.AspNet.Core" };
-                Write-Host "##vso[task.setvariable variable=BotBuilderVersionNumber]$($package.version)";
+                [XML]$data = Get-Content "./${{ bot.project.name }}"
+                $package = $data.Project.ItemGroup.PackageReference | Where-Object { $_.Include -eq "Microsoft.Bot.Builder.Dialogs.Adaptive.Runtime" }
+                Write-Host "##vso[task.setvariable variable=BotBuilderVersionNumber]$($package.version)"
 
           # Tag BotBuilder package version
           - template: ../common/tagBotBuilderVersion.yml
             parameters:
               ${{ if eq(bot.displayName, '') }}:
-                botName: '${{ bot.name }}'
+                botName: "${{ bot.name }}"
               ${{ if ne(bot.displayName, '') }}:
-                botName: '${{ bot.displayName }}'
+                botName: "${{ bot.displayName }}"
               version: "$(BOTBUILDERVERSIONNUMBER)"
-
-          # Arrange composer folders & files
-          - task: PowerShell@2
-            displayName: 'Prepare Composer'
-            inputs:
-              targetType: inline
-              workingDirectory: '$(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ bot.project.directory }}'
-              failOnStderr: true
-              script: |
-                $composerDialogs = "$(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ parameters.buildFolder }}/ComposerDialogs"
-                Remove-Item $composerDialogs -Recurse -ErrorAction Ignore
-
-                Copy-Item -Path (Get-Item -Path ./* -Exclude ("runtime", "scripts", "*.ps1", "readme.md", "*.botproj", ".gitignore")).FullName -Destination $composerDialogs -Recurse -Force -Container
-
-          # Zip bot
-          - task: ArchiveFiles@2
-            displayName: 'Zip bot'
-            inputs:
-              rootFolderOrFile: '$(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ parameters.buildFolder }}'
-              includeRootFolder: false
-              archiveType: 'zip'
-              archiveFile: '$(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ parameters.buildFolder }}/${{ bot.name }}.zip'
-              replaceExistingArchive: true
-              verbose: true
 
           # Upload zip to artifacts in case we want to debug it
           - task: PublishBuildArtifacts@1
             displayName: 'Publish zip package'
             inputs:
-              pathToPublish: '$(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ parameters.buildFolder }}/${{ bot.name }}.zip'
+              pathToPublish: "$(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ parameters.buildFolder }}/${{ bot.name }}/${{ bot.name }}.zip"
               artifactName: dotnet-$(BUILD.BUILDID)
 
           # Create App Service and Bot Channel Registration
@@ -237,7 +137,7 @@ stages:
             parameters:
               appId: $(APPID)
               appInsight: "${{ parameters.appInsight }}"
-              appSecret:  $(APPSECRET)
+              appSecret: $(APPSECRET)
               appServicePlan: "${{ parameters.appServicePlan }}"
               appServicePlanRG: "${{ parameters.appServicePlanRG }}"
               azureSubscription: "${{ parameters.azureSubscription }}"
@@ -254,7 +154,7 @@ stages:
               azureSubscription: "${{ parameters.azureSubscription }}"
               appName: '${{ bot.name }}${{ parameters.resourceSuffix }}-$(BUILD.BUILDID)'
               resourceGroupName: '${{ parameters.resourceGroup }}'
-              package: '$(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ parameters.buildFolder }}/${{ bot.name }}.zip'
+              package: '$(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ parameters.buildFolder }}/${{ bot.name }}/${{ bot.name }}.zip'
               deploymentMethod: runFromPackage
 
           # Create DirectLine Channel Hosts
