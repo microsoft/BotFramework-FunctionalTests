@@ -192,7 +192,6 @@ variables:
   InternalResourceGroupName: $[coalesce(variables['RESOURCEGROUP'], 'bffnbots')]
   InternalResourceSuffix: $[coalesce(variables['RESOURCESUFFIX'], '')]
 
-
 stages:
 # Resource Groups
   - template: common/prepareResources.yml
@@ -267,7 +266,7 @@ stages:
             version: ${{ parameters.dependenciesVersionDotNetSkills }}
 
         - name: "bffnechoskillbotdotnet21"
-          dependsOn: "Deploy_bffnsimplehostbotdotnet"
+          dependsOn: "Prepare_DotNetGroup"
           type: "Skill"
           displayName: "DotNet Echo Skill Bot 2.1"
           appId: $(BFFNECHOSKILLBOTDOTNET21APPID)
@@ -281,7 +280,7 @@ stages:
             version: ${{ parameters.dependenciesVersionDotNetSkills }}
 
         - name: "bffnechoskillbotdotnetv3"
-          dependsOn: "Deploy_bffnsimplehostbotdotnet21"
+          dependsOn: "Prepare_DotNetGroup"
           type: "SkillV3"
           displayName: "DotNet Echo Skill Bot v3"
           appId: $(BFFNECHOSKILLBOTDOTNETV3APPID)
@@ -294,7 +293,7 @@ stages:
             version: ${{ parameters.dependenciesVersionDotNetSkillsV3 }}
 
         - name: "bffnwaterfallhostbotdotnet"
-          dependsOn: "Deploy_bffnechoskillbotdotnet"
+          dependsOn: "Deploy_bffnsimplehostbotdotnet"
           type: "Host"
           displayName: "DotNet Waterfall Host Bot"
           appId: $(BFFNWATERFALLHOSTBOTDOTNETAPPID)
@@ -308,7 +307,7 @@ stages:
             version: ${{ parameters.dependenciesVersionDotNetHosts }}
 
         - name: "bffnwaterfallskillbotdotnet"
-          dependsOn: "Deploy_bffnechoskillbotdotnet21"
+          dependsOn: "Deploy_bffnsimplehostbotdotnet21"
           type: "Skill"
           displayName: "DotNet Waterfall Skill Bot"
           appId: $(BFFNWATERFALLSKILLBOTDOTNETAPPID)
@@ -334,26 +333,28 @@ stages:
       resourceSuffix: $(INTERNALRESOURCESUFFIX)
       bots:
         - name: "bffnsimplehostbotcomposerdotnet"
-          dependsOn: "Deploy_bffnechoskillbotdotnetv3"
+          dependsOn: "Deploy_bffnechoskillbotdotnet"
           type: "Host"
           displayName: "DotNet Simple Composer Host Bot"
           appId: $(BFFNSIMPLEHOSTBOTCOMPOSERDOTNETAPPID)
           appSecret: $(BFFNSIMPLEHOSTBOTCOMPOSERDOTNETAPPSECRET)
           project: 
             directory: 'Bots/DotNet/Consumers/Composer/SimpleHostBotComposer'
+            name: "SimpleHostBotComposer.csproj"
             netCoreVersion: "3.1.x"
           dependency:
             registry: ${{ parameters.dependenciesRegistryDotNetHosts }}
             version: ${{ parameters.dependenciesVersionDotNetHosts }}
 
         - name: "bffnechoskillbotcomposerdotnet"
-          dependsOn: "Deploy_bffnwaterfallhostbotdotnet"
+          dependsOn: "Deploy_bffnechoskillbotdotnet21"
           type: "Skill"
           displayName: "DotNet Echo Composer Skill Bot"
           appId: $(BFFNECHOSKILLBOTCOMPOSERDOTNETAPPID)
           appSecret: $(BFFNECHOSKILLBOTCOMPOSERDOTNETAPPSECRET)
           project: 
             directory: 'Bots/DotNet/Skills/Composer/EchoSkillBotComposer'
+            name: "EchoSkillBotComposer.csproj"
             netCoreVersion: "3.1.x"
           dependency:
             registry: ${{ parameters.dependenciesRegistryDotNetSkills }}
