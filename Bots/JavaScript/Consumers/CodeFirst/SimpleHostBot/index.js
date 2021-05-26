@@ -125,7 +125,7 @@ const memoryStorage = new MemoryStorage();
 const conversationState = new ConversationState(memoryStorage);
 
 // Create the conversationIdFactory
-const conversationIdFactory = new SkillConversationIdFactory();
+const conversationIdFactory = new SkillConversationIdFactory(memoryStorage);
 
 // Load skills configuration
 const skillsConfig = new SkillsConfiguration();
