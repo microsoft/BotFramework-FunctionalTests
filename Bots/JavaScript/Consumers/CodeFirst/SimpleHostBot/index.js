@@ -11,7 +11,7 @@ const restify = require('restify');
 
 // Import required bot services.
 // See https://aka.ms/bot-services to learn more about the different parts of a bot.
-const { BotFrameworkAdapter, TurnContext, ActivityTypes, ChannelServiceRoutes, ConversationState, InputHints, MemoryStorage, SkillHandler, SkillHttpClient, MessageFactory } = require('botbuilder');
+const { BotFrameworkAdapter, TurnContext, ActivityTypes, ChannelServiceRoutes, ConversationState, InputHints, MemoryStorage, SkillHandler, SkillHttpClient, MessageFactory, SkillConversationIdFactory } = require('botbuilder');
 const { AuthenticationConfiguration, SimpleCredentialProvider } = require('botframework-connector');
 
 // Import required bot configuration.
@@ -21,7 +21,6 @@ require('dotenv').config({ path: ENV_FILE });
 // This bot's main dialog.
 const { HostBot } = require('./bots/hostBot');
 const { SkillsConfiguration } = require('./skillsConfiguration');
-const { SkillConversationIdFactory } = require('./skillConversationIdFactory');
 const { allowedSkillsClaimsValidator } = require('./authentication/allowedSkillsClaimsValidator');
 const { SetupDialog } = require('./dialogs/setupDialog');
 
