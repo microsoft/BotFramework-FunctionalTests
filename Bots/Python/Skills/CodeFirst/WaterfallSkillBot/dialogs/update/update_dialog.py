@@ -13,7 +13,6 @@ from botbuilder.dialogs import (
     DialogTurnStatus,
     PromptOptions,
 )
-from botbuilder.schema import Activity, ActivityTypes, EndOfConversationCodes
 from botframework.connector import Channels
 
 
@@ -67,12 +66,6 @@ class UpdateDialog(ComponentDialog):
                 )
             )
 
-            await step_context.context.send_activity(
-                Activity(
-                    type=ActivityTypes.end_of_conversation,
-                    code=EndOfConversationCodes.completed_successfully,
-                )
-            )
             return DialogTurnResult(DialogTurnStatus.Complete)
 
         # Ask if we want to update the activity again.
@@ -94,10 +87,4 @@ class UpdateDialog(ComponentDialog):
 
         self._update_tracker.pop(step_context.context.activity.conversation.id)
 
-        await step_context.context.send_activity(
-            Activity(
-                type=ActivityTypes.end_of_conversation,
-                code=EndOfConversationCodes.completed_successfully,
-            )
-        )
         return DialogTurnResult(DialogTurnStatus.Complete)

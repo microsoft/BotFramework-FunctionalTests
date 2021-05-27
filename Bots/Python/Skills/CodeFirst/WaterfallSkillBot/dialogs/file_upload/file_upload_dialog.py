@@ -15,12 +15,7 @@ from botbuilder.dialogs import (
     ConfirmPrompt,
 )
 from botbuilder.dialogs.prompts import PromptOptions, AttachmentPrompt
-from botbuilder.schema import (
-    InputHints,
-    Activity,
-    ActivityTypes,
-    EndOfConversationCodes,
-)
+from botbuilder.schema import InputHints
 
 
 class FileUploadDialog(ComponentDialog):
@@ -88,10 +83,4 @@ class FileUploadDialog(ComponentDialog):
         if try_another:
             return await step_context.replace_dialog(self.initial_dialog_id)
 
-        await step_context.context.send_activity(
-            Activity(
-                type=ActivityTypes.end_of_conversation,
-                code=EndOfConversationCodes.completed_successfully,
-            )
-        )
         return DialogTurnResult(DialogTurnStatus.Complete)
