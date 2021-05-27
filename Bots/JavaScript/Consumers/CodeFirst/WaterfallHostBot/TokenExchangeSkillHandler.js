@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 const { v4 } = require('uuid');
-const { ActivityEx, ActivityTypes, CardFactory, SkillHandler, tokenExchangeOperationName, TurnContext, SkillConversationIdFactory } = require('botbuilder');
+const { ActivityEx, ActivityTypes, CardFactory, SkillHandler, tokenExchangeOperationName, TurnContext } = require('botbuilder');
 const { JwtTokenValidation } = require('botframework-connector');
 
 const WATERFALL_SKILL_BOT = 'WaterfallSkillBot';
