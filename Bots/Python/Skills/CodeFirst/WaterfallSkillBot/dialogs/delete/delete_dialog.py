@@ -10,7 +10,6 @@ from botbuilder.dialogs import (
     DialogTurnResult,
     DialogTurnStatus,
 )
-from botbuilder.schema import Activity, ActivityTypes, EndOfConversationCodes
 from botframework.connector import Channels
 
 
@@ -41,12 +40,5 @@ class DeleteDialog(ComponentDialog):
                     f"Delete is not supported in the {channel} channel."
                 )
             )
-
-        await step_context.context.send_activity(
-            Activity(
-                type=ActivityTypes.end_of_conversation,
-                code=EndOfConversationCodes.completed_successfully,
-            )
-        )
 
         return DialogTurnResult(DialogTurnStatus.Complete)

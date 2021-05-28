@@ -5,10 +5,8 @@ from typing import Dict
 from botbuilder.core import MessageFactory, BotAdapter, TurnContext
 from botbuilder.dialogs import Dialog, DialogContext, DialogTurnResult, DialogTurnStatus
 from botbuilder.schema import (
-    Activity,
     ActivityTypes,
-    ActivityEventNames,
-    EndOfConversationCodes,
+    ActivityEventNames
 )
 from config import DefaultConfig
 from .continuation_parameters import ContinuationParameters
@@ -57,12 +55,6 @@ class WaitForProactiveDialog(Dialog):
             )
 
             # End the dialog so the host gets an EoC
-            await dialog_context.context.send_activity(
-                Activity(
-                    type=ActivityTypes.end_of_conversation,
-                    code=EndOfConversationCodes.completed_successfully,
-                )
-            )
             return DialogTurnResult(DialogTurnStatus.Complete)
 
         # Keep waiting for a call to the ProactiveController.
