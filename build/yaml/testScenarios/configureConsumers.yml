@@ -173,9 +173,9 @@ steps:
             $bot = $_;
 
             if ($groups.Value -contains $bot.resourceGroup) {
-              $exists = -not (az resource wait --exists --resource-group $bot.resourceGroup --name $bot.resourceBotName --resource-type Microsoft.Web/sites --interval 1 --timeout 6);
+              $enabled = (az webapp show --name $bot.resourceBotName --resource-group $bot.resourceGroup 2>$null | ConvertFrom-Json).enabled;
 
-              if ($exists) {
+              if ($enabled) {
                 Write-Host $(AddTimeStamp -text "$($bot.key): Resource '$($bot.resourceBotName)' found.");
                 return $bot;
               }
