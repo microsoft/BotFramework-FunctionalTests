@@ -172,12 +172,3 @@ stages:
               resourceGroupName: "${{ parameters.resourceGroup }}"
               package: "$(System.DefaultWorkingDirectory)/build/${{ bot.name }}.zip"
               deploymentMethod: runFromPackage
-
-          # Create DirectLine Channel Hosts
-          - ${{ if eq(bot.type, 'Host') }}:
-            - template: ../common/createDirectLine.yml
-              parameters:
-                azureSubscription: "${{ parameters.azureSubscription }}"
-                botGroup: "${{ parameters.resourceGroup }}"
-                botName: "${{ bot.name }}"
-                resourceSuffix: "${{ parameters.resourceSuffix }}"
