@@ -198,7 +198,7 @@ stages:
           # End of DotNet v3 Install & Build
 
           # Start of DotNet Composer Install & Build
-          - ${{ if eq('Composer') }}:
+          - ${{ if eq(bot.type, 'Composer') }}:
             # Install dependencies
             - template: installDependencies.yml
               parameters:
