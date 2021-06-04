@@ -229,27 +229,6 @@
         },
         "channelName": "DirectLineChannel"
       }
-    },
-    {
-      "type": "Microsoft.BotService/botServices/channels",
-      "apiVersion": "2021-03-01",
-      "name": "[concat(parameters('botName'), '/WebChatChannel')]",
-      "location": "global",
-      "dependsOn": [
-        "[resourceId('Microsoft.BotService/botServices', parameters('botName'))]"
-      ],
-      "properties": {
-        "properties": {
-          "sites": [
-            {
-              "siteName": "Default Site",
-              "isEnabled": true,
-              "enablePreview": false
-            }
-          ]
-        },
-        "channelName": "WebChatChannel"
-      }
     }
   ]
 }
