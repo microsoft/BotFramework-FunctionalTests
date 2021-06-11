@@ -198,7 +198,7 @@ stages:
           # End of DotNet v3 Install & Build
 
           # Start of DotNet Composer Install & Build
-          - ${{ if eq(bot.type, 'Composer') }}:
+          - ${{ if in(bot.type, 'ComposerHost', 'ComposerSkill') }}:
             # Install dependencies
             - template: installDependencies.yml
               parameters:
@@ -287,7 +287,7 @@ stages:
                 resourceSuffix: "${{ parameters.resourceSuffix }}"
 
           # Create DirectLine Channel Hosts
-          - ${{ if eq(bot.type, 'Host') }}:
+          - ${{ if in(bot.type, 'Host', 'ComposerHost') }}:
             - template: ../common/createDirectLine.yml
               parameters:
                 azureSubscription: "${{ parameters.azureSubscription }}"
