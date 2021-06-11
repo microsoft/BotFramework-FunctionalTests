@@ -131,6 +131,8 @@ variables:
   # BotPricingTier: (optional) Pricing Tier for the bots, default F0.
   # ResourceGroup: (optional) Name of the Resource Group where the bots will be deployed.
   # ResourceSuffix: (optional) Suffix to add to the resources' name to avoid collitions.
+  # VirtualNetworkName: (optional) Name of the Virtual Network.
+  # VirtualNetworkGroup: (optional) Name of the Resource Group where the Virtual Network is located.
 
   ## Bots Configuration (Define these variables in Azure)
   # BffnEchoSkillBotComposerDotNetAppId: (optional) App Id for BffnEchoSkillBotComposerDotNet bot.
@@ -191,6 +193,8 @@ variables:
   InternalKeyVaultName: 'bffnbotkeyvault$(INTERNALRESOURCESUFFIX)'
   InternalResourceGroupName: $[coalesce(variables['RESOURCEGROUP'], 'bffnbots')]
   InternalResourceSuffix: $[coalesce(variables['RESOURCESUFFIX'], '')]
+  InternalVirtualNetworkName: $[coalesce(variables['VIRTUALNETWORKNAME'], '')]
+  InternalVirtualNetworkResourceGroup: $[coalesce(variables['VIRTUALNETWORKGROUP'], 'bffnshared')]
 
 stages:
 # Resource Groups
@@ -222,6 +226,8 @@ stages:
       keyVault: "$(INTERNALKEYVAULTNAME)"
       resourceGroup: "$(INTERNALRESOURCEGROUPNAME)-DotNet"
       resourceSuffix: $(INTERNALRESOURCESUFFIX)
+      virtualNetwork: "$(INTERNALVIRTUALNETWORKNAME)"
+      virtualNetworkRG: "$(INTERNALVIRTUALNETWORKRESOURCEGROUP)"
       bots:
         - name: "bffnsimplehostbotdotnet"
           dependsOn: "Prepare_DotNetGroup"
@@ -331,6 +337,8 @@ stages:
       keyVault: "$(INTERNALKEYVAULTNAME)"
       resourceGroup: "$(INTERNALRESOURCEGROUPNAME)-DotNet"
       resourceSuffix: $(INTERNALRESOURCESUFFIX)
+      virtualNetwork: "$(INTERNALVIRTUALNETWORKNAME)"
+      virtualNetworkRG: "$(INTERNALVIRTUALNETWORKRESOURCEGROUP)"
       bots:
         - name: "bffnsimplehostbotcomposerdotnet"
           dependsOn: "Deploy_bffnechoskillbotdotnet"
@@ -373,6 +381,8 @@ stages:
       keyVault: "$(INTERNALKEYVAULTNAME)"
       resourceGroup: "$(INTERNALRESOURCEGROUPNAME)-JS"
       resourceSuffix: $(INTERNALRESOURCESUFFIX)
+      virtualNetwork: "$(INTERNALVIRTUALNETWORKNAME)"
+      virtualNetworkRG: "$(INTERNALVIRTUALNETWORKRESOURCEGROUP)"
       bots:
         - name: "bffnsimplehostbotjs"
           type: "Host"
@@ -441,6 +451,8 @@ stages:
       keyVault: "$(INTERNALKEYVAULTNAME)"
       resourceGroup: "$(INTERNALRESOURCEGROUPNAME)-Python"
       resourceSuffix: "$(INTERNALRESOURCESUFFIX)"
+      virtualNetwork: "$(INTERNALVIRTUALNETWORKNAME)"
+      virtualNetworkRG: "$(INTERNALVIRTUALNETWORKRESOURCEGROUP)"
       bots:
         - name: "bffnsimplehostbotpython"
           type: "Host"

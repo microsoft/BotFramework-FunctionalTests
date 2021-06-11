@@ -26,6 +26,16 @@
     "appServicePlanResourceGroup": {
       "type": "string"
     },
+    "virtualNetworkName": {
+      "type": "string",
+      "defaultValue": ""
+    },
+    "virtualNetworkResourceGroup": {
+      "type": "string"
+    },
+    "subnetName": {
+      "type": "string"
+    },
     "botSku": {
       "type": "string",
       "defaultValue": "F0",
@@ -67,6 +77,11 @@
           "appSettings": [
             {
               "name": "WEBSITE_RUN_FROM_PACKAGE",
+              "value": "1"
+            },
+            {
+              "name": "WEBSITE_VNET_ROUTE_ALL",
+              "condition": "[not(empty(parameters('virtualNetworkName')))]",
               "value": "1"
             },
             {
@@ -189,6 +204,20 @@
         "developerAppInsightKey": "",
         "publishingCredentials": null,
         "storageResourceId": null
+      }
+    },
+    {
+      "condition": "[not(empty(parameters('virtualNetworkName')))]",
+      "name": "[concat(parameters('botName'), '/virtualNetwork')]",
+      "type": "Microsoft.Web/sites/config",
+      "apiVersion": "2018-02-01",
+      "location": "[parameters('botLocation')]",
+      "dependsOn": [
+          "[resourceId('Microsoft.Web/sites', parameters('botName'))]"
+      ],
+      "properties": {
+          "subnetResourceId": "[resourceId(parameters('virtualNetworkResourceGroup'), 'Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetName'))]",
+          "swiftSupported": true
       }
     }
   ]
