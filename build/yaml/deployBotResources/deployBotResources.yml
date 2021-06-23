@@ -131,7 +131,7 @@ variables:
   # BotPricingTier: (optional) Pricing Tier for the bots, default F0.
   # ContainerRegistryName: (optional) Name of the Container Registry.
   # ResourceGroup: (optional) Name of the Resource Group where the bots will be deployed.
-  # ResourceSuffix: (optional) Alphanumeric suffix to add to the resources' name to avoid collitions.
+  # ResourceSuffix: (optional) Alphanumeric suffix to add to the resources' name to avoid collisions.
   # SharedResourceGroup: (optional) Name of the Shared Resource Group.
 
   ## Bots Configuration (Define these variables in Azure)

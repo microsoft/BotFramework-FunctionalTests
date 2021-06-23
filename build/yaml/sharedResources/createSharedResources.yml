@@ -16,7 +16,7 @@ variables:
   # AppServicePlanPricingTier: (optional) Pricing Tier for App Service Plans, default F1.
   # ContainerRegistryPricingTier: (optional) Pricing Tier for Container Registry, default Basic.
   # ResourceGroupName: (optional) Name of the Resource Group for the shared resources.
-  # ResourceSuffix: (optional) Alphanumeric suffix to add to the resources' name to avoid collitions.
+  # ResourceSuffix: (optional) Alphanumeric suffix to add to the resources' name to avoid collisions.
 
   ## Internal variables
   InternalAppInsightsName: "bffnappinsights$($env:RESOURCESUFFIX)"

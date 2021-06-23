@@ -10,7 +10,7 @@ variables:
   ## Azure Resources (Define these variables in Azure)
   # AzureSubscription: Service Connection Name to Manage Azure resources.
   # DeployResourceGroup: (optional) Name of the Resource Group containing the bots.
-  # ResourceSuffix: (optional) Aphanumeric suffix to add to the resources' name to avoid collitions.
+  # ResourceSuffix: (optional) Alphanumeric suffix to add to the resources' name to avoid collisions.
   # SharedResourceGroup: (optional) Name of the Resource Group containing the shared resources.
 
   ## Internal variables
