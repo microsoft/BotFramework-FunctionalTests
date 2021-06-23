@@ -44,6 +44,10 @@ parameters:
     displayName: Azure resources' name suffix
     type: string
 
+  - name: sharedResourceGroup
+    displayName: Shared Resource Group
+    type: string
+
 stages:
 - ${{ each bot in parameters.bots }}:
   - stage: "Deploy_${{ bot.name }}"
@@ -226,6 +230,7 @@ stages:
               botName: "${{ bot.name }}"
               botPricingTier: "${{ parameters.botPricingTier }}"
               resourceSuffix: "${{ parameters.resourceSuffix }}"
+              sharedResourceGroup: "${{ parameters.sharedResourceGroup }}"
               templateFile: "build/templates/template-bot-resources.json"
 
           # Deploy bot

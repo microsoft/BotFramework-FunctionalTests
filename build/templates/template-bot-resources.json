@@ -36,6 +36,9 @@
       "metadata": {
         "description": "The pricing tier of the Bot Service Registration. Acceptable values are F0 and S1."
       }
+    },
+    "sharedResourceGroup": {
+      "type": "string"
     }
   },
   "variables": {
@@ -83,11 +86,11 @@
             },
             {
               "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-              "value": "[if(empty(parameters('appInsightsName')), '', reference(resourceId(parameters('appServicePlanResourceGroup'),'Microsoft.Insights/components', parameters('appInsightsName')), '2015-05-01', 'Full').properties.InstrumentationKey)]"
+              "value": "[if(empty(parameters('appInsightsName')), '', reference(resourceId(parameters('sharedResourceGroup'),'Microsoft.Insights/components', parameters('appInsightsName')), '2015-05-01', 'Full').properties.InstrumentationKey)]"
             },
             {
               "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
-              "value": "[if(empty(parameters('appInsightsName')), '', reference(resourceId(parameters('appServicePlanResourceGroup'),'Microsoft.Insights/components', parameters('appInsightsName')), '2015-05-01', 'Full').properties.ConnectionString)]"
+              "value": "[if(empty(parameters('appInsightsName')), '', reference(resourceId(parameters('sharedResourceGroup'),'Microsoft.Insights/components', parameters('appInsightsName')), '2015-05-01', 'Full').properties.ConnectionString)]"
             },
             {
               "name": "ApplicationInsightsAgent_EXTENSION_VERSION",

@@ -20,6 +20,10 @@
     "botLocation": {
       "type": "string"
     },
+    "appInsightsName": {
+      "type": "string",
+      "defaultValue": ""
+    },
     "appServicePlanName": {
       "type": "string"
     },
@@ -32,12 +36,34 @@
       "metadata": {
         "description": "The pricing tier of the Bot Service Registration. Acceptable values are F0 and S1."
       }
+    },
+    "sharedResourceGroup": {
+      "type": "string"
+    },
+    "containerRegistry": {
+      "type": "string"
+    },
+    "containerRegistryPassword": {
+      "type": "string"
+    },
+    "containerRepository": {
+      "type": "string"
+    },
+    "containerRepositoryTag": {
+      "type": "string"
+    },
+    "containerPort": {
+      "type": "string"
+    },
+    "containerCommand": {
+      "type": "string"
     }
   },
   "variables": {
     "siteHost": "[concat(parameters('botName'), '.azurewebsites.net')]",
     "botEndpoint": "[concat('https://', variables('siteHost'), '/api/messages')]",
-    "publishingUsername": "[concat('$', parameters('botName'))]"
+    "publishingUsername": "[concat('$', parameters('botName'))]",
+    "containerLoginServer": "[concat(parameters('containerRegistry'), '.azurecr.io')]"
   },
   "resources": [
     {
@@ -45,7 +71,7 @@
       "apiVersion": "2020-09-01",
       "name": "[parameters('botName')]",
       "location": "[parameters('botLocation')]",
-      "kind": "app,linux",
+      "kind": "app,linux,container",
       "properties": {
         "enabled": true,
         "hostNameSslStates": [
@@ -66,16 +92,44 @@
         "siteConfig": {
           "appSettings": [
             {
-              "name": "WEBSITE_RUN_FROM_PACKAGE",
-              "value": "1"
-            },
-            {
               "name": "MicrosoftAppId",
               "value": "[parameters('appId')]"
             },
             {
               "name": "MicrosoftAppPassword",
               "value": "[parameters('appSecret')]"
+            },
+            {
+              "name": "DOCKER_REGISTRY_SERVER_PASSWORD",
+              "value": "[parameters('containerRegistryPassword')]"
+            },
+            {
+              "name": "DOCKER_REGISTRY_SERVER_URL",
+              "value": "[concat('https://', variables('containerLoginServer'))]"
+            },
+            {
+              "name": "DOCKER_REGISTRY_SERVER_USERNAME",
+              "value": "[parameters('containerRegistry')]"
+            },
+            {
+              "name": "WEBSITES_ENABLE_APP_SERVICE_STORAGE",
+              "value": "false"
+            },
+            {
+              "name": "WEBSITES_PORT",
+              "value": "[parameters('containerPort')]"
+            },
+            {
+              "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+              "value": "[if(empty(parameters('appInsightsName')), '', reference(resourceId(parameters('sharedResourceGroup'),'Microsoft.Insights/components', parameters('appInsightsName')), '2015-05-01', 'Full').properties.InstrumentationKey)]"
+            },
+            {
+              "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
+              "value": "[if(empty(parameters('appInsightsName')), '', reference(resourceId(parameters('sharedResourceGroup'),'Microsoft.Insights/components', parameters('appInsightsName')), '2015-05-01', 'Full').properties.ConnectionString)]"
+            },
+            {
+              "name": "ApplicationInsightsAgent_EXTENSION_VERSION",
+              "value": "~2"
             }
           ],
           "webSocketsEnabled": true,
@@ -92,7 +146,7 @@
             "hostingstart.html"
           ],
           "netFrameworkVersion": "v4.0",
-          "linuxFxVersion": "PYTHON|3.8",
+          "linuxFxVersion": "[concat('DOCKER|', variables('containerLoginServer'), '/', parameters('containerRepository'), ':', parameters('containerRepositoryTag'))]",
           "requestTracingEnabled": false,
           "remoteDebuggingEnabled": false,
           "httpLoggingEnabled": true,
@@ -102,7 +156,7 @@
           "scmType": "None",
           "use32BitWorkerProcess": true,
           "alwaysOn": true,
-          "appCommandLine": "gunicorn --bind 0.0.0.0 --worker-class aiohttp.worker.GunicornWebWorker --timeout 600 app:APP",
+          "appCommandLine": "[parameters('containerCommand')]",
           "managedPipelineMode": "Integrated",
           "virtualApplications": [
             {
