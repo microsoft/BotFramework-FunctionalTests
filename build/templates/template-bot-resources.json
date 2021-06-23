@@ -58,6 +58,9 @@
       "apiVersion": "2020-09-01",
       "name": "[parameters('botName')]",
       "location": "[parameters('botLocation')]",
+      "tags": {
+        "BFFN": "BFFN"
+      },
       "kind": "app",
       "properties": {
         "enabled": true,

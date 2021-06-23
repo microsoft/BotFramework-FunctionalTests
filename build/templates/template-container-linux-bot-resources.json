@@ -79,6 +79,9 @@
       "name": "[parameters('botName')]",
       "location": "[parameters('botLocation')]",
       "kind": "app,linux,container",
+      "tags": {
+        "BFFN": "BFFN"
+      },
       "properties": {
         "enabled": true,
         "hostNameSslStates": [
