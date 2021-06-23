@@ -37,6 +37,9 @@
         "description": "The pricing tier of the Bot Service Registration. Acceptable values are F0 and S1."
       }
     },
+    "projectTag": {
+      "type": "string"
+    },
     "sharedResourceGroup": {
       "type": "string"
     },
@@ -45,7 +48,7 @@
     },
     "virtualNetworkSubnet": {
       "type": "string"
-    }
+    }    
   },
   "variables": {
     "siteHost": "[concat(parameters('botName'), '.azurewebsites.net')]",
@@ -59,7 +62,7 @@
       "name": "[parameters('botName')]",
       "location": "[parameters('botLocation')]",
       "tags": {
-        "BFFN": "BFFN"
+        "Project": "[parameters('projectTag')]"
       },
       "kind": "app",
       "properties": {

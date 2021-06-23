@@ -55,6 +55,9 @@
     "containerCommand": {
       "type": "string"
     },
+    "projectTag": {
+      "type": "string"
+    },
     "sharedResourceGroup": {
       "type": "string"
     },
@@ -80,7 +83,7 @@
       "location": "[parameters('botLocation')]",
       "kind": "app,linux,container",
       "tags": {
-        "BFFN": "BFFN"
+        "Project": "[parameters('projectTag')]"
       },
       "properties": {
         "enabled": true,
