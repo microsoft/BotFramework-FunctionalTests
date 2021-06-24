@@ -191,6 +191,7 @@ variables:
   InternalKeyVaultName: 'bffnbotkeyvault$(INTERNALRESOURCESUFFIX)'
   InternalResourceGroupName: $[coalesce(variables['RESOURCEGROUP'], 'bffnbots')]
   InternalResourceSuffix: $[coalesce(variables['RESOURCESUFFIX'], '')]
+  InternalVirtualNetworkName: 'bffnvirtualnetwork$(INTERNALRESOURCESUFFIX)'
 
 stages:
 # Resource Groups
@@ -222,6 +223,8 @@ stages:
       keyVault: "$(INTERNALKEYVAULTNAME)"
       resourceGroup: "$(INTERNALRESOURCEGROUPNAME)-DotNet"
       resourceSuffix: $(INTERNALRESOURCESUFFIX)
+      virtualNetwork: "$(INTERNALVIRTUALNETWORKNAME)"
+      virtualNetworkRG: "$(INTERNALAPPSERVICEPLANWINDOWSRESOURCEGROUP)"
       bots:
         - name: "bffnsimplehostbotdotnet"
           dependsOn: "Prepare_DotNetGroup"
@@ -331,6 +334,8 @@ stages:
       keyVault: "$(INTERNALKEYVAULTNAME)"
       resourceGroup: "$(INTERNALRESOURCEGROUPNAME)-DotNet"
       resourceSuffix: $(INTERNALRESOURCESUFFIX)
+      virtualNetwork: "$(INTERNALVIRTUALNETWORKNAME)"
+      virtualNetworkRG: "$(INTERNALAPPSERVICEPLANWINDOWSRESOURCEGROUP)"
       bots:
         - name: "bffnsimplehostbotcomposerdotnet"
           dependsOn: "Deploy_bffnechoskillbotdotnet"
@@ -373,6 +378,8 @@ stages:
       keyVault: "$(INTERNALKEYVAULTNAME)"
       resourceGroup: "$(INTERNALRESOURCEGROUPNAME)-JS"
       resourceSuffix: $(INTERNALRESOURCESUFFIX)
+      virtualNetwork: "$(INTERNALVIRTUALNETWORKNAME)"
+      virtualNetworkRG: "$(INTERNALAPPSERVICEPLANWINDOWSRESOURCEGROUP)"
       bots:
         - name: "bffnsimplehostbotjs"
           type: "Host"
@@ -441,6 +448,8 @@ stages:
       keyVault: "$(INTERNALKEYVAULTNAME)"
       resourceGroup: "$(INTERNALRESOURCEGROUPNAME)-Python"
       resourceSuffix: "$(INTERNALRESOURCESUFFIX)"
+      virtualNetwork: "$(INTERNALVIRTUALNETWORKNAME)"
+      virtualNetworkRG: "$(INTERNALAPPSERVICEPLANWINDOWSRESOURCEGROUP)"
       bots:
         - name: "bffnsimplehostbotpython"
           type: "Host"
