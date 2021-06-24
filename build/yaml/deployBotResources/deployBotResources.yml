@@ -133,6 +133,7 @@ variables:
   # ResourceGroup: (optional) Name of the Resource Group where the bots will be deployed.
   # ResourceSuffix: (optional) Alphanumeric suffix to add to the resources' name to avoid collisions.
   # SharedResourceGroup: (optional) Name of the Shared Resource Group.
+  # VirtualNetworkName: (optional) Name of the Virtual Network.
 
   ## Bots Configuration (Define these variables in Azure)
   # BffnEchoSkillBotComposerDotNetAppId: (optional) App Id for BffnEchoSkillBotComposerDotNet bot.
@@ -195,6 +196,7 @@ variables:
   InternalResourceGroupName: $[coalesce(variables['RESOURCEGROUP'], 'bffnbots')]
   InternalResourceSuffix: $[coalesce(variables['RESOURCESUFFIX'], '')]
   InternalSharedResourceGroupName: $[coalesce(variables['SHAREDRESOURCEGROUP'], 'bffnshared')]
+  InternalVirtualNetworkName: $[coalesce(variables['VIRTUALNETWORKNAME'], 'bffnvirtualnetwork$(INTERNALRESOURCESUFFIX)')]
 
 stages:
 # Resource Groups
@@ -227,6 +229,7 @@ stages:
       resourceGroup: "$(INTERNALRESOURCEGROUPNAME)-DotNet"
       resourceSuffix: $(INTERNALRESOURCESUFFIX)
       sharedResourceGroup: "$(INTERNALSHAREDRESOURCEGROUPNAME)"
+      virtualNetwork: "$(INTERNALVIRTUALNETWORKNAME)"
       bots:
         - name: "bffnsimplehostbotdotnet"
           dependsOn: "Prepare_DotNetGroup"
@@ -337,6 +340,7 @@ stages:
       resourceGroup: "$(INTERNALRESOURCEGROUPNAME)-DotNet"
       resourceSuffix: $(INTERNALRESOURCESUFFIX)
       sharedResourceGroup: "$(INTERNALSHAREDRESOURCEGROUPNAME)"
+      virtualNetwork: "$(INTERNALVIRTUALNETWORKNAME)"
       bots:
         - name: "bffnsimplehostbotcomposerdotnet"
           dependsOn: "Deploy_bffnechoskillbotdotnet"
@@ -380,6 +384,7 @@ stages:
       resourceGroup: "$(INTERNALRESOURCEGROUPNAME)-JS"
       resourceSuffix: $(INTERNALRESOURCESUFFIX)
       sharedResourceGroup: "$(INTERNALSHAREDRESOURCEGROUPNAME)"
+      virtualNetwork: "$(INTERNALVIRTUALNETWORKNAME)"
       bots:
         - name: "bffnsimplehostbotjs"
           type: "Host"
@@ -470,6 +475,7 @@ stages:
       resourceGroup: "$(INTERNALRESOURCEGROUPNAME)-Python"
       resourceSuffix: "$(INTERNALRESOURCESUFFIX)"
       sharedResourceGroup: "$(INTERNALSHAREDRESOURCEGROUPNAME)"
+      virtualNetwork: "$(INTERNALVIRTUALNETWORKNAME)"
       bots:
         - name: "bffnsimplehostbotpython"
           type: "Host"

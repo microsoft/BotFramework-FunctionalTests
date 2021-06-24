@@ -14,12 +14,6 @@
         "description": "Active Directory App Password, set as MicrosoftAppPassword in the Web App's Application Settings."
       }
     },
-    "botName": {
-      "type": "string"
-    },
-    "botLocation": {
-      "type": "string"
-    },
     "appInsightsName": {
       "type": "string",
       "defaultValue": ""
@@ -30,15 +24,18 @@
     "appServicePlanResourceGroup": {
       "type": "string"
     },
+    "botName": {
+      "type": "string"
+    },
+    "botLocation": {
+      "type": "string"
+    },
     "botSku": {
       "type": "string",
       "defaultValue": "F0",
       "metadata": {
         "description": "The pricing tier of the Bot Service Registration. Acceptable values are F0 and S1."
       }
-    },
-    "sharedResourceGroup": {
-      "type": "string"
     },
     "containerRegistry": {
       "type": "string"
@@ -56,6 +53,16 @@
       "type": "string"
     },
     "containerCommand": {
+      "type": "string"
+    },
+    "sharedResourceGroup": {
+      "type": "string"
+    },
+    "virtualNetwork": {
+      "type": "string",
+      "defaultValue": ""
+    },
+    "virtualNetworkSubnet": {
       "type": "string"
     }
   },
@@ -118,6 +125,11 @@
             {
               "name": "WEBSITES_PORT",
               "value": "[parameters('containerPort')]"
+            },
+            {
+              "name": "WEBSITE_VNET_ROUTE_ALL",
+              "condition": "[not(empty(parameters('virtualNetwork')))]",
+              "value": "1"
             },
             {
               "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
@@ -243,6 +255,20 @@
         "developerAppInsightKey": "",
         "publishingCredentials": null,
         "storageResourceId": null
+      }
+    },
+    {
+      "condition": "[not(empty(parameters('virtualNetwork')))]",
+      "name": "[concat(parameters('botName'), '/virtualNetwork')]",
+      "type": "Microsoft.Web/sites/config",
+      "apiVersion": "2018-02-01",
+      "location": "[parameters('botLocation')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', parameters('botName'))]"
+      ],
+      "properties": {
+        "subnetResourceId": "[resourceId(parameters('sharedResourceGroup'), 'Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetwork'), parameters('virtualNetworkSubnet'))]",
+        "swiftSupported": true
       }
     }
   ]

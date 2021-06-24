@@ -58,6 +58,14 @@ parameters:
     displayName: Shared Resource Group
     type: string
 
+  - name: virtualNetwork
+    displayName: Virtual Network name
+    type: string
+
+  - name: virtualNetworkSubnet
+    displayName: Virtual Network Subnet name
+    type: string
+
 steps:
   - task: AzureCLI@2
     displayName: "Create resources"
@@ -88,6 +96,14 @@ steps:
         if(-not ([string]::IsNullOrEmpty("${{ parameters.appInsight }}"))) {
           $settings = $settings + @(
             @{ key="appInsightsName"            ; value="${{ parameters.appInsight }}" }
+          );
+        }
+
+        # Virtual Network
+        if(-not ([string]::IsNullOrEmpty("${{ parameters.virtualNetwork }}"))) {
+          $settings = $settings + @(
+            @{ key="virtualNetwork"             ; value="${{ parameters.virtualNetwork }}" }
+            @{ key="virtualNetworkSubnet"       ; value="${{ parameters.virtualNetworkSubnet }}" }
           );
         }
 

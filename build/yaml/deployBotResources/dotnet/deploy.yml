@@ -48,6 +48,10 @@ parameters:
     displayName: Shared Resource Group
     type: string
 
+  - name: virtualNetwork
+    displayName: Virtual network name
+    type: string
+
 stages:
 - ${{ each bot in parameters.bots }}:
   - stage: "Deploy_${{ bot.name }}"
@@ -232,6 +236,8 @@ stages:
               resourceSuffix: "${{ parameters.resourceSuffix }}"
               sharedResourceGroup: "${{ parameters.sharedResourceGroup }}"
               templateFile: "build/templates/template-bot-resources.json"
+              virtualNetwork: "${{ parameters.virtualNetwork }}"
+              virtualNetworkSubnet: "dotnet"
 
           # Deploy bot
           - task: AzureWebApp@1

@@ -47,6 +47,10 @@ parameters:
     displayName: Shared Resource Group
     type: string
 
+  - name: virtualNetwork
+    displayName: Virtual network name
+    type: string
+
 stages:
 - ${{ each bot in parameters.bots }}:
   - stage: "Deploy_${{ bot.name }}"
@@ -174,15 +178,17 @@ stages:
               botGroup: "${{ parameters.resourceGroup }}"
               botName: "${{ bot.name }}"
               botPricingTier: "${{ parameters.botPricingTier }}"
-              resourceSuffix: "${{ parameters.resourceSuffix }}"
-              sharedResourceGroup: "${{ parameters.sharedResourceGroup }}"
               container:
                 registry: "${{ bot.container.registry }}"
                 repository: "${{ bot.name }}"
                 tag: "v$(DEPENDENCIESVERSIONNUMBER)"
                 port: "${{ bot.container.port }}"
                 command: "${{ bot.container.command }}"
+              resourceSuffix: "${{ parameters.resourceSuffix }}"
+              sharedResourceGroup: "${{ parameters.sharedResourceGroup }}"
               templateFile: "build/templates/template-container-linux-bot-resources.json"
+              virtualNetwork: "${{ parameters.virtualNetwork }}"
+              virtualNetworkSubnet: "python"
 
           # Configure OAuth
           - ${{ if eq(bot.type, 'Skill') }}:
