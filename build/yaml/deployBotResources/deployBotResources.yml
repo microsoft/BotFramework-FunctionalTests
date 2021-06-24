@@ -226,6 +226,7 @@ stages:
       virtualNetwork: "$(INTERNALVIRTUALNETWORKNAME)"
       virtualNetworkRG: "$(INTERNALAPPSERVICEPLANWINDOWSRESOURCEGROUP)"
       bots:
+        # DotNet bots
         - name: "bffnsimplehostbotdotnet"
           dependsOn: "Prepare_DotNetGroup"
           type: "Host"
@@ -282,6 +283,7 @@ stages:
             registry: ${{ parameters.dependenciesRegistryDotNetSkills }}
             version: ${{ parameters.dependenciesVersionDotNetSkills }}
 
+        # DotNet V3 bots
         - name: "bffnechoskillbotdotnetv3"
           dependsOn: "Prepare_DotNetGroup"
           type: "SkillV3"
@@ -323,23 +325,10 @@ stages:
             registry: ${{ parameters.dependenciesRegistryDotNetSkills }}
             version: ${{ parameters.dependenciesVersionDotNetSkills }}
 
-# DotNet Composer
-  - template: dotnet/deployComposer.yml
-    parameters:
-      appInsight: "$(INTERNALAPPINSIGHTSNAME)"
-      appServicePlan: "$(INTERNALAPPSERVICEPLANDOTNETNAME)"
-      appServicePlanRG: "$(INTERNALAPPSERVICEPLANWINDOWSRESOURCEGROUP)"
-      azureSubscription: "$(AZURESUBSCRIPTION)"
-      botPricingTier: $env:BOTPRICINGTIER
-      keyVault: "$(INTERNALKEYVAULTNAME)"
-      resourceGroup: "$(INTERNALRESOURCEGROUPNAME)-DotNet"
-      resourceSuffix: $(INTERNALRESOURCESUFFIX)
-      virtualNetwork: "$(INTERNALVIRTUALNETWORKNAME)"
-      virtualNetworkRG: "$(INTERNALAPPSERVICEPLANWINDOWSRESOURCEGROUP)"
-      bots:
+        # DotNet Composer bots
         - name: "bffnsimplehostbotcomposerdotnet"
           dependsOn: "Deploy_bffnechoskillbotdotnet"
-          type: "Host"
+          type: "ComposerHost"
           displayName: "DotNet Simple Composer Host Bot"
           appId: $(BFFNSIMPLEHOSTBOTCOMPOSERDOTNETAPPID)
           appSecret: $(BFFNSIMPLEHOSTBOTCOMPOSERDOTNETAPPSECRET)
@@ -353,7 +342,7 @@ stages:
 
         - name: "bffnechoskillbotcomposerdotnet"
           dependsOn: "Deploy_bffnechoskillbotdotnet21"
-          type: "Skill"
+          type: "ComposerSkill"
           displayName: "DotNet Echo Composer Skill Bot"
           appId: $(BFFNECHOSKILLBOTCOMPOSERDOTNETAPPID)
           appSecret: $(BFFNECHOSKILLBOTCOMPOSERDOTNETAPPSECRET)
