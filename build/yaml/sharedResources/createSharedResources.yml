@@ -25,6 +25,7 @@ variables:
   InternalCosmosDBName: "bffnbotstatedb$($env:RESOURCESUFFIX)"
   InternalKeyVaultName: "bffnbotkeyvault$($env:RESOURCESUFFIX)"
   InternalResourceGroupName: $[coalesce(variables['RESOURCEGROUPNAME'], 'bffnshared')]
+  InternalVirtualNetworkName: "bffnvirtualnetwork$($env:RESOURCESUFFIX)"
 
 stages:
 - stage: Create_Resource_Group_Windows
@@ -57,6 +58,21 @@ stages:
           scriptType: pscore
           scriptLocation: inlineScript
           inlineScript: "az group create --name $(INTERNALRESOURCEGROUPNAME)-linux --location westus"
+
+- stage: Create_Virtual_Network
+  displayName: "Create Virtual Network"
+  dependsOn: Create_Resource_Group_Windows
+  jobs:
+    - job: Create_Virtual_Network
+      displayName: "Create steps"
+      steps:
+        - task: AzureCLI@2
+          displayName: "Deploy Virtual Network"
+          inputs:
+            azureSubscription: $(AZURESUBSCRIPTION)
+            scriptType: pscore
+            scriptLocation: inlineScript
+            inlineScript: "az deployment group create --name $(INTERNALVIRTUALNETWORKNAME) --resource-group $(INTERNALRESOURCEGROUPNAME) --template-file build/templates/template-virtual-network-resources.json --parameters virtualNetworkName=$(INTERNALVIRTUALNETWORKNAME)"
 
 - stage: Create_CosmosDB
   displayName: "Create CosmosDB"
