@@ -44,6 +44,14 @@ parameters:
     displayName: Azure resources' name suffix
     type: string
 
+  - name: virtualNetwork
+    displayName: Virtual network name
+    type: string
+
+  - name: virtualNetworkRG
+    displayName: Virtual Network Resource Group
+    type: string
+
 stages:
 - ${{ each bot in parameters.bots }}:
   - stage: "Deploy_${{ bot.name }}"
@@ -152,7 +160,7 @@ stages:
 
           # End of DotNet Install & Build
 
-          # Start DotNet v3 Install, Build
+          # Start DotNet v3 Install & Build
           - ${{ if eq(bot.type, 'SkillV3') }}:
             # Install dependencies
             - template: installDependenciesV3.yml
@@ -174,7 +182,7 @@ stages:
                 platform: "$(BUILDPLATFORM)"
                 configuration: "$(BUILDCONFIGURATION)"
 
-            # Get BotBuilder version
+            # Get BotBuilder package version
             - task: PowerShell@2
               displayName: 'Get BotBuilder Version'
               inputs:
@@ -195,7 +203,43 @@ stages:
                 archiveFile: '$(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ parameters.buildFolder }}/${{ bot.name }}/${{ bot.name }}.zip'
                 replaceExistingArchive: true
                 verbose: true
-          # End of DotNet v3 Install, Build
+          # End of DotNet v3 Install & Build
+
+          # Start of DotNet Composer Install & Build
+          - ${{ if in(bot.type, 'ComposerHost', 'ComposerSkill') }}:
+            # Install dependencies
+            - template: installDependencies.yml
+              parameters:
+                project: "${{ bot.project }}"
+                registry: "$(DEPENDENCIESSOURCE)"
+                version: "$(DEPENDENCIESVERSIONNUMBER)"
+                packages:
+                  Microsoft.Bot.Builder.AI.Luis
+                  Microsoft.Bot.Builder.AI.QnA
+                  Microsoft.Bot.Builder.Dialogs.Adaptive.Runtime
+
+            # Build Bot
+            - task: DotNetCoreCLI@2
+              displayName: "Build"
+              inputs:
+                command: publish
+                publishWebProjects: false
+                projects: "${{ bot.project.directory }}/${{ bot.project.name }}"
+                arguments: "--output $(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ parameters.buildFolder }}/${{ bot.name }}"
+                modifyOutputPath: false
+
+            # Get BotBuilder package version
+            - task: PowerShell@2
+              displayName: 'Get BotBuilder Version'
+              inputs:
+                targetType: inline
+                workingDirectory: '$(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ bot.project.directory }}'
+                failOnStderr: true
+                script: |
+                  [XML]$data = Get-Content "./${{ bot.project.name }}"
+                  $package = $data.Project.ItemGroup.PackageReference | Where-Object { $_.Include -eq "Microsoft.Bot.Builder.Dialogs.Adaptive.Runtime" }
+                  Write-Host "##vso[task.setvariable variable=BotBuilderVersionNumber]$($package.version)"
+          # End of DotNet Composer Install & Build
 
           # Tag BotBuilder package version
           - template: ../common/tagBotBuilderVersion.yml
@@ -226,6 +270,9 @@ stages:
               botName: "${{ bot.name }}"
               botPricingTier: "${{ parameters.botPricingTier }}"
               resourceSuffix: "${{ parameters.resourceSuffix }}"
+              virtualNetwork: "${{ parameters.virtualNetwork }}"
+              virtualNetworkRG: "${{ parameters.virtualNetworkRG }}"
+              subnetName: "dotnet"
               templateFile: "build/templates/template-bot-resources.json"
 
           # Deploy bot
@@ -251,7 +298,7 @@ stages:
                 resourceSuffix: "${{ parameters.resourceSuffix }}"
 
           # Create DirectLine Channel Hosts
-          - ${{ if eq(bot.type, 'Host') }}:
+          - ${{ if in(bot.type, 'Host', 'ComposerHost') }}:
             - template: ../common/createDirectLine.yml
               parameters:
                 azureSubscription: "${{ parameters.azureSubscription }}"

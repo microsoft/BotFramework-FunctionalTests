@@ -24,6 +24,15 @@
       "type": "string",
       "defaultValue": ""
     },
+    "virtualNetworkName": {
+      "type": "string"
+    },
+    "virtualNetworkResourceGroup": {
+      "type": "string"
+    },
+    "subnetName": {
+      "type": "string"
+    },
     "appServicePlanName": {
       "type": "string"
     },
@@ -88,6 +97,11 @@
             {
               "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
               "value": "[if(empty(parameters('appInsightsName')), '', reference(resourceId(parameters('appServicePlanResourceGroup'),'Microsoft.Insights/components', parameters('appInsightsName')), '2015-05-01', 'Full').properties.ConnectionString)]"
+            },
+            {
+              "name": "WEBSITE_VNET_ROUTE_ALL",
+              "condition": "[not(empty(parameters('virtualNetworkName')))]",
+              "value": "1"
             },
             {
               "name": "ApplicationInsightsAgent_EXTENSION_VERSION",
@@ -204,6 +218,20 @@
         "developerAppInsightKey": "",
         "publishingCredentials": null,
         "storageResourceId": null
+      }
+    },
+    {
+      "condition": "[not(empty(parameters('virtualNetworkName')))]",
+      "name": "[concat(parameters('botName'), '/virtualNetwork')]",
+      "type": "Microsoft.Web/sites/config",
+      "apiVersion": "2018-02-01",
+      "location": "[parameters('botLocation')]",
+      "dependsOn": [
+          "[resourceId('Microsoft.Web/sites', parameters('botName'))]"
+      ],
+      "properties": {
+          "subnetResourceId": "[resourceId(parameters('virtualNetworkResourceGroup'), 'Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetName'))]",
+          "swiftSupported": true
       }
     }
   ]

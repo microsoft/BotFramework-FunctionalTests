@@ -38,6 +38,14 @@ parameters:
   - name: resourceSuffix
     displayName: Azure resources' name suffix
     type: string
+    
+  - name: virtualNetwork
+    displayName: Virtual network name
+    type: string
+
+  - name: virtualNetworkRG
+    displayName: Virtual Network Resource Group
+    type: string
 
 stages:
 - ${{ each bot in parameters.bots }}:
@@ -115,6 +123,9 @@ stages:
               botGroup: "${{ parameters.resourceGroup }}"
               botPricingTier: "${{ parameters.botPricingTier }}"
               resourceSuffix: "${{ parameters.resourceSuffix }}"
+              virtualNetwork: "${{ parameters.virtualNetwork }}"
+              virtualNetworkRG: "${{ parameters.virtualNetworkRG }}"
+              subnetName: "python"
               templateFile: "build/templates/template-python-bot-resources.json"
 
           # Configure OAuth
