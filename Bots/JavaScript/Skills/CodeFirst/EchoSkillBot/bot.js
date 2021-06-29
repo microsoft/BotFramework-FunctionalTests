@@ -4,21 +4,21 @@
 const {
   ActivityHandler,
   ActivityTypes,
-  EndOfConversationCodes,
-} = require("botbuilder");
+  EndOfConversationCodes
+} = require('botbuilder');
 
 class EchoBot extends ActivityHandler {
-  constructor() {
+  constructor () {
     super();
 
     // See https://aka.ms/about-bot-activity-message to learn more about the message and other activity types.
     this.onMessage(async (context, next) => {
       const activityText = context.activity.text.toLowerCase();
-      if (activityText === "end" || activityText === "stop") {
-        await context.sendActivity("Ending conversation from the skill...");
+      if (activityText === 'end' || activityText === 'stop') {
+        await context.sendActivity('Ending conversation from the skill...');
         await context.sendActivity({
           type: ActivityTypes.EndOfConversation,
-          code: EndOfConversationCodes.CompletedSuccessfully,
+          code: EndOfConversationCodes.CompletedSuccessfully
         });
       } else {
         await context.sendActivity(`Echo: ${context.activity.text}`);
