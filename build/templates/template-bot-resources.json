@@ -77,7 +77,7 @@
         "reserved": true,
         "hyperV": false,
         "siteConfig": {
-          "appSettings": [
+          "appSettings": [            
             {
               "name": "WEBSITE_RUN_FROM_PACKAGE",
               "value": "1"
