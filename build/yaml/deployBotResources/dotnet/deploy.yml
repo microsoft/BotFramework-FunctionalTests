@@ -283,7 +283,7 @@ stages:
               appName: '${{ bot.name }}${{ parameters.resourceSuffix }}-$(BUILD.BUILDID)'
               resourceGroupName: '${{ parameters.resourceGroup }}'
               package: '$(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ parameters.buildFolder }}/${{ bot.name }}/${{ bot.name }}.zip'
-              deploymentMethod: runFromPackage
+              deploymentMethod: zipDeploy
 
           # Configure OAuth
           - ${{ if eq(bot.type, 'Skill') }}:
