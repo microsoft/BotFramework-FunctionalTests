@@ -79,6 +79,10 @@
         "siteConfig": {
           "appSettings": [
             {
+              "name": "WEBSITE_RUN_FROM_PACKAGE",
+              "value": "1"
+            },
+            {
               "name": "WEBSITE_NODE_DEFAULT_VERSION",
               "value": "10.14.1"
             },
@@ -223,8 +227,8 @@
     {
       "condition": "[not(empty(parameters('virtualNetwork')))]",
       "name": "[concat(parameters('botName'), '/virtualNetwork')]",
-      "type": "Microsoft.Web/sites/config",
-      "apiVersion": "2018-02-01",
+      "type": "Microsoft.Web/sites/virtualNetworkConnections",
+      "apiVersion": "2018-11-01",
       "location": "[parameters('botLocation')]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/sites', parameters('botName'))]"
