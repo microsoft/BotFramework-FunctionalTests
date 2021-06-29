@@ -29,6 +29,7 @@ steps:
             Write-Host "Starting resource cleanup..."
 
             Write-Host ("Deleting '" + "${{ parameters.resourceName }}${{ parameters.resourceSuffix }}-$(BUILD.BUILDID)" + "'...")
+            az webapp vnet-integration remove --name "${{ parameters.resourceName }}${{ parameters.resourceSuffix }}-$(BUILD.BUILDID)" --resource-group ${{ parameters.resourceGroup }}
             az webapp delete --name "${{ parameters.resourceName }}${{ parameters.resourceSuffix }}-$(BUILD.BUILDID)" --resource-group ${{ parameters.resourceGroup }} --keep-empty-plan
             az bot delete --name "${{ parameters.resourceName }}${{ parameters.resourceSuffix }}-$(BUILD.BUILDID)" --resource-group ${{ parameters.resourceGroup }}
 
