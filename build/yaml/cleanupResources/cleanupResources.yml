@@ -18,6 +18,7 @@ variables:
   InternalAppServicePlanDotNetName: "bffnbotsappservicedotnet$($env:RESOURCESUFFIX)"
   InternalAppServicePlanJSName: "bffnbotsappservicejs$($env:RESOURCESUFFIX)"
   InternalAppServicePlanPythonName: "bffnbotsappservicepython$($env:RESOURCESUFFIX)"
+  InternalVirtualNetworkName: "bffnvirtualnetwork$($env:RESOURCESUFFIX)"
   InternalCosmosDBName: "bffnbotstatedb$($env:RESOURCESUFFIX)"
   InternalKeyVaultName: "bffnbotkeyvault$($env:RESOURCESUFFIX)"
   InternalBotResourceGroupName: $[coalesce(variables['DEPLOYRESOURCEGROUP'], 'bffnbots')]
@@ -133,6 +134,32 @@ stages:
                 az appservice plan delete --name "$(INTERNALAPPSERVICEPLANPYTHONNAME)" --resource-group "$(INTERNALSHAREDRESOURCEGROUPNAME)-linux" --yes
               } else {
                 Write-Host "No pre-existing $(INTERNALAPPSERVICEPLANPYTHONNAME) resource found."
+              }
+
+- stage: "Delete_Virtual_Network"
+  displayName: "Delete Virtual Network"
+  dependsOn:
+    - Delete_DotNet_Resource_Group
+    - Delete_JS_Resource_Group
+    - Delete_Python_Resource_Group
+  jobs:
+    - job: "Delete"
+      displayName: "Delete steps"
+      steps:
+        - task: AzureCLI@2
+          displayName: "Delete Virtual Network"
+          inputs:
+            azureSubscription: $(AZURESUBSCRIPTION)
+            scriptType: pscore
+            scriptLocation: inlineScript
+            inlineScript: |
+              Write-Host "Looking for $(INTERNALVIRTUALNETWORKNAME)..."
+              $exists = az network vnet show --name "$(INTERNALVIRTUALNETWORKNAME)" --resource-group "$(INTERNALSHAREDRESOURCEGROUPNAME)"
+              if ($exists) {
+                Write-Host "Deleting $(INTERNALVIRTUALNETWORKNAME)..."
+                az network vnet delete --name "$(INTERNALVIRTUALNETWORKNAME)" --resource-group "$(INTERNALSHAREDRESOURCEGROUPNAME)"
+              } else {
+                Write-Host "No pre-existing $(INTERNALVIRTUALNETWORKNAME) resource found."
               }
 
 - stage: "Delete_App_Registrations"
