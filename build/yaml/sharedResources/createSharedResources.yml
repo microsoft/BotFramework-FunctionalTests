@@ -14,14 +14,16 @@ variables:
   # AzureSubscription: Service Connection Name to Manage Azure resources.
   # KeyVaultObjectId: Suscription's Object Id to create the keyvault to store App Registrations.
   # AppServicePlanPricingTier: (optional) Pricing Tier for App Service Plans, default F1.
+  # ContainerRegistryPricingTier: (optional) Pricing Tier for Container Registry, default Basic.
   # ResourceGroupName: (optional) Name of the Resource Group for the shared resources.
-  # ResourceSuffix: (optional) Suffix to add to the resources' name to avoid collitions.
+  # ResourceSuffix: (optional) Alphanumeric suffix to add to the resources' name to avoid collisions.
 
   ## Internal variables
   InternalAppInsightsName: "bffnappinsights$($env:RESOURCESUFFIX)"
   InternalAppServicePlanDotNetName: "bffnbotsappservicedotnet$($env:RESOURCESUFFIX)"
   InternalAppServicePlanJSName: "bffnbotsappservicejs$($env:RESOURCESUFFIX)"
   InternalAppServicePlanPythonName: "bffnbotsappservicepython$($env:RESOURCESUFFIX)"
+  InternalContainerRegistryName: "bffncontainerregistry$($env:RESOURCESUFFIX)"
   InternalCosmosDBName: "bffnbotstatedb$($env:RESOURCESUFFIX)"
   InternalKeyVaultName: "bffnbotkeyvault$($env:RESOURCESUFFIX)"
   InternalResourceGroupName: $[coalesce(variables['RESOURCEGROUPNAME'], 'bffnshared')]
@@ -153,7 +155,7 @@ stages:
           scriptLocation: inlineScript
           inlineScript: |
             $appServicePlanPricingTier = if ($env:APPSERVICEPLANPRICINGTIER) { "newAppServicePlanSku=$env:APPSERVICEPLANPRICINGTIER" }
-            az deployment group create --name "$(INTERNALAPPSERVICEPLANJSNAME)" --resource-group "$(INTERNALRESOURCEGROUPNAME)" --template-file build/templates/template-service-plan-windows-resources.json --parameters $appServicePlanPricingTier newAppServicePlanName="$(INTERNALAPPSERVICEPLANJSNAME)"
+            az deployment group create --name "$(INTERNALAPPSERVICEPLANJSNAME)" --resource-group "$(INTERNALRESOURCEGROUPNAME)" --template-file build/templates/template-service-plan-linux-resources.json --parameters $appServicePlanPricingTier newAppServicePlanName="$(INTERNALAPPSERVICEPLANJSNAME)"
 
 - stage: Create_App_Service_Plan_Python
   displayName: "Create App Service Plan (Python)"
@@ -186,3 +188,20 @@ stages:
           scriptType: pscore
           scriptLocation: inlineScript
           inlineScript: "az deployment group create --name $(INTERNALAPPINSIGHTSNAME) --resource-group $(INTERNALRESOURCEGROUPNAME) --template-file build/templates/template-app-insights-resources.json --parameters appInsightsName=$(INTERNALAPPINSIGHTSNAME)"
+
+- stage: Create_Container_Registry
+  displayName: "Create Container Registry"
+  dependsOn: Create_Resource_Group_Windows
+  jobs:
+    - job: Deploy_Container_Registry
+      displayName: "Deploy steps"
+      steps:
+      - task: AzureCLI@2
+        displayName: "Deploy Container Registry"
+        inputs:
+          azureSubscription: $(AZURESUBSCRIPTION)
+          scriptType: pscore
+          scriptLocation: inlineScript
+          inlineScript: |
+            $containerRegistryPricingTier = if ($env:CONTAINERREGISTRYPRICINGTIER) { "skuName=$env:CONTAINERREGISTRYPRICINGTIER" }
+            az deployment group create --name "$(INTERNALCONTAINERREGISTRYNAME)" --resource-group "$(INTERNALRESOURCEGROUPNAME)" --template-file build/templates/template-container-registry-resources.json --parameters $containerRegistryPricingTier containerRegistryName="$(INTERNALCONTAINERREGISTRYNAME)"
