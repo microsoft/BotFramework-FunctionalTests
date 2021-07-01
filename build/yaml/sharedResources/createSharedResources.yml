@@ -14,7 +14,7 @@ variables:
   # AzureSubscription: Service Connection Name to Manage Azure resources.
   # AppServicePlanPricingTier: (optional) Pricing Tier for App Service Plans, default F1.
   # ContainerRegistryPricingTier: (optional) Pricing Tier for Container Registry, default Basic.
-  # KeyVaultObjectId: (optional) Suscription's Object Id to create the keyvault to store App Registrations.
+  # KeyVaultObjectId: (optional) Subscription's Object Id to create the keyvault to store App Registrations.
   # ResourceGroupName: (optional) Name of the Resource Group for the shared resources.
   # ResourceSuffix: (optional) Alphanumeric suffix to add to the resources' name to avoid collisions.
 
