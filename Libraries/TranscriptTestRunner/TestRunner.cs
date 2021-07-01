@@ -76,6 +76,8 @@ namespace TranscriptTestRunner
             var testFileName = $"{callerName} - {Path.GetFileNameWithoutExtension(testScriptPath)}";
 
             _logger.LogInformation($"======== Running script: {testScriptPath} ========");
+            _logger.LogInformation($"TestRequestTimeout: {_replyTimeout}s");
+            _logger.LogInformation($"ThinkTime: {_thinkTime}s");
 
             _testScriptPath = testScriptPath;
 
@@ -299,11 +301,7 @@ namespace TranscriptTestRunner
                         };
 
                         // Think time
-                        if (_thinkTime > 0)
-                        {
-                            _logger.LogInformation($"Running think time of {_thinkTime}ms");
-                            await Task.Delay(TimeSpan.FromMilliseconds(_thinkTime), cancellationToken).ConfigureAwait(false);
-                        }
+                        await Task.Delay(TimeSpan.FromMilliseconds(_thinkTime), cancellationToken).ConfigureAwait(false);
 
                         await SendActivityAsync(sendActivity, cancellationToken).ConfigureAwait(false);
                         break;
