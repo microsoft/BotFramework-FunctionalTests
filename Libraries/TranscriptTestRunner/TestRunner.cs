@@ -77,7 +77,7 @@ namespace TranscriptTestRunner
 
             _logger.LogInformation($"======== Running script: {testScriptPath} ========");
             _logger.LogInformation($"TestRequestTimeout: {_replyTimeout}s");
-            _logger.LogInformation($"ThinkTime: {_thinkTime}s");
+            _logger.LogInformation($"ThinkTime: {_thinkTime}ms");
 
             _testScriptPath = testScriptPath;
 
