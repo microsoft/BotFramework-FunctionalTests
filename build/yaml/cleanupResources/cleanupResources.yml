@@ -18,12 +18,12 @@ variables:
   InternalAppServicePlanDotNetName: "bffnbotsappservicedotnet$($env:RESOURCESUFFIX)"
   InternalAppServicePlanJSName: "bffnbotsappservicejs$($env:RESOURCESUFFIX)"
   InternalAppServicePlanPythonName: "bffnbotsappservicepython$($env:RESOURCESUFFIX)"
-  InternalVirtualNetworkName: "bffnvirtualnetwork$($env:RESOURCESUFFIX)"
   InternalCosmosDBName: "bffnbotstatedb$($env:RESOURCESUFFIX)"
   InternalContainerRegistryName: "bffncontainerregistry$($env:RESOURCESUFFIX)"
   InternalKeyVaultName: "bffnbotkeyvault$($env:RESOURCESUFFIX)"
   InternalBotResourceGroupName: $[coalesce(variables['DEPLOYRESOURCEGROUP'], 'bffnbots')]
   InternalSharedResourceGroupName: $[coalesce(variables['SHAREDRESOURCEGROUP'], 'bffnshared')]
+  InternalVirtualNetworkName: "bffnvirtualnetwork$($env:RESOURCESUFFIX)"
 
 pool:
   vmImage: "windows-2019"
