@@ -28,6 +28,7 @@ namespace TranscriptTestRunner
         private readonly ILogger _logger;
         private readonly int _replyTimeout;
         private readonly TestClientBase _testClient;
+        private readonly double _thinkTime;
         private Stopwatch _stopwatch;
         private string _testScriptPath;
 
@@ -36,11 +37,13 @@ namespace TranscriptTestRunner
         /// </summary>
         /// <param name="client">Test client to use.</param>
         /// <param name="replyTimeout">The timeout for waiting for replies (in seconds). Default is 180.</param>
+        /// <param name="thinkTime">The timeout think time before sending messages to the bot (in miliseconds). Default is 0.</param>
         /// <param name="logger">Optional. Instance of <see cref="ILogger"/> to use.</param>
-        public TestRunner(TestClientBase client, int replyTimeout = 180, ILogger logger = null)
+        public TestRunner(TestClientBase client, int replyTimeout = 180, double thinkTime = 0, ILogger logger = null)
         {
             _testClient = client;
             _replyTimeout = replyTimeout;
+            _thinkTime = thinkTime;
             _logger = logger ?? NullLogger.Instance;
         }
 
@@ -294,6 +297,13 @@ namespace TranscriptTestRunner
                             Type = scriptActivity.Type,
                             Text = scriptActivity.Text
                         };
+
+                        // Think time
+                        if (_thinkTime > 0)
+                        {
+                            _logger.LogInformation($"Running think time of {_thinkTime}ms");
+                            await Task.Delay(TimeSpan.FromMilliseconds(_thinkTime), cancellationToken).ConfigureAwait(false);
+                        }
 
                         await SendActivityAsync(sendActivity, cancellationToken).ConfigureAwait(false);
                         break;
