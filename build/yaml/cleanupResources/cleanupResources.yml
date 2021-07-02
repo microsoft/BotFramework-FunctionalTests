@@ -140,9 +140,9 @@ stages:
 - stage: "Delete_Virtual_Network"
   displayName: "Delete Virtual Network"
   dependsOn:
-    - Delete_DotNet_Resource_Group
-    - Delete_JS_Resource_Group
-    - Delete_Python_Resource_Group
+    - Delete_App_Service_Plan_DotNet
+    - Delete_App_Service_Plan_JS
+    - Delete_App_Service_Plan_Python
   jobs:
     - job: "Delete"
       displayName: "Delete steps"
@@ -278,16 +278,13 @@ stages:
 
 - stage: "Delete_Resource_Group_Windows"
   displayName: "Delete Resource Group (Windows)"
-  dependsOn: 
-    - Delete_DotNet_Resource_Group
-    - Delete_JS_Resource_Group
-    - Delete_App_Service_Plan_DotNet
-    - Delete_App_Service_Plan_JS
+  dependsOn:
+    - Delete_Virtual_Network
+    - Delete_App_Registrations
+    - Delete_Key_Vault
     - Delete_App_Insights
     - Delete_CosmosDB
     - Delete_Container_Registry
-    - Delete_App_Registrations
-    - Delete_Key_Vault
   jobs:
     - job: "Delete"
       displayName: "Delete steps"
