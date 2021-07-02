@@ -28,7 +28,7 @@ namespace TranscriptTestRunner
         private readonly ILogger _logger;
         private readonly int _replyTimeout;
         private readonly TestClientBase _testClient;
-        private readonly double _thinkTime;
+        private readonly int _thinkTime;
         private Stopwatch _stopwatch;
         private string _testScriptPath;
 
