@@ -36,10 +36,10 @@ namespace TranscriptTestRunner
         /// Initializes a new instance of the <see cref="TestRunner"/> class.
         /// </summary>
         /// <param name="client">Test client to use.</param>
-        /// <param name="replyTimeout">The timeout for waiting for replies (in seconds). Default is 180.</param>
+        /// <param name="replyTimeout">The timeout for waiting for replies (in miliseconds). Default is 180000.</param>
         /// <param name="thinkTime">The timeout think time before sending messages to the bot (in miliseconds). Default is 0.</param>
         /// <param name="logger">Optional. Instance of <see cref="ILogger"/> to use.</param>
-        public TestRunner(TestClientBase client, int replyTimeout = 180, double thinkTime = 0, ILogger logger = null)
+        public TestRunner(TestClientBase client, int replyTimeout = 180000, int thinkTime = 0, ILogger logger = null)
         {
             _testClient = client;
             _replyTimeout = replyTimeout;
@@ -76,7 +76,7 @@ namespace TranscriptTestRunner
             var testFileName = $"{callerName} - {Path.GetFileNameWithoutExtension(testScriptPath)}";
 
             _logger.LogInformation($"======== Running script: {testScriptPath} ========");
-            _logger.LogInformation($"TestRequestTimeout: {_replyTimeout}s");
+            _logger.LogInformation($"TestRequestTimeout: {_replyTimeout}ms");
             _logger.LogInformation($"ThinkTime: {_thinkTime}ms");
 
             _testScriptPath = testScriptPath;
@@ -140,7 +140,7 @@ namespace TranscriptTestRunner
                 }
 
                 // Check timeout.
-                if (timeoutCheck.ElapsedMilliseconds > _replyTimeout * 1000)
+                if (timeoutCheck.ElapsedMilliseconds > _replyTimeout)
                 {
                     throw new TimeoutException($"Operation timed out while waiting for a response from the bot after {timeoutCheck.ElapsedMilliseconds} milliseconds (current timeout is set to {_replyTimeout * 1000} milliseconds).");
                 }

@@ -35,7 +35,7 @@ namespace SkillFunctionalTests
 
             TestRequestTimeout = int.Parse(configuration["TestRequestTimeout"]);
             TestClientOptions = configuration.GetSection("HostBotClientOptions").Get<Dictionary<HostBot, DirectLineTestClientOptions>>();
-            ThinkTime = double.Parse(configuration["ThinkTime"]);
+            ThinkTime = int.Parse(configuration["ThinkTime"]);
         }
 
         public Dictionary<HostBot, DirectLineTestClientOptions> TestClientOptions { get; }
@@ -44,6 +44,6 @@ namespace SkillFunctionalTests
 
         public int TestRequestTimeout { get; }
 
-        public double ThinkTime { get; }
+        public int ThinkTime { get; }
     }
 }

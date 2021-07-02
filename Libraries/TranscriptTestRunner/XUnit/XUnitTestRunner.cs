@@ -21,10 +21,10 @@ namespace TranscriptTestRunner.XUnit
         /// Initializes a new instance of the <see cref="XUnitTestRunner"/> class.
         /// </summary>
         /// <param name="client">Test client to use.</param>
-        /// <param name="replyTimeout">The timeout for waiting for replies (in seconds). Default is 180.</param>
+        /// <param name="replyTimeout">The timeout for waiting for replies (in miliseconds). Default is 180000.</param>
         /// <param name="thinkTime">The timeout think time before sending messages to the bot (in miliseconds). Default is 0.</param>
         /// <param name="logger">Optional. Instance of <see cref="ILogger"/> to use.</param>
-        public XUnitTestRunner(TestClientBase client, int replyTimeout = 180, double thinkTime = 0, ILogger logger = null)
+        public XUnitTestRunner(TestClientBase client, int replyTimeout = 180000, int thinkTime = 0, ILogger logger = null)
             : base(client, replyTimeout, thinkTime, logger)
         {
         }
