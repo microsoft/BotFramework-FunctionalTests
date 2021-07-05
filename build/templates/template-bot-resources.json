@@ -48,7 +48,7 @@
     },
     "virtualNetworkSubnet": {
       "type": "string"
-    }    
+    }
   },
   "variables": {
     "siteHost": "[concat(parameters('botName'), '.azurewebsites.net')]",
