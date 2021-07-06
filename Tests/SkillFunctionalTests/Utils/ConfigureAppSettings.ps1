@@ -173,7 +173,7 @@ $AppSettings.HostBotClientOptions.PSObject.Properties | ForEach-Object -Parallel
   $ResourceGroupSuffix = $GroupsSuffix | Where-Object { $Bot.Name -like "*$($_)*" };
   $ResourceGroup = "$ResourceGroup-$ResourceGroupSuffix";
 
-  $DirectLine = (az Bot directline show --name $Resource --resource-group $ResourceGroup --with-secrets true 2>$null | ConvertFrom-Json).properties.properties.sites.key;
+  $DirectLine = (az bot directline show --name $Resource --resource-group $ResourceGroup --with-secrets true 2>$null | ConvertFrom-Json).properties.properties.sites.key;
 
   $BotResource = @{
     Resource      = $Resource
