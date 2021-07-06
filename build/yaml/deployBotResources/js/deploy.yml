@@ -43,12 +43,12 @@ parameters:
     displayName: Azure resources' name suffix
     type: string
 
-  - name: virtualNetwork
-    displayName: Virtual network name
+  - name: sharedResourceGroup
+    displayName: Shared Resource Group
     type: string
 
-  - name: virtualNetworkRG
-    displayName: Virtual Network Resource Group
+  - name: virtualNetwork
+    displayName: Virtual network name
     type: string
 
 stages:
@@ -61,6 +61,8 @@ stages:
     dependsOn: "${{ parameters.dependsOn }}"
     jobs:
       - job: "Deploy"
+        pool:
+          vmImage: "ubuntu-latest"
         displayName: "Deploy steps"
         steps:
           # Delete Bot Resources
@@ -83,7 +85,7 @@ stages:
           # Prepare .env file, deleting all the declared skills, so it uses only the settings define in Azure
           - ${{ if eq(bot.type, 'Host') }}:
             - task: PowerShell@2
-              displayName: 'Prepare .env file'
+              displayName: "Prepare .env file"
               inputs:
                 targetType: inline
                 workingDirectory: '$(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ bot.project.directory }}'
@@ -93,7 +95,7 @@ stages:
                   $content = Get-Content $file
                   $content | ForEach-Object {
                     $line = $_
-                    if ($line.Trim().Length -gt 0 -and -not $line.Trim().ToLower().StartsWith('skill_')) {
+                    if ($line.Trim().Length -gt 0 -and -not $line.Trim().ToLower().StartsWith("skill_")) {
                       $line
                     }
                   } | Set-Content $file;
@@ -105,7 +107,7 @@ stages:
               registry: "${{ bot.dependency.registry }}"
               version: "${{ bot.dependency.version }}"
 
-          # Tag BotBuilder version
+          # Tag BotBuilder package version
           - template: ../common/tagBotBuilderVersion.yml
             parameters:
               ${{ if eq(bot.displayName, '') }}:
@@ -143,69 +145,78 @@ stages:
                 Write-Host "`nUsing the registry source: $registry";
                 New-Item -Path . -Name ".npmrc" -ItemType "file" -Value "registry=$registry";
 
-          # Install Packages
-          - task: Npm@1
-            displayName: 'Install dependencies'
-            inputs:
-              command: 'install'
-              workingDir: '$(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ bot.project.directory }}'
-              customRegistries: 'useNpmrc'
-              verbose: true
-
-          # Prepate bot
           - task: AzureCLI@2
-            displayName: 'Prepare Bot'
+            displayName: "Build and Push Container"
             inputs:
               azureSubscription: "${{ parameters.azureSubscription }}"
+              addSpnToEnvironment: true
+              failOnStderr: true
               scriptType: pscore
               scriptLocation: inlineScript
-              inlineScript: 'az bot prepare-deploy --code-dir "${{ bot.project.directory }}" --lang Javascript'
+              workingDirectory: $(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ bot.project.directory }}
+              inlineScript: |
+                az acr login --name ${{ bot.container.registry }} --username="$env:SERVICEPRINCIPALID" --password="$env:SERVICEPRINCIPALKEY"
+                $container = "${{ bot.container.registry }}.azurecr.io/${{ bot.name }}:v$(DEPENDENCIESVERSIONNUMBER)";
+
+                # Copy Dockerfile
+                copy "$(SYSTEM.DEFAULTWORKINGDIRECTORY)/Bots/JavaScript/Dockerfile" .
+
+                # Delete Container
+                $repositories = az acr repository list --name ${{ bot.container.registry }} | ConvertFrom-Json;
+                if($repositories -and $repositories.Contains("${{ bot.name }}")){
+                  "Container repository removed: '${{ bot.container.registry }}.azurecr.io/${{ bot.name }}'.";
+                  az acr repository delete --name ${{ bot.container.registry }} --repository ${{ bot.name }} --yes --output none
+                }
+
+                # Build and Push Container
+                docker build --tag $container .
+                docker push $container
+
+                # Export Bot
+                $containerId = docker create $container
+                docker cp "$($containerId):/app" .
 
           # Zip bot
           - task: ArchiveFiles@2
-            displayName: 'Zip bot'
+            displayName: "Zip bot"
             inputs:
-              rootFolderOrFile: '$(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ bot.project.directory }}'
+              rootFolderOrFile: "$(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ bot.project.directory }}/app"
               includeRootFolder: false
-              archiveType: 'zip'
-              archiveFile: '$(SYSTEM.DEFAULTWORKINGDIRECTORY)/build/${{ bot.name }}.zip'
+              archiveType: "zip"
+              archiveFile: "$(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ bot.name }}.zip"
               replaceExistingArchive: true
               verbose: true
 
           # Upload zip to artifacts in case we want to debug it
           - task: PublishBuildArtifacts@1
-            displayName: 'Publish zip package'
+            displayName: "Publish zip package"
             inputs:
-              pathToPublish: '$(SYSTEM.DEFAULTWORKINGDIRECTORY)/build/${{ bot.name }}.zip'
+              pathToPublish: "$(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ bot.name }}.zip"
               artifactName: javascript-$(BUILD.BUILDID)
 
           # Create App Service and Bot Channel Registration
           - template: ../common/createAppService.yml
             parameters:
               appId: $(APPID)
-              appInsight: "${{ parameters.appInsight }}"
               appSecret: $(APPSECRET)
+              appInsight: "${{ parameters.appInsight }}"
               appServicePlan: "${{ parameters.appServicePlan }}"
               appServicePlanRG: "${{ parameters.appServicePlanRG }}"
               azureSubscription: "${{ parameters.azureSubscription }}"
               botGroup: "${{ parameters.resourceGroup }}"
               botName: "${{ bot.name }}"
               botPricingTier: "${{ parameters.botPricingTier }}"
+              container:
+                registry: "${{ bot.container.registry }}"
+                repository: "${{ bot.name }}"
+                tag: "v$(DEPENDENCIESVERSIONNUMBER)"
+                port: "${{ bot.container.port }}"
+                command: "${{ bot.container.command }}"
               resourceSuffix: "${{ parameters.resourceSuffix }}"
+              sharedResourceGroup: "${{ parameters.sharedResourceGroup }}"
+              templateFile: "build/templates/template-container-linux-bot-resources.json"
               virtualNetwork: "${{ parameters.virtualNetwork }}"
-              virtualNetworkRG: "${{ parameters.virtualNetworkRG }}"
-              subnetName: "javascript"
-              templateFile: "build/templates/template-bot-resources.json"
-
-          # Deploy bot
-          - task: AzureWebApp@1
-            displayName: 'Deploy Azure Web App : ${{ bot.name }}-$(BUILD.BUILDID)'
-            inputs:
-              azureSubscription: "${{ parameters.azureSubscription }}"
-              appName: '${{ bot.name }}${{ parameters.resourceSuffix }}-$(BUILD.BUILDID)'
-              resourceGroupName: '${{ parameters.resourceGroup }}'
-              package: '$(SYSTEM.DEFAULTWORKINGDIRECTORY)/build/${{ bot.name }}.zip'
-              deploymentMethod: runFromPackage
+              virtualNetworkSubnet: "javascript"
 
           # Configure OAuth
           - ${{ if eq(bot.type, 'Skill') }}:

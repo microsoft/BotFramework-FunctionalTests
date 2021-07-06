@@ -14,29 +14,20 @@
         "description": "Active Directory App Password, set as MicrosoftAppPassword in the Web App's Application Settings."
       }
     },
-    "botName": {
-      "type": "string"
-    },
-    "botLocation": {
-      "type": "string"
-    },
     "appInsightsName": {
       "type": "string",
       "defaultValue": ""
-    },
-    "virtualNetworkName": {
-      "type": "string"
-    },
-    "virtualNetworkResourceGroup": {
-      "type": "string"
-    },
-    "subnetName": {
-      "type": "string"
     },
     "appServicePlanName": {
       "type": "string"
     },
     "appServicePlanResourceGroup": {
+      "type": "string"
+    },
+    "botName": {
+      "type": "string"
+    },
+    "botLocation": {
       "type": "string"
     },
     "botSku": {
@@ -45,6 +36,15 @@
       "metadata": {
         "description": "The pricing tier of the Bot Service Registration. Acceptable values are F0 and S1."
       }
+    },
+    "sharedResourceGroup": {
+      "type": "string"
+    },
+    "virtualNetwork": {
+      "type": "string"
+    },
+    "virtualNetworkSubnet": {
+      "type": "string"
     }
   },
   "variables": {
@@ -96,15 +96,15 @@
             },
             {
               "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-              "value": "[if(empty(parameters('appInsightsName')), '', reference(resourceId(parameters('appServicePlanResourceGroup'),'Microsoft.Insights/components', parameters('appInsightsName')), '2015-05-01', 'Full').properties.InstrumentationKey)]"
+              "value": "[if(empty(parameters('appInsightsName')), '', reference(resourceId(parameters('sharedResourceGroup'),'Microsoft.Insights/components', parameters('appInsightsName')), '2015-05-01', 'Full').properties.InstrumentationKey)]"
             },
             {
               "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
-              "value": "[if(empty(parameters('appInsightsName')), '', reference(resourceId(parameters('appServicePlanResourceGroup'),'Microsoft.Insights/components', parameters('appInsightsName')), '2015-05-01', 'Full').properties.ConnectionString)]"
+              "value": "[if(empty(parameters('appInsightsName')), '', reference(resourceId(parameters('sharedResourceGroup'),'Microsoft.Insights/components', parameters('appInsightsName')), '2015-05-01', 'Full').properties.ConnectionString)]"
             },
             {
               "name": "WEBSITE_VNET_ROUTE_ALL",
-              "condition": "[not(empty(parameters('virtualNetworkName')))]",
+              "condition": "[not(empty(parameters('virtualNetwork')))]",
               "value": "1"
             },
             {
@@ -225,17 +225,17 @@
       }
     },
     {
-      "condition": "[not(empty(parameters('virtualNetworkName')))]",
+      "condition": "[not(empty(parameters('virtualNetwork')))]",
       "name": "[concat(parameters('botName'), '/virtualNetwork')]",
       "type": "Microsoft.Web/sites/virtualNetworkConnections",
       "apiVersion": "2018-11-01",
       "location": "[parameters('botLocation')]",
       "dependsOn": [
-          "[resourceId('Microsoft.Web/sites', parameters('botName'))]"
+        "[resourceId('Microsoft.Web/sites', parameters('botName'))]"
       ],
       "properties": {
-          "subnetResourceId": "[resourceId(parameters('virtualNetworkResourceGroup'), 'Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetName'))]",
-          "swiftSupported": true
+        "subnetResourceId": "[resourceId(parameters('sharedResourceGroup'), 'Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetwork'), parameters('virtualNetworkSubnet'))]",
+        "swiftSupported": true
       }
     }
   ]

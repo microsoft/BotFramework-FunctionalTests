@@ -10,7 +10,7 @@ variables:
   ## Azure Resources (Define these variables in Azure)
   # AzureSubscription: Service Connection Name to Manage Azure resources.
   # DeployResourceGroup: (optional) Name of the Resource Group containing the bots.
-  # ResourceSuffix: (optional) Suffix to add to the resources' name to avoid collitions.
+  # ResourceSuffix: (optional) Alphanumeric suffix to add to the resources' name to avoid collisions.
   # SharedResourceGroup: (optional) Name of the Resource Group containing the shared resources.
 
   ## Internal variables
@@ -19,6 +19,7 @@ variables:
   InternalAppServicePlanJSName: "bffnbotsappservicejs$($env:RESOURCESUFFIX)"
   InternalAppServicePlanPythonName: "bffnbotsappservicepython$($env:RESOURCESUFFIX)"
   InternalCosmosDBName: "bffnbotstatedb$($env:RESOURCESUFFIX)"
+  InternalContainerRegistryName: "bffncontainerregistry$($env:RESOURCESUFFIX)"
   InternalKeyVaultName: "bffnbotkeyvault$($env:RESOURCESUFFIX)"
   InternalBotResourceGroupName: $[coalesce(variables['DEPLOYRESOURCEGROUP'], 'bffnbots')]
   InternalSharedResourceGroupName: $[coalesce(variables['SHAREDRESOURCEGROUP'], 'bffnshared')]
@@ -225,6 +226,29 @@ stages:
                 Write-Host "No pre-existing $(INTERNALCOSMOSDBNAME) resource found."
               }
 
+- stage: "Delete_Container_Registry"
+  displayName: "Delete Container Registry"
+  dependsOn: []
+  jobs:
+    - job: "Delete"
+      displayName: "Delete steps"
+      steps:
+        - task: AzureCLI@2
+          displayName: "Delete Container Registry"
+          inputs:
+            azureSubscription: $(AZURESUBSCRIPTION)
+            scriptType: pscore
+            scriptLocation: inlineScript
+            inlineScript: |
+              Write-Host "Looking for $(INTERNALCONTAINERREGISTRYNAME)..."
+              $resource = az acr check-name --name "$(INTERNALCONTAINERREGISTRYNAME)" | ConvertFrom-Json
+              if ($resource.nameAvailable) {
+                Write-Host "No pre-existing $(INTERNALCONTAINERREGISTRYNAME) resource found."
+              } else {
+                Write-Host "Deleting $(INTERNALCONTAINERREGISTRYNAME)..."
+                az acr delete --name "$(INTERNALCONTAINERREGISTRYNAME)" --resource-group "$(INTERNALSHAREDRESOURCEGROUPNAME)" --yes
+              }
+
 - stage: "Delete_Resource_Group_Windows"
   displayName: "Delete Resource Group (Windows)"
   dependsOn: 
@@ -234,6 +258,7 @@ stages:
     - Delete_App_Service_Plan_JS
     - Delete_App_Insights
     - Delete_CosmosDB
+    - Delete_Container_Registry
     - Delete_App_Registrations
     - Delete_Key_Vault
   jobs:
