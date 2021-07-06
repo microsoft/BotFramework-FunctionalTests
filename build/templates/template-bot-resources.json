@@ -21,9 +21,6 @@
     "appServicePlanName": {
       "type": "string"
     },
-    "appServicePlanResourceGroup": {
-      "type": "string"
-    },
     "botName": {
       "type": "string"
     },
@@ -73,7 +70,7 @@
             "hostType": "Repository"
           }
         ],
-        "serverFarmId": "[concat('/subscriptions/', subscription().id,'/resourcegroups/', parameters('appServicePlanResourceGroup'), '/providers/Microsoft.Web/serverfarms/', parameters('appServicePlanName'))]",
+        "serverFarmId": "[concat('/subscriptions/', subscription().id,'/resourcegroups/', parameters('sharedResourceGroup'), '/providers/Microsoft.Web/serverfarms/', parameters('appServicePlanName'))]",
         "reserved": true,
         "hyperV": false,
         "siteConfig": {

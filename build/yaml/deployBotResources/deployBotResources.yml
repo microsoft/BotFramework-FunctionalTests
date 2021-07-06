@@ -123,8 +123,6 @@ variables:
   BuildPlatform: "AnyCPU"
   ## Azure Resources (Define these variables in Azure)
   # AzureSubscription: Service Connection Name to Manage Azure resources.
-  # AppServicePlanGroup: (optional) Name of the Resource Group where the Windows App Service Plan is located.
-  # AppServicePlanGroupLinux: (optional) Name of the Resource Group where the Linux App Service Plan is located.
   # AppServicePlanDotNetName: (optional) Name of the DotNet App Service Plan.
   # AppServicePlanJSName: (optional) Name of the JavaScript App Service Plan.
   # AppServicePlanPythonName: (optional) Name of the Python App Service Plan.
@@ -186,8 +184,6 @@ variables:
 
   ## Internal variables
   InternalAppInsightsName: 'bffnappinsights$(INTERNALRESOURCESUFFIX)'
-  InternalAppServicePlanWindowsResourceGroup: $[coalesce(variables['APPSERVICEPLANGROUP'], 'bffnshared')]
-  InternalAppServicePlanLinuxResourceGroup: $[coalesce(variables['APPSERVICEPLANGROUPLINUX'], 'bffnshared-linux')]
   InternalAppServicePlanDotNetName: $[coalesce(variables['APPSERVICEPLANDOTNETNAME'], 'bffnbotsappservicedotnet$(INTERNALRESOURCESUFFIX)')]
   InternalAppServicePlanJSName: $[coalesce(variables['APPSERVICEPLANJSNAME'], 'bffnbotsappservicejs$(INTERNALRESOURCESUFFIX)')]
   InternalAppServicePlanPythonName: $[coalesce(variables['APPSERVICEPLANPYTHONNAME'], 'bffnbotsappservicepython$(INTERNALRESOURCESUFFIX)')]
@@ -221,7 +217,6 @@ stages:
     parameters:
       appInsight: "$(INTERNALAPPINSIGHTSNAME)"
       appServicePlan: "$(INTERNALAPPSERVICEPLANDOTNETNAME)"
-      appServicePlanRG: "$(INTERNALAPPSERVICEPLANWINDOWSRESOURCEGROUP)"
       azureSubscription: "$(AZURESUBSCRIPTION)"
       botPricingTier: $env:BOTPRICINGTIER
       connectionName: $env:CONNECTIONNAME
@@ -364,7 +359,6 @@ stages:
     parameters:
       appInsight: "$(INTERNALAPPINSIGHTSNAME)"
       appServicePlan: "$(INTERNALAPPSERVICEPLANJSNAME)"
-      appServicePlanRG: "$(INTERNALAPPSERVICEPLANWINDOWSRESOURCEGROUP)"
       azureSubscription: "$(AZURESUBSCRIPTION)"
       botPricingTier: $env:BOTPRICINGTIER
       connectionName: $env:CONNECTIONNAME
@@ -455,7 +449,6 @@ stages:
     parameters:
       appInsight: "$(INTERNALAPPINSIGHTSNAME)"
       appServicePlan: "$(INTERNALAPPSERVICEPLANPYTHONNAME)"
-      appServicePlanRG: "$(INTERNALAPPSERVICEPLANLINUXRESOURCEGROUP)"
       azureSubscription: "$(AZURESUBSCRIPTION)"
       botPricingTier: $env:BOTPRICINGTIER
       connectionName: $env:CONNECTIONNAME
