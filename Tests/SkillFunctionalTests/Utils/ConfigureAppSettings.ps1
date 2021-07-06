@@ -6,8 +6,21 @@
   Gets DirectLine Secrets from Azure.
 
   .DESCRIPTION
-  Configure AppSettings file with DirectLine Secrets gather from Azure Bot Resources based on the Resource Group and Resource Suffix provided by the user.
+  Configure AppSettings file with DirectLine Secrets gathered from Azure Bot Resources based on the Resource Group and Resource Suffix provided by the user.
+
+  .PARAMETER ResourceGroup
+  Specifies the name for the specific Resource Group where the resources are deployed at.
+
+  .PARAMETER ResourceSuffix
+  Specifies the suffix the resources name are built with.
 #>
+
+param (
+    [Parameter(Mandatory=$false)]
+    [string]$ResourceGroup,
+    [Parameter(Mandatory=$false)]
+    [string]$ResourceSuffix
+)
 
 $PSVersion = $PSVersionTable.PSVersion;
 if ($PSVersion.Major -lt 7) {
@@ -49,26 +62,36 @@ if ($LoginOutput) {
 }
 
 # Resource Group Input
-Write-Host "? " -ForegroundColor Green -NoNewline;
-Write-Host "Enter the Resource Group where the Bots are located: " -ForegroundColor White -NoNewline;
-Write-Host "default (" -ForegroundColor DarkGray -NoNewline;
-Write-Host $Settings.ResourceGroup -ForegroundColor Magenta -NoNewline;
-Write-Host ") " -ForegroundColor DarkGray -NoNewline;
-$Inputs.ResourceGroup = (Read-Host).Trim();
+if ([string]::IsNullOrEmpty($ResourceGroup)) {
+  Write-Host "? " -ForegroundColor Green -NoNewline;
+  Write-Host "Enter the Resource Group where the Bots are located: " -ForegroundColor White -NoNewline;
+  Write-Host "default (" -ForegroundColor DarkGray -NoNewline;
+  Write-Host $Settings.ResourceGroup -ForegroundColor Magenta -NoNewline;
+  Write-Host ") " -ForegroundColor DarkGray -NoNewline;
+  $Inputs.ResourceGroup = (Read-Host).Trim();
+} 
+else {
+  $Inputs.ResourceGroup = $ResourceGroup;
+}
 
 # Resource Suffix Input
-do {
-  Write-Host "? " -ForegroundColor Green -NoNewline;
-  Write-Host "Enter the Suffix used for the Bot Resources: " -ForegroundColor White -NoNewline;
-  Write-Host "eg. (microsoft-396) " -ForegroundColor DarkGray -NoNewline;
-  $Inputs.ResourceSuffix = (Read-Host).Trim();
-  if ([string]::IsNullOrEmpty($Inputs.ResourceSuffix)) {
-    Write-Host "  - The Bot Resource Suffix must be provided" -ForegroundColor Red;
-  }
-  else {
-    break;
-  }
-} while ($true)
+if ([string]::IsNullOrEmpty($ResourceSuffix)) {
+  do {
+    Write-Host "? " -ForegroundColor Green -NoNewline;
+    Write-Host "Enter the Suffix used for the Bot Resources: " -ForegroundColor White -NoNewline;
+    Write-Host "eg. (microsoft-396) " -ForegroundColor DarkGray -NoNewline;
+    $Inputs.ResourceSuffix = (Read-Host).Trim();
+    if ([string]::IsNullOrEmpty($Inputs.ResourceSuffix)) {
+      Write-Host "  - The Bot Resource Suffix must be provided" -ForegroundColor Red;
+    }
+    else {
+      break;
+    }
+  } while ($true)
+} 
+else {
+  $Inputs.ResourceSuffix = $ResourceSuffix;
+}
 
 if ([string]::IsNullOrEmpty($Inputs.ResourceGroup)) {
   $Inputs.ResourceGroup = $Settings.ResourceGroup;
