@@ -13,6 +13,9 @@ variables:
   ## Azure Resources (Define these variables in Azure)
   # AzureSubscription: Service Connection Name to Manage Azure resources.
   # KeyVaultObjectId: Suscription's Object Id to create the keyvault to store App Registrations.
+  # AppServicePlanDotNetName: (optional) Name of the App Service Plan for DotNet bots.
+  # AppServicePlanJSName: (optional) Name of the App Service Plan for JavaScript bots.
+  # AppServicePlanPythonName: (optional) Name of the App Service Plan for Python bots.
   # AppServicePlanPricingTier: (optional) Pricing Tier for App Service Plans, default F1.
   # ContainerRegistryPricingTier: (optional) Pricing Tier for Container Registry, default Basic.
   # ResourceGroupName: (optional) Name of the Resource Group for the shared resources.
@@ -20,9 +23,9 @@ variables:
 
   ## Internal variables
   InternalAppInsightsName: "bffnappinsights$($env:RESOURCESUFFIX)"
-  InternalAppServicePlanDotNetName: "bffnbotsappservicedotnet$($env:RESOURCESUFFIX)"
-  InternalAppServicePlanJSName: "bffnbotsappservicejs$($env:RESOURCESUFFIX)"
-  InternalAppServicePlanPythonName: "bffnbotsappservicepython$($env:RESOURCESUFFIX)"
+  InternalAppServicePlanDotNetName: $[coalesce(variables['APPSERVICEPLANDOTNETNAME'], '')]
+  InternalAppServicePlanJSName: $[coalesce(variables['APPSERVICEPLANJSNAME'], '')]
+  InternalAppServicePlanPythonName: $[coalesce(variables['APPSERVICEPLANPYTHONNAME'], '')]
   InternalContainerRegistryName: "bffncontainerregistry$($env:RESOURCESUFFIX)"
   InternalCosmosDBName: "bffnbotstatedb$($env:RESOURCESUFFIX)"
   InternalKeyVaultName: "bffnbotkeyvault$($env:RESOURCESUFFIX)"
@@ -123,12 +126,44 @@ stages:
           servicePrincipalKey: $env:SERVICEPRINCIPALKEY
           tenantId: $env:TENANTID
 
-- stage: Create_App_Service_Plan_DotNet
-  displayName: "Create App Service Plan (DotNet)"
-  dependsOn: Create_Resource_Group_Windows
+- stage: Create_App_Service_Plans
+  displayName: "Create App Service Plans"
+  dependsOn: 
+    - Create_Resource_Group_Windows
+    - Create_Resource_Group_Linux
   jobs:
+    - job: Check_App_Service_Plan_Creation
+      displayName: "Check AppServicePlan Creation"
+      steps:
+      - powershell: |
+            $AppServicePlanDotNet = '$(INTERNALAPPSERVICEPLANDOTNETNAME)'
+            $AppServicePlanJS = '$(INTERNALAPPSERVICEPLANJSNAME)'
+            $AppServicePlanPython = '$(INTERNALAPPSERVICEPLANPYTHONNAME)'
+            Write-Host "##vso[task.setvariable variable=createDotnetPlan;isOutput=true]$false"
+            Write-Host "##vso[task.setvariable variable=createJSPlan;isOutput=true]$false"
+            Write-Host "##vso[task.setvariable variable=createPythonPlan;isOutput=true]$false"
+
+            if ($AppServicePlanDotNet -ne '') {
+              Write-Host "AppServicePlanDotNetName set. The AppServicePlan for DotNet will be created."
+              Write-Host "##vso[task.setvariable variable=createDotnetPlan;isOutput=true]$true"
+            }
+
+            if ($AppServicePlanJS -ne '') {
+              Write-Host "AppServicePlanJSName set. The AppServicePlan for JS will be created."
+              Write-Host "##vso[task.setvariable variable=createJSPlan;isOutput=true]$true"
+            }
+
+            if ($AppServicePlanPython -ne '') {
+              Write-Host "AppServicePlanPythonName set. The AppServicePlan for Python will be created."
+              Write-Host "##vso[task.setvariable variable=createPythonPlan;isOutput=true]$true"
+            }
+        name: checkAppServicePlanNames
+        failOnStderr: true
+
     - job: Deploy_App_Service_Plan_DotNet
-      displayName: "Deploy steps"
+      displayName: "Deploy AppServicePlan DotNet"
+      dependsOn: Check_App_Service_Plan_Creation
+      condition: eq(dependencies.Check_App_Service_Plan_Creation.outputs['checkAppServicePlanNames.createDotnetPlan'], true)
       steps:
       - task: AzureCLI@2
         displayName: "Deploy App Service Plan (DotNet)"
@@ -138,14 +173,12 @@ stages:
           scriptLocation: inlineScript
           inlineScript: |
             $appServicePlanPricingTier = if ($env:APPSERVICEPLANPRICINGTIER) { "newAppServicePlanSku=$env:APPSERVICEPLANPRICINGTIER" }
-            az deployment group create --name "$(INTERNALAPPSERVICEPLANDOTNETNAME)" --resource-group "$(INTERNALRESOURCEGROUPNAME)" --template-file build/templates/template-service-plan-windows-resources.json --parameters $appServicePlanPricingTier newAppServicePlanName="$(INTERNALAPPSERVICEPLANDOTNETNAME)"
+            az deployment group create --name "$(INTERNALAPPSERVICEPLANDOTNETNAME)$($env:RESOURCESUFFIX)" --resource-group "$(INTERNALRESOURCEGROUPNAME)" --template-file build/templates/template-service-plan-windows-resources.json --parameters $appServicePlanPricingTier newAppServicePlanName="$(INTERNALAPPSERVICEPLANDOTNETNAME)$($env:RESOURCESUFFIX)"
 
-- stage: Create_App_Service_Plan_JS
-  displayName: "Create App Service Plan (JS)"
-  dependsOn: Create_Resource_Group_Windows
-  jobs:
     - job: Deploy_App_Service_Plan_JS
-      displayName: "Deploy steps"
+      displayName: "Deploy AppServicePlan JS"
+      dependsOn: Check_App_Service_Plan_Creation
+      condition: eq(dependencies.Check_App_Service_Plan_Creation.outputs['checkAppServicePlanNames.createJSPlan'], true)
       steps:
       - task: AzureCLI@2
         displayName: "Deploy App Service Plan (JS)"
@@ -155,14 +188,12 @@ stages:
           scriptLocation: inlineScript
           inlineScript: |
             $appServicePlanPricingTier = if ($env:APPSERVICEPLANPRICINGTIER) { "newAppServicePlanSku=$env:APPSERVICEPLANPRICINGTIER" }
-            az deployment group create --name "$(INTERNALAPPSERVICEPLANJSNAME)" --resource-group "$(INTERNALRESOURCEGROUPNAME)" --template-file build/templates/template-service-plan-linux-resources.json --parameters $appServicePlanPricingTier newAppServicePlanName="$(INTERNALAPPSERVICEPLANJSNAME)"
+            az deployment group create --name "$(INTERNALAPPSERVICEPLANJSNAME)$($env:RESOURCESUFFIX)" --resource-group "$(INTERNALRESOURCEGROUPNAME)" --template-file build/templates/template-service-plan-linux-resources.json --parameters $appServicePlanPricingTier newAppServicePlanName="$(INTERNALAPPSERVICEPLANJSNAME)$($env:RESOURCESUFFIX)"
 
-- stage: Create_App_Service_Plan_Python
-  displayName: "Create App Service Plan (Python)"
-  dependsOn: Create_Resource_Group_Linux
-  jobs:
     - job: Deploy_App_Service_Plan_Python
-      displayName: "Deploy steps"
+      displayName: "Deploy AppServicePlan Python"
+      dependsOn: Check_App_Service_Plan_Creation
+      condition: eq(dependencies.Check_App_Service_Plan_Creation.outputs['checkAppServicePlanNames.createPythonPlan'], true)
       steps:
       - task: AzureCLI@2
         displayName: "Deploy App Service Plan (Python)"
@@ -172,7 +203,7 @@ stages:
           scriptLocation: inlineScript
           inlineScript: |
             $appServicePlanPricingTier = if ($env:APPSERVICEPLANPRICINGTIER) { "newAppServicePlanSku=$env:APPSERVICEPLANPRICINGTIER" }
-            az deployment group create --name "$(INTERNALAPPSERVICEPLANPYTHONNAME)" --resource-group "$(INTERNALRESOURCEGROUPNAME)-linux" --template-file build/templates/template-service-plan-linux-resources.json --parameters $appServicePlanPricingTier newAppServicePlanName="$(INTERNALAPPSERVICEPLANPYTHONNAME)"
+            az deployment group create --name "$(INTERNALAPPSERVICEPLANPYTHONNAME)$($env:RESOURCESUFFIX)" --resource-group "$(INTERNALRESOURCEGROUPNAME)-linux" --template-file build/templates/template-service-plan-linux-resources.json --parameters $appServicePlanPricingTier newAppServicePlanName="$(INTERNALAPPSERVICEPLANPYTHONNAME)$($env:RESOURCESUFFIX)"
 
 - stage: Create_App_Insights
   displayName: "Create App Insights"
