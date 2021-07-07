@@ -55,6 +55,9 @@
     "containerCommand": {
       "type": "string"
     },
+    "projectTag": {
+      "type": "string"
+    },
     "sharedResourceGroup": {
       "type": "string"
     },
@@ -79,6 +82,9 @@
       "name": "[parameters('botName')]",
       "location": "[parameters('botLocation')]",
       "kind": "app,linux,container",
+      "tags": {
+        "Project": "[parameters('projectTag')]"
+      },
       "properties": {
         "enabled": true,
         "hostNameSslStates": [
