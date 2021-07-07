@@ -186,16 +186,16 @@ variables:
 
   ## Internal variables
   InternalAppInsightsName: 'bffnappinsights$(INTERNALRESOURCESUFFIX)'
-  InternalAppServicePlanWindowsResourceGroup: $[coalesce(variables['APPSERVICEPLANGROUP'], 'bffnshared')]
-  InternalAppServicePlanLinuxResourceGroup: $[coalesce(variables['APPSERVICEPLANGROUPLINUX'], 'bffnshared-linux')]
+  InternalAppServicePlanWindowsResourceGroup: $[coalesce(variables['APPSERVICEPLANGROUP'], 'BFFN-Shared')]
+  InternalAppServicePlanLinuxResourceGroup: $[coalesce(variables['APPSERVICEPLANGROUPLINUX'], 'BFFN-Shared-linux')]
   InternalAppServicePlanDotNetName: $(APPSERVICEPLANDOTNETNAME)$(INTERNALRESOURCESUFFIX)
   InternalAppServicePlanJSName: $(APPSERVICEPLANJSNAME)$(INTERNALRESOURCESUFFIX)
   InternalAppServicePlanPythonName: $(APPSERVICEPLANPYTHONNAME)$(INTERNALRESOURCESUFFIX)
   InternalContainerRegistryName: $[coalesce(variables['CONTAINERREGISTRYNAME'], 'bffncontainerregistry$(INTERNALRESOURCESUFFIX)')]
   InternalKeyVaultName: 'bffnbotkeyvault$(INTERNALRESOURCESUFFIX)'
-  InternalResourceGroupName: $[coalesce(variables['RESOURCEGROUP'], 'bffnbots')]
+  InternalResourceGroupName: $[coalesce(variables['RESOURCEGROUP'], 'BFFN')]
   InternalResourceSuffix: $[coalesce(variables['RESOURCESUFFIX'], '')]
-  InternalSharedResourceGroupName: $[coalesce(variables['SHAREDRESOURCEGROUP'], 'bffnshared')]
+  InternalSharedResourceGroupName: $[coalesce(variables['SHAREDRESOURCEGROUP'], 'BFFN-Shared')]
   InternalVirtualNetworkName: $[coalesce(variables['VIRTUALNETWORKNAME'], 'bffnvirtualnetwork$(INTERNALRESOURCESUFFIX)')]
 
 stages:
