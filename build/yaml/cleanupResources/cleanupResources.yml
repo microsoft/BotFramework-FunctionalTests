@@ -21,8 +21,8 @@ variables:
   InternalCosmosDBName: "bffnbotstatedb$($env:RESOURCESUFFIX)"
   InternalContainerRegistryName: "bffncontainerregistry$($env:RESOURCESUFFIX)"
   InternalKeyVaultName: "bffnbotkeyvault$($env:RESOURCESUFFIX)"
-  InternalBotResourceGroupName: $[coalesce(variables['DEPLOYRESOURCEGROUP'], 'bffnbots')]
-  InternalSharedResourceGroupName: $[coalesce(variables['SHAREDRESOURCEGROUP'], 'bffnshared')]
+  InternalBotResourceGroupName: $[coalesce(variables['DEPLOYRESOURCEGROUP'], 'BFFN')]
+  InternalSharedResourceGroupName: $[coalesce(variables['SHAREDRESOURCEGROUP'], 'BFFN-Shared')]
   InternalVirtualNetworkName: "bffnvirtualnetwork$($env:RESOURCESUFFIX)"
 
 pool:
