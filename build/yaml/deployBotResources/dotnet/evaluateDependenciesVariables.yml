@@ -19,49 +19,55 @@ steps:
       failOnStderr: true
       script: |
         # Get Source
-        $sourceDotNetv3MyGet = "https://botbuilder.myget.org/F/botbuilder-v3-dotnet-daily/api/v3/index.json" 
-        $sourceDotNetArtifacts = "https://pkgs.dev.azure.com/ConversationalAI/BotFramework/_packaging/SDK/nuget/v3/index.json" 
+        $sourceDotNetv3MyGet = "https://botbuilder.myget.org/F/botbuilder-v3-dotnet-daily/api/v3/index.json"
+        $sourceDotNetArtifacts = "https://pkgs.dev.azure.com/ConversationalAI/BotFramework/_packaging/SDK/nuget/v3/index.json"
         $sourceDotNetMyGet = "https://botbuilder.myget.org/F/botbuilder-v4-dotnet-daily/api/v3/index.json"
+        $sourceDotNetNuGet = "https://api.nuget.org/v3/index.json"
+
         switch -regex ("${{ parameters.registry }}") {
           "^($null|)$" {
             switch ("${{ parameters.botType }}") {
-              "SkillV3" { $source = $sourceDotNetv3MyGet } 
+              "SkillV3" { $source = $sourceDotNetv3MyGet }
               default { $source = $sourceDotNetArtifacts }
             }
           }
           "Artifacts" { $source = $sourceDotNetArtifacts }
           "MyGet" { 
             switch ("${{ parameters.botType }}") {
-              "SkillV3" { $source = $sourceDotNetv3MyGet } 
+              "SkillV3" { $source = $sourceDotNetv3MyGet }
               default { $source = $sourceDotNetMyGet }
             }
           }
-          "NuGet" { $source = "" }
+          "NuGet" { $source = $sourceDotNetNuGet }
           default { $source = "${{ parameters.registry }}" }
         }
         Write-Host "Source: $source"
-        
+
         # Get Version Number
+        $tags = ""
         switch -regex ("${{ parameters.version }}") {
-          "^($null||LATEST)$" {
-            if ("${{ parameters.registry }}".ToUpper() -in "NUGET") {
+          "^($null||LATEST||STABLE)$" {
+            if (("${{ parameters.version }}" -in "STABLE") -and ($source -match $sourceDotNetArtifacts)) {
               [Console]::ForegroundColor = "red"
-              [Console]::Error.WriteLine("Preview versions of BotBuilder are not available for this source.")
+              [Console]::Error.WriteLine("Stable versions of BotBuilder DotNet are not available for this source.")
               [Console]::ResetColor()
               exit 1 # Force exit
             }
+            if("${{ parameters.version }}" -notin "STABLE") {
+              $tags = "-PreRelease"
+            }
             if ("${{ parameters.botType }}" -in "Host", "Skill") {
-              $PackageList = nuget list Microsoft.Bot.Builder.Integration.AspNet.Core -Source "$source" -PreRelease
-              $versionNumber = $PackageList.Split(" ")[-1]
+              $PackageList = nuget list "Microsoft.Bot.Builder" -Source "$source" "$tags" | Select-String -Pattern "^Microsoft.Bot.Builder "
+              $versionNumber = ($PackageList -split " ")[-1]
             } elseif ("${{ parameters.botType }}" -in "SkillV3") {
-              $versionNumber = ""
+              $PackageList = nuget list "Microsoft.Bot.Builder.History" -Source "$source" "$tags" | Select-String -Pattern "^Microsoft.Bot.Builder.History"
+              $versionNumber = ($PackageList -split " ")[-1]
             }
           }
-          STABLE { $versionNumber = "" }
           default { $versionNumber = "${{ parameters.version }}" }
         }
         Write-Host "Version Number: $versionNumber"
-        
+
         # Set environment variables
         Write-Host "##vso[task.setvariable variable=DependenciesSource]$source"
         Write-Host "##vso[task.setvariable variable=DependenciesVersionNumber]$versionNumber"
