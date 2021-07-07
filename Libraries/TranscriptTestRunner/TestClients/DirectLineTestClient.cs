@@ -296,6 +296,24 @@ namespace TranscriptTestRunner.TestClients
                     }
                 }
             }
+            catch (AggregateException aggEx)
+            {
+                aggEx.Handle(ex =>
+                {
+                    if (ex is InvalidOperationException && ex.Message.Contains("There is no currently active test"))
+                    {
+                        _logger.LogWarning($"Warning: {ex.Message} This issue will be fixed once a stable v3 is available for 'xunit' and 'Divergic.Logging.Xunit' NuGet packages.");
+                    }
+                    else
+                    {
+                        _logger.LogError(ex, "Error in ListenAsync");
+                    }
+
+                    return true;
+                });
+
+                throw;
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error in ListenAsync");
