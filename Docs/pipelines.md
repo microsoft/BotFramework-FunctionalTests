@@ -90,9 +90,13 @@ You can choose between one of the following options to select the package's feed
   - Pypi
   - Test.Pypi
 
-The version parameters support LATEST (default), STABLE, or a specific version.
+The version parameters support the following options.
 
-Note: Npm and NuGet feeds only support stable versions, fill the corresponding variable with a specific version or set it to `stable`.
+- LATEST: this is the default, and will look for the most recent version.
+- STABLE: will look for the most recent Stable version.
+- custom: you can enter a specific version to look for in the feed, ie `4.14.0.20210416.dev236130`
+
+Note: The artifact feed doesn't contain stable versions for DotNet packages.
 
 ### BotNames
 

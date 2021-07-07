@@ -1,49 +1,93 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-const dotenv = require('dotenv');
+// Import required bot configuration.
+require('dotenv').config();
+
 const http = require('http');
 const https = require('https');
-const path = require('path');
 const restify = require('restify');
 
 // Import required bot services.
 // See https://aka.ms/bot-services to learn more about the different parts of a bot.
-const { ActivityTypes, BotFrameworkAdapter, InputHints, MessageFactory } = require('botbuilder');
-const { AuthenticationConfiguration } = require('botframework-connector');
+const {
+  ActivityTypes,
+  CallerIdConstants,
+  CloudAdapter,
+  InputHints,
+  MessageFactory
+} = require('botbuilder');
 
-// Import required bot configuration.
-const ENV_FILE = path.join(__dirname, '.env');
-dotenv.config({ path: ENV_FILE });
+const {
+  AuthenticationConfiguration,
+  AuthenticationConstants,
+  BotFrameworkAuthenticationFactory,
+  PasswordServiceClientCredentialFactory,
+  allowedCallersClaimsValidator
+} = require('botframework-connector');
 
 // This bot's main dialog.
-const { EchoBot } = require('./bot');
-const { allowedCallersClaimsValidator } = require('./authentication/allowedCallersClaimsValidator');
+const { EchoBot } = require('./bot.js');
 
 // Create HTTP server
-const server = restify.createServer();
+const server = restify.createServer({ maxParamLength: 1000 });
+server.use(restify.plugins.acceptParser(server.acceptable));
+server.use(restify.plugins.queryParser());
+server.use(restify.plugins.bodyParser());
+
 server.listen(process.env.port || process.env.PORT || 36400, () => {
   console.log(`\n${server.name} listening to ${server.url}`);
-  console.log('\nGet Bot Framework Emulator: https://aka.ms/botframework-emulator');
+  console.log(
+    '\nGet Bot Framework Emulator: https://aka.ms/botframework-emulator'
+  );
   console.log('\nTo talk to your bot, open the emulator select "Open Bot"');
 });
 
 // Expose the manifest
-server.get('/manifests/*', restify.plugins.serveStatic({ directory: './manifests', appendRequestPath: false }));
+server.get(
+  '/manifests/*',
+  restify.plugins.serveStatic({
+    directory: './manifests',
+    appendRequestPath: false
+  })
+);
 
-const maxTotalSockets = (preallocatedSnatPorts, procCount = 1, weight = 0.5, overcommit = 1.1) =>
+const maxTotalSockets = (
+  preallocatedSnatPorts,
+  procCount = 1,
+  weight = 0.5,
+  overcommit = 1.1
+) =>
   Math.min(
     Math.floor((preallocatedSnatPorts / procCount) * weight * overcommit),
     preallocatedSnatPorts
   );
 
-// Create adapter.
-// See https://aka.ms/about-bot-adapter to learn more about how bots work.
-const adapter = new BotFrameworkAdapter({
-  appId: process.env.MicrosoftAppId,
-  appPassword: process.env.MicrosoftAppPassword,
-  authConfig: new AuthenticationConfiguration([], allowedCallersClaimsValidator),
-  clientOptions: {
+const allowedCallers =
+  (process.env.AllowedCallers || '').split(',').filter((val) => val) || [];
+
+const authConfig = new AuthenticationConfiguration(
+  [],
+  allowedCallersClaimsValidator(allowedCallers)
+);
+
+const botFrameworkAuthentication = BotFrameworkAuthenticationFactory.create(
+  '',
+  true,
+  AuthenticationConstants.ToChannelFromBotLoginUrl,
+  AuthenticationConstants.ToChannelFromBotOAuthScope,
+  AuthenticationConstants.ToBotFromChannelTokenIssuer,
+  AuthenticationConstants.OAuthUrl,
+  AuthenticationConstants.ToBotFromChannelOpenIdMetadataUrl,
+  AuthenticationConstants.ToBotFromEmulatorOpenIdMetadataUrl,
+  CallerIdConstants.PublicAzureChannel,
+  new PasswordServiceClientCredentialFactory(
+    process.env.MicrosoftAppId || '',
+    process.env.MicrosoftAppPassword || ''
+  ),
+  authConfig,
+  undefined,
+  {
     agentSettings: {
       http: new http.Agent({
         keepAlive: true,
@@ -55,7 +99,11 @@ const adapter = new BotFrameworkAdapter({
       })
     }
   }
-});
+);
+
+// Create adapter.
+// See https://aka.ms/about-bot-adapter to learn more about how bots work.
+const adapter = new CloudAdapter(botFrameworkAuthentication);
 
 // Catch-all for errors.
 adapter.onTurnError = async (context, error) => {
@@ -69,12 +117,21 @@ adapter.onTurnError = async (context, error) => {
 
     // Send a message to the user.
     let errorMessageText = 'The skill encountered an error or bug.';
-    let errorMessage = MessageFactory.text(`${errorMessageText}\r\n${message}\r\n${stack}`, errorMessageText, InputHints.IgnoringInput);
+    let errorMessage = MessageFactory.text(
+      `${errorMessageText}\r\n${message}\r\n${stack}`,
+      errorMessageText,
+      InputHints.IgnoringInput
+    );
     errorMessage.value = { message, stack };
     await context.sendActivity(errorMessage);
 
-    errorMessageText = 'To continue to run this bot, please fix the bot source code.';
-    errorMessage = MessageFactory.text(errorMessageText, errorMessageText, InputHints.ExpectingInput);
+    errorMessageText =
+      'To continue to run this bot, please fix the bot source code.';
+    errorMessage = MessageFactory.text(
+      errorMessageText,
+      errorMessageText,
+      InputHints.ExpectingInput
+    );
     await context.sendActivity(errorMessage);
 
     // Send a trace activity, which will be displayed in Bot Framework Emulator
@@ -90,7 +147,7 @@ adapter.onTurnError = async (context, error) => {
     await context.sendActivity({
       type: ActivityTypes.EndOfConversation,
       code: 'SkillError',
-      text: error
+      text: error.message
     });
   } catch (err) {
     console.error(`\n [onTurnError] Exception caught in onTurnError : ${err}`);
@@ -101,8 +158,8 @@ adapter.onTurnError = async (context, error) => {
 const myBot = new EchoBot();
 
 // Listen for incoming requests.
-server.post('/api/messages', (req, res) => {
-  adapter.processActivity(req, res, async (context) => {
+server.post('/api/messages', async (req, res) => {
+  await adapter.process(req, res, async (context) => {
     // Route to main dialog.
     await myBot.run(context);
   });

@@ -174,8 +174,8 @@ stages:
                 project: "${{ bot.project }}"
                 packages:
                   Microsoft.Bot.Builder
-                  Microsoft.Bot.Builder.Azure
                   Microsoft.Bot.Builder.History
+                  Microsoft.Bot.Connector
 
             # Build bot
             - task: MSBuild@1
