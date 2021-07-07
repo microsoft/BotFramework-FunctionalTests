@@ -46,6 +46,10 @@ parameters:
       port: ""
       command: ""
 
+  - name: projectTag
+    displayName: Tag for bot's application service
+    type: string
+
   - name: templateFile
     displayName: Template File Location
     type: string
@@ -81,6 +85,7 @@ steps:
           @{ key="botName"                      ; value="${{ parameters.botName }}${{ parameters.resourceSuffix }}-$(BUILD.BUILDID)" }
           @{ key="appServicePlanName"           ; value="${{ parameters.appServicePlan }}" }
           @{ key="appServicePlanResourceGroup"  ; value="${{ parameters.appServicePlanRG }}" }
+          @{ key="projectTag"                   ; value="${{ parameters.projectTag }}" }
           @{ key="sharedResourceGroup"          ; value="${{ parameters.sharedResourceGroup }}" }
           @{ key="botLocation"                  ; value="westus" }
         )
