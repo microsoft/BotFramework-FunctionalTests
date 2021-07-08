@@ -295,9 +295,9 @@ __metadata:
   linkType: hard
 
 "@types/node@npm:*":
-  version: 15.12.5
-  resolution: "@types/node@npm:15.12.5"
-  checksum: 42485de7a0b7277ddaae25b36ab4174fc8f23e8a5de9ccaedd002ecec17135c48227a5e09088d181c2bc34fe6b2064feb4a468954372076fd8addac2f72dad7e
+  version: 16.0.0
+  resolution: "@types/node@npm:16.0.0"
+  checksum: 0302e376d5272170478468f023a34dd8b4da998bee02bddfed9b0f1c80add77d02fe9c737fad8943ab2dc981601b71c5714b9f971560d5519c1c814cf2c8bc50
   languageName: node
   linkType: hard
 
@@ -375,9 +375,9 @@ __metadata:
   linkType: hard
 
 "@types/tough-cookie@npm:*":
-  version: 4.0.0
-  resolution: "@types/tough-cookie@npm:4.0.0"
-  checksum: 5a0cccc6d073b84dbb48d603e692b55ac30cea1653a7fc813e97a3bcaa9edd97c703c15727378d632e416a90178e6da657151eba8175cbb201a9a98de22ac3a8
+  version: 4.0.1
+  resolution: "@types/tough-cookie@npm:4.0.1"
+  checksum: 6029227c6871936c357a0d1e7e91b163b24bbfd5647465c9c4961a9db2d1dccbfb0d05c14b2583853a7432638d8a8ccd68df071a7e926400e0573c20d6ad936e
   languageName: node
   linkType: hard
 
@@ -761,17 +761,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"botbuilder-core@npm:4.14.0-rc0":
-  version: 4.14.0-rc0
-  resolution: "botbuilder-core@npm:4.14.0-rc0"
+"botbuilder-core@npm:4.14.0-rc2":
+  version: 4.14.0-rc2
+  resolution: "botbuilder-core@npm:4.14.0-rc2"
   dependencies:
-    botbuilder-dialogs-adaptive-runtime-core: 4.14.0-preview.rc0
-    botbuilder-stdlib: 4.14.0-internal.rc0
-    botframework-connector: 4.14.0-rc0
-    botframework-schema: 4.14.0-rc0
+    botbuilder-dialogs-adaptive-runtime-core: 4.14.0-preview.rc2
+    botbuilder-stdlib: 4.14.0-internal.rc2
+    botframework-connector: 4.14.0-rc2
+    botframework-schema: 4.14.0-rc2
     uuid: ^8.3.2
     zod: ~1.11.17
-  checksum: 5e7aa040d6d0e0f2a130e197e8be4472e3bf33562e10fe0dad2843c67dc7f93f53b793626f371af544429473acd75901c4a413835ab96ec01be6833cb1b73956
+  checksum: 6a0a55bb576bdfb60e67d5779e7a663db9c546ef5520d75718e30389ddb0d6291fcdc7e7df104ba0443304b28ffe363d41a31ae961d59447be85328a02285cdf
   languageName: node
   linkType: hard
 
@@ -785,12 +785,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"botbuilder-dialogs-adaptive-runtime-core@npm:4.14.0-preview.rc0":
-  version: 4.14.0-preview.rc0
-  resolution: "botbuilder-dialogs-adaptive-runtime-core@npm:4.14.0-preview.rc0"
+"botbuilder-dialogs-adaptive-runtime-core@npm:4.14.0-preview.rc2":
+  version: 4.14.0-preview.rc2
+  resolution: "botbuilder-dialogs-adaptive-runtime-core@npm:4.14.0-preview.rc2"
   dependencies:
     dependency-graph: ^0.10.0
-  checksum: 0e74a0d0264a760f8ede0ce3652589767618df1f0182e4e845661fc69d45db29a573d7ae83c86e5f1162cf70e93743d774f1ec35c7fd3f87a3f5c53451dc9adc
+  checksum: ae23051cb664122f4f40ab5753a1655f34b6b06596bba25d347b3c877dfc986de5da8c30680946a154afc3925f6c9ab4d4ff286821306e570429380d0839dda8
   languageName: node
   linkType: hard
 
@@ -821,10 +821,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"botbuilder-stdlib@npm:4.14.0-internal.rc0":
-  version: 4.14.0-internal.rc0
-  resolution: "botbuilder-stdlib@npm:4.14.0-internal.rc0"
-  checksum: 2dfd1d9d7fe3ee0fc166277f6728ce07e6dc5c411af02f518d0cf4a684d0c735744330c652e83d884ee863c64a3ec76baf4132e07baaf0f8484926c749def05a
+"botbuilder-stdlib@npm:4.14.0-internal.rc2":
+  version: 4.14.0-internal.rc2
+  resolution: "botbuilder-stdlib@npm:4.14.0-internal.rc2"
+  checksum: fa437e8cc3d689901ff3a24276e64d7de998a5ce573793b28e026c0dc13631fb391ad7464367049da0e3249bc6a6f0b5a76392c013f351d9b97f6e2454030f07
   languageName: node
   linkType: hard
 
@@ -876,22 +876,22 @@ __metadata:
   linkType: hard
 
 "botbuilder@npm:~4.14.0-rc0":
-  version: 4.14.0-rc0
-  resolution: "botbuilder@npm:4.14.0-rc0"
+  version: 4.14.0-rc2
+  resolution: "botbuilder@npm:4.14.0-rc2"
   dependencies:
     "@azure/ms-rest-js": 1.9.1
     axios: ^0.21.1
-    botbuilder-core: 4.14.0-rc0
-    botbuilder-stdlib: 4.14.0-internal.rc0
-    botframework-connector: 4.14.0-rc0
-    botframework-streaming: 4.14.0-rc0
+    botbuilder-core: 4.14.0-rc2
+    botbuilder-stdlib: 4.14.0-internal.rc2
+    botframework-connector: 4.14.0-rc2
+    botframework-streaming: 4.14.0-rc2
     dayjs: ^1.10.3
     filenamify: ^4.1.0
     fs-extra: ^7.0.1
     htmlparser2: ^6.0.1
     uuid: ^8.3.2
     zod: ~1.11.17
-  checksum: 3d00f49a6dd34fb6bc6a63f5fb42645b5da87b3d2299576331c7a15e3b8e732a196181101fd62d13d7483a3c969b2fd8e3e623f15d4fce337b3ede87c99bec43
+  checksum: 324beaa09fb3870a03247f6b76925c05f1c61d7b193184c71f55dcb5abf2f1efe1edebe3da84a0e182af7b3534b6273c4390e89faf282036f7a8e2a5d2dc3a35
   languageName: node
   linkType: hard
 
@@ -912,9 +912,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"botframework-connector@npm:4.14.0-rc0, botframework-connector@npm:~4.14.0-rc0":
-  version: 4.14.0-rc0
-  resolution: "botframework-connector@npm:4.14.0-rc0"
+"botframework-connector@npm:4.14.0-rc2, botframework-connector@npm:~4.14.0-rc0":
+  version: 4.14.0-rc2
+  resolution: "botframework-connector@npm:4.14.0-rc2"
   dependencies:
     "@azure/ms-rest-js": 1.9.1
     "@types/jsonwebtoken": 7.2.8
@@ -922,12 +922,12 @@ __metadata:
     adal-node: 0.2.2
     axios: ^0.21.1
     base64url: ^3.0.0
-    botbuilder-stdlib: 4.14.0-internal.rc0
-    botframework-schema: 4.14.0-rc0
+    botbuilder-stdlib: 4.14.0-internal.rc2
+    botframework-schema: 4.14.0-rc2
     cross-fetch: ^3.0.5
     jsonwebtoken: 8.0.1
     rsa-pem-from-mod-exp: ^0.8.4
-  checksum: 64331d4b0c62159487aba3dcfef2b5a8225967484e21badf4cc6d3dd3b1a5437863a6b8d90eb777428f4328204d61b28d956260ee5002c89a6cdd7b4a8a84f44
+  checksum: 188c646db252281469786ee5964c394897995ef74ca604df14dead099a8681db77c2477e2928f5af5c532e7aba1e0b0ed4c24dfefe34d819f676e9ac6e71120d
   languageName: node
   linkType: hard
 
@@ -948,13 +948,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"botframework-schema@npm:4.14.0-rc0":
-  version: 4.14.0-rc0
-  resolution: "botframework-schema@npm:4.14.0-rc0"
+"botframework-schema@npm:4.14.0-rc2":
+  version: 4.14.0-rc2
+  resolution: "botframework-schema@npm:4.14.0-rc2"
   dependencies:
-    botbuilder-stdlib: 4.14.0-internal.rc0
+    botbuilder-stdlib: 4.14.0-internal.rc2
     uuid: ^8.3.2
-  checksum: 510bf414ba745f37bc227ca3bd4d15ec1b993effa879cfa92ef960f3c74c74b148463faf64fe5570e4fd70feac17edd128b21fd2245d77d6bfc25f13659c474d
+  checksum: 580a64fc1ebf6141497ed832025908f29a19b4dfafcb2a4b39897d6e66cab4696f793cb13ce8c0a5ea5138c47ecc9b595f49d6d01dac9159982124e2b7656541
   languageName: node
   linkType: hard
 
@@ -970,15 +970,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"botframework-streaming@npm:4.14.0-rc0":
-  version: 4.14.0-rc0
-  resolution: "botframework-streaming@npm:4.14.0-rc0"
+"botframework-streaming@npm:4.14.0-rc2":
+  version: 4.14.0-rc2
+  resolution: "botframework-streaming@npm:4.14.0-rc2"
   dependencies:
     "@types/node": ^10.17.27
     "@types/ws": ^6.0.3
     uuid: ^8.3.2
     ws: ^7.1.2
-  checksum: 3da7ae9029e040436d72a8b35ca29baa684608522a221ac81379eac1be1d74f1dedb19fc171cb09f6d75564496fb0e76ea3f67602e7bcf0b83f609809eab9d7c
+  checksum: e069264b1adb922a3aee3ee3bee3962d46a8db5176a29a5ab121f96b88b9294af59fa1176d10d85f344bc6c5ccac0c01bd29614617e49aa00e2e69a387788e84
   languageName: node
   linkType: hard
 
@@ -1423,9 +1423,9 @@ __metadata:
   linkType: hard
 
 "dayjs@npm:^1.10.3, dayjs@npm:^1.8.19":
-  version: 1.10.5
-  resolution: "dayjs@npm:1.10.5"
-  checksum: 11b3a952cdb77959b07318804bd982d1d377581e4752ec478da82b494da1ebb9d82e0539481ab51f90a36e35a268a730034cb6f3cac1b45609755c909329c0a1
+  version: 1.10.6
+  resolution: "dayjs@npm:1.10.6"
+  checksum: 474d21162c12d269d40e90cb3ce049bb2d987b8038c173224c8eb5805d6f38f07d11875779a81e282d8f889d3803c4bbb91d09b6ee08a1a44ae60ec26afd8f45
   languageName: node
   linkType: hard
 
@@ -1710,9 +1710,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"echo-skill-bot@workspace:Bots/JavaScript/Skills/CodeFirst/EchoSkillBot":
+"echo-skill-bot@workspace:Skills/CodeFirst/EchoSkillBot":
   version: 0.0.0-use.local
-  resolution: "echo-skill-bot@workspace:Bots/JavaScript/Skills/CodeFirst/EchoSkillBot"
+  resolution: "echo-skill-bot@workspace:Skills/CodeFirst/EchoSkillBot"
   dependencies:
     botbuilder: ~4.14.0-rc0
     botframework-connector: ~4.14.0-rc0
@@ -3953,8 +3953,8 @@ fsevents@~2.3.2:
   linkType: hard
 
 "nodemon@npm:^2.0.8, nodemon@npm:~2.0.4":
-  version: 2.0.8
-  resolution: "nodemon@npm:2.0.8"
+  version: 2.0.9
+  resolution: "nodemon@npm:2.0.9"
   dependencies:
     chokidar: ^3.2.2
     debug: ^3.2.6
@@ -3968,7 +3968,7 @@ fsevents@~2.3.2:
     update-notifier: ^4.1.0
   bin:
     nodemon: bin/nodemon.js
-  checksum: 4eb57aac4f2590fbf005fb7c8456109b7b6065172ad8161e43f2538a711536507799c342a081f3a3b0e3f5c2d397b84f08252c0105e92aecc6ff8f09be0784c1
+  checksum: bed92265bba3ed750b6d064bdf4f93d4a952948c24379e824f568bc48c336390d394c130aef32206d1cd8aa4d32395052326834a42ed11a8596b94b5a01ed1a8
   languageName: node
   linkType: hard
 
@@ -4992,9 +4992,9 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"simple-root-bot@workspace:Bots/JavaScript/Consumers/CodeFirst/SimpleHostBot":
+"simple-root-bot@workspace:Consumers/CodeFirst/SimpleHostBot":
   version: 0.0.0-use.local
-  resolution: "simple-root-bot@workspace:Bots/JavaScript/Consumers/CodeFirst/SimpleHostBot"
+  resolution: "simple-root-bot@workspace:Consumers/CodeFirst/SimpleHostBot"
   dependencies:
     botbuilder: ~4.13.3
     botbuilder-dialogs: ~4.13.3
@@ -5695,9 +5695,9 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"v3-skill-bot@workspace:Bots/JavaScript/Skills/CodeFirst/EchoSkillBot-v3":
+"v3-skill-bot@workspace:Skills/CodeFirst/EchoSkillBot-v3":
   version: 0.0.0-use.local
-  resolution: "v3-skill-bot@workspace:Bots/JavaScript/Skills/CodeFirst/EchoSkillBot-v3"
+  resolution: "v3-skill-bot@workspace:Skills/CodeFirst/EchoSkillBot-v3"
   dependencies:
     async: ^1.5.2
     base64url: ^3.0.0
@@ -5754,9 +5754,9 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"waterfall-host-bot@workspace:Bots/JavaScript/Consumers/CodeFirst/WaterfallHostBot":
+"waterfall-host-bot@workspace:Consumers/CodeFirst/WaterfallHostBot":
   version: 0.0.0-use.local
-  resolution: "waterfall-host-bot@workspace:Bots/JavaScript/Consumers/CodeFirst/WaterfallHostBot"
+  resolution: "waterfall-host-bot@workspace:Consumers/CodeFirst/WaterfallHostBot"
   dependencies:
     botbuilder: ~4.13.3
     botbuilder-dialogs: ~4.13.3
@@ -5766,9 +5766,9 @@ fsevents@~2.3.2:
   languageName: unknown
   linkType: soft
 
-"waterfall-skill-bot@workspace:Bots/JavaScript/Skills/CodeFirst/WaterfallSkillBot":
+"waterfall-skill-bot@workspace:Skills/CodeFirst/WaterfallSkillBot":
   version: 0.0.0-use.local
-  resolution: "waterfall-skill-bot@workspace:Bots/JavaScript/Skills/CodeFirst/WaterfallSkillBot"
+  resolution: "waterfall-skill-bot@workspace:Skills/CodeFirst/WaterfallSkillBot"
   dependencies:
     botbuilder: ~4.13.3
     botbuilder-dialogs: ~4.13.3
@@ -5866,8 +5866,8 @@ fsevents@~2.3.2:
   linkType: hard
 
 "ws@npm:^7.1.2":
-  version: 7.5.1
-  resolution: "ws@npm:7.5.1"
+  version: 7.5.2
+  resolution: "ws@npm:7.5.2"
   peerDependencies:
     bufferutil: ^4.0.1
     utf-8-validate: ^5.0.2
@@ -5876,7 +5876,7 @@ fsevents@~2.3.2:
       optional: true
     utf-8-validate:
       optional: true
-  checksum: e56541a73cac1d5b4b5e81ddd7e9925e84e45abaab6f3ee5e088e0089b5518f862d8429897243e12482b118971ad8a9a75b1d4900769bce3877878a0a7470043
+  checksum: 45eccd77921681f3cae0d646813b5c6aad40e11f90a57e7070a5ceed1ff27629d23034cb223bf77cc6de41a8a2591faa2635558bb5ba9e280edccbc088655770
   languageName: node
   linkType: hard
 
