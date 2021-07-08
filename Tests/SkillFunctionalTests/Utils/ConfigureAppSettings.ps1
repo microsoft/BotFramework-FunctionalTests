@@ -13,6 +13,15 @@
 
   .PARAMETER ResourceSuffix
   Specifies the suffix the resources name are built with.
+
+  .EXAMPLE
+  PS> .\ConfigureAppSettings.ps1 -ResourceGroup "BFFN-bots" -ResourceSuffix "{suffix}-{buildId}"
+
+  .EXAMPLE
+  PS> .\ConfigureAppSettings.ps1 -ResourceGroup "BFFN-bots"
+
+  .EXAMPLE
+  PS> .\ConfigureAppSettings.ps1
 #>
 
 param (
