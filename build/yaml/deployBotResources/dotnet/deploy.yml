@@ -32,6 +32,10 @@ parameters:
     displayName: Key Vault name
     type: string
 
+  - name: projectTag
+    displayName: Tag for bot's application service
+    type: string
+
   - name: resourceGroup
     displayName: Resource Group
     type: string
@@ -264,6 +268,7 @@ stages:
               botGroup: "${{ parameters.resourceGroup }}"
               botName: "${{ bot.name }}"
               botPricingTier: "${{ parameters.botPricingTier }}"
+              projectTag: "${{ parameters.projectTag }}"
               resourceSuffix: "${{ parameters.resourceSuffix }}"
               sharedResourceGroup: "${{ parameters.sharedResourceGroup }}"
               templateFile: "build/templates/template-bot-resources.json"

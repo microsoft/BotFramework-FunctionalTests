@@ -368,10 +368,10 @@ appsettings.Development.json
 .idea/
 
 # Ignore correct yarn files (no zero install support)
-.yarn/*
-!.yarn/patches
-!.yarn/releases
-!.yarn/plugins
-!.yarn/sdks
-!.yarn/versions
-.pnp.*
+Bots/JavaScript/.yarn/*
+!Bots/JavaScript/.yarn/patches
+!Bots/JavaScript/.yarn/releases
+!Bots/JavaScript/.yarn/plugins
+!Bots/JavaScript/.yarn/sdks
+!Bots/JavaScript/.yarn/versions
+Bots/JavaScript/.pnp.*
