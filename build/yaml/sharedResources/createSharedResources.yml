@@ -12,9 +12,9 @@ pool:
 variables:
   ## Azure Resources (Define these variables in Azure)
   # AzureSubscription: Service Connection Name to Manage Azure resources.
-  # KeyVaultObjectId: Suscription's Object Id to create the keyvault to store App Registrations.
   # AppServicePlanPricingTier: (optional) Pricing Tier for App Service Plans, default F1.
   # ContainerRegistryPricingTier: (optional) Pricing Tier for Container Registry, default Basic.
+  # KeyVaultObjectId: (optional) Subscription's Object Id to create the keyvault to store App Registrations.
   # ResourceGroupName: (optional) Name of the Resource Group for the shared resources.
   # ResourceSuffix: (optional) Alphanumeric suffix to add to the resources' name to avoid collisions.
 
@@ -26,8 +26,9 @@ variables:
   InternalContainerRegistryName: "bffncontainerregistry$($env:RESOURCESUFFIX)"
   InternalCosmosDBName: "bffnbotstatedb$($env:RESOURCESUFFIX)"
   InternalKeyVaultName: "bffnbotkeyvault$($env:RESOURCESUFFIX)"
-  InternalResourceGroupName: $[coalesce(variables['RESOURCEGROUPNAME'], 'bffnshared')]
+  InternalResourceGroupName: $[coalesce(variables['RESOURCEGROUPNAME'], 'BFFN-Shared')]
   InternalVirtualNetworkName: "bffnvirtualnetwork$($env:RESOURCESUFFIX)"
+  InternalKeyVaultObjectId: $[coalesce(variables['KEYVAULTOBJECTID'], '')]
 
 stages:
 - stage: Create_Resource_Group_Windows
@@ -91,12 +92,30 @@ stages:
           scriptLocation: inlineScript
           inlineScript: "az deployment group create --name $(INTERNALCOSMOSDBNAME) --resource-group $(INTERNALRESOURCEGROUPNAME) --template-file build/templates/template-cosmosdb-resources.json --parameters accountName=$(INTERNALCOSMOSDBNAME) databaseName=$(INTERNALCOSMOSDBNAME)"
 
-- stage: Create_Key_Vault
-  displayName: "Create Key Vault"
+- stage: Create_Key_Vault_and_App_Registrations
+  displayName: "Create Key Vault and App Registrations"
   dependsOn: Create_Resource_Group_Windows
   jobs:
+    - job: Check_Key_Vault_Object_Id
+      displayName: Check KeyVaultObjectId value
+      steps:
+        - powershell: |
+              $keyVaultObjectId = '$(INTERNALKEYVAULTOBJECTID)'
+              if ($keyVaultObjectId -ne '') {
+                Write-Host "keyVaultObjectId set. The KeyVault and App Registrations will be created."
+                Write-Host "##vso[task.setvariable variable=createKeyVault;isOutput=true]$true"
+              }
+              else {
+                Write-Host "keyVaultObjectId not set. The KeyVault and App Registrations won't be created."
+                Write-Host "##vso[task.setvariable variable=createKeyVault;isOutput=true]$false"
+              }
+          name: checkKeyVaultObjectIdValue
+          failOnStderr: true
+
     - job: Deploy_Key_Vault
-      displayName: "Deploy steps"
+      displayName: "Deploy Key Vault"
+      dependsOn: Check_Key_Vault_Object_Id
+      condition: eq(dependencies.Check_Key_Vault_Object_Id.outputs['checkKeyVaultObjectIdValue.createKeyVault'], true)
       steps:
       - task: AzureCLI@2
         displayName: "Deploy Key Vault"
@@ -104,14 +123,11 @@ stages:
           azureSubscription: $(AZURESUBSCRIPTION)
           scriptType: pscore
           scriptLocation: inlineScript
-          inlineScript: "az deployment group create --name $(INTERNALKEYVAULTNAME) --resource-group $(INTERNALRESOURCEGROUPNAME) --template-file build/templates/template-key-vault-resources.json --parameters keyVaultName=$(INTERNALKEYVAULTNAME) objectId=$(KEYVAULTOBJECTID)"
+          inlineScript: "az deployment group create --name $(INTERNALKEYVAULTNAME) --resource-group $(INTERNALRESOURCEGROUPNAME) --template-file build/templates/template-key-vault-resources.json --parameters keyVaultName=$(INTERNALKEYVAULTNAME) objectId=$(INTERNALKEYVAULTOBJECTID)"
 
-- stage: Create_App_Registrations
-  displayName: "Create App Registrations"
-  dependsOn: Create_Key_Vault
-  jobs:
     - job: Create_App_Registrations
-      displayName: "Create steps"
+      displayName: "Create App Registrations"
+      dependsOn: Deploy_Key_Vault
       steps:
       - checkout: none
       - template: createAppRegistrations.yml

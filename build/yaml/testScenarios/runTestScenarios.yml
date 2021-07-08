@@ -30,7 +30,7 @@ variables:
 
   ## Internal variables
   InternalKeyVaultName: "bffnbotkeyvault$(INTERNALRESOURCESUFFIX)"
-  InternalResourceGroupName: $[coalesce(variables['RESOURCEGROUP'], 'bffnbots')]
+  InternalResourceGroupName: $[coalesce(variables['RESOURCEGROUP'], 'BFFN')]
   InternalResourceSuffix: $[coalesce(variables['RESOURCESUFFIX'], '')]
 
 pool:

@@ -31,15 +31,15 @@ steps:
               $source = $sourceArtifacts
               $extraSource = $sourcePypi
             }
-            "Pypi" { 
+            "Pypi" {
               $source = $sourcePypi
-              $extraSource = $sourceArtifacts
+              $extraSource = ""
             }
-            "Test.Pypi" { 
+            "Test.Pypi" {
               $source = $sourceTestPypi
               $extraSource = $sourcePypi
             }
-            default { 
+            default {
               $source = "${{ parameters.registry }}"
               $extraSource = $sourcePypi
             }
@@ -48,28 +48,27 @@ steps:
           # Get Version Number
           switch -regex ("${{ parameters.version }}") {
             "^($null||LATEST)$" {
-              if ("${{ parameters.registry }}".ToUpper() -in "PYPI") {
-                [Console]::ForegroundColor = "red"
-                [Console]::Error.WriteLine("Preview versions of BotBuilder are not available for this source.")
-                [Console]::ResetColor()
-                exit 1 # Force exit
-              }
               $versionNumber = ""
-              $preFag = "--pre"
+              $preFlag = "--pre"
             }
-            STABLE { 
+            STABLE {
               $versionNumber = ""
             }
-            default { 
+            default {
               $versionNumber = "${{ parameters.version }}"
               $condition = "=="
             }
           }
 
-          #Add the $source source at the beginning of requirements
+          # Add the $source source at the beginning of requirements
           $file = "${{ parameters.source }}/requirements.txt"
           $content = @(Get-Content $file)
-          $line = "$preFag --index-url $source --extra-index-url $extraSource".Trim()
+
+          if (-not ([string]::IsNullOrEmpty("$extraSource"))) {
+            $extraSourceTag = "--extra-index-url $extraSource"
+          }
+
+          $line = "$preFlag --index-url $source $extraSourceTag".Trim()
           Set-Content -Path $file -Value $line
           Add-Content -Path $file -Value $content
 

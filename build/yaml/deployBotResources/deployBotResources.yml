@@ -186,16 +186,17 @@ variables:
 
   ## Internal variables
   InternalAppInsightsName: 'bffnappinsights$(INTERNALRESOURCESUFFIX)'
-  InternalAppServicePlanWindowsResourceGroup: $[coalesce(variables['APPSERVICEPLANGROUP'], 'bffnshared')]
-  InternalAppServicePlanLinuxResourceGroup: $[coalesce(variables['APPSERVICEPLANGROUPLINUX'], 'bffnshared-linux')]
+  InternalAppServicePlanWindowsResourceGroup: $[coalesce(variables['APPSERVICEPLANGROUP'], 'BFFN-Shared')]
+  InternalAppServicePlanLinuxResourceGroup: $[coalesce(variables['APPSERVICEPLANGROUPLINUX'], 'BFFN-Shared-linux')]
   InternalAppServicePlanDotNetName: $[coalesce(variables['APPSERVICEPLANDOTNETNAME'], 'bffnbotsappservicedotnet$(INTERNALRESOURCESUFFIX)')]
   InternalAppServicePlanJSName: $[coalesce(variables['APPSERVICEPLANJSNAME'], 'bffnbotsappservicejs$(INTERNALRESOURCESUFFIX)')]
   InternalAppServicePlanPythonName: $[coalesce(variables['APPSERVICEPLANPYTHONNAME'], 'bffnbotsappservicepython$(INTERNALRESOURCESUFFIX)')]
   InternalContainerRegistryName: $[coalesce(variables['CONTAINERREGISTRYNAME'], 'bffncontainerregistry$(INTERNALRESOURCESUFFIX)')]
+  InternalProjectTag: $[coalesce(variables['PROJECTTAG'], 'BFFN')]
   InternalKeyVaultName: 'bffnbotkeyvault$(INTERNALRESOURCESUFFIX)'
-  InternalResourceGroupName: $[coalesce(variables['RESOURCEGROUP'], 'bffnbots')]
+  InternalResourceGroupName: $[coalesce(variables['RESOURCEGROUP'], 'BFFN')]
   InternalResourceSuffix: $[coalesce(variables['RESOURCESUFFIX'], '')]
-  InternalSharedResourceGroupName: $[coalesce(variables['SHAREDRESOURCEGROUP'], 'bffnshared')]
+  InternalSharedResourceGroupName: $[coalesce(variables['SHAREDRESOURCEGROUP'], 'BFFN-Shared')]
   InternalVirtualNetworkName: $[coalesce(variables['VIRTUALNETWORKNAME'], 'bffnvirtualnetwork$(INTERNALRESOURCESUFFIX)')]
 
 stages:
@@ -226,6 +227,7 @@ stages:
       botPricingTier: $env:BOTPRICINGTIER
       connectionName: $env:CONNECTIONNAME
       keyVault: "$(INTERNALKEYVAULTNAME)"
+      projectTag: "$(INTERNALPROJECTTAG)"
       resourceGroup: "$(INTERNALRESOURCEGROUPNAME)-DotNet"
       resourceSuffix: $(INTERNALRESOURCESUFFIX)
       sharedResourceGroup: "$(INTERNALSHAREDRESOURCEGROUPNAME)"
@@ -370,6 +372,7 @@ stages:
       connectionName: $env:CONNECTIONNAME
       dependsOn: "Prepare_JSGroup"
       keyVault: "$(INTERNALKEYVAULTNAME)"
+      projectTag: "$(INTERNALPROJECTTAG)"
       resourceGroup: "$(INTERNALRESOURCEGROUPNAME)-JS"
       resourceSuffix: $(INTERNALRESOURCESUFFIX)
       sharedResourceGroup: "$(INTERNALSHAREDRESOURCEGROUPNAME)"
@@ -461,6 +464,7 @@ stages:
       connectionName: $env:CONNECTIONNAME
       dependsOn: "Prepare_PythonGroup"
       keyVault: "$(INTERNALKEYVAULTNAME)"
+      projectTag: "$(INTERNALPROJECTTAG)"
       resourceGroup: "$(INTERNALRESOURCEGROUPNAME)-Python"
       resourceSuffix: "$(INTERNALRESOURCESUFFIX)"
       sharedResourceGroup: "$(INTERNALSHAREDRESOURCEGROUPNAME)"

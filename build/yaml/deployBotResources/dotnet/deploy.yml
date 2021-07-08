@@ -36,6 +36,10 @@ parameters:
     displayName: Key Vault name
     type: string
 
+  - name: projectTag
+    displayName: Tag for bot's application service
+    type: string
+
   - name: resourceGroup
     displayName: Resource Group
     type: string
@@ -170,8 +174,8 @@ stages:
                 project: "${{ bot.project }}"
                 packages:
                   Microsoft.Bot.Builder
-                  Microsoft.Bot.Builder.Azure
                   Microsoft.Bot.Builder.History
+                  Microsoft.Bot.Connector
 
             # Build bot
             - task: MSBuild@1
@@ -269,6 +273,7 @@ stages:
               botGroup: "${{ parameters.resourceGroup }}"
               botName: "${{ bot.name }}"
               botPricingTier: "${{ parameters.botPricingTier }}"
+              projectTag: "${{ parameters.projectTag }}"
               resourceSuffix: "${{ parameters.resourceSuffix }}"
               sharedResourceGroup: "${{ parameters.sharedResourceGroup }}"
               templateFile: "build/templates/template-bot-resources.json"
