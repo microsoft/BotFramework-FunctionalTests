@@ -1,11 +1,9 @@
 {
   "$kind": "Microsoft.AdaptiveDialog",
   "$designer": {
-    "$designer": {
-      "name": "EchoSkillBotComposer",
-      "description": "",
-      "id": "bfLQct"
-    }
+    "name": "EchoSkillBotComposer",
+    "description": "",
+    "id": "A79tBe"
   },
   "autoEndDialog": true,
   "defaultResultProperty": "dialog.result",
@@ -38,7 +36,7 @@
                     "id": "859266",
                     "name": "Send a response"
                   },
-                  "activity": "${SendActivity_Welcome()}"
+                  "activity": "${SendActivity_Greeting()}"
                 }
               ]
             }
@@ -47,36 +45,51 @@
       ]
     },
     {
+      "$kind": "Microsoft.OnUnknownIntent",
+      "$designer": {
+        "id": "mb2n1u"
+      },
+      "actions": [
+        {
+          "$kind": "Microsoft.SendActivity",
+          "$designer": {
+            "id": "kMjqz1"
+          },
+          "activity": "${SendActivity_DidNotUnderstand()}"
+        }
+      ]
+    },
+    {
       "$kind": "Microsoft.OnMessageActivity",
       "$designer": {
-        "id": "Ntiysk"
+        "id": "esM1JY"
       },
       "actions": [
         {
           "$kind": "Microsoft.IfCondition",
           "$designer": {
-            "id": "CKsqpo"
+            "id": "SK42Qt"
           },
           "condition": "turn.activity.text != 'end' && turn.activity.text != 'stop'",
           "actions": [
             {
               "$kind": "Microsoft.SendActivity",
               "$designer": {
-                "id": "xkiYnF"
+                "id": "HHAFpn"
               },
-              "activity": "${SendActivity_xkiYnF()}"
+              "activity": "${SendActivity_HHAFpn()}"
             },
             {
               "$kind": "Microsoft.SendActivity",
               "$designer": {
-                "id": "rKkWVg"
+                "id": "dZ2zwR"
               },
-              "activity": "${SendActivity_rKkWVg()}"
+              "activity": "${SendActivity_dZ2zwR()}"
             },
             {
               "$kind": "Microsoft.EndTurn",
               "$designer": {
-                "id": "HAxlGg"
+                "id": "YzX0HZ"
               }
             }
           ],
@@ -84,17 +97,19 @@
             {
               "$kind": "Microsoft.SendActivity",
               "$designer": {
-                "id": "P5ISO4"
+                "id": "xvwomh"
               },
-              "activity": "${SendActivity_P5ISO4()}"
+              "activity": "${SendActivity_xvwomh()}"
             }
           ]
         }
       ]
     }
   ],
-  "$schema": "https://raw.githubusercontent.com/microsoft/BotFramework-Composer/stable/Composer/packages/server/schemas/sdk.schema",
-  "generator": "echoskillbotcomposer.lg",
+  "generator": "EchoSkillBotComposer.lg",
   "id": "EchoSkillBotComposer",
-  "recognizer": "echoskillbotcomposer.lu.qna"
+  "recognizer": {
+    "$kind": "Microsoft.RegexRecognizer",
+    "intents": []
+  }
 }

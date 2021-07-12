@@ -13,7 +13,7 @@ parameters:
   - name: dependenciesVersionDotNetHosts
     displayName: DotNet Hosts Version
     type: string
-    default: "LATEST"
+    default: $env:DEPENDENCIESVERSIONDOTNETHOSTS
 
   - name: dependenciesRegistryDotNetHosts
     displayName: DotNet Hosts Registry
@@ -27,7 +27,7 @@ parameters:
   - name: dependenciesVersionDotNetSkills
     displayName: DotNet Skills Version
     type: string
-    default: "LATEST"
+    default: $env:DEPENDENCIESVERSIONDOTNETSKILLS
 
   - name: dependenciesRegistryDotNetSkills
     displayName: DotNet Skills Registry
@@ -41,7 +41,7 @@ parameters:
   - name: dependenciesVersionDotNetSkillsV3
     displayName: DotNet Skills V3 Version
     type: string
-    default: "LATEST"
+    default: $env:DEPENDENCIESVERSIONDOTNETSKILLSV3
 
   - name: dependenciesRegistryDotNetSkillsV3
     displayName: DotNet Skills V3 Registry
@@ -54,7 +54,7 @@ parameters:
   - name: dependenciesVersionJSHosts
     displayName: JS Hosts Version
     type: string
-    default: "LATEST"
+    default: $env:DEPENDENCIESVERSIONJSHOSTS
 
   - name: dependenciesRegistryJSHosts
     displayName: JS Hosts Registry
@@ -67,7 +67,7 @@ parameters:
   - name: dependenciesVersionJSSkills
     displayName: JS Skills Version
     type: string
-    default: "LATEST"
+    default: $env:DEPENDENCIESVERSIONJSSKILLS
 
   - name: dependenciesRegistryJSSkills
     displayName: JS Skills Registry
@@ -80,7 +80,7 @@ parameters:
   - name: dependenciesVersionJSSkillsV3
     displayName: JS Skills V3 Version
     type: string
-    default: "LATEST"
+    default: $env:DEPENDENCIESVERSIONJSSKILLSV3
 
   - name: dependenciesRegistryJSSkillsV3
     displayName: JS Skills V3 Registry
@@ -93,7 +93,7 @@ parameters:
   - name: dependenciesVersionPythonHosts
     displayName: Python Hosts Version
     type: string
-    default: "LATEST"
+    default: $env:DEPENDENCIESVERSIONPYTHONHOSTS
 
   - name: dependenciesRegistryPythonHosts
     displayName: Python Hosts Registry
@@ -107,7 +107,7 @@ parameters:
   - name: dependenciesVersionPythonSkills
     displayName: Python Skills Version
     type: string
-    default: "LATEST"
+    default: $env:DEPENDENCIESVERSIONPYTHONSKILLS
 
   - name: dependenciesRegistryPythonSkills
     displayName: Python Skills Registry
@@ -123,14 +123,15 @@ variables:
   BuildPlatform: "AnyCPU"
   ## Azure Resources (Define these variables in Azure)
   # AzureSubscription: Service Connection Name to Manage Azure resources.
-  # AppServicePlanGroup: (optional) Name of the Resource Group where the Windows App Service Plan is located.
-  # AppServicePlanGroupLinux: (optional) Name of the Resource Group where the Linux App Service Plan is located.
   # AppServicePlanDotNetName: (optional) Name of the DotNet App Service Plan.
   # AppServicePlanJSName: (optional) Name of the JavaScript App Service Plan.
   # AppServicePlanPythonName: (optional) Name of the Python App Service Plan.
   # BotPricingTier: (optional) Pricing Tier for the bots, default F0.
+  # ContainerRegistryName: (optional) Name of the Container Registry.
   # ResourceGroup: (optional) Name of the Resource Group where the bots will be deployed.
-  # ResourceSuffix: (optional) Suffix to add to the resources' name to avoid collitions.
+  # ResourceSuffix: (optional) Alphanumeric suffix to add to the resources' name to avoid collisions.
+  # SharedResourceGroup: (optional) Name of the Shared Resource Group.
+  # VirtualNetworkName: (optional) Name of the Virtual Network.
 
   ## Bots Configuration (Define these variables in Azure)
   # BffnEchoSkillBotComposerDotNetAppId: (optional) App Id for BffnEchoSkillBotComposerDotNet bot.
@@ -171,17 +172,28 @@ variables:
   # BffnWaterfallSkillBotPythonAppSecret: (optional) App Secret for BffnWaterfallSkillBotPython bot.
   # ConnectionName: (optional) Name for the OAuth connection to use in the skill bots.
 
+  ## DependenciesVersion (Define these variables in Azure) Possible values are: Latest (default), Stable, or specific version numbers.
+  # DependenciesVersionDotNetHosts: (optional) Bot Builder dependency version to use for DotNet host bots.
+  # DependenciesVersionDotNetSkills: (optional) Bot Builder dependency version to use for DotNet skill bots.
+  # DependenciesVersionDotNetSkillsV3: (optional) Bot Builder dependency version to use for DotNet skill V3 bots.
+  # DependenciesVersionJSHosts: (optional) Bot Builder dependency version to use for JS host bots.
+  # DependenciesVersionJSSkills: (optional) Bot Builder dependency version to use for JS skill bots.
+  # DependenciesVersionJSSkillsV3: (optional) Bot Builder dependency version to use for JS skill V3 bots.
+  # DependenciesVersionPythonHosts: (optional) Bot Builder dependency version to use for Python host bots.
+  # DependenciesVersionPythonSkills: (optional) Bot Builder dependency version to use for Python skill bots.
+
   ## Internal variables
   InternalAppInsightsName: 'bffnappinsights$(INTERNALRESOURCESUFFIX)'
-  InternalAppServicePlanWindowsResourceGroup: $[coalesce(variables['APPSERVICEPLANGROUP'], 'bffnshared')]
-  InternalAppServicePlanLinuxResourceGroup: $[coalesce(variables['APPSERVICEPLANGROUPLINUX'], 'bffnshared-linux')]
   InternalAppServicePlanDotNetName: $[coalesce(variables['APPSERVICEPLANDOTNETNAME'], 'bffnbotsappservicedotnet$(INTERNALRESOURCESUFFIX)')]
   InternalAppServicePlanJSName: $[coalesce(variables['APPSERVICEPLANJSNAME'], 'bffnbotsappservicejs$(INTERNALRESOURCESUFFIX)')]
   InternalAppServicePlanPythonName: $[coalesce(variables['APPSERVICEPLANPYTHONNAME'], 'bffnbotsappservicepython$(INTERNALRESOURCESUFFIX)')]
+  InternalContainerRegistryName: $[coalesce(variables['CONTAINERREGISTRYNAME'], 'bffncontainerregistry$(INTERNALRESOURCESUFFIX)')]
+  InternalProjectTag: $[coalesce(variables['PROJECTTAG'], 'BFFN')]
   InternalKeyVaultName: 'bffnbotkeyvault$(INTERNALRESOURCESUFFIX)'
-  InternalResourceGroupName: $[coalesce(variables['RESOURCEGROUP'], 'bffnbots')]
+  InternalResourceGroupName: $[coalesce(variables['RESOURCEGROUP'], 'BFFN')]
   InternalResourceSuffix: $[coalesce(variables['RESOURCESUFFIX'], '')]
-
+  InternalSharedResourceGroupName: $[coalesce(variables['SHAREDRESOURCEGROUP'], 'BFFN-Shared')]
+  InternalVirtualNetworkName: $[coalesce(variables['VIRTUALNETWORKNAME'], 'bffnvirtualnetwork$(INTERNALRESOURCESUFFIX)')]
 
 stages:
 # Resource Groups
@@ -206,14 +218,17 @@ stages:
     parameters:
       appInsight: "$(INTERNALAPPINSIGHTSNAME)"
       appServicePlan: "$(INTERNALAPPSERVICEPLANDOTNETNAME)"
-      appServicePlanRG: "$(INTERNALAPPSERVICEPLANWINDOWSRESOURCEGROUP)"
       azureSubscription: "$(AZURESUBSCRIPTION)"
       botPricingTier: $env:BOTPRICINGTIER
       connectionName: $env:CONNECTIONNAME
       keyVault: "$(INTERNALKEYVAULTNAME)"
+      projectTag: "$(INTERNALPROJECTTAG)"
       resourceGroup: "$(INTERNALRESOURCEGROUPNAME)-DotNet"
       resourceSuffix: $(INTERNALRESOURCESUFFIX)
+      sharedResourceGroup: "$(INTERNALSHAREDRESOURCEGROUPNAME)"
+      virtualNetwork: "$(INTERNALVIRTUALNETWORKNAME)"
       bots:
+        # DotNet bots
         - name: "bffnsimplehostbotdotnet"
           dependsOn: "Prepare_DotNetGroup"
           type: "Host"
@@ -257,7 +272,7 @@ stages:
             version: ${{ parameters.dependenciesVersionDotNetSkills }}
 
         - name: "bffnechoskillbotdotnet21"
-          dependsOn: "Deploy_bffnsimplehostbotdotnet"
+          dependsOn: "Prepare_DotNetGroup"
           type: "Skill"
           displayName: "DotNet Echo Skill Bot 2.1"
           appId: $(BFFNECHOSKILLBOTDOTNET21APPID)
@@ -270,8 +285,9 @@ stages:
             registry: ${{ parameters.dependenciesRegistryDotNetSkills }}
             version: ${{ parameters.dependenciesVersionDotNetSkills }}
 
+        # DotNet V3 bots
         - name: "bffnechoskillbotdotnetv3"
-          dependsOn: "Deploy_bffnsimplehostbotdotnet21"
+          dependsOn: "Prepare_DotNetGroup"
           type: "SkillV3"
           displayName: "DotNet Echo Skill Bot v3"
           appId: $(BFFNECHOSKILLBOTDOTNETV3APPID)
@@ -284,7 +300,7 @@ stages:
             version: ${{ parameters.dependenciesVersionDotNetSkillsV3 }}
 
         - name: "bffnwaterfallhostbotdotnet"
-          dependsOn: "Deploy_bffnechoskillbotdotnet"
+          dependsOn: "Deploy_bffnsimplehostbotdotnet"
           type: "Host"
           displayName: "DotNet Waterfall Host Bot"
           appId: $(BFFNWATERFALLHOSTBOTDOTNETAPPID)
@@ -298,7 +314,7 @@ stages:
             version: ${{ parameters.dependenciesVersionDotNetHosts }}
 
         - name: "bffnwaterfallskillbotdotnet"
-          dependsOn: "Deploy_bffnechoskillbotdotnet21"
+          dependsOn: "Deploy_bffnsimplehostbotdotnet21"
           type: "Skill"
           displayName: "DotNet Waterfall Skill Bot"
           appId: $(BFFNWATERFALLSKILLBOTDOTNETAPPID)
@@ -311,39 +327,30 @@ stages:
             registry: ${{ parameters.dependenciesRegistryDotNetSkills }}
             version: ${{ parameters.dependenciesVersionDotNetSkills }}
 
-# DotNet Composer
-  - template: dotnet/deployComposer.yml
-    parameters:
-      appInsight: "$(INTERNALAPPINSIGHTSNAME)"
-      appServicePlan: "$(INTERNALAPPSERVICEPLANDOTNETNAME)"
-      appServicePlanRG: "$(INTERNALAPPSERVICEPLANWINDOWSRESOURCEGROUP)"
-      azureSubscription: "$(AZURESUBSCRIPTION)"
-      botPricingTier: $env:BOTPRICINGTIER
-      keyVault: "$(INTERNALKEYVAULTNAME)"
-      resourceGroup: "$(INTERNALRESOURCEGROUPNAME)-DotNet"
-      resourceSuffix: $(INTERNALRESOURCESUFFIX)
-      bots:
+        # DotNet Composer bots
         - name: "bffnsimplehostbotcomposerdotnet"
-          dependsOn: "Deploy_bffnechoskillbotdotnetv3"
-          type: "Host"
+          dependsOn: "Deploy_bffnechoskillbotdotnet"
+          type: "ComposerHost"
           displayName: "DotNet Simple Composer Host Bot"
           appId: $(BFFNSIMPLEHOSTBOTCOMPOSERDOTNETAPPID)
           appSecret: $(BFFNSIMPLEHOSTBOTCOMPOSERDOTNETAPPSECRET)
           project: 
             directory: 'Bots/DotNet/Consumers/Composer/SimpleHostBotComposer'
+            name: "SimpleHostBotComposer.csproj"
             netCoreVersion: "3.1.x"
           dependency:
             registry: ${{ parameters.dependenciesRegistryDotNetHosts }}
             version: ${{ parameters.dependenciesVersionDotNetHosts }}
 
         - name: "bffnechoskillbotcomposerdotnet"
-          dependsOn: "Deploy_bffnwaterfallhostbotdotnet"
-          type: "Skill"
+          dependsOn: "Deploy_bffnechoskillbotdotnet21"
+          type: "ComposerSkill"
           displayName: "DotNet Echo Composer Skill Bot"
           appId: $(BFFNECHOSKILLBOTCOMPOSERDOTNETAPPID)
           appSecret: $(BFFNECHOSKILLBOTCOMPOSERDOTNETAPPSECRET)
           project: 
             directory: 'Bots/DotNet/Skills/Composer/EchoSkillBotComposer'
+            name: "EchoSkillBotComposer.csproj"
             netCoreVersion: "3.1.x"
           dependency:
             registry: ${{ parameters.dependenciesRegistryDotNetSkills }}
@@ -354,14 +361,16 @@ stages:
     parameters:
       appInsight: "$(INTERNALAPPINSIGHTSNAME)"
       appServicePlan: "$(INTERNALAPPSERVICEPLANJSNAME)"
-      appServicePlanRG: "$(INTERNALAPPSERVICEPLANWINDOWSRESOURCEGROUP)"
       azureSubscription: "$(AZURESUBSCRIPTION)"
       botPricingTier: $env:BOTPRICINGTIER
       connectionName: $env:CONNECTIONNAME
       dependsOn: "Prepare_JSGroup"
       keyVault: "$(INTERNALKEYVAULTNAME)"
+      projectTag: "$(INTERNALPROJECTTAG)"
       resourceGroup: "$(INTERNALRESOURCEGROUPNAME)-JS"
       resourceSuffix: $(INTERNALRESOURCESUFFIX)
+      sharedResourceGroup: "$(INTERNALSHAREDRESOURCEGROUPNAME)"
+      virtualNetwork: "$(INTERNALVIRTUALNETWORKNAME)"
       bots:
         - name: "bffnsimplehostbotjs"
           type: "Host"
@@ -373,6 +382,10 @@ stages:
           dependency:
             registry: ${{ parameters.dependenciesRegistryJSHosts }}
             version: ${{ parameters.dependenciesVersionJSHosts }}
+          container:
+            registry: "$(INTERNALCONTAINERREGISTRYNAME)"
+            port: "36000"
+            command: "npm start"
 
         - name: "bffnechoskillbotjs"
           type: "Skill"
@@ -384,6 +397,10 @@ stages:
           dependency:
             registry: ${{ parameters.dependenciesRegistryJSSkills }}
             version: ${{ parameters.dependenciesVersionJSSkills }}
+          container:
+            registry: "$(INTERNALCONTAINERREGISTRYNAME)"
+            port: "36400"
+            command: "npm start"
 
         - name: "bffnechoskillbotjsv3"
           type: "SkillV3"
@@ -395,6 +412,10 @@ stages:
           dependency:
             registry: ${{ parameters.dependenciesRegistryJSSkillsV3 }}
             version: ${{ parameters.dependenciesVersionJSSkillsV3 }}
+          container:
+            registry: "$(INTERNALCONTAINERREGISTRYNAME)"
+            port: "36407"
+            command: "npm start"
 
         - name: "bffnwaterfallhostbotjs"
           type: "Host"
@@ -406,6 +427,10 @@ stages:
           dependency:
             registry: ${{ parameters.dependenciesRegistryJSHosts }}
             version: ${{ parameters.dependenciesVersionJSHosts }}
+          container:
+            registry: "$(INTERNALCONTAINERREGISTRYNAME)"
+            port: "36020"
+            command: "npm start"
 
         - name: "bffnwaterfallskillbotjs"
           type: "Skill"
@@ -417,19 +442,26 @@ stages:
           dependency:
             registry: ${{ parameters.dependenciesRegistryJSSkills }}
             version: ${{ parameters.dependenciesVersionJSSkills }}
+          container:
+            registry: "$(INTERNALCONTAINERREGISTRYNAME)"
+            port: "36420"
+            command: "npm start"
 
 # Python
   - template: python/deploy.yml
     parameters:
+      appInsight: "$(INTERNALAPPINSIGHTSNAME)"
       appServicePlan: "$(INTERNALAPPSERVICEPLANPYTHONNAME)"
-      appServicePlanRG: "$(INTERNALAPPSERVICEPLANLINUXRESOURCEGROUP)"
       azureSubscription: "$(AZURESUBSCRIPTION)"
       botPricingTier: $env:BOTPRICINGTIER
       connectionName: $env:CONNECTIONNAME
       dependsOn: "Prepare_PythonGroup"
       keyVault: "$(INTERNALKEYVAULTNAME)"
+      projectTag: "$(INTERNALPROJECTTAG)"
       resourceGroup: "$(INTERNALRESOURCEGROUPNAME)-Python"
       resourceSuffix: "$(INTERNALRESOURCESUFFIX)"
+      sharedResourceGroup: "$(INTERNALSHAREDRESOURCEGROUPNAME)"
+      virtualNetwork: "$(INTERNALVIRTUALNETWORKNAME)"
       bots:
         - name: "bffnsimplehostbotpython"
           type: "Host"
@@ -441,6 +473,10 @@ stages:
           dependency:
             registry: ${{ parameters.dependenciesRegistryPythonHosts }}
             version: ${{ parameters.dependenciesVersionPythonHosts }}
+          container:
+            registry: "$(INTERNALCONTAINERREGISTRYNAME)"
+            port: "37000"
+            command: "python app.py"
 
         - name: "bffnechoskillbotpython"
           type: "Skill"
@@ -452,6 +488,10 @@ stages:
           dependency:
             registry: ${{ parameters.dependenciesRegistryPythonSkills }}
             version: ${{ parameters.dependenciesVersionPythonSkills }}
+          container:
+            registry: "$(INTERNALCONTAINERREGISTRYNAME)"
+            port: "37400"
+            command: "python app.py"
 
         - name: "bffnwaterfallhostbotpython"
           type: "Host"
@@ -463,6 +503,10 @@ stages:
           dependency:
             registry: ${{ parameters.dependenciesRegistryPythonHosts }}
             version: ${{ parameters.dependenciesVersionPythonHosts }}
+          container:
+            registry: "$(INTERNALCONTAINERREGISTRYNAME)"
+            port: "37020"
+            command: "python app.py"
 
         - name: "bffnwaterfallskillbotpython"
           type: "Skill"
@@ -474,6 +518,10 @@ stages:
           dependency:
             registry: ${{ parameters.dependenciesRegistryPythonSkills }}
             version: ${{ parameters.dependenciesVersionPythonSkills }}
+          container:
+            registry: "$(INTERNALCONTAINERREGISTRYNAME)"
+            port: "37420"
+            command: "python app.py"
 
 # Publish variables
   - stage: "Publish_Variables"

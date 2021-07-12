@@ -1,0 +1,278 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "appId": {
+      "type": "string",
+      "metadata": {
+        "description": "Active Directory App ID, set as MicrosoftAppId in the Web App's Application Settings."
+      }
+    },
+    "appSecret": {
+      "type": "string",
+      "metadata": {
+        "description": "Active Directory App Password, set as MicrosoftAppPassword in the Web App's Application Settings."
+      }
+    },
+    "appInsightsName": {
+      "type": "string",
+      "defaultValue": ""
+    },
+    "appServicePlanName": {
+      "type": "string"
+    },
+    "botName": {
+      "type": "string"
+    },
+    "botLocation": {
+      "type": "string"
+    },
+    "botSku": {
+      "type": "string",
+      "defaultValue": "F0",
+      "metadata": {
+        "description": "The pricing tier of the Bot Service Registration. Acceptable values are F0 and S1."
+      }
+    },
+    "containerRegistry": {
+      "type": "string"
+    },
+    "containerRegistryPassword": {
+      "type": "string"
+    },
+    "containerRepository": {
+      "type": "string"
+    },
+    "containerRepositoryTag": {
+      "type": "string"
+    },
+    "containerPort": {
+      "type": "string"
+    },
+    "containerCommand": {
+      "type": "string"
+    },
+    "projectTag": {
+      "type": "string"
+    },
+    "sharedResourceGroup": {
+      "type": "string"
+    },
+    "virtualNetwork": {
+      "type": "string",
+      "defaultValue": ""
+    },
+    "virtualNetworkSubnet": {
+      "type": "string"
+    }
+  },
+  "variables": {
+    "siteHost": "[concat(parameters('botName'), '.azurewebsites.net')]",
+    "botEndpoint": "[concat('https://', variables('siteHost'), '/api/messages')]",
+    "publishingUsername": "[concat('$', parameters('botName'))]",
+    "containerLoginServer": "[concat(parameters('containerRegistry'), '.azurecr.io')]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2020-09-01",
+      "name": "[parameters('botName')]",
+      "location": "[parameters('botLocation')]",
+      "kind": "app,linux,container",
+      "tags": {
+        "Project": "[parameters('projectTag')]"
+      },
+      "properties": {
+        "enabled": true,
+        "hostNameSslStates": [
+          {
+            "name": "[concat(parameters('botName'), '.azurewebsites.net')]",
+            "sslState": "Disabled",
+            "hostType": "Standard"
+          },
+          {
+            "name": "[concat(parameters('botName'), '.scm.azurewebsites.net')]",
+            "sslState": "Disabled",
+            "hostType": "Repository"
+          }
+        ],
+        "serverFarmId": "[concat('/subscriptions/', subscription().id,'/resourcegroups/', parameters('sharedResourceGroup'), '/providers/Microsoft.Web/serverfarms/', parameters('appServicePlanName'))]",
+        "reserved": true,
+        "hyperV": false,
+        "siteConfig": {
+          "appSettings": [
+            {
+              "name": "MicrosoftAppId",
+              "value": "[parameters('appId')]"
+            },
+            {
+              "name": "MicrosoftAppPassword",
+              "value": "[parameters('appSecret')]"
+            },
+            {
+              "name": "DOCKER_REGISTRY_SERVER_PASSWORD",
+              "value": "[parameters('containerRegistryPassword')]"
+            },
+            {
+              "name": "DOCKER_REGISTRY_SERVER_URL",
+              "value": "[concat('https://', variables('containerLoginServer'))]"
+            },
+            {
+              "name": "DOCKER_REGISTRY_SERVER_USERNAME",
+              "value": "[parameters('containerRegistry')]"
+            },
+            {
+              "name": "WEBSITES_ENABLE_APP_SERVICE_STORAGE",
+              "value": "false"
+            },
+            {
+              "name": "WEBSITES_PORT",
+              "value": "[parameters('containerPort')]"
+            },
+            {
+              "name": "WEBSITE_VNET_ROUTE_ALL",
+              "condition": "[not(empty(parameters('virtualNetwork')))]",
+              "value": "1"
+            },
+            {
+              "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+              "value": "[if(empty(parameters('appInsightsName')), '', reference(resourceId(parameters('sharedResourceGroup'),'Microsoft.Insights/components', parameters('appInsightsName')), '2015-05-01', 'Full').properties.InstrumentationKey)]"
+            },
+            {
+              "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
+              "value": "[if(empty(parameters('appInsightsName')), '', reference(resourceId(parameters('sharedResourceGroup'),'Microsoft.Insights/components', parameters('appInsightsName')), '2015-05-01', 'Full').properties.ConnectionString)]"
+            },
+            {
+              "name": "ApplicationInsightsAgent_EXTENSION_VERSION",
+              "value": "~2"
+            }
+          ],
+          "webSocketsEnabled": true,
+          "numberOfWorkers": 1,
+          "defaultDocuments": [
+            "Default.htm",
+            "Default.html",
+            "Default.asp",
+            "index.htm",
+            "index.html",
+            "iisstart.htm",
+            "default.aspx",
+            "index.php",
+            "hostingstart.html"
+          ],
+          "netFrameworkVersion": "v4.0",
+          "linuxFxVersion": "[concat('DOCKER|', variables('containerLoginServer'), '/', parameters('containerRepository'), ':', parameters('containerRepositoryTag'))]",
+          "requestTracingEnabled": false,
+          "remoteDebuggingEnabled": false,
+          "httpLoggingEnabled": true,
+          "logsDirectorySizeLimit": 35,
+          "detailedErrorLoggingEnabled": false,
+          "publishingUsername": "[variables('publishingUsername')]",
+          "scmType": "None",
+          "use32BitWorkerProcess": true,
+          "alwaysOn": true,
+          "appCommandLine": "[parameters('containerCommand')]",
+          "managedPipelineMode": "Integrated",
+          "virtualApplications": [
+            {
+              "virtualPath": "/",
+              "physicalPath": "site\\wwwroot",
+              "preloadEnabled": true
+            }
+          ],
+          "loadBalancing": "LeastRequests",
+          "experiments": {
+            "rampUpRules": []
+          },
+          "autoHealEnabled": false,
+          "cors": {
+            "allowedOrigins": [
+              "https://botservice.hosting.portal.azure.net",
+              "https://hosting.onecloud.azure-test.net/"
+            ],
+            "supportCredentials": false
+          },
+          "localMySqlEnabled": false,
+          "ipSecurityRestrictions": [
+            {
+              "ipAddress": "Any",
+              "action": "Allow",
+              "priority": 1,
+              "name": "Allow all",
+              "description": "Allow all access"
+            }
+          ],
+          "scmIpSecurityRestrictions": [
+            {
+              "ipAddress": "Any",
+              "action": "Allow",
+              "priority": 1,
+              "name": "Allow all",
+              "description": "Allow all access"
+            }
+          ],
+          "scmIpSecurityRestrictionsUseMain": false,
+          "http20Enabled": false,
+          "minTlsVersion": "1.2",
+          "ftpsState": "AllAllowed"
+        },
+        "scmSiteAlsoStopped": false,
+        "clientAffinityEnabled": true,
+        "hostNamesDisabled": false,
+        "clientCertEnabled": false,
+        "httpsOnly": false,
+        "redundancyMode": "None"
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/hostNameBindings",
+      "apiVersion": "2020-09-01",
+      "name": "[concat(parameters('botName'), '/', parameters('botName'), '.azurewebsites.net')]",
+      "location": "[parameters('botLocation')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', parameters('botName'))]"
+      ],
+      "properties": {
+        "siteName": "[parameters('botName')]",
+        "hostNameType": "Verified"
+      }
+    },
+    {
+      "type": "Microsoft.BotService/botServices",
+      "apiVersion": "2020-06-02",
+      "name": "[parameters('botName')]",
+      "location": "global",
+      "kind": "bot",
+      "sku": {
+        "name": "[parameters('botSku')]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', parameters('botName'))]"
+      ],
+      "properties": {
+        "name": "[parameters('botName')]",
+        "displayName": "[parameters('botName')]",
+        "endpoint": "[variables('botEndpoint')]",
+        "msaAppId": "[parameters('appId')]",
+        "developerAppInsightsApplicationId": "",
+        "developerAppInsightKey": "",
+        "publishingCredentials": null,
+        "storageResourceId": null
+      }
+    },
+    {
+      "condition": "[not(empty(parameters('virtualNetwork')))]",
+      "name": "[concat(parameters('botName'), '/virtualNetwork')]",
+      "type": "Microsoft.Web/sites/virtualNetworkConnections",
+      "apiVersion": "2018-11-01",
+      "location": "[parameters('botLocation')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', parameters('botName'))]"
+      ],
+      "properties": {
+        "subnetResourceId": "[resourceId(parameters('sharedResourceGroup'), 'Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetwork'), parameters('virtualNetworkSubnet'))]",
+        "swiftSupported": true
+      }
+    }
+  ]
+}

@@ -85,6 +85,14 @@ These are the available registry options for each bot language:
   - Pypi
   - Test.Pypi
 
+The version parameters support the following options.
+
+- LATEST: this is the default, and will look for the most recent version.
+- STABLE: will look for the most recent Stable version.
+- custom: you can enter a specific version to look for in the feed, ie `4.14.0.20210416.dev236130`
+
+Note: The artifact feed doesn't contain stable versions for DotNet packages.
+
 
 ## 03 - Run Test Scenarios Pipeline
 

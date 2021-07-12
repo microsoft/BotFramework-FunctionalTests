@@ -12,7 +12,7 @@ Head to [Docs](./Docs/) directory for more information.
 
  | Branch | Description | Deploy Bot Resources Status | Run Test Scenarios Status |
  |--------|-------------|-----------------------------|---------------------------|
- | Main | 4.14.* Nightly Run | <!--Badge placeholder--> | <!--Badge placeholder-->|
+ | Main | 4.14.* Nightly Run | [![Build Status](https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/FunctionalTests/02.A.%20Deploy%20skill%20bots%20(daily)?branchName=main)](https://dev.azure.com/FuseLabs/SDK_v4/_build/latest?definitionId=1229&branchName=main) | [![Build Status](https://dev.azure.com/FuseLabs/SDK_v4/_apis/build/status/FunctionalTests/02.B.%20Run%20skill%20test%20scenarios%20(daily)?branchName=main)](https://dev.azure.com/FuseLabs/SDK_v4/_build/latest?definitionId=1237&branchName=main)|
 
 ## Contributing
 

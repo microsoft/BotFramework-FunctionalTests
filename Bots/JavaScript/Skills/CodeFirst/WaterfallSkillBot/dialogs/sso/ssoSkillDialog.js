@@ -3,7 +3,7 @@
 
 const { MessageFactory, InputHints } = require('botbuilder');
 const { ComponentDialog, ChoicePrompt, ChoiceFactory, DialogTurnStatus, WaterfallDialog } = require('botbuilder-dialogs');
-const { SsoSkillSignInDialog } = require('./SsoSkillSignInDialog');
+const { SsoSkillSignInDialog } = require('./ssoSkillSignInDialog');
 
 const ACTION_PROMPT = 'ActionStepPrompt';
 const WATERFALL_DIALOG = 'WaterfallDialog';

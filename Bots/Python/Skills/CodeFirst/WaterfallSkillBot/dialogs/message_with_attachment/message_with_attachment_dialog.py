@@ -17,10 +17,7 @@ from botbuilder.dialogs import (
 from botbuilder.dialogs.prompts import PromptOptions
 from botbuilder.schema import (
     Attachment,
-    InputHints,
-    Activity,
-    ActivityTypes,
-    EndOfConversationCodes,
+    InputHints
 )
 
 from config import DefaultConfig
@@ -106,12 +103,6 @@ class MessageWithAttachmentDialog(ComponentDialog):
         if try_another:
             return await step_context.replace_dialog(self.initial_dialog_id)
 
-        await step_context.context.send_activity(
-            Activity(
-                type=ActivityTypes.end_of_conversation,
-                code=EndOfConversationCodes.completed_successfully,
-            )
-        )
         return DialogTurnResult(DialogTurnStatus.Complete)
 
     async def get_inline_attachment(self):

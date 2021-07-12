@@ -1,27 +1,25 @@
 [import](common.lg)
 
-
-# SendActivity_1fPEND()
+# SendActivity_Greeting()
 [Activity
     Text = Hello and welcome!
     InputHint = acceptingInput
 ]
-# SendActivity_VV7JVt()
+
+# SendActivity_DidNotUnderstand()
 [Activity
-    Text = Me no nothin'. Say "skill" and I'll patch you through
-    InputHint = acceptingInput
+    Text = ${SendActivity_DidNotUnderstand_text()}
 ]
-# SendActivity_mb8ZXL()
-[Activity
-    Text = Got it, connecting you to the skill...
-    InputHint = acceptingInput
-]
-# SendActivity_Zkprn3()
+
+# SendActivity_DidNotUnderstand_text()
+- Sorry, I didn't get that.
+# SendActivity_M2LqJr()
 [Activity
     Text = Received endOfConversation.\n\nCode: ${turn.activity.code}.
     InputHint = acceptingInput
 ]
-# SendActivity_71moHf()
+
+# SendActivity_bgTcyn()
 [Activity
     Text = Back in the host bot.
     InputHint = acceptingInput

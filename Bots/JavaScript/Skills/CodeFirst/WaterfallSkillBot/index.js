@@ -2,6 +2,8 @@
 // Licensed under the MIT License.
 
 const dotenv = require('dotenv');
+const http = require('http');
+const https = require('https');
 const path = require('path');
 const restify = require('restify');
 
@@ -11,14 +13,13 @@ dotenv.config({ path: ENV_FILE });
 
 // Import required bot services.
 // See https://aka.ms/bot-services to learn more about the different parts of a bot.
-const { ActivityTypes, BotFrameworkAdapter, InputHints, MemoryStorage, ConversationState, SkillHttpClient, SkillHandler, ChannelServiceRoutes, TurnContext, MessageFactory } = require('botbuilder');
+const { ActivityTypes, BotFrameworkAdapter, InputHints, MemoryStorage, ConversationState, SkillHttpClient, SkillHandler, ChannelServiceRoutes, TurnContext, MessageFactory, SkillConversationIdFactory } = require('botbuilder');
 const { AuthenticationConfiguration, SimpleCredentialProvider } = require('botframework-connector');
 
 const { SkillBot } = require('./bots/skillBot');
 const { ActivityRouterDialog } = require('./dialogs/activityRouterDialog');
 const { allowedCallersClaimsValidator } = require('./authentication/allowedCallersClaimsValidator');
 const { SsoSaveStateMiddleware } = require('./middleware/ssoSaveStateMiddleware');
-const { SkillConversationIdFactory } = require('./skillConversationIdFactory');
 
 // Create HTTP server
 const server = restify.createServer({ maxParamLength: 1000 });
@@ -30,6 +31,12 @@ server.listen(process.env.port || process.env.PORT || 36420, () => {
   console.log('\nTo talk to your bot, open the emulator select "Open Bot"');
 });
 
+const maxTotalSockets = (preallocatedSnatPorts, procCount = 1, weight = 0.5, overcommit = 1.1) =>
+  Math.min(
+    Math.floor((preallocatedSnatPorts / procCount) * weight * overcommit),
+    preallocatedSnatPorts
+  );
+
 const authConfig = new AuthenticationConfiguration([], allowedCallersClaimsValidator);
 
 // Create adapter.
@@ -37,7 +44,19 @@ const authConfig = new AuthenticationConfiguration([], allowedCallersClaimsValid
 const adapter = new BotFrameworkAdapter({
   appId: process.env.MicrosoftAppId,
   appPassword: process.env.MicrosoftAppPassword,
-  authConfig
+  authConfig: authConfig,
+  clientOptions: {
+    agentSettings: {
+      http: new http.Agent({
+        keepAlive: true,
+        maxTotalSockets: maxTotalSockets(1024, 4, 0.3)
+      }),
+      https: new https.Agent({
+        keepAlive: true,
+        maxTotalSockets: maxTotalSockets(1024, 4, 0.7)
+      })
+    }
+  }
 });
 
 // Catch-all for errors.
@@ -92,7 +111,7 @@ const conversationState = new ConversationState(memoryStorage);
 adapter.use(new SsoSaveStateMiddleware(conversationState));
 
 // Create the conversationIdFactory
-const conversationIdFactory = new SkillConversationIdFactory();
+const conversationIdFactory = new SkillConversationIdFactory(memoryStorage);
 
 // Create the credential provider;
 const credentialProvider = new SimpleCredentialProvider(process.env.MicrosoftAppId, process.env.MicrosoftAppPassword);

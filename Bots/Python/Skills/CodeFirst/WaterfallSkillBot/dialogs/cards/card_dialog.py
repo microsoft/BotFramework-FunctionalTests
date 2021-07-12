@@ -19,9 +19,6 @@ from botbuilder.dialogs.prompts import (
     PromptValidatorContext,
 )
 from botbuilder.schema import (
-    Activity,
-    ActivityTypes,
-    EndOfConversationCodes,
     InputHints,
     HeroCard,
     CardAction,
@@ -219,13 +216,6 @@ class CardDialog(ComponentDialog):
                     )
 
                 elif card_type == CardOptions.END:
-                    # End the dialog so the host gets an EoC
-                    await step_context.context.send_activity(
-                        Activity(
-                            type=ActivityTypes.end_of_conversation,
-                            code=EndOfConversationCodes.completed_successfully,
-                        )
-                    )
                     return DialogTurnResult(DialogTurnStatus.Complete)
 
             else:

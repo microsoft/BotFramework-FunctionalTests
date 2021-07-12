@@ -4,12 +4,14 @@
 // index.js is used to setup and configure your bot
 
 // Import required packages
+const http = require('http');
+const https = require('https');
 const path = require('path');
 const restify = require('restify');
 
 // Import required bot services.
 // See https://aka.ms/bot-services to learn more about the different parts of a bot.
-const { BotFrameworkAdapter, TurnContext, ActivityTypes, ChannelServiceRoutes, ConversationState, InputHints, MemoryStorage, SkillHandler, SkillHttpClient, MessageFactory } = require('botbuilder');
+const { BotFrameworkAdapter, TurnContext, ActivityTypes, ChannelServiceRoutes, ConversationState, InputHints, MemoryStorage, SkillHandler, SkillHttpClient, MessageFactory, SkillConversationIdFactory } = require('botbuilder');
 const { AuthenticationConfiguration, SimpleCredentialProvider } = require('botframework-connector');
 
 // Import required bot configuration.
@@ -19,16 +21,33 @@ require('dotenv').config({ path: ENV_FILE });
 // This bot's main dialog.
 const { HostBot } = require('./bots/hostBot');
 const { SkillsConfiguration } = require('./skillsConfiguration');
-const { SkillConversationIdFactory } = require('./skillConversationIdFactory');
 const { allowedSkillsClaimsValidator } = require('./authentication/allowedSkillsClaimsValidator');
 const { SetupDialog } = require('./dialogs/setupDialog');
+
+const maxTotalSockets = (preallocatedSnatPorts, procCount = 1, weight = 0.5, overcommit = 1.1) =>
+  Math.min(
+    Math.floor((preallocatedSnatPorts / procCount) * weight * overcommit),
+    preallocatedSnatPorts
+  );
 
 // Create adapter.
 // See https://aka.ms/about-bot-adapter to learn more about adapters.
 const adapter = new BotFrameworkAdapter({
   appId: process.env.MicrosoftAppId,
   appPassword: process.env.MicrosoftAppPassword,
-  authConfig: new AuthenticationConfiguration([], allowedSkillsClaimsValidator)
+  authConfig: new AuthenticationConfiguration([], allowedSkillsClaimsValidator),
+  clientOptions: {
+    agentSettings: {
+      http: new http.Agent({
+        keepAlive: true,
+        maxTotalSockets: maxTotalSockets(1024, 4, 0.3)
+      }),
+      https: new https.Agent({
+        keepAlive: true,
+        maxTotalSockets: maxTotalSockets(1024, 4, 0.7)
+      })
+    }
+  }
 });
 
 // Catch-all for errors.
@@ -106,7 +125,7 @@ const memoryStorage = new MemoryStorage();
 const conversationState = new ConversationState(memoryStorage);
 
 // Create the conversationIdFactory
-const conversationIdFactory = new SkillConversationIdFactory();
+const conversationIdFactory = new SkillConversationIdFactory(memoryStorage);
 
 // Load skills configuration
 const skillsConfig = new SkillsConfiguration();
