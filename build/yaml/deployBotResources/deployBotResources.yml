@@ -126,8 +126,6 @@ variables:
   # AppServicePlanDotNetName: Name of the App Service Plan for DotNet bots.
   # AppServicePlanJSName: Name of the App Service Plan for JavaScript bots.
   # AppServicePlanPythonName: Name of the App Service Plan for Python bots.
-  # AppServicePlanGroup: (optional) Name of the Resource Group where the Windows App Service Plan is located.
-  # AppServicePlanGroupLinux: (optional) Name of the Resource Group where the Linux App Service Plan is located.
   # BotPricingTier: (optional) Pricing Tier for the bots, default F0.
   # ContainerRegistryName: (optional) Name of the Container Registry.
   # ResourceGroup: (optional) Name of the Resource Group where the bots will be deployed.
