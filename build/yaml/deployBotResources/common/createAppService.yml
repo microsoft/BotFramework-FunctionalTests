@@ -16,10 +16,6 @@ parameters:
     displayName: App Service Plan name
     type: string
 
-  - name: appServicePlanRG
-    displayName: App Service Plan Resource Group
-    type: string
-
   - name: azureSubscription
     displayName: Azure Service Connection
     type: string
@@ -84,7 +80,6 @@ steps:
           @{ key="appSecret"                    ; value="${{ parameters.appSecret }}" }
           @{ key="botName"                      ; value="${{ parameters.botName }}${{ parameters.resourceSuffix }}-$(BUILD.BUILDID)" }
           @{ key="appServicePlanName"           ; value="${{ parameters.appServicePlan }}" }
-          @{ key="appServicePlanResourceGroup"  ; value="${{ parameters.appServicePlanRG }}" }
           @{ key="projectTag"                   ; value="${{ parameters.projectTag }}" }
           @{ key="sharedResourceGroup"          ; value="${{ parameters.sharedResourceGroup }}" }
           @{ key="botLocation"                  ; value="westus" }
