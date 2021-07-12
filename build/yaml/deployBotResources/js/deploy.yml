@@ -7,10 +7,6 @@ parameters:
     displayName: App Service Plan name
     type: string
 
-  - name: appServicePlanRG
-    displayName: App Service Plan Resource Group
-    type: string
-
   - name: azureSubscription
     displayName: Azure Service Connection
     type: string
@@ -33,6 +29,10 @@ parameters:
 
   - name: keyVault
     displayName: Key Vault name
+    type: string
+
+  - name: projectTag
+    displayName: Tag for bot's application service
     type: string
 
   - name: resourceGroup
@@ -201,7 +201,6 @@ stages:
               appSecret: $(APPSECRET)
               appInsight: "${{ parameters.appInsight }}"
               appServicePlan: "${{ parameters.appServicePlan }}"
-              appServicePlanRG: "${{ parameters.appServicePlanRG }}"
               azureSubscription: "${{ parameters.azureSubscription }}"
               botGroup: "${{ parameters.resourceGroup }}"
               botName: "${{ bot.name }}"
@@ -212,6 +211,7 @@ stages:
                 tag: "v$(DEPENDENCIESVERSIONNUMBER)"
                 port: "${{ bot.container.port }}"
                 command: "${{ bot.container.command }}"
+              projectTag: "${{ parameters.projectTag }}"
               resourceSuffix: "${{ parameters.resourceSuffix }}"
               sharedResourceGroup: "${{ parameters.sharedResourceGroup }}"
               templateFile: "build/templates/template-container-linux-bot-resources.json"

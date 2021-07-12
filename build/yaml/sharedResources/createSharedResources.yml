@@ -34,10 +34,10 @@ variables:
   InternalKeyVaultObjectId: $[coalesce(variables['KEYVAULTOBJECTID'], '')]
 
 stages:
-- stage: Create_Resource_Group_Windows
-  displayName: "Create Resource Group (Windows)"
+- stage: Create_Resource_Group
+  displayName: "Create Resource Group"
   jobs:
-    - job: Create_Resource_Group_Windows
+    - job: Create_Resource_Group
       displayName: "Create steps"
       steps:
       - checkout: none
@@ -49,25 +49,9 @@ stages:
           scriptLocation: inlineScript
           inlineScript: "az group create --name $(INTERNALRESOURCEGROUPNAME) --location westus"
 
-- stage: Create_Resource_Group_Linux
-  displayName: "Create Resource Group (Linux)"
-  dependsOn: []
-  jobs:
-    - job: Create_Resource_Group_Linux
-      displayName: "Create steps"
-      steps:
-      - checkout: none
-      - task: AzureCLI@2
-        displayName: "Create $(INTERNALRESOURCEGROUPNAME)-linux"
-        inputs:
-          azureSubscription: $(AZURESUBSCRIPTION)
-          scriptType: pscore
-          scriptLocation: inlineScript
-          inlineScript: "az group create --name $(INTERNALRESOURCEGROUPNAME)-linux --location westus"
-
 - stage: Create_Virtual_Network
   displayName: "Create Virtual Network"
-  dependsOn: Create_Resource_Group_Windows
+  dependsOn: Create_Resource_Group
   jobs:
     - job: Create_Virtual_Network
       displayName: "Create steps"
@@ -82,7 +66,7 @@ stages:
 
 - stage: Create_CosmosDB
   displayName: "Create CosmosDB"
-  dependsOn: Create_Resource_Group_Windows
+  dependsOn: Create_Resource_Group
   jobs:
     - job: Deploy_Cosmos_DB
       displayName: "Deploy steps"
@@ -97,7 +81,7 @@ stages:
 
 - stage: Create_Key_Vault_and_App_Registrations
   displayName: "Create Key Vault and App Registrations"
-  dependsOn: Create_Resource_Group_Windows
+  dependsOn: Create_Resource_Group
   jobs:
     - job: Check_Key_Vault_Object_Id
       displayName: Check KeyVaultObjectId value
@@ -145,8 +129,7 @@ stages:
 - stage: Create_App_Service_Plans
   displayName: "Create App Service Plans"
   dependsOn: 
-    - Create_Resource_Group_Windows
-    - Create_Resource_Group_Linux
+    - Create_Resource_Group
   jobs:
     - job: Check_App_Service_Plan_Creation
       displayName: "Check AppServicePlan Creation"
@@ -219,11 +202,11 @@ stages:
           scriptLocation: inlineScript
           inlineScript: |
             $appServicePlanPricingTier = if ($env:APPSERVICEPLANPRICINGTIER) { "newAppServicePlanSku=$env:APPSERVICEPLANPRICINGTIER" }
-            az deployment group create --name "$(INTERNALAPPSERVICEPLANPYTHONNAME)$($env:RESOURCESUFFIX)" --resource-group "$(INTERNALRESOURCEGROUPNAME)-linux" --template-file build/templates/template-service-plan-linux-resources.json --parameters $appServicePlanPricingTier newAppServicePlanName="$(INTERNALAPPSERVICEPLANPYTHONNAME)$($env:RESOURCESUFFIX)"
+            az deployment group create --name "$(INTERNALAPPSERVICEPLANPYTHONNAME)$($env:RESOURCESUFFIX)" --resource-group "$(INTERNALRESOURCEGROUPNAME)" --template-file build/templates/template-service-plan-linux-resources.json --parameters $appServicePlanPricingTier newAppServicePlanName="$(INTERNALAPPSERVICEPLANPYTHONNAME)$($env:RESOURCESUFFIX)"
 
 - stage: Create_App_Insights
   displayName: "Create App Insights"
-  dependsOn: Create_Resource_Group_Windows
+  dependsOn: Create_Resource_Group
   jobs:
     - job: Deploy_App_Insights
       displayName: "Deploy steps"
@@ -238,7 +221,7 @@ stages:
 
 - stage: Create_Container_Registry
   displayName: "Create Container Registry"
-  dependsOn: Create_Resource_Group_Windows
+  dependsOn: Create_Resource_Group
   jobs:
     - job: Deploy_Container_Registry
       displayName: "Deploy steps"

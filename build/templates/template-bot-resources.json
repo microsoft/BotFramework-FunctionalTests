@@ -21,9 +21,6 @@
     "appServicePlanName": {
       "type": "string"
     },
-    "appServicePlanResourceGroup": {
-      "type": "string"
-    },
     "botName": {
       "type": "string"
     },
@@ -36,6 +33,9 @@
       "metadata": {
         "description": "The pricing tier of the Bot Service Registration. Acceptable values are F0 and S1."
       }
+    },
+    "projectTag": {
+      "type": "string"
     },
     "sharedResourceGroup": {
       "type": "string"
@@ -58,6 +58,9 @@
       "apiVersion": "2020-09-01",
       "name": "[parameters('botName')]",
       "location": "[parameters('botLocation')]",
+      "tags": {
+        "Project": "[parameters('projectTag')]"
+      },
       "kind": "app",
       "properties": {
         "enabled": true,
@@ -73,7 +76,7 @@
             "hostType": "Repository"
           }
         ],
-        "serverFarmId": "[concat('/subscriptions/', subscription().id,'/resourcegroups/', parameters('appServicePlanResourceGroup'), '/providers/Microsoft.Web/serverfarms/', parameters('appServicePlanName'))]",
+        "serverFarmId": "[concat('/subscriptions/', subscription().id,'/resourcegroups/', parameters('sharedResourceGroup'), '/providers/Microsoft.Web/serverfarms/', parameters('appServicePlanName'))]",
         "reserved": true,
         "hyperV": false,
         "siteConfig": {

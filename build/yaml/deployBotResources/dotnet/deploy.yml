@@ -7,10 +7,6 @@ parameters:
     displayName: App Service Plan name
     type: string
 
-  - name: appServicePlanRG
-    displayName: App Service Plan Resource Group
-    type: string
-
   - name: azureSubscription
     displayName: Azure Service Connection
     type: string
@@ -34,6 +30,10 @@ parameters:
 
   - name: keyVault
     displayName: Key Vault name
+    type: string
+
+  - name: projectTag
+    displayName: Tag for bot's application service
     type: string
 
   - name: resourceGroup
@@ -264,11 +264,11 @@ stages:
               appInsight: "${{ parameters.appInsight }}"
               appSecret: $(APPSECRET)
               appServicePlan: "${{ parameters.appServicePlan }}"
-              appServicePlanRG: "${{ parameters.appServicePlanRG }}"
               azureSubscription: "${{ parameters.azureSubscription }}"
               botGroup: "${{ parameters.resourceGroup }}"
               botName: "${{ bot.name }}"
               botPricingTier: "${{ parameters.botPricingTier }}"
+              projectTag: "${{ parameters.projectTag }}"
               resourceSuffix: "${{ parameters.resourceSuffix }}"
               sharedResourceGroup: "${{ parameters.sharedResourceGroup }}"
               templateFile: "build/templates/template-bot-resources.json"

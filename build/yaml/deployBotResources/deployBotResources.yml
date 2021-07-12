@@ -186,12 +186,11 @@ variables:
 
   ## Internal variables
   InternalAppInsightsName: 'bffnappinsights$(INTERNALRESOURCESUFFIX)'
-  InternalAppServicePlanWindowsResourceGroup: $[coalesce(variables['APPSERVICEPLANGROUP'], 'BFFN-Shared')]
-  InternalAppServicePlanLinuxResourceGroup: $[coalesce(variables['APPSERVICEPLANGROUPLINUX'], 'BFFN-Shared-linux')]
   InternalAppServicePlanDotNetName: $(APPSERVICEPLANDOTNETNAME)$(INTERNALRESOURCESUFFIX)
   InternalAppServicePlanJSName: $(APPSERVICEPLANJSNAME)$(INTERNALRESOURCESUFFIX)
   InternalAppServicePlanPythonName: $(APPSERVICEPLANPYTHONNAME)$(INTERNALRESOURCESUFFIX)
   InternalContainerRegistryName: $[coalesce(variables['CONTAINERREGISTRYNAME'], 'bffncontainerregistry$(INTERNALRESOURCESUFFIX)')]
+  InternalProjectTag: $[coalesce(variables['PROJECTTAG'], 'BFFN')]
   InternalKeyVaultName: 'bffnbotkeyvault$(INTERNALRESOURCESUFFIX)'
   InternalResourceGroupName: $[coalesce(variables['RESOURCEGROUP'], 'BFFN')]
   InternalResourceSuffix: $[coalesce(variables['RESOURCESUFFIX'], '')]
@@ -221,11 +220,11 @@ stages:
     parameters:
       appInsight: "$(INTERNALAPPINSIGHTSNAME)"
       appServicePlan: "$(INTERNALAPPSERVICEPLANDOTNETNAME)"
-      appServicePlanRG: "$(INTERNALAPPSERVICEPLANWINDOWSRESOURCEGROUP)"
       azureSubscription: "$(AZURESUBSCRIPTION)"
       botPricingTier: $env:BOTPRICINGTIER
       connectionName: $env:CONNECTIONNAME
       keyVault: "$(INTERNALKEYVAULTNAME)"
+      projectTag: "$(INTERNALPROJECTTAG)"
       resourceGroup: "$(INTERNALRESOURCEGROUPNAME)-DotNet"
       resourceSuffix: $(INTERNALRESOURCESUFFIX)
       sharedResourceGroup: "$(INTERNALSHAREDRESOURCEGROUPNAME)"
@@ -364,12 +363,12 @@ stages:
     parameters:
       appInsight: "$(INTERNALAPPINSIGHTSNAME)"
       appServicePlan: "$(INTERNALAPPSERVICEPLANJSNAME)"
-      appServicePlanRG: "$(INTERNALAPPSERVICEPLANWINDOWSRESOURCEGROUP)"
       azureSubscription: "$(AZURESUBSCRIPTION)"
       botPricingTier: $env:BOTPRICINGTIER
       connectionName: $env:CONNECTIONNAME
       dependsOn: "Prepare_JSGroup"
       keyVault: "$(INTERNALKEYVAULTNAME)"
+      projectTag: "$(INTERNALPROJECTTAG)"
       resourceGroup: "$(INTERNALRESOURCEGROUPNAME)-JS"
       resourceSuffix: $(INTERNALRESOURCESUFFIX)
       sharedResourceGroup: "$(INTERNALSHAREDRESOURCEGROUPNAME)"
@@ -455,12 +454,12 @@ stages:
     parameters:
       appInsight: "$(INTERNALAPPINSIGHTSNAME)"
       appServicePlan: "$(INTERNALAPPSERVICEPLANPYTHONNAME)"
-      appServicePlanRG: "$(INTERNALAPPSERVICEPLANLINUXRESOURCEGROUP)"
       azureSubscription: "$(AZURESUBSCRIPTION)"
       botPricingTier: $env:BOTPRICINGTIER
       connectionName: $env:CONNECTIONNAME
       dependsOn: "Prepare_PythonGroup"
       keyVault: "$(INTERNALKEYVAULTNAME)"
+      projectTag: "$(INTERNALPROJECTTAG)"
       resourceGroup: "$(INTERNALRESOURCEGROUPNAME)-Python"
       resourceSuffix: "$(INTERNALRESOURCESUFFIX)"
       sharedResourceGroup: "$(INTERNALSHAREDRESOURCEGROUPNAME)"
