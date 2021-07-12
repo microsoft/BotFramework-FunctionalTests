@@ -46,7 +46,7 @@ This step-by-step guide shows how to convert a BotFramework-Emulator transcript 
 ```
 btc convert "path-to-source-transcript" "path-to-target-test-script"
 ```
-- The first argument is the absolute or related path to the transcript file.
+- The first argument is the absolute or relative path to the transcript file.
 To create a transcript file, follow [these steps](https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-debug-transcript?view=azure-bot-service-4.0#creatingstoring-a-bot-transcript-file).
 
 - The second argument is optional, and sets the path to the folder where the test script will be created. If not provided, the test script will have the same name and location that the transcript.
