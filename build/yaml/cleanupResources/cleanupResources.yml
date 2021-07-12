@@ -9,15 +9,18 @@ pr: none
 variables:
   ## Azure Resources (Define these variables in Azure)
   # AzureSubscription: Service Connection Name to Manage Azure resources.
+  # AppServicePlanDotNetName: Name of the App Service Plan for DotNet bots.
+  # AppServicePlanJSName: Name of the App Service Plan for JavaScript bots.
+  # AppServicePlanPythonName: Name of the App Service Plan for Python bots.
   # DeployResourceGroup: (optional) Name of the Resource Group containing the bots.
   # ResourceSuffix: (optional) Alphanumeric suffix to add to the resources' name to avoid collisions.
   # SharedResourceGroup: (optional) Name of the Resource Group containing the shared resources.
 
   ## Internal variables
   InternalAppInsightsName: "bffnappinsights$($env:RESOURCESUFFIX)"
-  InternalAppServicePlanDotNetName: "bffnbotsappservicedotnet$($env:RESOURCESUFFIX)"
-  InternalAppServicePlanJSName: "bffnbotsappservicejs$($env:RESOURCESUFFIX)"
-  InternalAppServicePlanPythonName: "bffnbotsappservicepython$($env:RESOURCESUFFIX)"
+  InternalAppServicePlanDotNetName: $(APPSERVICEPLANDOTNETNAME)$($env:RESOURCESUFFIX)
+  InternalAppServicePlanJSName: $(APPSERVICEPLANJSNAME)$($env:RESOURCESUFFIX)
+  InternalAppServicePlanPythonName: $(APPSERVICEPLANPYTHONNAME)$($env:RESOURCESUFFIX)
   InternalCosmosDBName: "bffnbotstatedb$($env:RESOURCESUFFIX)"
   InternalContainerRegistryName: "bffncontainerregistry$($env:RESOURCESUFFIX)"
   InternalKeyVaultName: "bffnbotkeyvault$($env:RESOURCESUFFIX)"
