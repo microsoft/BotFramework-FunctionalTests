@@ -30,7 +30,7 @@
 | **AppServicePlanJSName** | Create Shared Resources | (optional) Name of the JavaScript App Service Plan. |
 | **AppServicePlanPythonName** | Create Shared Resources | (optional) Name of the Python App Service Plan. |
 | **BotPricingTier** | User | (optional) Pricing tier for the Web App resources. ***Default value is F0.** |
-| **ContainerRegistryName** | User | (optional) Pricing tier for the Web App resources. |
+| **ContainerRegistryName** | User | (optional) Name of the container registry. |
 | **ResourceGroup** | User | (optional) Name of the Resource Group where the bots will be deployed. |
 | **ResourceSuffix** | Create Shared Resources | (optional) Suffix to add to the resources' name to avoid collisions. |
 | **SharedResourceGroup** | Create Shared Resources | (optional) Name of the Shared Resource Group where the shared resources are located. |
