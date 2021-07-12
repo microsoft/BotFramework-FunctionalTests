@@ -10,3 +10,5 @@
 - [Create WebApp Deployment credentials](./createWebAppDeploymentCredentials.md)
 - [Get the Service Principal's Object ID](./getServicePrincipalObjectID.md)
 - [Setup Pipelines](./setupPipelines.md)
+- [Setup custom Docker container](./setupDockerContainer.md)
+- [Regional Virtual Network integration](./regionalVirtualNetworkIntegration.md)

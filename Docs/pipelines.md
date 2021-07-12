@@ -9,8 +9,9 @@
 | Variable Name | Source | Description |
 | - | - | - |
 | **AzureSubscription** | Azure DevOps | Name of the Azure Resource Manager Service Connection configured in the DevOps organization. Click [here](./addARMServiceConnection.md) to see how to set it up. |
-| **KeyVaultObjectId** | Azure | Suscription's Object Id to create the keyvault to store App Registrations in Azure. Click [here](./getServicePrincipalObjectID.md) to see how to get it. |
 | **AppServicePlanPricingTier** | User | (optional) Pricing Tier for App Service Plans. **Default value is F1.** |
+| **ContainerRegistryPricingTier** | User | (optional) Pricing Tier for Container Registry. **Default value is Basic.** |
+| **KeyVaultObjectId** | Azure | Suscription's Object Id to create the keyvault to store App Registrations in Azure. Click [here](./getServicePrincipalObjectID.md) to see how to get it. |
 | **ResourceGroupName** | User | (optional) Name for the resource group that will contain the shared resources. |
 | **ResourceSuffix** | User | (optional) Suffix to add to the resources' name to avoid collisions. |
 
@@ -29,8 +30,11 @@
 | **AppServicePlanJSName** | Create Shared Resources | (optional) Name of the JavaScript App Service Plan. |
 | **AppServicePlanPythonName** | Create Shared Resources | (optional) Name of the Python App Service Plan. |
 | **BotPricingTier** | User | (optional) Pricing tier for the Web App resources. ***Default value is F0.** |
+| **ContainerRegistryName** | User | (optional) Name of the container registry. |
 | **ResourceGroup** | User | (optional) Name of the Resource Group where the bots will be deployed. |
 | **ResourceSuffix** | Create Shared Resources | (optional) Suffix to add to the resources' name to avoid collisions. |
+| **SharedResourceGroup** | Create Shared Resources | (optional) Name of the Shared Resource Group where the shared resources are located. |
+| **VirtualNetworkName** | Create Shared Resources | (optional) Name of the Virtual Network resource. |
 | **[BotName](#botnames) + AppId** | [App Registration Portal](https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade) | (optional) App ID to use. If not configured, will be retrieved from the key vault. |
 | **[BotName](#botnames) + AppSecret** | [App Registration Portal](https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade) | (optional) App Secret to use. If not configured, will be retrieved from the key vault. |
 
