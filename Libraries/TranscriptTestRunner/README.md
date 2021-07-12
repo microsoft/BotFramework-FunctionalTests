@@ -11,7 +11,7 @@ A Test Script is basically a JSON file with an array of [TestScriptItem](TestScr
 This step-by-step guide shows how to run a test with the `TestRunner` configuring a `DirectLine` client to communicate with the bots.
 
 ### Creating the Test Script file
-You can convert a transcript file into a test script using the [Transcript Converter](./TranscriptConverter/TranscriptConverter.csproj) tool or create one manually using this [JSON schema](testscript.schema).
+You can convert a transcript file into a test script using the [Transcript Converter](../TranscriptConverter/TranscriptConverter.csproj) tool or create one manually using this [JSON schema](testscript.schema).
 
 ### Using the TestRunner
 1- Open your test project and install the `TranscriptTestRunner` package.

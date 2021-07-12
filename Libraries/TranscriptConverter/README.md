@@ -3,14 +3,14 @@
 ## Summary
 
 Transcript Converter is a command line tool to convert `.transcript` files from different channels (BotFramework-Emulator, Teams, Slack, etc.)* into a test script used to replicate the messages sent by the user and evaluate the answers from the bot.
-This test script is the input for the [Transcript Test Runner](./TranscriptTestRunner/TranscriptTestRunner.csproj).
+This test script is the input for the [Transcript Test Runner](../TranscriptTestRunner/TranscriptTestRunner.csproj).
 
 (*) _This first version supports BotFramework-Emulator transcript files. Stay tuned for the next features._
 
 ## The Test Script
 A Test Script is basically a JSON file with an array of [TestScriptItem](TestScriptItem.cs) that will be used by the `TranscriptTestRunner` as a test input.
 
-You can also create a test script file using this [JSON schema](./TranscriptTestRunner/testscript.schema).
+You can also create a test script file using this [JSON schema](../TranscriptTestRunner/testscript.schema).
 ```json
 [
  {
