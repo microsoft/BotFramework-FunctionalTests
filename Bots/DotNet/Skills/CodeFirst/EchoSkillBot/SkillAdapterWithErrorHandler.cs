@@ -7,22 +7,19 @@ using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Builder.TraceExtensions;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Bot.Schema;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot
 {
-    public class SkillAdapterWithErrorHandler : BotFrameworkHttpAdapter
+    public class SkillAdapterWithErrorHandler : CloudAdapter
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SkillAdapterWithErrorHandler"/> class to handle errors.
         /// </summary>
-        /// <param name="configuration">The configuration properties.</param>
-        /// <param name="credentialProvider">An implementation of the bots credentials.</param>
-        /// <param name="authConfig">The configuration setting for the authentication.</param>
+        /// <param name="botFrameworkAuthentication">The cloud environment for the bot.</param>
         /// <param name="logger">An instance of a logger.</param>
-        public SkillAdapterWithErrorHandler(IConfiguration configuration, ICredentialProvider credentialProvider, AuthenticationConfiguration authConfig, ILogger<BotFrameworkHttpAdapter> logger)
-            : base(configuration, credentialProvider, authConfig, logger: logger)
+        public SkillAdapterWithErrorHandler(BotFrameworkAuthentication botFrameworkAuthentication, ILogger<BotFrameworkHttpAdapter> logger)
+            : base(botFrameworkAuthentication, logger)
         {
             OnTurnError = async (turnContext, exception) =>
             {
