@@ -13,7 +13,7 @@ from botbuilder.core import (
     MemoryStorage,
     TurnContext,
 )
-from botbuilder.core.skills import SkillHandler
+from botbuilder.core.skills import SkillHandler, SkillConversationIdFactory
 from botbuilder.core.integration import (
     aiohttp_channel_service_routes,
     aiohttp_error_middleware,
@@ -30,7 +30,6 @@ from config import DefaultConfig
 from dialogs import ActivityRouterDialog
 from dialogs.proactive import ContinuationParameters
 from middleware import SsoSaveStateMiddleware
-from skill_conversation_id_factory import SkillConversationIdFactory
 from skill_adapter_with_error_handler import AdapterWithErrorHandler
 
 CONFIG = DefaultConfig()
