@@ -761,20 +761,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"botbuilder-core@npm:4.14.0-rc2":
-  version: 4.14.0-rc2
-  resolution: "botbuilder-core@npm:4.14.0-rc2"
-  dependencies:
-    botbuilder-dialogs-adaptive-runtime-core: 4.14.0-preview.rc2
-    botbuilder-stdlib: 4.14.0-internal.rc2
-    botframework-connector: 4.14.0-rc2
-    botframework-schema: 4.14.0-rc2
-    uuid: ^8.3.2
-    zod: ~1.11.17
-  checksum: 6a0a55bb576bdfb60e67d5779e7a663db9c546ef5520d75718e30389ddb0d6291fcdc7e7df104ba0443304b28ffe363d41a31ae961d59447be85328a02285cdf
-  languageName: node
-  linkType: hard
-
 "botbuilder-dialogs-adaptive-runtime-core@npm:4.13.6-preview":
   version: 4.13.6-preview
   resolution: "botbuilder-dialogs-adaptive-runtime-core@npm:4.13.6-preview"
@@ -785,16 +771,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"botbuilder-dialogs-adaptive-runtime-core@npm:4.14.0-preview.rc2":
-  version: 4.14.0-preview.rc2
-  resolution: "botbuilder-dialogs-adaptive-runtime-core@npm:4.14.0-preview.rc2"
-  dependencies:
-    dependency-graph: ^0.10.0
-  checksum: ae23051cb664122f4f40ab5753a1655f34b6b06596bba25d347b3c877dfc986de5da8c30680946a154afc3925f6c9ab4d4ff286821306e570429380d0839dda8
-  languageName: node
-  linkType: hard
-
-"botbuilder-dialogs@npm:~4.13.3":
+"botbuilder-dialogs@npm:~4.13.6":
   version: 4.13.6
   resolution: "botbuilder-dialogs@npm:4.13.6"
   dependencies:
@@ -818,13 +795,6 @@ __metadata:
   version: 4.13.6-internal
   resolution: "botbuilder-stdlib@npm:4.13.6-internal"
   checksum: d58cc6e32bc9a420ab32a749233fb2687b07181053135363d66401fd651220b9f07f9d5f506f093218661ee461ab54104a08fc729c317cd5f9531dc473adaea1
-  languageName: node
-  linkType: hard
-
-"botbuilder-stdlib@npm:4.14.0-internal.rc2":
-  version: 4.14.0-internal.rc2
-  resolution: "botbuilder-stdlib@npm:4.14.0-internal.rc2"
-  checksum: fa437e8cc3d689901ff3a24276e64d7de998a5ce573793b28e026c0dc13631fb391ad7464367049da0e3249bc6a6f0b5a76392c013f351d9b97f6e2454030f07
   languageName: node
   linkType: hard
 
@@ -855,7 +825,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"botbuilder@npm:~4.13.3":
+"botbuilder@npm:~4.13.6":
   version: 4.13.6
   resolution: "botbuilder@npm:4.13.6"
   dependencies:
@@ -872,26 +842,6 @@ __metadata:
     htmlparser2: ^6.0.1
     uuid: ^8.3.2
   checksum: 526d47175fd4a2fe3a2556e7d3b05d5f758eb916740decdb8ac0a81c936b4524889c3b31c6975197553be8ac19da94d5065384d74686fe2ae10ea741c1ea2597
-  languageName: node
-  linkType: hard
-
-"botbuilder@npm:~4.14.0-rc0":
-  version: 4.14.0-rc2
-  resolution: "botbuilder@npm:4.14.0-rc2"
-  dependencies:
-    "@azure/ms-rest-js": 1.9.1
-    axios: ^0.21.1
-    botbuilder-core: 4.14.0-rc2
-    botbuilder-stdlib: 4.14.0-internal.rc2
-    botframework-connector: 4.14.0-rc2
-    botframework-streaming: 4.14.0-rc2
-    dayjs: ^1.10.3
-    filenamify: ^4.1.0
-    fs-extra: ^7.0.1
-    htmlparser2: ^6.0.1
-    uuid: ^8.3.2
-    zod: ~1.11.17
-  checksum: 324beaa09fb3870a03247f6b76925c05f1c61d7b193184c71f55dcb5abf2f1efe1edebe3da84a0e182af7b3534b6273c4390e89faf282036f7a8e2a5d2dc3a35
   languageName: node
   linkType: hard
 
@@ -912,25 +862,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"botframework-connector@npm:4.14.0-rc2, botframework-connector@npm:~4.14.0-rc0":
-  version: 4.14.0-rc2
-  resolution: "botframework-connector@npm:4.14.0-rc2"
-  dependencies:
-    "@azure/ms-rest-js": 1.9.1
-    "@types/jsonwebtoken": 7.2.8
-    "@types/node": ^10.17.27
-    adal-node: 0.2.2
-    axios: ^0.21.1
-    base64url: ^3.0.0
-    botbuilder-stdlib: 4.14.0-internal.rc2
-    botframework-schema: 4.14.0-rc2
-    cross-fetch: ^3.0.5
-    jsonwebtoken: 8.0.1
-    rsa-pem-from-mod-exp: ^0.8.4
-  checksum: 188c646db252281469786ee5964c394897995ef74ca604df14dead099a8681db77c2477e2928f5af5c532e7aba1e0b0ed4c24dfefe34d819f676e9ac6e71120d
-  languageName: node
-  linkType: hard
-
 "botframework-functional-tests@workspace:.":
   version: 0.0.0-use.local
   resolution: "botframework-functional-tests@workspace:."
@@ -948,16 +879,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"botframework-schema@npm:4.14.0-rc2":
-  version: 4.14.0-rc2
-  resolution: "botframework-schema@npm:4.14.0-rc2"
-  dependencies:
-    botbuilder-stdlib: 4.14.0-internal.rc2
-    uuid: ^8.3.2
-  checksum: 580a64fc1ebf6141497ed832025908f29a19b4dfafcb2a4b39897d6e66cab4696f793cb13ce8c0a5ea5138c47ecc9b595f49d6d01dac9159982124e2b7656541
-  languageName: node
-  linkType: hard
-
 "botframework-streaming@npm:4.13.6":
   version: 4.13.6
   resolution: "botframework-streaming@npm:4.13.6"
@@ -967,18 +888,6 @@ __metadata:
     uuid: ^8.3.2
     ws: ^7.1.2
   checksum: 08ebdff88c88f8c064f6a0effab308abcf5f5ddff2a1fea74e6e8d1d77782c31841d66ef3509b21d58a97f4c9760b0522495da16057f15a942be33e39bf153cc
-  languageName: node
-  linkType: hard
-
-"botframework-streaming@npm:4.14.0-rc2":
-  version: 4.14.0-rc2
-  resolution: "botframework-streaming@npm:4.14.0-rc2"
-  dependencies:
-    "@types/node": ^10.17.27
-    "@types/ws": ^6.0.3
-    uuid: ^8.3.2
-    ws: ^7.1.2
-  checksum: e069264b1adb922a3aee3ee3bee3962d46a8db5176a29a5ab121f96b88b9294af59fa1176d10d85f344bc6c5ccac0c01bd29614617e49aa00e2e69a387788e84
   languageName: node
   linkType: hard
 
@@ -1653,13 +1562,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dotenv@npm:^10.0.0":
-  version: 10.0.0
-  resolution: "dotenv@npm:10.0.0"
-  checksum: 9c45712e213de63bdb646b8e5344749b7566e25a67bbd3f03711d54e40eff10066c1f23eff0081d0949fda7c8efcc6e9e8bf18d0f023a8274f55f5d5f97bb6db
-  languageName: node
-  linkType: hard
-
 "dotenv@npm:^8.2.0":
   version: 8.6.0
   resolution: "dotenv@npm:8.6.0"
@@ -1714,11 +1616,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "echo-skill-bot@workspace:Skills/CodeFirst/EchoSkillBot"
   dependencies:
-    botbuilder: ~4.14.0-rc0
-    botframework-connector: ~4.14.0-rc0
-    dotenv: ^10.0.0
-    nodemon: ^2.0.8
-    restify: ^8.5.1
+    botbuilder: ~4.13.6
+    dotenv: ^8.2.0
+    nodemon: ~2.0.4
+    restify: ~8.5.1
   languageName: unknown
   linkType: soft
 
@@ -3952,7 +3853,7 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"nodemon@npm:^2.0.8, nodemon@npm:~2.0.4":
+"nodemon@npm:~2.0.4":
   version: 2.0.9
   resolution: "nodemon@npm:2.0.9"
   dependencies:
@@ -4996,8 +4897,8 @@ fsevents@~2.3.2:
   version: 0.0.0-use.local
   resolution: "simple-root-bot@workspace:Consumers/CodeFirst/SimpleHostBot"
   dependencies:
-    botbuilder: ~4.13.3
-    botbuilder-dialogs: ~4.13.3
+    botbuilder: ~4.13.6
+    botbuilder-dialogs: ~4.13.6
     dotenv: ~8.2.0
     nodemon: ~2.0.4
     restify: ~8.5.1
@@ -5758,8 +5659,8 @@ fsevents@~2.3.2:
   version: 0.0.0-use.local
   resolution: "waterfall-host-bot@workspace:Consumers/CodeFirst/WaterfallHostBot"
   dependencies:
-    botbuilder: ~4.13.3
-    botbuilder-dialogs: ~4.13.3
+    botbuilder: ~4.13.6
+    botbuilder-dialogs: ~4.13.6
     dotenv: ~8.2.0
     nodemon: ~2.0.4
     restify: ~8.5.1
@@ -5770,8 +5671,8 @@ fsevents@~2.3.2:
   version: 0.0.0-use.local
   resolution: "waterfall-skill-bot@workspace:Skills/CodeFirst/WaterfallSkillBot"
   dependencies:
-    botbuilder: ~4.13.3
-    botbuilder-dialogs: ~4.13.3
+    botbuilder: ~4.13.6
+    botbuilder-dialogs: ~4.13.6
     dotenv: ^8.2.0
     node-fetch: ^2.6.1
     nodemon: ~2.0.4
@@ -5936,12 +5837,5 @@ fsevents@~2.3.2:
   version: 4.0.0
   resolution: "yallist@npm:4.0.0"
   checksum: a2960ef879af6ee67a76cae29bac9d8bffeb6e9e366c217dbd21464e7fce071933705544724f47e90ba5209cf9c83c17d5582dd04415d86747a826b2a231efb8
-  languageName: node
-  linkType: hard
-
-"zod@npm:~1.11.17":
-  version: 1.11.17
-  resolution: "zod@npm:1.11.17"
-  checksum: 27e8799fa87ea4478a3155f40c39c4bef331b3c3273f00252ca646879c92eef54a5c36dcf31b6cd29bfd723fa4c1502e24d59e252d657183eab1252f273dfd7f
   languageName: node
   linkType: hard
