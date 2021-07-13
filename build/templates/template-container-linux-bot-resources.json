@@ -21,9 +21,6 @@
     "appServicePlanName": {
       "type": "string"
     },
-    "appServicePlanResourceGroup": {
-      "type": "string"
-    },
     "botName": {
       "type": "string"
     },
@@ -55,6 +52,9 @@
     "containerCommand": {
       "type": "string"
     },
+    "projectTag": {
+      "type": "string"
+    },
     "sharedResourceGroup": {
       "type": "string"
     },
@@ -79,6 +79,9 @@
       "name": "[parameters('botName')]",
       "location": "[parameters('botLocation')]",
       "kind": "app,linux,container",
+      "tags": {
+        "Project": "[parameters('projectTag')]"
+      },
       "properties": {
         "enabled": true,
         "hostNameSslStates": [
@@ -93,7 +96,7 @@
             "hostType": "Repository"
           }
         ],
-        "serverFarmId": "[concat('/subscriptions/', subscription().id,'/resourcegroups/', parameters('appServicePlanResourceGroup'), '/providers/Microsoft.Web/serverfarms/', parameters('appServicePlanName'))]",
+        "serverFarmId": "[concat('/subscriptions/', subscription().id,'/resourcegroups/', parameters('sharedResourceGroup'), '/providers/Microsoft.Web/serverfarms/', parameters('appServicePlanName'))]",
         "reserved": true,
         "hyperV": false,
         "siteConfig": {
