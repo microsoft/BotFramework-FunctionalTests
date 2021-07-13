@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Bot.Builder;
@@ -10,7 +11,7 @@ using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Builder.Integration.AspNet.Core.Skills;
 using Microsoft.Bot.Builder.Skills;
 using Microsoft.Bot.Connector.Authentication;
-using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Authentication;
+using Microsoft.Bot.Schema;
 using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Bots;
 using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs;
 using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Proactive;
@@ -37,23 +38,47 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot
 
             // Configure credentials.
             services.AddSingleton<ICredentialProvider, ConfigurationCredentialProvider>();
-            if (!string.IsNullOrEmpty(Configuration["ChannelService"]))
-            {
-                // Register a ConfigurationChannelProvider -- this is only for Azure Gov.
-                services.AddSingleton<IChannelProvider, ConfigurationChannelProvider>();
-            }
+
+            var configCredentialProvider = new ConfigurationCredentialProvider(Configuration);
+            var claimsValidator =
+                new AllowedCallersClaimsValidator(
+                    new List<string>(Configuration.GetSection("AllowedCallers").Get<string[]>()));
 
             // Register AuthConfiguration to enable custom claim validation.
-            services.AddSingleton(sp => new AuthenticationConfiguration { ClaimsValidator = new Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Authentication.AllowedCallersClaimsValidator(sp.GetService<IConfiguration>()) });
+            services.AddSingleton(sp => new AuthenticationConfiguration { ClaimsValidator = claimsValidator });
 
-            // Register the Bot Framework Adapter with error handling enabled.
+            services.AddSingleton(sp => BotFrameworkAuthenticationFactory.Create(
+                new ConfigurationChannelProvider(Configuration).ChannelService ?? string.Empty,
+                true,
+                AuthenticationConstants.ToChannelFromBotLoginUrl,
+                AuthenticationConstants.ToChannelFromBotOAuthScope,
+                AuthenticationConstants.ToBotFromChannelTokenIssuer,
+                AuthenticationConstants.OAuthUrl,
+                AuthenticationConstants.ToBotFromChannelOpenIdMetadataUrl,
+                AuthenticationConstants.ToBotFromEmulatorOpenIdMetadataUrl,
+                CallerIdConstants.PublicAzureChannel,
+                new PasswordServiceClientCredentialFactory(
+                    configCredentialProvider.AppId,
+                    configCredentialProvider.Password,
+                    null,
+                    null),
+                new AuthenticationConfiguration
+                {
+                    ClaimsValidator = claimsValidator
+                },
+                null, 
+                null));
+
+            // Register the Cloud Adapter with error handling enabled.
             // Note: some classes use the base BotAdapter so we add an extra registration that pulls the same instance.
-            services.AddSingleton<BotFrameworkHttpAdapter, SkillAdapterWithErrorHandler>();
-            services.AddSingleton<BotAdapter>(sp => sp.GetService<BotFrameworkHttpAdapter>());
+            services.AddSingleton<IBotFrameworkHttpAdapter, SkillAdapterWithErrorHandler>();
+            services.AddSingleton<BotAdapter>(sp => sp.GetService<CloudAdapter>());
 
             // Register the skills conversation ID factory, the client and the request handler.
             services.AddSingleton<SkillConversationIdFactoryBase, SkillConversationIdFactory>();
+
             services.AddHttpClient<SkillHttpClient>();
+
             services.AddSingleton<ChannelServiceHandler, SkillHandler>();
 
             // Create the storage we'll be using for User and Conversation state. (Memory is great for testing purposes.)
