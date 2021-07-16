@@ -45,7 +45,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot
 
             services.AddSingleton(sp => new AuthenticationConfiguration
             {
-                ClaimsValidator = new AllowedCallersClaimsValidator(
+                ClaimsValidator = new AllowedSkillsClaimsValidator(
                 (from skill in sp.GetService<SkillsConfiguration>().Skills.Values select skill.AppId).ToList())
             });
 
