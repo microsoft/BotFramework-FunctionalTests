@@ -1,29 +1,47 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-const dotenv = require('dotenv');
+// Import required bot configuration.
+require('dotenv').config();
+
 const http = require('http');
 const https = require('https');
-const path = require('path');
 const restify = require('restify');
-
-// Import required bot configuration.
-const ENV_FILE = path.join(__dirname, '.env');
-dotenv.config({ path: ENV_FILE });
 
 // Import required bot services.
 // See https://aka.ms/bot-services to learn more about the different parts of a bot.
-const { ActivityTypes, BotFrameworkAdapter, InputHints, MemoryStorage, ConversationState, SkillHttpClient, SkillHandler, ChannelServiceRoutes, TurnContext, MessageFactory, SkillConversationIdFactory } = require('botbuilder');
-const { AuthenticationConfiguration, SimpleCredentialProvider } = require('botframework-connector');
+const {
+  ActivityTypes,
+  CallerIdConstants,
+  ChannelServiceRoutes,
+  CloudAdapter,
+  ConversationState,
+  InputHints,
+  MemoryStorage,
+  MessageFactory,
+  SkillConversationIdFactory,
+  SkillHandler,
+  SkillHttpClient,
+  TurnContext
+} = require('botbuilder');
+const {
+  allowedCallersClaimsValidator,
+  AuthenticationConfiguration,
+  AuthenticationConstants,
+  BotFrameworkAuthenticationFactory,
+  PasswordServiceClientCredentialFactory,
+  SimpleCredentialProvider
+} = require('botframework-connector');
 
 const { SkillBot } = require('./bots/skillBot');
 const { ActivityRouterDialog } = require('./dialogs/activityRouterDialog');
-const { allowedCallersClaimsValidator } = require('./authentication/allowedCallersClaimsValidator');
 const { SsoSaveStateMiddleware } = require('./middleware/ssoSaveStateMiddleware');
 
 // Create HTTP server
 const server = restify.createServer({ maxParamLength: 1000 });
+server.use(restify.plugins.acceptParser(server.acceptable));
 server.use(restify.plugins.queryParser());
+server.use(restify.plugins.bodyParser());
 
 server.listen(process.env.port || process.env.PORT || 36420, () => {
   console.log(`\n${server.name} listening to ${server.url}`);
@@ -37,15 +55,30 @@ const maxTotalSockets = (preallocatedSnatPorts, procCount = 1, weight = 0.5, ove
     preallocatedSnatPorts
   );
 
-const authConfig = new AuthenticationConfiguration([], allowedCallersClaimsValidator);
+const allowedCallers = (process.env.AllowedCallers || '').split(',').filter((val) => val) || [];
 
-// Create adapter.
-// See https://aka.ms/about-bot-adapter to learn more about how bots work.
-const adapter = new BotFrameworkAdapter({
-  appId: process.env.MicrosoftAppId,
-  appPassword: process.env.MicrosoftAppPassword,
-  authConfig: authConfig,
-  clientOptions: {
+const authConfig = new AuthenticationConfiguration(
+  [],
+  allowedCallersClaimsValidator(allowedCallers)
+);
+
+const botFrameworkAuthentication = BotFrameworkAuthenticationFactory.create(
+  '',
+  true,
+  AuthenticationConstants.ToChannelFromBotLoginUrl,
+  AuthenticationConstants.ToChannelFromBotOAuthScope,
+  AuthenticationConstants.ToBotFromChannelTokenIssuer,
+  AuthenticationConstants.OAuthUrl,
+  AuthenticationConstants.ToBotFromChannelOpenIdMetadataUrl,
+  AuthenticationConstants.ToBotFromEmulatorOpenIdMetadataUrl,
+  CallerIdConstants.PublicAzureChannel,
+  new PasswordServiceClientCredentialFactory(
+    process.env.MicrosoftAppId || '',
+    process.env.MicrosoftAppPassword || ''
+  ),
+  authConfig,
+  undefined,
+  {
     agentSettings: {
       http: new http.Agent({
         keepAlive: true,
@@ -57,7 +90,11 @@ const adapter = new BotFrameworkAdapter({
       })
     }
   }
-});
+);
+
+// Create adapter.
+// See https://aka.ms/about-bot-adapter to learn more about how bots work.
+const adapter = new CloudAdapter(botFrameworkAuthentication);
 
 // Catch-all for errors.
 adapter.onTurnError = async (context, error) => {
@@ -91,7 +128,7 @@ adapter.onTurnError = async (context, error) => {
     await context.sendActivity({
       type: ActivityTypes.EndOfConversation,
       code: 'SkillError',
-      text: error
+      text: error.message
     });
   } catch (err) {
     console.error(`\n [onTurnError] Exception caught in onTurnError : ${err}`);
@@ -132,8 +169,8 @@ server.get('/manifests/*', restify.plugins.serveStatic({ directory: './manifests
 server.get('/images/*', restify.plugins.serveStatic({ directory: './images', appendRequestPath: false }));
 
 // Listen for incoming requests.
-server.post('/api/messages', (req, res) => {
-  adapter.processActivity(req, res, async (context) => {
+server.post('/api/messages', async (req, res) => {
+  await adapter.process(req, res, async (context) => {
     // Route to main dialog.
     await bot.run(context);
   });
@@ -154,19 +191,19 @@ server.post('/api/skills/v3/conversations/:conversationId/activities/:activityId
   try {
     const authHeader = req.headers.authorization || req.headers.Authorization || '';
     const activity = await ChannelServiceRoutes.readActivity(req);
-    const ref = await handler.conversationIdFactory.getSkillConversationReference(req.params.conversationId);
+    const ref = await handler.inner.conversationIdFactory.getSkillConversationReference(req.params.conversationId);
     const claimsIdentity = await handler.authenticate(authHeader);
 
     const response = await new Promise(resolve => {
-      return adapter.continueConversation(ref.conversationReference, ref.oAuthScope, async (context) => {
+      adapter.continueConversationAsync(process.env.MicrosoftAppId || '', ref.conversationReference, ref.oAuthScope, async context => {
         context.turnState.set(adapter.BotIdentityKey, claimsIdentity);
         context.turnState.set(adapter.SkillConversationReferenceKey, ref);
 
         const newActivity = TurnContext.applyConversationReference(activity, ref.conversationReference);
 
         if (newActivity.type === ActivityTypes.EndOfConversation) {
-          await handler.conversationIdFactory.deleteConversationReference(req.params.conversationId);
-          SkillHandler.applyEoCToTurnContextActivity(context, newActivity);
+          await handler.inner.conversationIdFactory.deleteConversationReference(req.params.conversationId);
+          handler.inner.applySkillActivityToTurnContext(context, newActivity);
           resolve(await bot.run(context));
         }
 
@@ -201,7 +238,7 @@ server.get('/api/notify', async (req, res) => {
   }
 
   try {
-    adapter.continueConversation(continuationParameters.conversationReference, continuationParameters.oAuthScope, async context => {
+    await adapter.continueConversationAsync(process.env.MicrosoftAppId || '', continuationParameters.conversationReference, continuationParameters.oAuthScope, async context => {
       await context.sendActivity(`Got proactive message for user: ${user}`);
       await bot.run(context);
     });
