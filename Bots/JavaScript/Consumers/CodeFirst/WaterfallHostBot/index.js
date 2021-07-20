@@ -3,6 +3,9 @@
 
 // index.js is used to setup and configure your bot
 
+// Import required bot configuration.
+require('dotenv').config();
+
 // Import required packages
 const http = require('http');
 const https = require('https');
@@ -11,34 +14,88 @@ const restify = require('restify');
 
 // Import required bot services.
 // See https://aka.ms/bot-services to learn more about the different parts of a bot.
-const { BotFrameworkAdapter, TurnContext, ActivityTypes, ChannelServiceRoutes, ConversationState, InputHints, MemoryStorage, SkillHttpClient, MessageFactory, SkillConversationIdFactory } = require('botbuilder');
-const { AuthenticationConfiguration, SimpleCredentialProvider } = require('botframework-connector');
+const {
+  CallerIdConstants,
+  CloudAdapter,
+  TurnContext,
+  ActivityTypes,
+  ChannelServiceRoutes,
+  ConversationState,
+  InputHints,
+  MemoryStorage,
+  SkillHttpClient,
+  MessageFactory,
+  SkillConversationIdFactory
+} = require('botbuilder');
 
-// Import required bot configuration.
-const ENV_FILE = path.join(__dirname, '.env');
-require('dotenv').config({ path: ENV_FILE });
+const {
+  AuthenticationConfiguration,
+  AuthenticationConstants,
+  BotFrameworkAuthenticationFactory,
+  PasswordServiceClientCredentialFactory,
+  SimpleCredentialProvider,
+  allowedCallersClaimsValidator
+} = require('botframework-connector');
 
 // This bot's main dialog.
 const { RootBot } = require('./bots/rootBot');
 const { SkillsConfiguration } = require('./skillsConfiguration');
-const { allowedSkillsClaimsValidator } = require('./authentication/allowedSkillsClaimsValidator');
 const { MainDialog } = require('./dialogs/mainDialog');
 const { LoggerMiddleware } = require('./middleware/loggerMiddleware');
 const { TokenExchangeSkillHandler } = require('./TokenExchangeSkillHandler');
 
-const maxTotalSockets = (preallocatedSnatPorts, procCount = 1, weight = 0.5, overcommit = 1.1) =>
+// Create HTTP server.
+// maxParamLength defaults to 100, which is too short for the conversationId created in skillConversationIdFactory.
+// See: https://github.com/microsoft/BotBuilder-Samples/issues/2194.
+const server = restify.createServer({ maxParamLength: 1000 });
+server.use(restify.plugins.acceptParser(server.acceptable));
+server.use(restify.plugins.queryParser());
+server.use(restify.plugins.bodyParser());
+
+server.listen(process.env.port || process.env.PORT || 36020, function () {
+  console.log(`\n${server.name} listening to ${server.url}`);
+  console.log('\nGet Bot Framework Emulator: https://aka.ms/botframework-emulator');
+  console.log('\nTo talk to your bot, open the emulator select "Open Bot"');
+});
+
+// Load skills configuration
+const skillsConfig = new SkillsConfiguration();
+
+const maxTotalSockets = (
+  preallocatedSnatPorts,
+  procCount = 1,
+  weight = 0.5,
+  overcommit = 1.1
+) =>
   Math.min(
     Math.floor((preallocatedSnatPorts / procCount) * weight * overcommit),
     preallocatedSnatPorts
   );
 
-// Create adapter.
-// See https://aka.ms/about-bot-adapter to learn more about adapters.
-const adapter = new BotFrameworkAdapter({
-  appId: process.env.MicrosoftAppId,
-  appPassword: process.env.MicrosoftAppPassword,
-  authConfig: new AuthenticationConfiguration([], allowedSkillsClaimsValidator),
-  clientOptions: {
+const allowedCallers = Object.values(skillsConfig.skills).map(skill => skill.appId);
+
+const authConfig = new AuthenticationConfiguration(
+  [],
+  allowedCallersClaimsValidator(allowedCallers)
+)
+
+const botFrameworkAuthentication = BotFrameworkAuthenticationFactory.create(
+  '',
+  true,
+  AuthenticationConstants.ToChannelFromBotLoginUrl,
+  AuthenticationConstants.ToChannelFromBotOAuthScope,
+  AuthenticationConstants.ToBotFromChannelTokenIssuer,
+  AuthenticationConstants.OAuthUrl,
+  AuthenticationConstants.ToBotFromChannelOpenIdMetadataUrl,
+  AuthenticationConstants.ToBotFromEmulatorOpenIdMetadataUrl,
+  CallerIdConstants.PublicAzureChannel,
+  new PasswordServiceClientCredentialFactory(
+    process.env.MicrosoftAppId || '',
+    process.env.MicrosoftAppPassword || ''
+  ),
+  authConfig,
+  undefined,
+  {
     agentSettings: {
       http: new http.Agent({
         keepAlive: true,
@@ -50,7 +107,11 @@ const adapter = new BotFrameworkAdapter({
       })
     }
   }
-});
+);
+
+// Create adapter.
+// See https://aka.ms/about-bot-adapter to learn more about adapters.
+const adapter = new CloudAdapter(botFrameworkAuthentication);
 
 // Use the logger middleware to log messages. The default logger argument for LoggerMiddleware is Node's console.log().
 adapter.use(new LoggerMiddleware());
@@ -148,9 +209,6 @@ const conversationState = new ConversationState(memoryStorage);
 // Create the conversationIdFactory
 const conversationIdFactory = new SkillConversationIdFactory(memoryStorage);
 
-// Load skills configuration
-const skillsConfig = new SkillsConfiguration();
-
 // Create the credential provider;
 const credentialProvider = new SimpleCredentialProvider(process.env.MicrosoftAppId, process.env.MicrosoftAppPassword);
 
@@ -161,27 +219,16 @@ const skillClient = new SkillHttpClient(credentialProvider, conversationIdFactor
 const mainDialog = new MainDialog(conversationState, skillsConfig, skillClient, conversationIdFactory);
 const bot = new RootBot(conversationState, skillClient, mainDialog);
 
-// Create HTTP server.
-// maxParamLength defaults to 100, which is too short for the conversationId created in skillConversationIdFactory.
-// See: https://github.com/microsoft/BotBuilder-Samples/issues/2194.
-const server = restify.createServer({ maxParamLength: 1000 });
-server.listen(process.env.port || process.env.PORT || 36020, function () {
-  console.log(`\n${server.name} listening to ${server.url}`);
-  console.log('\nGet Bot Framework Emulator: https://aka.ms/botframework-emulator');
-  console.log('\nTo talk to your bot, open the emulator select "Open Bot"');
-});
-
 // Listen for incoming activities and route them to your bot main dialog.
-server.post('/api/messages', (req, res) => {
+server.post('/api/messages', async (req, res) => {
   // Route received a request to adapter for processing
-  adapter.processActivity(req, res, async (turnContext) => {
+  await adapter.process(req, res, async (turnContext) => {
     // route to bot activity handler.
     await bot.run(turnContext);
   });
 });
 
 // Create and initialize the skill classes
-const authConfig = new AuthenticationConfiguration([], allowedSkillsClaimsValidator);
 const handler = new TokenExchangeSkillHandler(adapter, bot, conversationIdFactory, skillsConfig, skillClient, credentialProvider, authConfig);
 const skillEndpoint = new ChannelServiceRoutes(handler);
 skillEndpoint.register(server, '/api/skills');
