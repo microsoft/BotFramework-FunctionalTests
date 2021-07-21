@@ -4,7 +4,7 @@ parameters:
   type: string
 
 - name: name
-  displayName: WebApp name
+  displayName: Resource Group name
   type: string
 
 steps:
@@ -15,23 +15,58 @@ steps:
       scriptType: pscore
       scriptLocation: inlineScript
       inlineScript: |
-        Write-Host "Looking for ${{ parameters.name }}..."
-        if ((az group exists -n "${{ parameters.name }}") -eq "true") {
-            Write-Host "Found pre-existing resource group ${{ parameters.name }}."
-            Write-Host "Starting resource cleanup..."
+        $Group = "${{ parameters.name }}";
 
-            $webapps = az webapp list --resource-group "${{ parameters.name }}" | ConvertFrom-Json
+        function DeleteWebApps {
+          param (
+            $ResourceGroup,
+            $TryLimit = 3,
+            $TryCount = 1
+          )
+          
+          if ($TryCount -gt $TryLimit) {
+            Write-Host "  - [$TryLimit/$TryLimit] Retry limit reached! Finishing the deletion process.";
+            return $false;
+          }
+          
+          $WebApps = az webapp list --resource-group $ResourceGroup | ConvertFrom-Json
 
-            foreach ($webapp in $webapps) {
-                Write-Host ("Deleting '" + $webapp.name + "'...")
-                az webapp delete --name $webapp.name --resource-group "${{ parameters.name }}" --keep-empty-plan
+          if (-not $WebApps) {
+            Write-Host "  - All Web Apps were successfully deleted!";
+            return $true;
+          }
+
+          Write-Host "  - [$TryCount/$TryLimit] Preparing to delete Web Apps under the Resource Group...";
+          $WebApps | ForEach-Object -Parallel {
+            $ResourceGroup = $using:ResourceGroup;
+
+            $WebApp = $_;
+            $output = az webapp delete --name $WebApp.name --resource-group $ResourceGroup --keep-empty-plan 2>&1
+            Write-Host "    - Deleting '$($WebApp.name)'...";
+            if ($output) { 
+              Write-Host  "    $output";
             }
+          }
 
-            Write-Host "Deleting ${{ parameters.name }}..."
-            az group delete -n "${{ parameters.name }}" --yes --no-wait
-            az group wait --deleted --interval 15 --timeout 600 --resource-group "${{ parameters.name }}"
+          Start-Sleep -Seconds 3; 
+          return (DeleteWebApps -ResourceGroup $ResourceGroup -TryLimit $TryLimit -TryCount ($TryCount + 1))
+        }
 
-            Write-Host "Pre-existing resource group ${{ parameters.name }} deleted."
-        } else {
-            Write-Host "No pre-existing resource group found."
+        Write-Host "Looking for the Resource Group '$Group'...";
+        if ((az group exists -n $Group) -eq "true") {
+          Write-Host "  - Found pre-existing Resource Group!";
+          $DeletedWebApps = DeleteWebApps -ResourceGroup $Group;
+
+          if ($DeletedWebApps -eq $true) {
+            Write-Host "  - Proceeding to the delete the Resource Group...";
+            az group delete -n $Group --yes --no-wait
+            az group wait --deleted --interval 15 --timeout 600 --resource-group $Group
+            Write-Host "    - Resource Group successfully deleted!";
+          }
+          else {
+            Write-Host "  - Unable to delete the Resource Group.";
+          }
+        }
+        else {
+          Write-Host "  - No pre-existing Resource Group found!";
         }
