@@ -50,11 +50,12 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot
             : base(adapter, bot, conversationIdFactory, credentialProvider, authConfig, channelProvider, logger)
         {
             _adapter = adapter;
-            _tokenExchangeProvider = adapter as IExtendedUserTokenProvider;
-            if (_tokenExchangeProvider == null)
-            {
-                throw new ArgumentException($"{nameof(adapter)} does not support token exchange");
-            }
+
+            //_tokenExchangeProvider = adapter as IExtendedUserTokenProvider;
+            //if (_tokenExchangeProvider == null)
+            //{
+            //    throw new ArgumentException($"{nameof(adapter)} does not support token exchange");
+            //}
 
             _configuration = configuration;
             _skillsConfig = skillsConfig;
