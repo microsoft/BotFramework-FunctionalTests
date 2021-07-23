@@ -19,43 +19,72 @@ steps:
 
         function DeleteWebApps {
           param (
-            $ResourceGroup,
-            $TryLimit = 3,
-            $TryCount = 1
+            [String] $ResourceGroup,
+            [Int] $TryLimit = 3,
+            [Int] $TryCount = 1,
+            [System.Collections.Concurrent.ConcurrentDictionary[string, object]] $FailedWebApps = [System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()
           )
-          
+
+          # Retry the Web App query in case it fails to retrive the full list.
+          for ($i = 1; $i -lt ($TryLimit + 1); $i++) {
+            $WebApps = az webapp list --resource-group $ResourceGroup | ConvertFrom-Json
+            if ($WebApps) {
+              Write-Host "  - Total of $($WebApps.Count) Web Apps were found!";
+              break;
+            }
+            elseif ($i -eq $TryLimit) {
+              Write-Host "  - [$($i)/$($TryLimit)] No more Web Apps were found!";
+            }
+            else {
+              Write-Host "  - [$($i)/$($TryLimit)] Looking for more Web Apps!";
+            }
+            Start-Sleep -Seconds 3;
+          }
+
+          if (-not $WebApps) {
+            if (-not $FailedWebApps.IsEmpty) {
+              Write-Host "  - Still there are Web Apps that failed, retrying the process!";
+              Write-Host $(@($FailedWebApps.Keys | ForEach-Object { "    - $($_)" }) -join "`n");
+              $WebApps = @($FailedWebApps.ToArray().Value);
+            }
+            else {
+              return $true;
+            }
+          }
+
           if ($TryCount -gt $TryLimit) {
             Write-Host "  - [$TryLimit/$TryLimit] Retry limit reached! Finishing the deletion process.";
             return $false;
           }
-          
-          $WebApps = az webapp list --resource-group $ResourceGroup | ConvertFrom-Json
-
-          if (-not $WebApps) {
-            Write-Host "  - All Web Apps were successfully deleted!";
-            return $true;
-          }
 
           Write-Host "  - [$TryCount/$TryLimit] Preparing to delete Web Apps under the Resource Group...";
-          $WebApps | ForEach-Object -Parallel {
+          $WebApps | ForEach-Object -ThrottleLimit 3 -Parallel {
+            $FailedWebApps = $using:FailedWebApps;
             $ResourceGroup = $using:ResourceGroup;
 
             $WebApp = $_;
-            $output = az webapp delete --name $WebApp.name --resource-group $ResourceGroup --keep-empty-plan 2>&1
+            $Output = az webapp delete --name $WebApp.name --resource-group $ResourceGroup --keep-empty-plan --only-show-errors 2>&1
             Write-Host "    - Deleting '$($WebApp.name)'...";
-            if ($output) { 
-              Write-Host  "    $output";
+            if ($Output) {
+              if ("$Output".Trim().StartsWith("ERROR")) {
+                $FailedWebApps.TryAdd($WebApp.name, $WebApp) 1>$null;
+              }
+              Write-Host  "      $Output";
+            }
+            else {
+              [System.Management.Automation.PSReference]$outVariable = @{};
+              $FailedWebApps.TryRemove($WebApp.name, [ref] $outVariable) 1>$null;
             }
           }
 
-          Start-Sleep -Seconds 3; 
-          return (DeleteWebApps -ResourceGroup $ResourceGroup -TryLimit $TryLimit -TryCount ($TryCount + 1))
+          Start-Sleep -Seconds 10;
+          return DeleteWebApps -ResourceGroup $ResourceGroup -TryLimit $TryLimit -TryCount ($TryCount + 1) -FailedWebApps $FailedWebApps
         }
 
         Write-Host "Looking for the Resource Group '$Group'...";
         if ((az group exists -n $Group) -eq "true") {
           Write-Host "  - Found pre-existing Resource Group!";
-          $DeletedWebApps = DeleteWebApps -ResourceGroup $Group;
+          $DeletedWebApps = DeleteWebApps -ResourceGroup $Group -TryLimit 5;
 
           if ($DeletedWebApps -eq $true) {
             Write-Host "  - Proceeding to the delete the Resource Group...";
