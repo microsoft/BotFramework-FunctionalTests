@@ -1,0 +1,38 @@
+[import](common.lg)
+
+# SendActivity_Greeting()
+[Activity
+    Text = ${SendActivity_Greeting_text()}
+]
+
+# SendActivity_Greeting_text()
+- Welcome to your bot.
+
+# SendActivity_DidNotUnderstand()
+[Activity
+    Text = ${SendActivity_DidNotUnderstand_text()}
+]
+
+# SendActivity_DidNotUnderstand_text()
+- Unrecognized ActivityType: ${turn.activity.type}
+# SendActivity_Wz6ESA()
+[Activity
+    Text = ${SendActivity_Wz6ESA_text()}
+]
+
+# SendActivity_Wz6ESA_text()
+- Unrecognized EventName: ${turn.activity.name}
+# SendActivity_3WLv3j()
+[Activity
+    Text = ${SendActivity_3WLv3j_text()}
+]
+
+# SendActivity_3WLv3j_text()
+- This is the cards skill :)
+# SendActivity_1koykS()
+[Activity
+    Text = ${SendActivity_1koykS_text()}
+]
+
+# SendActivity_1koykS_text()
+- This is the proactive skill

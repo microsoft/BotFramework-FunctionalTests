@@ -1,0 +1,19 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/BotFramework-Composer/main/Composer/packages/server/schemas/botproject.schema",
+  "name": "ComposerSkillBotDotNet",
+  "skills": {
+    "echoSkillBotComposer": {
+      "workspace": "../../EchoSkillBotComposer",
+      "remote": false
+    },
+    "simpleHostBotComposer": {
+      "workspace": "../../../../Consumers/Composer/SimpleHostBotComposer",
+      "remote": false
+    },
+    "echoSkillBotDotNet": {
+      "manifest": "skills/echoskillbot-manifest.json",
+      "remote": true,
+      "endpointName": "default"
+    }
+  }
+}

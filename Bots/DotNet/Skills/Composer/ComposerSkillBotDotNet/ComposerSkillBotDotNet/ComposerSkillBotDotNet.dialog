@@ -1,0 +1,134 @@
+{
+  "$kind": "Microsoft.AdaptiveDialog",
+  "$designer": {
+    "name": "ComposerSkillBotDotNet",
+    "description": "",
+    "id": "A79tBe"
+  },
+  "autoEndDialog": true,
+  "defaultResultProperty": "dialog.result",
+  "triggers": [
+    {
+      "$kind": "Microsoft.OnConversationUpdateActivity",
+      "$designer": {
+        "id": "376720"
+      },
+      "actions": [
+        {
+          "$kind": "Microsoft.Foreach",
+          "$designer": {
+            "id": "518944",
+            "name": "Loop: for each item"
+          },
+          "itemsProperty": "turn.Activity.membersAdded",
+          "actions": [
+            {
+              "$kind": "Microsoft.IfCondition",
+              "$designer": {
+                "id": "641773",
+                "name": "Branch: if/else"
+              },
+              "condition": "string(dialog.foreach.value.id) != string(turn.Activity.Recipient.id)",
+              "actions": [
+                {
+                  "$kind": "Microsoft.SendActivity",
+                  "$designer": {
+                    "id": "859266",
+                    "name": "Send a response"
+                  },
+                  "activity": "${SendActivity_Greeting()}"
+                }
+              ]
+            }
+          ],
+          "value": "dialog.foreach.value"
+        }
+      ]
+    },
+    {
+      "$kind": "Microsoft.OnUnknownIntent",
+      "$designer": {
+        "id": "mb2n1u"
+      },
+      "actions": [
+        {
+          "$kind": "Microsoft.SendActivity",
+          "$designer": {
+            "id": "kMjqz1"
+          },
+          "activity": "${SendActivity_DidNotUnderstand()}"
+        }
+      ]
+    },
+    {
+      "$kind": "Microsoft.OnEventActivity",
+      "$designer": {
+        "id": "wq9yy0",
+        "name": "ActivityRouterDialog"
+      },
+      "actions": [
+        {
+          "$kind": "Microsoft.SwitchCondition",
+          "$designer": {
+            "id": "QWep3m"
+          },
+          "condition": "turn.activity.name",
+          "cases": [
+            {
+              "value": "Cards",
+              "actions": [
+                {
+                  "$kind": "Microsoft.SendActivity",
+                  "$designer": {
+                    "id": "3WLv3j"
+                  },
+                  "activity": "${SendActivity_3WLv3j()}"
+                }
+              ]
+            },
+            {
+              "value": "Proactive",
+              "actions": [
+                {
+                  "$kind": "Microsoft.SendActivity",
+                  "$designer": {
+                    "id": "1koykS"
+                  },
+                  "activity": "${SendActivity_1koykS()}"
+                }
+              ]
+            },
+            {
+              "value": "Echo",
+              "actions": [
+                {
+                  "$kind": "Microsoft.BeginDialog",
+                  "$designer": {
+                    "id": "HbB6IH"
+                  },
+                  "activityProcessed": false,
+                  "dialog": "CallEchoSkill",
+                  "options": {
+                    "${turn.activity.text}": "I'm the echo skill bot"
+                  }
+                }
+              ]
+            }
+          ],
+          "default": [
+            {
+              "$kind": "Microsoft.SendActivity",
+              "$designer": {
+                "id": "Wz6ESA"
+              },
+              "activity": "${SendActivity_Wz6ESA()}"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "generator": "ComposerSkillBotDotNet.lg",
+  "id": "ComposerSkillBotDotNet",
+  "recognizer": "ComposerSkillBotDotNet.lu.qna"
+}
