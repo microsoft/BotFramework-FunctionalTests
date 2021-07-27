@@ -26,6 +26,7 @@ This page describes the four pipelines that will need to be created to run funct
 | **ResourceGroupName**            | User         | (optional) Name for the resource group that will contain the shared resources.                                                                                      | **BFFN-Shared** | shared-resource-group                |
 | **ResourceSuffix**               | User         | (optional) Alphanumeric suffix to add to the resources' name to avoid collisions (use lowercase, only letters and numbers).                                         | -               | suffix                               |
 
+
 ## 02 - Deploy Bot Resources Pipeline
 
 - **YAML**: [build\yaml\deployBotResources\deployBotResources.yml](../build/yaml/deployBotResources/deployBotResources.yml)
