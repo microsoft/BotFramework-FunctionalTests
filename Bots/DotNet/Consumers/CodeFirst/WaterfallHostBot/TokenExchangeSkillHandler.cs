@@ -9,13 +9,11 @@ using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
-using Microsoft.Bot.Builder.Integration.AspNet.Core.Skills;
 using Microsoft.Bot.Builder.Skills;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot
@@ -32,7 +30,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot
         private readonly string _botId;
         private readonly SkillConversationIdFactoryBase _conversationIdFactory;
         private readonly ILogger _logger;
-        private readonly string _connectionName;
+        private readonly IConfiguration _configuration;
         private readonly AuthenticationConfiguration _authConfig;
         private readonly BotFrameworkAuthentication _botAuth;
 
@@ -51,15 +49,13 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot
         {
             _adapter = adapter;
 
+            _configuration = configuration;
             _botAuth = botAuth;
             _authConfig = authConfig;
             _conversationIdFactory = conversationIdFactory;
             _skillsConfig = skillsConfig ?? new SkillsConfiguration(configuration);
             _botId = configuration.GetSection(MicrosoftAppCredentials.MicrosoftAppIdKey)?.Value;
             _logger = logger;
-
-            var settings = configuration.GetSection("Bot.Builder.Community.Components.TokenExchangeSkillHandler")?.Get<ComponentSettings>() ?? new ComponentSettings();
-            _connectionName = settings.TokenExchangeConnectionName ?? configuration.GetSection("SsoConnectionName")?.Value;
         }
 
         protected override async Task<ResourceResponse> OnSendToConversationAsync(ClaimsIdentity claimsIdentity, string conversationId, Activity activity, CancellationToken cancellationToken = default(CancellationToken))
@@ -110,13 +106,16 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot
                         {
                             context.TurnState.Add<IIdentity>("BotIdentity", claimsIdentity);
 
+                            // We need to know what connection name to use for the token exchange so we figure that out here
+                            var connectionName = targetSkill.Id.Contains(WaterfallSkillBot) ? _configuration.GetSection("SsoConnectionName").Value : _configuration.GetSection("SsoConnectionNameTeams").Value;
+
                             // AAD token exchange
                             try
                             {
                                 var tokenClient = await _botAuth.CreateUserTokenClientAsync(claimsIdentity, CancellationToken.None).ConfigureAwait(false);
                                 var result = await tokenClient.ExchangeTokenAsync(
                                     activity.Recipient.Id,
-                                    _connectionName,
+                                    connectionName,
                                     activity.ChannelId,
                                     new TokenExchangeRequest { Uri = oauthCard.TokenExchangeResource.Uri },
                                     CancellationToken.None).ConfigureAwait(false);
