@@ -123,9 +123,9 @@ variables:
   BuildPlatform: "AnyCPU"
   ## Azure Resources (Define these variables in Azure)
   # AzureSubscription: Service Connection Name to Manage Azure resources.
-  # AppServicePlanDotNetName: (optional) Name of the DotNet App Service Plan.
-  # AppServicePlanJSName: (optional) Name of the JavaScript App Service Plan.
-  # AppServicePlanPythonName: (optional) Name of the Python App Service Plan.
+  # AppServicePlanDotNetName: Name of the App Service Plan for DotNet bots.
+  # AppServicePlanJSName: Name of the App Service Plan for JavaScript bots.
+  # AppServicePlanPythonName: Name of the App Service Plan for Python bots.
   # BotPricingTier: (optional) Pricing Tier for the bots, default F0.
   # ContainerRegistryName: (optional) Name of the Container Registry.
   # ResourceGroup: (optional) Name of the Resource Group where the bots will be deployed.
@@ -184,9 +184,9 @@ variables:
 
   ## Internal variables
   InternalAppInsightsName: 'bffnappinsights$(INTERNALRESOURCESUFFIX)'
-  InternalAppServicePlanDotNetName: $[coalesce(variables['APPSERVICEPLANDOTNETNAME'], 'bffnbotsappservicedotnet$(INTERNALRESOURCESUFFIX)')]
-  InternalAppServicePlanJSName: $[coalesce(variables['APPSERVICEPLANJSNAME'], 'bffnbotsappservicejs$(INTERNALRESOURCESUFFIX)')]
-  InternalAppServicePlanPythonName: $[coalesce(variables['APPSERVICEPLANPYTHONNAME'], 'bffnbotsappservicepython$(INTERNALRESOURCESUFFIX)')]
+  InternalAppServicePlanDotNetName: $(APPSERVICEPLANDOTNETNAME)$(INTERNALRESOURCESUFFIX)
+  InternalAppServicePlanJSName: $(APPSERVICEPLANJSNAME)$(INTERNALRESOURCESUFFIX)
+  InternalAppServicePlanPythonName: $(APPSERVICEPLANPYTHONNAME)$(INTERNALRESOURCESUFFIX)
   InternalContainerRegistryName: $[coalesce(variables['CONTAINERREGISTRYNAME'], 'bffncontainerregistry$(INTERNALRESOURCESUFFIX)')]
   InternalProjectTag: $[coalesce(variables['PROJECTTAG'], 'BFFN')]
   InternalKeyVaultName: 'bffnbotkeyvault$(INTERNALRESOURCESUFFIX)'
