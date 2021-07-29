@@ -104,13 +104,25 @@
                 {
                   "$kind": "Microsoft.BeginDialog",
                   "$designer": {
-                    "id": "HbB6IH"
+                    "id": "CmjjTc"
                   },
-                  "activityProcessed": false,
+                  "activityProcessed": true,
                   "dialog": "CallEchoSkill",
-                  "options": {
-                    "${turn.activity.text}": "I'm the echo skill bot"
-                  }
+                  "options": {}
+                }
+              ]
+            },
+            {
+              "value": "Auth",
+              "actions": [
+                {
+                  "$kind": "Microsoft.BeginDialog",
+                  "$designer": {
+                    "id": "j2WbwG"
+                  },
+                  "activityProcessed": true,
+                  "dialog": "AuthDialog",
+                  "options": {}
                 }
               ]
             }

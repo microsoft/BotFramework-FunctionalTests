@@ -26,8 +26,8 @@
           "skillHostEndpoint": "=settings.skillHostEndpoint",
           "connectionName": "=settings.connectionName",
           "allowInterruptions": true,
-          "skillEndpoint": "=settings.skill['echoSkillBotDotNet'].endpointUrl",
-          "skillAppId": "=settings.skill['echoSkillBotDotNet'].msAppId",
+          "skillEndpoint": "=settings.EchoSkillInfo.SkillEndpoint",
+          "skillAppId": "=settings.EchoSkillInfo.AppId",
           "activity": "${BeginSkill_Activity_Jde1XG()}"
         }
       ]

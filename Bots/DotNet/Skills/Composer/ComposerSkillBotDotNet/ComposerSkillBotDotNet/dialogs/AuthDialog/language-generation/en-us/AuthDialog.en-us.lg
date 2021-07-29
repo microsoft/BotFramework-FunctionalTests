@@ -1,0 +1,44 @@
+[import](common.lg)
+
+# SendActivity_kNHtMW()
+[Activity
+    Text = ${SendActivity_kNHtMW_text()}
+]
+
+# SendActivity_kNHtMW_text()
+- You are now logged in.
+# ConfirmInput_Prompt_WxLXxu()
+[Activity
+    Text = ${ConfirmInput_Prompt_WxLXxu_text()}
+]
+
+# ConfirmInput_Prompt_WxLXxu_text()
+- Would you like to view your token?
+# SendActivity_OIqm35()
+[Activity
+    Text = ${SendActivity_OIqm35_text()}
+]
+
+# SendActivity_OIqm35_text()
+- Login was not successful please try again.
+# SendActivity_oj6Ert()
+[Activity
+    Text = ${SendActivity_oj6Ert_text()}
+]
+
+# SendActivity_oj6Ert_text()
+- I have signed you out.
+# ConfirmInput_Prompt_pBqV4a()
+[Activity
+    Text = ${ConfirmInput_Prompt_pBqV4a_text()}
+]
+
+# ConfirmInput_Prompt_pBqV4a_text()
+- Would you like to view your token?
+# SendActivity_ooIaKS()
+[Activity
+    Text = ${SendActivity_ooIaKS_text()}
+]
+
+# SendActivity_ooIaKS_text()
+- This is your token: ${dialog.token.token}
