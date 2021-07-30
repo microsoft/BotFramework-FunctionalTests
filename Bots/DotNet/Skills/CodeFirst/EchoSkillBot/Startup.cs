@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -18,6 +19,8 @@ namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot
 {
     public class Startup
     {
+        private const string CallersConfigKey = "AllowedCallers";
+
         public Startup(IConfiguration config)
         {
             Configuration = config;
@@ -33,29 +36,22 @@ namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot
         {
             services.AddControllers().AddNewtonsoftJson();
 
-            var configCredentialProvider = new ConfigurationCredentialProvider(Configuration);
+            services.AddSingleton(sp =>
+            {
+                // AllowedCallers is the setting in the appsettings.json file that consists of the list of parent bot IDs that are allowed to access the skill.
+                // To add a new parent bot, simply edit the AllowedCallers and add the parent bot's Microsoft app ID to the list.
+                // In this sample, we allow all callers if AllowedCallers contains an "*".
+                var callersSection = Configuration.GetSection(CallersConfigKey);
+                var callers = callersSection.Get<string[]>();
+                if (callers == null)
+                {
+                    throw new ArgumentNullException($"\"{CallersConfigKey}\" not found in configuration.");
+                }
 
-            services.AddSingleton(sp => BotFrameworkAuthenticationFactory.Create(
-                    new ConfigurationChannelProvider(Configuration).ChannelService ?? string.Empty, 
-                    true,
-                    AuthenticationConstants.ToChannelFromBotLoginUrl,
-                    AuthenticationConstants.ToChannelFromBotOAuthScope,
-                    AuthenticationConstants.ToBotFromChannelTokenIssuer,
-                    AuthenticationConstants.OAuthUrl,
-                    AuthenticationConstants.ToBotFromChannelOpenIdMetadataUrl,
-                    AuthenticationConstants.ToBotFromEmulatorOpenIdMetadataUrl,
-                    CallerIdConstants.PublicAzureChannel,
-                    new PasswordServiceClientCredentialFactory(
-                        configCredentialProvider.AppId,
-                        configCredentialProvider.Password,
-                        null,
-                        null),
-                    new AuthenticationConfiguration
-                    {
-                        ClaimsValidator = new AllowedCallersClaimsValidator(new List<string>(Configuration.GetSection("AllowedCallers").Get<string[]>()))
-                    },
-                    null,
-                    null));
+                return new AuthenticationConfiguration { ClaimsValidator = new AllowedCallersClaimsValidator(callers) };
+            });
+
+            services.AddSingleton<BotFrameworkAuthentication, ConfigurationBotFrameworkAuthentication>();
 
             // Create the Bot Framework Adapter with error handling enabled.
             services.AddSingleton<IBotFrameworkHttpAdapter, SkillAdapterWithErrorHandler>();

@@ -18,7 +18,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot
         /// </summary>
         /// <param name="botFrameworkAuthentication">The cloud environment for the bot.</param>
         /// <param name="logger">An instance of a logger.</param>
-        public SkillAdapterWithErrorHandler(BotFrameworkAuthentication botFrameworkAuthentication, ILogger<BotFrameworkHttpAdapter> logger)
+        public SkillAdapterWithErrorHandler(BotFrameworkAuthentication botFrameworkAuthentication, ILogger<CloudAdapter> logger)
             : base(botFrameworkAuthentication, logger)
         {
             OnTurnError = async (turnContext, exception) =>
