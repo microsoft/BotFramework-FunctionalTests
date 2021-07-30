@@ -1,12 +1,15 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.BotFramework;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Connector.Authentication;
+using Microsoft.Bot.Schema;
 using Microsoft.BotFrameworkFunctionalTests.EchoSkillBot.Bots;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,6 +19,8 @@ namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot
 {
     public class Startup
     {
+        private const string CallersConfigKey = "AllowedCallers";
+
         public Startup(IConfiguration config)
         {
             Configuration = config;
@@ -31,23 +36,28 @@ namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot
         {
             services.AddControllers().AddNewtonsoftJson();
 
-            // Configure credentials
-            services.AddSingleton<ICredentialProvider, ConfigurationCredentialProvider>();
+            services.AddSingleton(sp =>
+            {
+                // AllowedCallers is the setting in the appsettings.json file that consists of the list of parent bot IDs that are allowed to access the skill.
+                // To add a new parent bot, simply edit the AllowedCallers and add the parent bot's Microsoft app ID to the list.
+                // In this sample, we allow all callers if AllowedCallers contains an "*".
+                var callersSection = Configuration.GetSection(CallersConfigKey);
+                var callers = callersSection.Get<string[]>();
+                if (callers == null)
+                {
+                    throw new ArgumentNullException($"\"{CallersConfigKey}\" not found in configuration.");
+                }
 
-            // Register AuthConfiguration to enable custom claim validation.
-            services.AddSingleton(sp => new AuthenticationConfiguration { ClaimsValidator = new Authentication.AllowedCallersClaimsValidator(sp.GetService<IConfiguration>()) });
+                return new AuthenticationConfiguration { ClaimsValidator = new AllowedCallersClaimsValidator(callers) };
+            });
+
+            services.AddSingleton<BotFrameworkAuthentication, ConfigurationBotFrameworkAuthentication>();
 
             // Create the Bot Framework Adapter with error handling enabled.
             services.AddSingleton<IBotFrameworkHttpAdapter, SkillAdapterWithErrorHandler>();
 
             // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
             services.AddTransient<IBot, EchoBot>();
-
-            if (!string.IsNullOrEmpty(Configuration["ChannelService"]))
-            {
-                // Register a ConfigurationChannelProvider -- this is only for Azure Gov.
-                services.AddSingleton<IChannelProvider, ConfigurationChannelProvider>();
-            }
         }
 
         /// <summary>
