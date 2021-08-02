@@ -49,24 +49,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot
                 (from skill in sp.GetService<SkillsConfiguration>().Skills.Values select skill.AppId).ToList())
             });
 
-            services.AddSingleton(sp => BotFrameworkAuthenticationFactory.Create(
-                    new ConfigurationChannelProvider(Configuration).ChannelService ?? string.Empty,
-                    true,
-                    AuthenticationConstants.ToChannelFromBotLoginUrl,
-                    AuthenticationConstants.ToChannelFromBotOAuthScope,
-                    AuthenticationConstants.ToBotFromChannelTokenIssuer,
-                    AuthenticationConstants.OAuthUrl,
-                    AuthenticationConstants.ToBotFromChannelOpenIdMetadataUrl,
-                    AuthenticationConstants.ToBotFromEmulatorOpenIdMetadataUrl,
-                    CallerIdConstants.PublicAzureChannel,
-                    new PasswordServiceClientCredentialFactory(
-                        configCredentialProvider.AppId,
-                        configCredentialProvider.Password,
-                        null,
-                        null),
-                    sp.GetService<AuthenticationConfiguration>(),
-                    null,
-                    null));
+            services.AddSingleton<BotFrameworkAuthentication, ConfigurationBotFrameworkAuthentication>();
 
             // Register the Bot Framework Adapter with error handling enabled.
             // Note: some classes use the base BotAdapter so we add an extra registration that pulls the same instance.
