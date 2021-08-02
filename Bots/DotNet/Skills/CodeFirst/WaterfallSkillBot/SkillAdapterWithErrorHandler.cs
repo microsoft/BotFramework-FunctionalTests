@@ -24,7 +24,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot
         /// <param name="botFrameworkAuthentication">The cloud environment for the bot.</param>
         /// <param name="logger">An instance of a logger.</param>
         /// <param name="conversationState">The conversation state.</param>
-        public SkillAdapterWithErrorHandler(BotFrameworkAuthentication botFrameworkAuthentication, ILogger<BotFrameworkHttpAdapter> logger, ConversationState conversationState)
+        public SkillAdapterWithErrorHandler(BotFrameworkAuthentication botFrameworkAuthentication, ILogger<CloudAdapter> logger, ConversationState conversationState)
             : base(botFrameworkAuthentication, logger)
         {
             _conversationState = conversationState ?? throw new ArgumentNullException(nameof(conversationState));

@@ -1,8 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Bot.Builder;
@@ -11,7 +11,6 @@ using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Builder.Integration.AspNet.Core.Skills;
 using Microsoft.Bot.Builder.Skills;
 using Microsoft.Bot.Connector.Authentication;
-using Microsoft.Bot.Schema;
 using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Bots;
 using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs;
 using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Proactive;
@@ -23,6 +22,8 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot
 {
     public class Startup
     {
+        private const string CallersConfigKey = "AllowedCallers";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -36,42 +37,29 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot
             services.AddControllers()
                 .AddNewtonsoftJson();
 
-            // Configure credentials.
             services.AddSingleton<ICredentialProvider, ConfigurationCredentialProvider>();
 
-            var configCredentialProvider = new ConfigurationCredentialProvider(Configuration);
-            var claimsValidator =
-                new AllowedCallersClaimsValidator(
-                    new List<string>(Configuration.GetSection("AllowedCallers").Get<string[]>()));
-
-            // Register AuthConfiguration to enable custom claim validation.
-            services.AddSingleton(sp => new AuthenticationConfiguration { ClaimsValidator = claimsValidator });
-
-            services.AddSingleton(sp => BotFrameworkAuthenticationFactory.Create(
-                new ConfigurationChannelProvider(Configuration).ChannelService ?? string.Empty,
-                true,
-                AuthenticationConstants.ToChannelFromBotLoginUrl,
-                AuthenticationConstants.ToChannelFromBotOAuthScope,
-                AuthenticationConstants.ToBotFromChannelTokenIssuer,
-                AuthenticationConstants.OAuthUrl,
-                AuthenticationConstants.ToBotFromChannelOpenIdMetadataUrl,
-                AuthenticationConstants.ToBotFromEmulatorOpenIdMetadataUrl,
-                CallerIdConstants.PublicAzureChannel,
-                new PasswordServiceClientCredentialFactory(
-                    configCredentialProvider.AppId,
-                    configCredentialProvider.Password,
-                    null,
-                    null),
-                new AuthenticationConfiguration
+            services.AddSingleton(sp =>
+            {
+                // AllowedCallers is the setting in the appsettings.json file that consists of the list of parent bot IDs that are allowed to access the skill.
+                // To add a new parent bot, simply edit the AllowedCallers and add the parent bot's Microsoft app ID to the list.
+                // In this sample, we allow all callers if AllowedCallers contains an "*".
+                var callersSection = Configuration.GetSection(CallersConfigKey);
+                var callers = callersSection.Get<string[]>();
+                if (callers == null)
                 {
-                    ClaimsValidator = claimsValidator
-                },
-                null, 
-                null));
+                    throw new ArgumentNullException($"\"{CallersConfigKey}\" not found in configuration.");
+                }
+
+                return new AuthenticationConfiguration { ClaimsValidator = new AllowedCallersClaimsValidator(callers) };
+            });
+
+            services.AddSingleton<BotFrameworkAuthentication, ConfigurationBotFrameworkAuthentication>();
 
             // Register the Cloud Adapter with error handling enabled.
             // Note: some classes use the base BotAdapter so we add an extra registration that pulls the same instance.
-            services.AddSingleton<IBotFrameworkHttpAdapter, SkillAdapterWithErrorHandler>();
+            services.AddSingleton<CloudAdapter, SkillAdapterWithErrorHandler>();
+            services.AddSingleton<IBotFrameworkHttpAdapter>(sp => sp.GetService<CloudAdapter>());
             services.AddSingleton<BotAdapter>(sp => sp.GetService<CloudAdapter>());
 
             // Register the skills conversation ID factory, the client and the request handler.
