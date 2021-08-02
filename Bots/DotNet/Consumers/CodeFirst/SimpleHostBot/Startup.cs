@@ -39,9 +39,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot
             // Register the skills configuration class
             services.AddSingleton<SkillsConfiguration>();
 
-            // Configure credentials
-            var configCredentialProvider = new ConfigurationCredentialProvider(Configuration);
-            services.AddSingleton<ICredentialProvider>(configCredentialProvider);
+            services.AddSingleton<ICredentialProvider, ConfigurationCredentialProvider>();
 
             services.AddSingleton(sp => new AuthenticationConfiguration
             {
