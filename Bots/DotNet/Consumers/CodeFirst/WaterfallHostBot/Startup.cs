@@ -58,7 +58,6 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot
             services.AddSingleton<SkillConversationIdFactoryBase, SkillConversationIdFactory>();
             services.AddHttpClient<SkillHttpClient>();
 
-            //services.AddSingleton<ChannelServiceHandler, SkillHandler>();
             services.AddSingleton<ChannelServiceHandler, TokenExchangeSkillHandler>();
 
             // Register the storage we'll be using for User and Conversation state. (Memory is great for testing purposes.)
