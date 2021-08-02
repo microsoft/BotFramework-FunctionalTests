@@ -37,35 +37,15 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot
             // Register the skills configuration class.
             services.AddSingleton<SkillsConfiguration>();
 
+            services.AddSingleton<ICredentialProvider, ConfigurationCredentialProvider>();
+
             services.AddSingleton(sp => new AuthenticationConfiguration
             {
-                ClaimsValidator = new AllowedCallersClaimsValidator(
+                ClaimsValidator = new AllowedSkillsClaimsValidator(
                 (from skill in sp.GetService<SkillsConfiguration>().Skills.Values select skill.AppId).ToList())
             });
 
-            // Register credential provider.
-            services.AddSingleton<ICredentialProvider, ConfigurationCredentialProvider>();
-
-            var configCredentialProvider = new ConfigurationCredentialProvider(Configuration);
-
-            services.AddSingleton(sp => BotFrameworkAuthenticationFactory.Create(
-                    new ConfigurationChannelProvider(Configuration).ChannelService ?? string.Empty,
-                    true,
-                    AuthenticationConstants.ToChannelFromBotLoginUrl,
-                    AuthenticationConstants.ToChannelFromBotOAuthScope,
-                    AuthenticationConstants.ToBotFromChannelTokenIssuer,
-                    AuthenticationConstants.OAuthUrl,
-                    AuthenticationConstants.ToBotFromChannelOpenIdMetadataUrl,
-                    AuthenticationConstants.ToBotFromEmulatorOpenIdMetadataUrl,
-                    CallerIdConstants.PublicAzureChannel,
-                    new PasswordServiceClientCredentialFactory(
-                        configCredentialProvider.AppId,
-                        configCredentialProvider.Password,
-                        null,
-                        null),
-                    sp.GetService<AuthenticationConfiguration>(),
-                    null,
-                    null));
+            services.AddSingleton<BotFrameworkAuthentication, ConfigurationBotFrameworkAuthentication>();
 
             // Register the Bot Framework Adapter with error handling enabled.
             // Note: some classes expect a BotAdapter and some expect a BotFrameworkHttpAdapter, so
