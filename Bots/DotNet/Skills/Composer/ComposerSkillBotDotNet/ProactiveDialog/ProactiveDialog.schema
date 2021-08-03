@@ -1,0 +1,8 @@
+﻿{
+    "$schema": "https://schemas.botframework.com/schemas/component/v1.0/component.schema",
+    "$role": "implements(Microsoft.IDialog)",
+    "title": "Proactive",
+    "description": "Proactive messages",
+    "type": "object",
+    "additionalProperties": false
+}

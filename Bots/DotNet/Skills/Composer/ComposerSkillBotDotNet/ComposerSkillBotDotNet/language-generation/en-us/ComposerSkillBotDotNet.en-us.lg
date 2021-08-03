@@ -1,13 +1,5 @@
 [import](common.lg)
 
-# SendActivity_Greeting()
-[Activity
-    Text = ${SendActivity_Greeting_text()}
-]
-
-# SendActivity_Greeting_text()
-- Welcome to your bot.
-
 # SendActivity_DidNotUnderstand()
 [Activity
     Text = ${SendActivity_DidNotUnderstand_text()}
@@ -29,10 +21,3 @@
 
 # SendActivity_3WLv3j_text()
 - This is the cards skill :)
-# SendActivity_1koykS()
-[Activity
-    Text = ${SendActivity_1koykS_text()}
-]
-
-# SendActivity_1koykS_text()
-- This is the proactive skill

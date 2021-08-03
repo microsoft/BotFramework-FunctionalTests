@@ -1,6 +1,8 @@
+﻿using System.Collections.Concurrent;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs.Adaptive.Runtime.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,6 +24,15 @@ namespace ComposerSkillBotDotNet
         {
             services.AddControllers().AddNewtonsoftJson();
             services.AddBotRuntime(Configuration);
+
+            //// Create the Conversation state. (Used by the Dialog system itself.)
+            //services.AddSingleton<ConversationState>();
+
+            //// Create a global dictionary for our ConversationReferences (used by proactive)
+            //services.AddSingleton<ConcurrentDictionary<string, ContinuationParameters>>();
+
+            // Gives us access to HttpContext so we can create URLs with the host name.
+            services.AddHttpContextAccessor();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

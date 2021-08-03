@@ -1,0 +1,78 @@
+{
+  "$kind": "Microsoft.AdaptiveDialog",
+  "$designer": {
+    "id": "skq5L7",
+    "name": "WaitForProactiveDialog",
+    "comment": ""
+  },
+  "autoEndDialog": true,
+  "defaultResultProperty": "dialog.result",
+  "triggers": [
+    {
+      "$kind": "Microsoft.OnBeginDialog",
+      "$designer": {
+        "name": "BeginDialog",
+        "description": "",
+        "id": "YiZZWX"
+      },
+      "actions": [
+        {
+          "$kind": "Microsoft.SendActivity",
+          "$designer": {
+            "id": "ZZmpc5"
+          },
+          "activity": "${SendActivity_ZZmpc5()}"
+        },
+        {
+          "$kind": "Microsoft.EndTurn",
+          "$designer": {
+            "id": "ZzcJ6f"
+          }
+        }
+      ]
+    },
+    {
+      "$kind": "Microsoft.OnEventActivity",
+      "$designer": {
+        "id": "xAQGEs",
+        "name": "Event received (Event activity)"
+      },
+      "actions": [
+        {
+          "$kind": "Microsoft.IfCondition",
+          "$designer": {
+            "id": "nHFXkL"
+          },
+          "condition": "=turn.activity.name == continueConversation",
+          "actions": [
+            {
+              "$kind": "Microsoft.SendActivity",
+              "$designer": {
+                "id": "g1V2kh"
+              },
+              "activity": "${SendActivity_g1V2kh()}"
+            },
+            {
+              "$kind": "Microsoft.EndDialog",
+              "$designer": {
+                "id": "CJfLg8"
+              }
+            }
+          ],
+          "elseActions": [
+            {
+              "$kind": "Microsoft.SendActivity",
+              "$designer": {
+                "id": "XXjSZ4"
+              },
+              "activity": "${SendActivity_XXjSZ4()}"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "generator": "WaitForProactiveDialog.lg",
+  "recognizer": "WaitForProactiveDialog.lu.qna",
+  "id": "WaitForProactiveDialog"
+}

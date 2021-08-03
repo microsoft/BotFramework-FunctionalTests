@@ -9,43 +9,6 @@
   "defaultResultProperty": "dialog.result",
   "triggers": [
     {
-      "$kind": "Microsoft.OnConversationUpdateActivity",
-      "$designer": {
-        "id": "376720"
-      },
-      "actions": [
-        {
-          "$kind": "Microsoft.Foreach",
-          "$designer": {
-            "id": "518944",
-            "name": "Loop: for each item"
-          },
-          "itemsProperty": "turn.Activity.membersAdded",
-          "actions": [
-            {
-              "$kind": "Microsoft.IfCondition",
-              "$designer": {
-                "id": "641773",
-                "name": "Branch: if/else"
-              },
-              "condition": "string(dialog.foreach.value.id) != string(turn.Activity.Recipient.id)",
-              "actions": [
-                {
-                  "$kind": "Microsoft.SendActivity",
-                  "$designer": {
-                    "id": "859266",
-                    "name": "Send a response"
-                  },
-                  "activity": "${SendActivity_Greeting()}"
-                }
-              ]
-            }
-          ],
-          "value": "dialog.foreach.value"
-        }
-      ]
-    },
-    {
       "$kind": "Microsoft.OnUnknownIntent",
       "$designer": {
         "id": "mb2n1u"
@@ -90,11 +53,15 @@
               "value": "Proactive",
               "actions": [
                 {
-                  "$kind": "Microsoft.SendActivity",
+                  "$kind": "Microsoft.BeginDialog",
                   "$designer": {
-                    "id": "1koykS"
+                    "id": "xyq862"
                   },
-                  "activity": "${SendActivity_1koykS()}"
+                  "activityProcessed": true,
+                  "options": {
+                    "HttpAccesor": "=this."
+                  },
+                  "dialog": "WaitForProactiveDialog"
                 }
               ]
             },
