@@ -1,0 +1,136 @@
+> All cards can be defined and managed through .lg files.
+> All cards use the chatdown notation - see here - https://github.com/Microsoft/botbuilder-tools/tree/master/packages/Chatdown#message-commands
+> Multi-line text are enclosed in ```
+> Multi-line text can include inline expressions enclosed in ${expression}.
+> ${TemplateName()} is an inline expression that uses the lgTemplate pre-built function to evaluate a template by name.
+
+# HeroCard
+[HeroCard
+    title = BotFramework Hero Card
+    subtitle = Microsoft Bot Framework
+    text = Build and connect intelligent bots to interact with your users naturally wherever they are, from text/sms to Skype, Slack, Office 365 mail and other popular services.
+    image = ${CardImageTemplate('https://sec.ch9.ms/ch9/7ff5/e07cfef0-aa3b-40bb-9baa-7c9ef8ff7ff5/buildreactionbotframework_960.jpg')}
+    buttons = ${CardActionTemplate('openUrl', 'Get started', 'https://docs.microsoft.com/bot-framework')}
+]
+
+# CardActionTemplate(type, title, value)
+[CardAction
+    Type = ${if(type == null, 'imBack', type)}
+    Title = ${title}
+    Value = ${value}
+    Text = ${title}
+]
+
+# ThumbnailCard
+[ThumbnailCard
+    title = BotFramework Thumbnail Card
+    subtitle = Microsoft Bot Framework
+    text = Build and connect intelligent bots to interact with your users naturally wherever they are, from text/sms to Skype, Slack, Office 365 mail and other popular services.
+    image = ${CardImageTemplate('https://sec.ch9.ms/ch9/7ff5/e07cfef0-aa3b-40bb-9baa-7c9ef8ff7ff5/buildreactionbotframework_960.jpg')}
+    buttons = ${CardActionTemplate('openUrl', 'Get Started', 'https://docs.microsoft.com/bot-framework')}
+]
+
+# ReceiptCard
+[ReceiptCard
+  title = John Doe
+  facts = ${FactTemplate('Order Number', '1234')} | ${FactTemplate('Payment Method', 'VISA 5555-****')}
+  items = ${ReceiptItemTemplate('Data Transfer', '$ 38.45', '368', 'https://github.com/amido/azure-vector-icons/raw/master/renders/traffic-manager.png')} | ${ReceiptItemTemplate('App Service', '$ 45.00', '720', 'https://github.com/amido/azure-vector-icons/raw/master/renders/cloud-service.png')}
+  tax = $ 7.50
+  total = $ 90.95
+  buttons = ${CardActionTemplate('openUrl', 'More information', 'https://azure.microsoft.com/en-us/pricing/')}
+]
+
+#ReceiptItemTemplate (title, price, quantity, image)
+[ReceiptItem
+  title = ${title}
+  price = ${price}
+  quantity = ${quantity}
+  image = ${CardImageTemplate(image)}
+]
+
+#FactTemplate (key, value)
+[Fact
+  key = ${key}
+  value = ${value}
+]
+
+#CardImageTemplate (url)
+[CardImage
+  url = ${url}
+]
+
+# SigninCard
+[SigninCard
+    text = BotFramework Sign-in Card
+    buttons = ${CardActionTemplate('signin', 'Sign-in', 'https://login.microsoftonline.com/')}
+]
+
+# CarouselTemplate
+[Activity
+    Attachments = ${HeroCard()} | ${HeroCard()} | ${HeroCard()}
+    AttachmentLayout = carousel
+]
+
+# ListTemplate
+[Activity
+    Attachments = ${HeroCard()} | ${HeroCard()} | ${HeroCard()}
+    AttachmentLayout = list
+]
+
+# AnimationCard
+[AnimationCard
+    title = Animation Card
+    media = https://media3.giphy.com/media/xT0xeJpnrWC4XWblEk/giphy.gif?cid=ecf05e47mye7k75sup6tcmadoom8p1q8u03a7g2p3f76upp9&rid=giphy.gif
+    autostart = true
+]
+
+# VideoCard
+[VideoCard
+    title = Video Card
+    media = https://www.youtube.com/watch?v=LvqzubPZjHE
+]
+
+# AudioCard
+[AudioCard
+    title = Audio Card
+    media = http://localhost:3980/api/music
+    autoloop = true
+]
+
+> The external file reference here 'Resources\adaptiveCard.json' should be marked as 'copy to output directory'
+> Note: The external file will be read as text and any language generation templates/ expressions in the content will be evaluated.
+> You can see this in Resources\adaptiveCard.json that pulls in a passenger name at random based on the call to 'PassengerName' template defined below.
+> Note: Chatdown already supports the ability to create any card type from its json definition. So you can apply this for not just Adaptive cards but to all card types.
+
+# AdaptiveCard
+[Activity
+    Attachments = ${json(adaptivecardjson())}
+]
+
+# adaptivecardjson()
+- ```
+{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "version": "1.0",
+  "type": "AdaptiveCard",
+  "body": [
+    {
+      "type": "TextBlock",
+      "text": "Bot Builder actions"
+    }
+  ],
+  "actions": [
+    ${CardActionTemplate('imBack', 'Show more cards', 'Show more cards')},
+    {
+      "type": "Action.Submit",
+      "data": {
+        "msteams": {
+            "type": "imBack",
+            "value": "text"
+          },
+        "title": "imBack"
+      }
+    }
+  ]
+}
+```

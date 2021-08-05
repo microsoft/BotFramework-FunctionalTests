@@ -14,10 +14,3 @@
 
 # SendActivity_Wz6ESA_text()
 - Unrecognized EventName: ${turn.activity.name}
-# SendActivity_3WLv3j()
-[Activity
-    Text = ${SendActivity_3WLv3j_text()}
-]
-
-# SendActivity_3WLv3j_text()
-- This is the cards skill :)

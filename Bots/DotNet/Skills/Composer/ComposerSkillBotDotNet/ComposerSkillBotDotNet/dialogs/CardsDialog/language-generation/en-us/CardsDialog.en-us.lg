@@ -1,0 +1,78 @@
+[import](common.lg)
+
+# ChoiceInput_Prompt_CQChcR()
+[Activity
+    Text = ${ChoiceInput_Prompt_CQChcR_text()}
+]
+
+# ChoiceInput_Prompt_CQChcR_text()
+- What card do you want?
+# SendActivity_FNEXZh()
+-${HeroCard()}
+# SendActivity_lEVbJV()
+-${AdaptiveCard()}
+
+# SendActivity_lEVbJV_text()
+- ${AdaptiveCard()}
+# SendActivity_A7mLUD()
+-${ThumbnailCard()}
+# SendActivity_RTN27M()
+-${SigninCard()}
+# SendActivity_MKkvvu()
+- ${AnimationCard()}
+# SendActivity_uTm0n2()
+- ${VideoCard()}
+# SendActivity_QuTjbR()
+- ${AudioCard()}
+# SendActivity_mxKi3X()
+-${CarouselTemplate()}
+# SendActivity_72oOOw()
+-${ListTemplate()}
+# SendActivity_JsAcV8()
+-${ReceiptCard()}
+# SendActivity_ivvV4C()
+[Activity
+    Text = ${SendActivity_ivvV4C_text()}
+]
+
+# SendActivity_ivvV4C_text()
+- I received an activity with this data in the value field ${turn.activity.value}
+# SendActivity_yf0Gqx()
+[Activity
+    Text = ${SendActivity_yf0Gqx_text()}
+]
+
+# SendActivity_yf0Gqx_text()
+- Update activity is not supported in the ${turn.activity.channelId}
+# SendActivity_ZyJXCj()
+[Activity
+    Text = ${SendActivity_ZyJXCj_text()}
+]
+
+# SendActivity_ZyJXCj_text()
+- Make UpdateHeroCard
+# SendActivity_rbHc6y()
+[Activity
+    Text = ${SendActivity_rbHc6y_text()}
+]
+
+# SendActivity_rbHc6y_text()
+- I received an activity with this data in the text field ${turn.activity.text} and this data in the value field ${turn.activity.value}
+# SendActivity_5mxBSB()
+- ${HeroCard()}
+# SendActivity_IESq84()
+- ${ThumbnailCard()}
+# SendActivity_JPTagf()
+- ${ReceiptCard()}
+# SendActivity_H89KJM()
+- ${SigninCard()}
+# SendActivity_z21Sgu()
+- ${CarouselTemplate()}
+# SendActivity_bMMlt6()
+- ${ListTemplate()}
+# SendActivity_OpTUWT()
+- ${AnimationCard()}
+# SendActivity_y7BwIi()
+- ${AudioCard()}
+# SendActivity_txBNlE()
+- ${VideoCard()}

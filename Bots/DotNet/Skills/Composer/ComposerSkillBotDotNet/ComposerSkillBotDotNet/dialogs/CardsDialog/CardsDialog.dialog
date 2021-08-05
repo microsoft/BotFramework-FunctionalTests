@@ -1,0 +1,293 @@
+{
+  "$kind": "Microsoft.AdaptiveDialog",
+  "$designer": {
+    "id": "rKELL3",
+    "name": "CardsDialog",
+    "comment": ""
+  },
+  "autoEndDialog": true,
+  "defaultResultProperty": "dialog.result",
+  "triggers": [
+    {
+      "$kind": "Microsoft.OnBeginDialog",
+      "$designer": {
+        "name": "BeginDialog",
+        "description": "",
+        "id": "PUmsIh"
+      },
+      "actions": [
+        {
+          "$kind": "Microsoft.ChoiceInput",
+          "$designer": {
+            "id": "CQChcR"
+          },
+          "defaultLocale": "en-us",
+          "disabled": false,
+          "maxTurnCount": 3,
+          "alwaysPrompt": false,
+          "allowInterruptions": false,
+          "unrecognizedPrompt": "",
+          "invalidPrompt": "",
+          "prompt": "${ChoiceInput_Prompt_CQChcR()}",
+          "choiceOptions": {
+            "includeNumbers": true,
+            "inlineOrMore": ", or ",
+            "inlineOr": " or ",
+            "inlineSeparator": ", "
+          },
+          "choices": [
+            "AdaptiveCardBotAction",
+            "AdaptiveCardTeamsTaskModule",
+            "AdaptiveCardSubmitAction",
+            "Hero",
+            "Thumbnail",
+            "Receipt",
+            "Signin",
+            "Carousel",
+            "List",
+            "O365",
+            "TeamsFileConsent",
+            "Animation",
+            "Audio",
+            "Video",
+            "AdaptiveUpdate",
+            "End"
+          ],
+          "style": "list",
+          "property": "dialog.CardType",
+          "recognizerOptions": {
+            "recognizeOrdinals": true
+          }
+        },
+        {
+          "$kind": "Microsoft.IfCondition",
+          "$designer": {
+            "id": "aJD9vU"
+          },
+          "actions": [
+            {
+              "$kind": "Microsoft.IfCondition",
+              "$designer": {
+                "id": "AcxQM1"
+              },
+              "actions": [
+                {
+                  "$kind": "Microsoft.SendActivity",
+                  "$designer": {
+                    "id": "ivvV4C"
+                  },
+                  "activity": "${SendActivity_ivvV4C()}"
+                }
+              ],
+              "elseActions": [
+                {
+                  "$kind": "Microsoft.IfCondition",
+                  "$designer": {
+                    "id": "gZUOPg"
+                  },
+                  "condition": "=contains(toLower(turn.activity.text, locale), update)",
+                  "actions": [
+                    {
+                      "$kind": "Microsoft.IfCondition",
+                      "$designer": {
+                        "id": "nmYAYF"
+                      },
+                      "condition": "=empty(turn.activity.replyToId)",
+                      "actions": [
+                        {
+                          "$kind": "Microsoft.SendActivity",
+                          "$designer": {
+                            "id": "yf0Gqx"
+                          },
+                          "activity": "${SendActivity_yf0Gqx()}"
+                        }
+                      ],
+                      "elseActions": [
+                        {
+                          "$kind": "Microsoft.SendActivity",
+                          "$designer": {
+                            "id": "ZyJXCj"
+                          },
+                          "activity": "${SendActivity_ZyJXCj()}"
+                        }
+                      ]
+                    }
+                  ],
+                  "elseActions": [
+                    {
+                      "$kind": "Microsoft.SendActivity",
+                      "$designer": {
+                        "id": "rbHc6y"
+                      },
+                      "activity": "${SendActivity_rbHc6y()}"
+                    }
+                  ]
+                }
+              ],
+              "condition": "=empty(turn.activity.text)"
+            }
+          ],
+          "condition": "=not(empty(turn.activity.value))",
+          "elseActions": [
+            {
+              "$kind": "Microsoft.SwitchCondition",
+              "$designer": {
+                "id": "WKYXBy"
+              },
+              "condition": "=dialog.CardType",
+              "cases": [
+                {
+                  "value": "AdaptiveCardBotAction"
+                },
+                {
+                  "value": "AdaptiveCardTeamsTaskModule"
+                },
+                {
+                  "value": "AdaptiveCardSubmitAction"
+                },
+                {
+                  "value": "Hero",
+                  "actions": [
+                    {
+                      "$kind": "Microsoft.SendActivity",
+                      "$designer": {
+                        "id": "5mxBSB"
+                      },
+                      "activity": "${SendActivity_5mxBSB()}"
+                    }
+                  ]
+                },
+                {
+                  "value": "Thumbnail",
+                  "actions": [
+                    {
+                      "$kind": "Microsoft.SendActivity",
+                      "$designer": {
+                        "id": "IESq84"
+                      },
+                      "activity": "${SendActivity_IESq84()}"
+                    }
+                  ]
+                },
+                {
+                  "value": "Receipt",
+                  "actions": [
+                    {
+                      "$kind": "Microsoft.SendActivity",
+                      "$designer": {
+                        "id": "JPTagf"
+                      },
+                      "activity": "${SendActivity_JPTagf()}"
+                    }
+                  ]
+                },
+                {
+                  "value": "Signin",
+                  "actions": [
+                    {
+                      "$kind": "Microsoft.SendActivity",
+                      "$designer": {
+                        "id": "H89KJM"
+                      },
+                      "activity": "${SendActivity_H89KJM()}"
+                    }
+                  ]
+                },
+                {
+                  "value": "Carousel",
+                  "actions": [
+                    {
+                      "$kind": "Microsoft.SendActivity",
+                      "$designer": {
+                        "id": "z21Sgu"
+                      },
+                      "activity": "${SendActivity_z21Sgu()}"
+                    }
+                  ]
+                },
+                {
+                  "value": "List",
+                  "actions": [
+                    {
+                      "$kind": "Microsoft.SendActivity",
+                      "$designer": {
+                        "id": "bMMlt6"
+                      },
+                      "activity": "${SendActivity_bMMlt6()}"
+                    }
+                  ]
+                },
+                {
+                  "value": "O365"
+                },
+                {
+                  "value": "TeamsFileConsent"
+                },
+                {
+                  "value": "Animation",
+                  "actions": [
+                    {
+                      "$kind": "Microsoft.SendActivity",
+                      "$designer": {
+                        "id": "OpTUWT"
+                      },
+                      "activity": "${SendActivity_OpTUWT()}"
+                    }
+                  ]
+                },
+                {
+                  "value": "Audio",
+                  "actions": [
+                    {
+                      "$kind": "Microsoft.SendActivity",
+                      "$designer": {
+                        "id": "y7BwIi"
+                      },
+                      "activity": "${SendActivity_y7BwIi()}"
+                    }
+                  ]
+                },
+                {
+                  "value": "Video",
+                  "actions": [
+                    {
+                      "$kind": "Microsoft.SendActivity",
+                      "$designer": {
+                        "id": "txBNlE"
+                      },
+                      "activity": "${SendActivity_txBNlE()}"
+                    }
+                  ]
+                },
+                {
+                  "value": "AdaptiveUpdate"
+                },
+                {
+                  "value": "End",
+                  "actions": [
+                    {
+                      "$kind": "Microsoft.EndDialog",
+                      "$designer": {
+                        "id": "EPFycU"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "$kind": "Microsoft.RepeatDialog",
+          "$designer": {
+            "id": "Z44s9W"
+          },
+          "activityProcessed": true
+        }
+      ]
+    }
+  ],
+  "generator": "CardsDialog.lg",
+  "recognizer": "CardsDialog.lu.qna",
+  "id": "CardsDialog"
+}
