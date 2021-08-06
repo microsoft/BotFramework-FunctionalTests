@@ -9,8 +9,8 @@
     "watch": "nodemon index.js"
   },
   "dependencies": {
-    "botbuilder": "~4.14.0-rc0",
-    "botframework-connector": "~4.14.0-rc0",
+    "botbuilder": "~4.14.0",
+    "botframework-connector": "~4.14.0",
     "dotenv": "^10.0.0",
     "restify": "^8.5.1"
   },
