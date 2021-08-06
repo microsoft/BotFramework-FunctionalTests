@@ -12,10 +12,10 @@ const restify = require('restify');
 // See https://aka.ms/bot-services to learn more about the different parts of a bot.
 const {
   ActivityTypes,
-  CallerIdConstants,
   ChannelServiceRoutes,
   CloudAdapter,
   ConversationState,
+  ConfigurationBotFrameworkAuthentication,
   InputHints,
   MemoryStorage,
   MessageFactory,
@@ -27,8 +27,6 @@ const {
 const {
   allowedCallersClaimsValidator,
   AuthenticationConfiguration,
-  AuthenticationConstants,
-  BotFrameworkAuthenticationFactory,
   PasswordServiceClientCredentialFactory,
   SimpleCredentialProvider
 } = require('botframework-connector');
@@ -62,22 +60,16 @@ const authConfig = new AuthenticationConfiguration(
   allowedCallersClaimsValidator(allowedCallers)
 );
 
-const botFrameworkAuthentication = BotFrameworkAuthenticationFactory.create(
-  '',
-  true,
-  AuthenticationConstants.ToChannelFromBotLoginUrl,
-  AuthenticationConstants.ToChannelFromBotOAuthScope,
-  AuthenticationConstants.ToBotFromChannelTokenIssuer,
-  AuthenticationConstants.OAuthUrl,
-  AuthenticationConstants.ToBotFromChannelOpenIdMetadataUrl,
-  AuthenticationConstants.ToBotFromEmulatorOpenIdMetadataUrl,
-  CallerIdConstants.PublicAzureChannel,
-  new PasswordServiceClientCredentialFactory(
-    process.env.MicrosoftAppId || '',
-    process.env.MicrosoftAppPassword || ''
-  ),
+const credentialsFactory = new PasswordServiceClientCredentialFactory(
+  process.env.MicrosoftAppId || '',
+  process.env.MicrosoftAppPassword || ''
+);
+
+const botFrameworkAuthentication = new ConfigurationBotFrameworkAuthentication(
+  {},
+  credentialsFactory,
   authConfig,
-  undefined,
+  null,
   {
     agentSettings: {
       http: new http.Agent({
