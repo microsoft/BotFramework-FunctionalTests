@@ -9,17 +9,17 @@ require('dotenv').config();
 // Import required packages
 const http = require('http');
 const https = require('https');
-const path = require('path');
 const restify = require('restify');
 
 // Import required bot services.
 // See https://aka.ms/bot-services to learn more about the different parts of a bot.
 const {
-  CallerIdConstants,
   CloudAdapter,
   TurnContext,
   ActivityTypes,
+  BotFrameworkAdapter,
   ChannelServiceRoutes,
+  ConfigurationBotFrameworkAuthentication,
   ConversationState,
   InputHints,
   MemoryStorage,
@@ -30,8 +30,6 @@ const {
 
 const {
   AuthenticationConfiguration,
-  AuthenticationConstants,
-  BotFrameworkAuthenticationFactory,
   PasswordServiceClientCredentialFactory,
   SimpleCredentialProvider,
   allowedCallersClaimsValidator
@@ -77,24 +75,18 @@ const allowedCallers = Object.values(skillsConfig.skills).map(skill => skill.app
 const authConfig = new AuthenticationConfiguration(
   [],
   allowedCallersClaimsValidator(allowedCallers)
-)
+);
 
-const botFrameworkAuthentication = BotFrameworkAuthenticationFactory.create(
-  '',
-  true,
-  AuthenticationConstants.ToChannelFromBotLoginUrl,
-  AuthenticationConstants.ToChannelFromBotOAuthScope,
-  AuthenticationConstants.ToBotFromChannelTokenIssuer,
-  AuthenticationConstants.OAuthUrl,
-  AuthenticationConstants.ToBotFromChannelOpenIdMetadataUrl,
-  AuthenticationConstants.ToBotFromEmulatorOpenIdMetadataUrl,
-  CallerIdConstants.PublicAzureChannel,
-  new PasswordServiceClientCredentialFactory(
-    process.env.MicrosoftAppId || '',
-    process.env.MicrosoftAppPassword || ''
-  ),
+const credentialsFactory = new PasswordServiceClientCredentialFactory(
+  process.env.MicrosoftAppId || '',
+  process.env.MicrosoftAppPassword || ''
+);
+
+const botFrameworkAuthentication = new ConfigurationBotFrameworkAuthentication(
+  {},
+  credentialsFactory,
   authConfig,
-  undefined,
+  null,
   {
     agentSettings: {
       http: new http.Agent({
