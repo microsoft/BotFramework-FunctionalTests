@@ -12,7 +12,6 @@
   "dependencies": {
     "botbuilder": "~4.14.0",
     "botbuilder-dialogs": "~4.14.0",
-    "botframework-connector": "~4.14.0",
     "dotenv": "^10.0.0",
     "node-fetch": "^2.6.1",
     "restify": "~8.5.1"
