@@ -1,4 +1,17 @@
 [import](common.lg)
+> !# @strict = false
+> !# @namespace = cards
+> !# @exports = UnsupportedChannelCards
+
+#UnsupportedChannelCards(channel)
+- IF:${channel == 'emulator'}
+    - AdaptiveCardTeamsTaskModule, AdaptiveUpdate, O365, TeamsFileConsent
+- ELSEIF:${channel == 'directline'}
+    - AdaptiveUpdate
+- ELSEIF:${channel == 'telegram'}
+    - AdaptiveCardBotAction, AdaptiveCardTeamsTaskModule, AdaptiveCardSubmitAction, List, TeamsFileConsent
+- ELSE:
+    -
 
 # ChoiceInput_Prompt_CQChcR()
 [Activity
@@ -58,21 +71,28 @@
 
 # SendActivity_rbHc6y_text()
 - I received an activity with this data in the text field ${turn.activity.text} and this data in the value field ${turn.activity.value}
-# SendActivity_5mxBSB()
+# SendActivity_my1RFM()
+[Activity
+    Text = ${SendActivity_my1RFM_text()}
+]
+
+# SendActivity_my1RFM_text()
+- ${dialog.CardType} cards are not supported in the {turn.activity.channelId} channel.
+# SendActivity_RqQgvd()
 - ${HeroCard()}
-# SendActivity_IESq84()
+# SendActivity_1aobUb()
 - ${ThumbnailCard()}
-# SendActivity_JPTagf()
+# SendActivity_c6CJZQ()
 - ${ReceiptCard()}
-# SendActivity_H89KJM()
+# SendActivity_9YuVvP()
 - ${SigninCard()}
-# SendActivity_z21Sgu()
+# SendActivity_nZU5wE()
 - ${CarouselTemplate()}
-# SendActivity_bMMlt6()
+# SendActivity_NeV6qH()
 - ${ListTemplate()}
-# SendActivity_OpTUWT()
+# SendActivity_LlnHkK()
 - ${AnimationCard()}
-# SendActivity_y7BwIi()
+# SendActivity_6EpsMK()
 - ${AudioCard()}
-# SendActivity_txBNlE()
+# SendActivity_FJgYsK()
 - ${VideoCard()}

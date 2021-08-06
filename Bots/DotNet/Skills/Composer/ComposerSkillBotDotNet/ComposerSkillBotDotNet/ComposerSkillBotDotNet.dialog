@@ -41,11 +41,12 @@
               "value": "Cards",
               "actions": [
                 {
-                  "$kind": "Microsoft.SendActivity",
+                  "$kind": "Microsoft.BeginDialog",
                   "$designer": {
-                    "id": "3WLv3j"
+                    "id": "Yk8SZa"
                   },
-                  "activity": "${SendActivity_3WLv3j()}"
+                  "activityProcessed": true,
+                  "dialog": "CardsDialog"
                 }
               ]
             },
