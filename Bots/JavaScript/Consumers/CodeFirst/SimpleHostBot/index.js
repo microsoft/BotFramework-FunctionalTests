@@ -14,11 +14,11 @@ const restify = require('restify');
 // Import required bot services.
 // See https://aka.ms/bot-services to learn more about the different parts of a bot.
 const {
-  CallerIdConstants,
   CloudAdapter,
   TurnContext,
   ActivityTypes,
   ChannelServiceRoutes,
+  ConfigurationBotFrameworkAuthentication,
   ConversationState,
   InputHints,
   MemoryStorage,
@@ -30,8 +30,6 @@ const {
 
 const {
   AuthenticationConfiguration,
-  AuthenticationConstants,
-  BotFrameworkAuthenticationFactory,
   PasswordServiceClientCredentialFactory,
   SimpleCredentialProvider,
   allowedCallersClaimsValidator
@@ -75,22 +73,16 @@ const authConfig = new AuthenticationConfiguration(
   allowedCallersClaimsValidator(allowedCallers)
 );
 
-const botFrameworkAuthentication = BotFrameworkAuthenticationFactory.create(
-  '',
-  true,
-  AuthenticationConstants.ToChannelFromBotLoginUrl,
-  AuthenticationConstants.ToChannelFromBotOAuthScope,
-  AuthenticationConstants.ToBotFromChannelTokenIssuer,
-  AuthenticationConstants.OAuthUrl,
-  AuthenticationConstants.ToBotFromChannelOpenIdMetadataUrl,
-  AuthenticationConstants.ToBotFromEmulatorOpenIdMetadataUrl,
-  CallerIdConstants.PublicAzureChannel,
-  new PasswordServiceClientCredentialFactory(
-    process.env.MicrosoftAppId || '',
-    process.env.MicrosoftAppPassword || ''
-  ),
+const credentialsFactory = new PasswordServiceClientCredentialFactory(
+  process.env.MicrosoftAppId || '',
+  process.env.MicrosoftAppPassword || ''
+);
+
+const botFrameworkAuthentication = new ConfigurationBotFrameworkAuthentication(
+  {},
+  credentialsFactory,
   authConfig,
-  undefined,
+  null,
   {
     agentSettings: {
       http: new http.Agent({
@@ -135,9 +127,9 @@ adapter.onTurnError = async (context, error) => {
     // Send a trace activity, which will be displayed in Bot Framework Emulator
     await context.sendTraceActivity(
       'OnTurnError Trace',
-            `${error}`,
-            'https://www.botframework.com/schemas/error',
-            'TurnError'
+      `${error}`,
+      'https://www.botframework.com/schemas/error',
+      'TurnError'
     );
   } catch (err) {
     console.error(`\n [onTurnError] Exception caught in onTurnError : ${err}`);
