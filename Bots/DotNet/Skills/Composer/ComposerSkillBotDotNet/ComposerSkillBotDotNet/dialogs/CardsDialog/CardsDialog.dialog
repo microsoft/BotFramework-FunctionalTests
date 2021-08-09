@@ -25,7 +25,7 @@
           "disabled": false,
           "maxTurnCount": 3,
           "alwaysPrompt": false,
-          "allowInterruptions": false,
+          "allowInterruptions": true,
           "unrecognizedPrompt": "",
           "invalidPrompt": "",
           "prompt": "${ChoiceInput_Prompt_CQChcR()}",
@@ -56,8 +56,16 @@
           "style": "list",
           "property": "dialog.CardType",
           "recognizerOptions": {
-            "recognizeOrdinals": true
+            "recognizeOrdinals": true,
+            "recognizeNumbers": true
           }
+        },
+        {
+          "$kind": "Microsoft.SendActivity",
+          "$designer": {
+            "id": "jWPdbr"
+          },
+          "activity": "${SendActivity_jWPdbr()}"
         },
         {
           "$kind": "Microsoft.IfCondition",
@@ -153,10 +161,27 @@
                   "condition": "=dialog.CardType",
                   "cases": [
                     {
-                      "value": "AdaptiveCardBotAction"
+                      "value": "AdaptiveCardBotAction",
+                      "actions": [
+                        {
+                          "$kind": "Microsoft.SendActivity",
+                          "$designer": {
+                            "id": "gegYVL"
+                          },
+                          "activity": "${SendActivity_gegYVL()}"
+                        }
+                      ]
                     },
                     {
-                      "value": "AdaptiveCardTeamsTaskModule"
+                      "value": "AdaptiveCardTeamsTaskModule",
+                      "actions": [
+                        {
+                          "$kind": "Microsoft.SendActivity",
+                          "$designer": {
+                            "id": "0vTcmw"
+                          }
+                        }
+                      ]
                     },
                     {
                       "value": "AdaptiveCardSubmitAction",
@@ -311,6 +336,39 @@
           "activityProcessed": true
         }
       ]
+    },
+    {
+      "$kind": "Microsoft.OnMessageActivity",
+      "$designer": {
+        "id": "oZKqEm",
+        "name": "Message received (Message received activity)"
+      },
+      "actions": [
+        {
+          "$kind": "Microsoft.SendActivity",
+          "$designer": {
+            "id": "9Nkw0H"
+          },
+          "activity": "${SendActivity_9Nkw0H()}"
+        },
+        {
+          "$kind": "Microsoft.IfCondition",
+          "$designer": {
+            "id": "HKa5p4"
+          },
+          "condition": "=empty(turn.activity.text)",
+          "actions": [
+            {
+              "$kind": "Microsoft.SendActivity",
+              "$designer": {
+                "id": "pYKkwT"
+              },
+              "activity": "${SendActivity_pYKkwT()}"
+            }
+          ]
+        }
+      ],
+      "condition": "=not(empty(turn.activity.value))"
     }
   ],
   "generator": "CardsDialog.lg",

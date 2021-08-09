@@ -77,7 +77,7 @@
 ]
 
 # SendActivity_my1RFM_text()
-- ${dialog.CardType} cards are not supported in the {turn.activity.channelId} channel.
+- ${dialog.CardType} cards are not supported in the ${turn.activity.channelId} channel.
 # SendActivity_RqQgvd()
 - ${HeroCard()}
 # SendActivity_1aobUb()
@@ -96,3 +96,26 @@
 - ${AudioCard()}
 # SendActivity_FJgYsK()
 - ${VideoCard()}
+# SendActivity_gegYVL()
+-${AdaptiveCardBotAction()}
+# SendActivity_jWPdbr()
+[Activity
+    Text = ${SendActivity_jWPdbr_text()}
+]
+
+# SendActivity_jWPdbr_text()
+- This is the value: ${dialog.CardType}
+# SendActivity_9Nkw0H()
+[Activity
+    Text = ${SendActivity_9Nkw0H_text()}
+]
+
+# SendActivity_9Nkw0H_text()
+- Event triggered
+# SendActivity_pYKkwT()
+[Activity
+    Text = ${SendActivity_pYKkwT_text()}
+]
+
+# SendActivity_pYKkwT_text()
+- I received an activity with this data in the value field ${turn.activity.value}
