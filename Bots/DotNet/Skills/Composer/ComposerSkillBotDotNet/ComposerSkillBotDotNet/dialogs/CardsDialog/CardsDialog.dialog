@@ -61,13 +61,6 @@
           }
         },
         {
-          "$kind": "Microsoft.SendActivity",
-          "$designer": {
-            "id": "jWPdbr"
-          },
-          "activity": "${SendActivity_jWPdbr()}"
-        },
-        {
           "$kind": "Microsoft.IfCondition",
           "$designer": {
             "id": "aJD9vU"
@@ -179,7 +172,8 @@
                           "$kind": "Microsoft.SendActivity",
                           "$designer": {
                             "id": "0vTcmw"
-                          }
+                          },
+                          "activity": "${SendActivity_0vTcmw()}"
                         }
                       ]
                     },
@@ -190,7 +184,8 @@
                           "$kind": "Microsoft.SendActivity",
                           "$designer": {
                             "id": "LlH2fX"
-                          }
+                          },
+                          "activity": "${SendActivity_LlH2fX()}"
                         }
                       ]
                     },
@@ -344,13 +339,6 @@
         "name": "Message received (Message received activity)"
       },
       "actions": [
-        {
-          "$kind": "Microsoft.SendActivity",
-          "$designer": {
-            "id": "9Nkw0H"
-          },
-          "activity": "${SendActivity_9Nkw0H()}"
-        },
         {
           "$kind": "Microsoft.IfCondition",
           "$designer": {

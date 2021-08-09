@@ -21,20 +21,6 @@
     Text = ${title}
 ]
 
-# SubmitActionTemplate(type, title, data)
-[SubmitAction
-    Type = ${if(type == null, 'Action.Submit', type)}
-    Title = ${title}
-    Data = ${json(submitactiondatajson())}
-]
-
-#submitactiondatajson()
-- ```
-{
-  "key": "value"
-}
-```
-
 # ThumbnailCard
 [ThumbnailCard
     title = BotFramework Thumbnail Card
@@ -115,223 +101,20 @@
 > Note: The external file will be read as text and any language generation templates/ expressions in the content will be evaluated.
 > Note: Chatdown already supports the ability to create any card type from its json definition. So you can apply this for not just Adaptive cards but to all card types.
 
-# AdaptiveCard
-[Activity
-    Attachments = ${json(adaptivecardjson())}
-]
-
 # AdaptiveCardBotAction
 [Activity
     Attachments = ${json(adaptivecardbotactionjson())}
 ]
 
-# adaptivecardjson()
-- ```
-{
-  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
-  "version": "1.0",
-  "type": "AdaptiveCard",
-  "speak": "Your flight is confirmed for you and 3 other passengers from San Francisco to Amsterdam on Friday, October 10 8:30 AM",
-  "body": [
-    {
-      "type": "TextBlock",
-      "text": "Passengers",
-      "weight": "bolder",
-      "isSubtle": false
-    },
-    {
-      "type": "TextBlock",
-      "text": "PassengerName",
-      "separator": true
-    },
-    {
-      "type": "TextBlock",
-      "text": "PassengerName",
-      "spacing": "none"
-    },
-    {
-      "type": "TextBlock",
-      "text": "PassengerName",
-      "spacing": "none"
-    },
-    {
-      "type": "TextBlock",
-      "text": "2 Stops",
-      "weight": "bolder",
-      "spacing": "medium"
-    },
-    {
-      "type": "TextBlock",
-      "text": "Fri, October 10 8:30 AM",
-      "weight": "bolder",
-      "spacing": "none"
-    },
-    {
-      "type": "ColumnSet",
-      "separator": true,
-      "columns": [
-        {
-          "type": "Column",
-          "width": 1,
-          "items": [
-            {
-              "type": "TextBlock",
-              "text": "San Francisco",
-              "isSubtle": true
-            },
-            {
-              "type": "TextBlock",
-              "size": "extraLarge",
-              "color": "accent",
-              "text": "SFO",
-              "spacing": "none"
-            }
-          ]
-        },
-        {
-          "type": "Column",
-          "width": "auto",
-          "items": [
-            {
-              "type": "TextBlock",
-              "text": " "
-            },
-            {
-              "type": "Image",
-              "url": "http://adaptivecards.io/content/airplane.png",
-              "size": "small",
-              "spacing": "none"
-            }
-          ]
-        },
-        {
-          "type": "Column",
-          "width": 1,
-          "items": [
-            {
-              "type": "TextBlock",
-              "horizontalAlignment": "right",
-              "text": "Amsterdam",
-              "isSubtle": true
-            },
-            {
-              "type": "TextBlock",
-              "horizontalAlignment": "right",
-              "size": "extraLarge",
-              "color": "accent",
-              "text": "AMS",
-              "spacing": "none"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "type": "TextBlock",
-      "text": "Non-Stop",
-      "weight": "bolder",
-      "spacing": "medium"
-    },
-    {
-      "type": "TextBlock",
-      "text": "Fri, October 18 9:50 PM",
-      "weight": "bolder",
-      "spacing": "none"
-    },
-    {
-      "type": "ColumnSet",
-      "separator": true,
-      "columns": [
-        {
-          "type": "Column",
-          "width": 1,
-          "items": [
-            {
-              "type": "TextBlock",
-              "text": "Amsterdam",
-              "isSubtle": true
-            },
-            {
-              "type": "TextBlock",
-              "size": "extraLarge",
-              "color": "accent",
-              "text": "AMS",
-              "spacing": "none"
-            }
-          ]
-        },
-        {
-          "type": "Column",
-          "width": "auto",
-          "items": [
-            {
-              "type": "TextBlock",
-              "text": " "
-            },
-            {
-              "type": "Image",
-              "url": "http://adaptivecards.io/content/airplane.png",
-              "size": "small",
-              "spacing": "none"
-            }
-          ]
-        },
-        {
-          "type": "Column",
-          "width": 1,
-          "items": [
-            {
-              "type": "TextBlock",
-              "horizontalAlignment": "right",
-              "text": "San Francisco",
-              "isSubtle": true
-            },
-            {
-              "type": "TextBlock",
-              "horizontalAlignment": "right",
-              "size": "extraLarge",
-              "color": "accent",
-              "text": "SFO",
-              "spacing": "none"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "type": "ColumnSet",
-      "spacing": "medium",
-      "columns": [
-        {
-          "type": "Column",
-          "width": "1",
-          "items": [
-            {
-              "type": "TextBlock",
-              "text": "Total",
-              "size": "medium",
-              "isSubtle": true
-            }
-          ]
-        },
-        {
-          "type": "Column",
-          "width": 1,
-          "items": [
-            {
-              "type": "TextBlock",
-              "horizontalAlignment": "right",
-              "text": "$4,032.54",
-              "size": "medium",
-              "weight": "bolder"
-            }
-          ]
-        }
-      ]
-    }
-  ]
-}
-```
+# AdaptiveCardSubmitAction
+[Activity
+    Attachments = ${json(adaptivecardsubmitactionjson())}
+]
+
+# AdaptiveCardTaskModule
+[Activity
+    Attachments = ${json(adaptivecardtaskmodulejson())}
+]
 
 # adaptivecardbotactionjson()
 - ```
@@ -357,25 +140,95 @@
     },
     {
       "type": "Action.Submit",
-      "value": {
-        "key": "value"
-      },
-      "title": "message back"
+      "title": "message back",
+      "data": {
+        "msteams": {
+          "type": "messageBack",
+          "value": {
+            "key": "value"
+          }
+        }
+      }
     },
     {
       "type": "Action.Submit",
       "title": "message back local echo",
-      "text": "text received by bots",
-      "displayText": "display text message back",
-      "value": {
-        "key": "value"
+      "data": {
+        "msteams": {
+          "type": "messageBack",
+          "text": "text received by bots",
+          "displayText": "display text message back",
+          "value": {
+            "key": "value"
+          }
+        }
       }
     },
     {
       "type": "Action.Submit",
       "title": "invoke",
-      "value": {
+      "data": {
+        "msteams": {
+          "type": "invoke",
+          "value": {
+            "key": "value"
+          }
+        }
+      }
+    }
+  ]
+}
+```
+
+# adaptivecardsubmitactionjson()
+- ```
+{
+  "type": "AdaptiveCard",
+  "version": "1.2",
+  "body": [
+    {
+      "type": "TextBlock",
+      "text": "Bot Builder actions"
+    },
+    {
+      "type": "Input.Text",
+      "id": "x"
+    }
+  ],
+  "actions": [
+    {
+      "type": "Action.Submit",
+      "title": "Action.Submit",
+      "data": {
         "key": "value"
+      }
+    }
+  ]
+}
+```
+
+# adaptivecardtaskmodulejson()
+- ```
+{
+  "type": "AdaptiveCard",
+  "version": "1.2",
+  "body": [
+    {
+      "type": "TextBlock",
+      "text": "Task Module Adaptive Card"
+    }
+  ],
+  "actions": [
+    {
+      "type": "Action.Submit",
+      "title": "Launch Task Module",
+      "data": {
+        "msteams": {
+          "type": "invoke",
+          "value": { 
+            "hiddenKey": "hidden value from task module launcher"
+          }
+        }
       }
     }
   ]

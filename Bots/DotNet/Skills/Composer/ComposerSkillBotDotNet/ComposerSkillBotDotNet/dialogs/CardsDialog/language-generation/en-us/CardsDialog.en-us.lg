@@ -23,11 +23,6 @@
 # SendActivity_FNEXZh()
 -${HeroCard()}
 # SendActivity_lEVbJV()
--${AdaptiveCard()}
-
-# SendActivity_lEVbJV_text()
-- ${AdaptiveCard()}
-# SendActivity_A7mLUD()
 -${ThumbnailCard()}
 # SendActivity_RTN27M()
 -${SigninCard()}
@@ -98,20 +93,6 @@
 - ${VideoCard()}
 # SendActivity_gegYVL()
 -${AdaptiveCardBotAction()}
-# SendActivity_jWPdbr()
-[Activity
-    Text = ${SendActivity_jWPdbr_text()}
-]
-
-# SendActivity_jWPdbr_text()
-- This is the value: ${dialog.CardType}
-# SendActivity_9Nkw0H()
-[Activity
-    Text = ${SendActivity_9Nkw0H_text()}
-]
-
-# SendActivity_9Nkw0H_text()
-- Event triggered
 # SendActivity_pYKkwT()
 [Activity
     Text = ${SendActivity_pYKkwT_text()}
@@ -119,3 +100,7 @@
 
 # SendActivity_pYKkwT_text()
 - I received an activity with this data in the value field ${turn.activity.value}
+# SendActivity_LlH2fX()
+-${AdaptiveCardSubmitAction()}
+# SendActivity_0vTcmw()
+- ${AdaptiveCardTaskModule()}
