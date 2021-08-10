@@ -38,61 +38,6 @@
 -${ListTemplate()}
 # SendActivity_JsAcV8()
 -${ReceiptCard()}
-# SendActivity_ivvV4C()
-[Activity
-    Text = ${SendActivity_ivvV4C_text()}
-]
-
-# SendActivity_ivvV4C_text()
-- I received an activity with this data in the value field ${turn.activity.value}
-# SendActivity_yf0Gqx()
-[Activity
-    Text = ${SendActivity_yf0Gqx_text()}
-]
-
-# SendActivity_yf0Gqx_text()
-- Update activity is not supported in the ${turn.activity.channelId}
-# SendActivity_ZyJXCj()
-[Activity
-    Text = ${SendActivity_ZyJXCj_text()}
-]
-
-# SendActivity_ZyJXCj_text()
-- Make UpdateHeroCard
-# SendActivity_rbHc6y()
-[Activity
-    Text = ${SendActivity_rbHc6y_text()}
-]
-
-# SendActivity_rbHc6y_text()
-- I received an activity with this data in the text field ${turn.activity.text} and this data in the value field ${turn.activity.value}
-# SendActivity_my1RFM()
-[Activity
-    Text = ${SendActivity_my1RFM_text()}
-]
-
-# SendActivity_my1RFM_text()
-- ${dialog.CardType} cards are not supported in the ${turn.activity.channelId} channel.
-# SendActivity_RqQgvd()
-- ${HeroCard()}
-# SendActivity_1aobUb()
-- ${ThumbnailCard()}
-# SendActivity_c6CJZQ()
-- ${ReceiptCard()}
-# SendActivity_9YuVvP()
-- ${SigninCard()}
-# SendActivity_nZU5wE()
-- ${CarouselTemplate()}
-# SendActivity_NeV6qH()
-- ${ListTemplate()}
-# SendActivity_LlnHkK()
-- ${AnimationCard()}
-# SendActivity_6EpsMK()
-- ${AudioCard()}
-# SendActivity_FJgYsK()
-- ${VideoCard()}
-# SendActivity_gegYVL()
--${AdaptiveCardBotAction()}
 # SendActivity_pYKkwT()
 [Activity
     Text = ${SendActivity_pYKkwT_text()}
@@ -100,7 +45,57 @@
 
 # SendActivity_pYKkwT_text()
 - I received an activity with this data in the value field ${turn.activity.value}
-# SendActivity_LlH2fX()
--${AdaptiveCardSubmitAction()}
-# SendActivity_0vTcmw()
+# SendActivity_muQ5dx()
+[Activity
+    Text = ${SendActivity_muQ5dx_text()}
+]
+
+# SendActivity_muQ5dx_text()
+- ${dialog.CardType} cards are not supported in the ${turn.activity.channelId} channel.
+# SendActivity_xQaXd3()
+- ${AdaptiveCardBotAction()}
+# SendActivity_gi7Il1()
 - ${AdaptiveCardTaskModule()}
+# SendActivity_wdjazJ()
+- ${AdaptiveCardSubmitAction()}
+# SendActivity_CQMkYP()
+- ${HeroCard()}
+# SendActivity_yPmKNE()
+- ${ThumbnailCard()}
+# SendActivity_cRm57W()
+- ${ReceiptCard()}
+# SendActivity_jFdVpH()
+- ${SigninCard()}
+# SendActivity_WqKTFa()
+- ${CarouselTemplate()}
+# SendActivity_d764md()
+- ${ListTemplate()}
+# SendActivity_sAEgJI()
+- ${AnimationCard()}
+# SendActivity_LWdTvT()
+- ${AudioCard()}
+# SendActivity_jLEgbL()
+- ${VideoCard()}
+# SendActivity_Mvport()
+- ${TeamsFileConsent()}
+# SendActivity_0TKIF9()
+[Activity
+    Text = ${SendActivity_0TKIF9_text()}
+]
+
+# SendActivity_0TKIF9_text()
+- Update activity is not supported in the ${turn.activity.channelId} channel.
+# SendActivity_K8nWQ1()
+[Activity
+    Text = ${SendActivity_K8nWQ1_text()}
+]
+
+# SendActivity_K8nWQ1_text()
+- Send updated card
+# SendActivity_QwGHzg()
+[Activity
+    Text = ${SendActivity_QwGHzg_text()}
+]
+
+# SendActivity_QwGHzg_text()
+- I received an activity with this data in the text field ${turn.activity.text} and this data in the value field ${turn.activity.value}

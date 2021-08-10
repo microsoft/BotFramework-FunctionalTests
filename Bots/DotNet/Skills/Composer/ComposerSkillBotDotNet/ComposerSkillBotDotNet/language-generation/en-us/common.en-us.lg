@@ -10,15 +10,15 @@
     subtitle = Microsoft Bot Framework
     text = Build and connect intelligent bots to interact with your users naturally wherever they are, from text/sms to Skype, Slack, Office 365 mail and other popular services.
     image = ${CardImageTemplate('https://sec.ch9.ms/ch9/7ff5/e07cfef0-aa3b-40bb-9baa-7c9ef8ff7ff5/buildreactionbotframework_960.jpg')}
-    buttons = ${CardActionTemplate('openUrl', 'Get started', 'https://docs.microsoft.com/bot-framework')}
+    buttons = ${CardActionTemplate('openUrl', 'Get started', 'Get started', 'https://docs.microsoft.com/bot-framework')}
 ]
 
-# CardActionTemplate(type, title, value)
+# CardActionTemplate(type, title, text, value)
 [CardAction
     Type = ${if(type == null, 'imBack', type)}
     Title = ${title}
+    Text = ${text}
     Value = ${value}
-    Text = ${title}
 ]
 
 # ThumbnailCard
@@ -27,7 +27,7 @@
     subtitle = Microsoft Bot Framework
     text = Build and connect intelligent bots to interact with your users naturally wherever they are, from text/sms to Skype, Slack, Office 365 mail and other popular services.
     image = ${CardImageTemplate('https://sec.ch9.ms/ch9/7ff5/e07cfef0-aa3b-40bb-9baa-7c9ef8ff7ff5/buildreactionbotframework_960.jpg')}
-    buttons = ${CardActionTemplate('openUrl', 'Get Started', 'https://docs.microsoft.com/bot-framework')}
+    buttons = ${CardActionTemplate('openUrl', 'Get Started', 'Get started', 'https://docs.microsoft.com/bot-framework')}
 ]
 
 # ReceiptCard
@@ -37,7 +37,7 @@
   items = ${ReceiptItemTemplate('Data Transfer', '$ 38.45', '368', 'https://github.com/amido/azure-vector-icons/raw/master/renders/traffic-manager.png')} | ${ReceiptItemTemplate('App Service', '$ 45.00', '720', 'https://github.com/amido/azure-vector-icons/raw/master/renders/cloud-service.png')}
   tax = $ 7.50
   total = $ 90.95
-  buttons = ${CardActionTemplate('openUrl', 'More information', 'https://azure.microsoft.com/en-us/pricing/')}
+  buttons = ${CardActionTemplate('openUrl', 'More information', 'More information', 'https://azure.microsoft.com/en-us/pricing/')}
 ]
 
 #ReceiptItemTemplate (title, price, quantity, image)
@@ -62,7 +62,7 @@
 # SigninCard
 [SigninCard
     text = BotFramework Sign-in Card
-    buttons = ${CardActionTemplate('signin', 'Sign-in', 'https://login.microsoftonline.com/')}
+    buttons = ${CardActionTemplate('signin', 'Sign-in', 'Sign-in', 'https://login.microsoftonline.com/')}
 ]
 
 # CarouselTemplate
@@ -97,6 +97,13 @@
     autoloop = true
 ]
 
+# UpdateCard
+[UpdateCard
+    title = Update card
+    text = Update Card Action
+    buttons = ${CardActionTemplate('messageBack', 'Update card title', 'Update card text', '{ "count", 0 }')}
+]
+
 > The external file reference here 'Resources\adaptiveCard.json' should be marked as 'copy to output directory'
 > Note: The external file will be read as text and any language generation templates/ expressions in the content will be evaluated.
 > Note: Chatdown already supports the ability to create any card type from its json definition. So you can apply this for not just Adaptive cards but to all card types.
@@ -114,6 +121,11 @@
 # AdaptiveCardTaskModule
 [Activity
     Attachments = ${json(adaptivecardtaskmodulejson())}
+]
+
+# TeamsFileConsent
+[Activity
+    Attachments = ${json(teamsfileconsentjson())}
 ]
 
 # adaptivecardbotactionjson()
@@ -220,17 +232,28 @@
   ],
   "actions": [
     {
-      "type": "Action.Submit",
+      "type": "TaskModule",
       "title": "Launch Task Module",
       "data": {
-        "msteams": {
-          "type": "invoke",
-          "value": { 
-            "hiddenKey": "hidden value from task module launcher"
-          }
-        }
+        "hiddenKey": "hidden value from task module launcher"
       }
     }
   ]
+}
+```
+
+# teamsfileconsentjson()
+- ```
+{
+  "contentType": "application/vnd.microsoft.teams.card.file.consent",
+  "name": "file_example.txt",
+  "content": {
+    "description": "bla bla",
+    "sizeInBytes": 1029393,
+    "acceptContext": {
+    },
+    "declineContext": {
+    }
+  }
 }
 ```
