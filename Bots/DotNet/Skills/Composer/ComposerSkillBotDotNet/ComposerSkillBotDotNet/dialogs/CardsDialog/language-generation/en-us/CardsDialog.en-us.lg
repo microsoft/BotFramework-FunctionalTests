@@ -85,13 +85,6 @@
 
 # SendActivity_0TKIF9_text()
 - Update activity is not supported in the ${turn.activity.channelId} channel.
-# SendActivity_K8nWQ1()
-[Activity
-    Text = ${SendActivity_K8nWQ1_text()}
-]
-
-# SendActivity_K8nWQ1_text()
-- Send updated card
 # SendActivity_QwGHzg()
 [Activity
     Text = ${SendActivity_QwGHzg_text()}
@@ -99,3 +92,7 @@
 
 # SendActivity_QwGHzg_text()
 - I received an activity with this data in the text field ${turn.activity.text} and this data in the value field ${turn.activity.value}
+# SendActivity_73NchW()
+- ${UpdateCardTemplate('Update card', 'Update Card Action', 'Update card title', 'Update card text', '')}
+# UpdateActivity_Activity_Y72Ndw()
+- ${UpdateCardTemplate('Newly updated card', `Update count - ${user.UpdateCount}`, 'Update card', 'UpdateCardAction', '')}

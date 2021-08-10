@@ -97,11 +97,11 @@
     autoloop = true
 ]
 
-# UpdateCard
-[UpdateCard
-    title = Update card
-    text = Update Card Action
-    buttons = ${CardActionTemplate('messageBack', 'Update card title', 'Update card text', '{ "count", 0 }')}
+# UpdateCardTemplate (cardTitle, cardText, actionTitle, actionText, actionValue)
+[HeroCard
+    title = ${cardTitle}
+    text = ${cardText}
+    buttons = ${CardActionTemplate('messageBack', `${actionTitle}`, `${actionText}`, `${actionValue}`)}
 ]
 
 > The external file reference here 'Resources\adaptiveCard.json' should be marked as 'copy to output directory'

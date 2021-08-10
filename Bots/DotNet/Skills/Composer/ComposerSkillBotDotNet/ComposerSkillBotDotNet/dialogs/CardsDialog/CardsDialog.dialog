@@ -243,7 +243,24 @@
                   ]
                 },
                 {
-                  "value": "AdaptiveUpdate"
+                  "value": "AdaptiveUpdate",
+                  "actions": [
+                    {
+                      "$kind": "Microsoft.SendActivity",
+                      "$designer": {
+                        "id": "73NchW"
+                      },
+                      "activity": "${SendActivity_73NchW()}"
+                    },
+                    {
+                      "$kind": "Microsoft.SetProperty",
+                      "$designer": {
+                        "id": "QlEcEb"
+                      },
+                      "property": "user.UpdateCount",
+                      "value": 0
+                    }
+                  ]
                 },
                 {
                   "value": "End",
@@ -316,11 +333,20 @@
                   ],
                   "elseActions": [
                     {
-                      "$kind": "Microsoft.SendActivity",
+                      "$kind": "Microsoft.SetProperty",
                       "$designer": {
-                        "id": "K8nWQ1"
+                        "id": "UwbzoU"
                       },
-                      "activity": "${SendActivity_K8nWQ1()}"
+                      "property": "user.UpdateCount",
+                      "value": "=add(user.UpdateCount, 1)"
+                    },
+                    {
+                      "$kind": "Microsoft.UpdateActivity",
+                      "$designer": {
+                        "id": "Y72Ndw"
+                      },
+                      "activityId": "=turn.activity.replyToId",
+                      "activity": "${UpdateActivity_Activity_Y72Ndw()}"
                     }
                   ]
                 }
