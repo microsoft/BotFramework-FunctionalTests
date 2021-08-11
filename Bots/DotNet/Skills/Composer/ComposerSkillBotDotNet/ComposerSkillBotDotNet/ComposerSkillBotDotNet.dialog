@@ -93,6 +93,19 @@
                   "options": {}
                 }
               ]
+            },
+            {
+              "value": "MessageWithAttachment",
+              "actions": [
+                {
+                  "$kind": "Microsoft.BeginDialog",
+                  "$designer": {
+                    "id": "as1hYq"
+                  },
+                  "activityProcessed": true,
+                  "dialog": "MessageWithAttachmentDialog"
+                }
+              ]
             }
           ],
           "default": [
