@@ -4,7 +4,7 @@
 > !# @exports = GetFile, GetHostUrl
 
 # GetFile()
-- ${fromFile('../../../../../../../media/architecture-resize.png', 'binary')}
+- ${fromFile('../../../../media/architecture-resize.png', 'binary')}
 
 #GetHostUrl(schema, host, port)
 - IF:${startsWith(host, '127.0.0.')}

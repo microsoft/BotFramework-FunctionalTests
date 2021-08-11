@@ -16,4 +16,12 @@
     <PackageReference Include="Microsoft.Bot.Builder.AI.QnA" Version="4.14.1" />
     <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive.Runtime" Version="4.14.1" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="media\architecture-resize.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="media\teams-logo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>
