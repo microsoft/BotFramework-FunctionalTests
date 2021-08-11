@@ -96,3 +96,12 @@
 - ${UpdateCardTemplate('Update card', 'Update Card Action', 'Update card title', 'Update card text', '')}
 # UpdateActivity_Activity_Y72Ndw()
 - ${UpdateCardTemplate('Newly updated card', `Update count - ${user.UpdateCount}`, 'Update card', 'UpdateCardAction', '')}
+# SendActivity_nB1AD7()
+- ${O365Card()}
+# ChoiceInput_UnrecognizedPrompt_CQChcR()
+[Activity
+    Text = ${ChoiceInput_UnrecognizedPrompt_CQChcR_text()}
+]
+
+# ChoiceInput_UnrecognizedPrompt_CQChcR_text()
+- Got: ${turn.activity}\n\nWhat card do you want?

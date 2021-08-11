@@ -104,9 +104,13 @@
     buttons = ${CardActionTemplate('messageBack', `${actionTitle}`, `${actionText}`, `${actionValue}`)}
 ]
 
-> The external file reference here 'Resources\adaptiveCard.json' should be marked as 'copy to output directory'
-> Note: The external file will be read as text and any language generation templates/ expressions in the content will be evaluated.
-> Note: Chatdown already supports the ability to create any card type from its json definition. So you can apply this for not just Adaptive cards but to all card types.
+#O365CardTemplate
+[O365Connector
+  type = MessageCard
+  context = http://schema.org/extensions
+  title = Project Tango
+  summary = John Doe commented on Trello
+]
 
 # AdaptiveCardBotAction
 [Activity
@@ -126,6 +130,11 @@
 # TeamsFileConsent
 [Activity
     Attachments = ${json(teamsfileconsentjson())}
+]
+
+# O365Card
+[Activity
+    Attachments = ${json(o365cardjson())}
 ]
 
 # adaptivecardbotactionjson()
@@ -232,10 +241,15 @@
   ],
   "actions": [
     {
-      "type": "TaskModule",
+      "type": "Action.Submit",
       "title": "Launch Task Module",
       "data": {
-        "hiddenKey": "hidden value from task module launcher"
+        "msteams": {
+          "type": "invoke",
+          "value": {
+            "hiddenKey": "hidden value from task module launcher"
+          }
+        }
       }
     }
   ]
@@ -255,5 +269,17 @@
     "declineContext": {
     }
   }
+}
+```
+
+# o365cardjson()
+- ```
+{
+  "type": "MessageCard",
+  "context": "http://schema.org/extensions",
+  "summary": "John Doe commented on Trello",
+  "title": "Project Tango",
+  "sections": [],
+  "potentialAction": []
 }
 ```

@@ -26,8 +26,6 @@
           "maxTurnCount": 3,
           "alwaysPrompt": false,
           "allowInterruptions": true,
-          "unrecognizedPrompt": "",
-          "invalidPrompt": "",
           "prompt": "${ChoiceInput_Prompt_CQChcR()}",
           "choiceOptions": {
             "includeNumbers": true,
@@ -58,7 +56,8 @@
           "recognizerOptions": {
             "recognizeOrdinals": true,
             "recognizeNumbers": true
-          }
+          },
+          "unrecognizedPrompt": "${ChoiceInput_UnrecognizedPrompt_CQChcR()}"
         },
         {
           "$kind": "Microsoft.IfCondition",
@@ -192,7 +191,16 @@
                   ]
                 },
                 {
-                  "value": "O365"
+                  "value": "O365",
+                  "actions": [
+                    {
+                      "$kind": "Microsoft.SendActivity",
+                      "$designer": {
+                        "id": "nB1AD7"
+                      },
+                      "activity": "${SendActivity_nB1AD7()}"
+                    }
+                  ]
                 },
                 {
                   "value": "TeamsFileConsent",
