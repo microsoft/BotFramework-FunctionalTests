@@ -106,6 +106,19 @@
                   "dialog": "MessageWithAttachmentDialog"
                 }
               ]
+            },
+            {
+              "value": "FileUpload",
+              "actions": [
+                {
+                  "$kind": "Microsoft.BeginDialog",
+                  "$designer": {
+                    "id": "eFvfkP"
+                  },
+                  "activityProcessed": true,
+                  "dialog": "FileUploadDialog"
+                }
+              ]
             }
           ],
           "default": [
