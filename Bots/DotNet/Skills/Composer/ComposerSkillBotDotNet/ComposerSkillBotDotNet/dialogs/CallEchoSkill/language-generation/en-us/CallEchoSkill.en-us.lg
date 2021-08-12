@@ -1,9 +1,0 @@
-[import](common.lg)
-
-# BeginSkill_Activity_Jde1XG()
-[Activity
-    Text = ${BeginSkill_Activity_Jde1XG_text()}
-]
-
-# BeginSkill_Activity_Jde1XG_text()
-- ${turn.activity.text}I'm the echo skill bot
