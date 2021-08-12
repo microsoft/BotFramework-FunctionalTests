@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System;
 using System.Collections.Concurrent;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -10,7 +11,6 @@ using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Builder.Integration.AspNet.Core.Skills;
 using Microsoft.Bot.Builder.Skills;
 using Microsoft.Bot.Connector.Authentication;
-using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Authentication;
 using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Bots;
 using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs;
 using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Proactive;
@@ -22,6 +22,8 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot
 {
     public class Startup
     {
+        private const string CallersConfigKey = "AllowedCallers";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -35,25 +37,36 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot
             services.AddControllers()
                 .AddNewtonsoftJson();
 
-            // Configure credentials.
             services.AddSingleton<ICredentialProvider, ConfigurationCredentialProvider>();
-            if (!string.IsNullOrEmpty(Configuration["ChannelService"]))
+
+            services.AddSingleton(sp =>
             {
-                // Register a ConfigurationChannelProvider -- this is only for Azure Gov.
-                services.AddSingleton<IChannelProvider, ConfigurationChannelProvider>();
-            }
+                // AllowedCallers is the setting in the appsettings.json file that consists of the list of parent bot IDs that are allowed to access the skill.
+                // To add a new parent bot, simply edit the AllowedCallers and add the parent bot's Microsoft app ID to the list.
+                // In this sample, we allow all callers if AllowedCallers contains an "*".
+                var callersSection = Configuration.GetSection(CallersConfigKey);
+                var callers = callersSection.Get<string[]>();
+                if (callers == null)
+                {
+                    throw new ArgumentNullException($"\"{CallersConfigKey}\" not found in configuration.");
+                }
 
-            // Register AuthConfiguration to enable custom claim validation.
-            services.AddSingleton(sp => new AuthenticationConfiguration { ClaimsValidator = new Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Authentication.AllowedCallersClaimsValidator(sp.GetService<IConfiguration>()) });
+                return new AuthenticationConfiguration { ClaimsValidator = new AllowedCallersClaimsValidator(callers) };
+            });
 
-            // Register the Bot Framework Adapter with error handling enabled.
+            services.AddSingleton<BotFrameworkAuthentication, ConfigurationBotFrameworkAuthentication>();
+
+            // Register the Cloud Adapter with error handling enabled.
             // Note: some classes use the base BotAdapter so we add an extra registration that pulls the same instance.
-            services.AddSingleton<BotFrameworkHttpAdapter, SkillAdapterWithErrorHandler>();
-            services.AddSingleton<BotAdapter>(sp => sp.GetService<BotFrameworkHttpAdapter>());
+            services.AddSingleton<CloudAdapter, SkillAdapterWithErrorHandler>();
+            services.AddSingleton<IBotFrameworkHttpAdapter>(sp => sp.GetService<CloudAdapter>());
+            services.AddSingleton<BotAdapter>(sp => sp.GetService<CloudAdapter>());
 
             // Register the skills conversation ID factory, the client and the request handler.
             services.AddSingleton<SkillConversationIdFactoryBase, SkillConversationIdFactory>();
+
             services.AddHttpClient<SkillHttpClient>();
+
             services.AddSingleton<ChannelServiceHandler, SkillHandler>();
 
             // Create the storage we'll be using for User and Conversation state. (Memory is great for testing purposes.)
