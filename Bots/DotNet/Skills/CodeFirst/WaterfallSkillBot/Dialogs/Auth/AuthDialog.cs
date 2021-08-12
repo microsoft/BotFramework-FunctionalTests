@@ -51,13 +51,13 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Auth
                 stepContext.Values["Token"] = tokenResponse.Token;
 
                 // Show the token
-                var loggedInMessage = "You are now logged in.";
+                const string loggedInMessage = "You are now logged in.";
                 await stepContext.Context.SendActivityAsync(MessageFactory.Text(loggedInMessage, loggedInMessage, InputHints.IgnoringInput), cancellationToken);
 
                 return await stepContext.PromptAsync(nameof(ConfirmPrompt), new PromptOptions { Prompt = MessageFactory.Text("Would you like to view your token?") }, cancellationToken);
             }
 
-            var tryAgainMessage = "Login was not successful please try again.";
+            const string tryAgainMessage = "Login was not successful please try again.";
             await stepContext.Context.SendActivityAsync(MessageFactory.Text(tryAgainMessage, tryAgainMessage, InputHints.IgnoringInput), cancellationToken);
             return await stepContext.ReplaceDialogAsync(InitialDialogId, cancellationToken: cancellationToken);
         }
@@ -67,14 +67,23 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Auth
             var result = (bool)stepContext.Result;
             if (result)
             {
-                var showTokenMessage = "Here is your token:";
+                const string showTokenMessage = "Here is your token:";
                 await stepContext.Context.SendActivityAsync(MessageFactory.Text($"{showTokenMessage} {stepContext.Values["Token"]}", showTokenMessage, InputHints.IgnoringInput), cancellationToken);
             }
 
             // Sign out
-            var botAdapter = (BotFrameworkAdapter)stepContext.Context.Adapter;
-            await botAdapter.SignOutUserAsync(stepContext.Context, _connectionName, null, cancellationToken);
-            var signOutMessage = "I have signed you out.";
+            const string signOutMessage = "I have signed you out.";
+            var oauthPrompt = new OAuthPrompt(
+                "SignOut",
+                new OAuthPromptSettings
+                {
+                    ConnectionName = _connectionName,
+                    Text = signOutMessage,
+                    Title = "Sign Out"
+                });
+
+            await oauthPrompt.SignOutUserAsync(stepContext.Context, cancellationToken);
+
             await stepContext.Context.SendActivityAsync(MessageFactory.Text(signOutMessage, signOutMessage, inputHint: InputHints.IgnoringInput), cancellationToken);
 
             return await stepContext.EndDialogAsync(cancellationToken: cancellationToken);
