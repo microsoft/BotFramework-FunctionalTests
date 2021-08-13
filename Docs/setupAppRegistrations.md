@@ -1,4 +1,4 @@
-# How to setup up App Registrations
+# How to setup App Registrations
 
 The following steps will guide you on how to manually set up App Registrations.
 By default, App Registrations are created and used automatically across the [pipelines](./pipelines.md), but the possibility of setting them up manually is available.
@@ -16,12 +16,12 @@ To skip stages, simple click on Stages to run, deselect them, and click Use sele
 
 ## Create App Registrations
 
-App Registration credentials must be created for each bot to be deployed and tested (there are fourteen currently, but the number is expected to increase in the future).
+App Registration credentials must be created for each bot to be deployed and tested (see [Available Bots](./availableBotsList.md)).
 To do this, you could head to [App Registrations](https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade) on Azure and create them one by one, but we created a PowerShell script to create registration batches automatically. The only requirement to run it is to have access to an active Azure account.
 
 Click [here](./media/CreateAppRegistrations.ps1) to go to the script.
 
-Executing it will prompt you to log into your account with your default browser, then to define a prefix for the registration names, and finally for the amount of registrations to create. Both have default values (triggered by pressing Enter) to accommodate for the creation of fourteen credentials with generic names.
+Executing the script will prompt you to log into your account with your default browser, then to define a prefix for the registration names, and finally for the amount of registrations to create. Both have default values (triggered by pressing Enter) to accommodate for the creation of eighteen credentials with generic names.
 The creation process will start, displaying each registration's name, ID, and password created while running.
 
 ![setupAppRegistrations2](media/setupAppRegistrations2.png)
@@ -40,49 +40,21 @@ If you didn't have any variables set up already, it will look like the picture o
 
 ![setupAppRegistrations4](media/setupAppRegistrations4.png)
 
-The following list contains all current variable names to be created, each credential pair can be populated with any of the ones created in the [Create App Registrations](#create-app-registrations) step.
-
+You must create a pair of variables for each bot in the [list of available bots](./availableBotsList.md) adding `AppId` and `AppSecret` to the bot's name.
+For example:
 - BffnEchoSkillBotComposerDotNetAppId
 - BffnEchoSkillBotComposerDotNetAppSecret
-- BffnEchoSkillBotDotNet21AppId
-- BffnEchoSkillBotDotNet21AppSecret
-- BffnEchoSkillBotDotNetAppId
-- BffnEchoSkillBotDotNetAppSecret
-- BffnEchoSkillBotDotNetV3AppId
-- BffnEchoSkillBotDotNetV3AppSecret
-- BffnEchoSkillBotJSAppId
-- BffnEchoSkillBotJSAppSecret
-- BffnEchoSkillBotJSV3AppId
-- BffnEchoSkillBotJSV3AppSecret
-- BffnEchoSkillBotPythonAppId
-- BffnEchoSkillBotPythonAppSecret
-- BffnSimpleHostBotComposerDotNetAppId
-- BffnSimpleHostBotComposerDotNetAppSecret
-- BffnSimpleHostBotDotNet21AppId
-- BffnSimpleHostBotDotNet21AppSecret
-- BffnSimpleHostBotDotNetAppId
-- BffnSimpleHostBotDotNetAppSecret
-- BffnSimpleHostBotJSAppId
-- BffnSimpleHostBotJSAppSecret
-- BffnSimpleHostBotPythonAppId
-- BffnSimpleHostBotPythonAppSecret
-- BffnWaterfallHostBotDotNetAppId
-- BffnWaterfallHostBotDotNetAppSecret
-- BffnWaterfallSkillBotDotNetAppId
-- BffnWaterfallSkillBotDotNetAppSecret
+
+Each credential pair can be populated with any of the ones created in the [Create App Registrations](#create-app-registrations) step.
 
 Don't forget to click on SAVE once you've finished setting up every variable.
 
 ![setupAppRegistrations5](media/setupAppRegistrations5.png)
 
 Lastly, you'll have to create new variables for the [Run Test Scenarios](../build/yaml/testScenarios/runTestScenarios.yml), same steps apply.
-This pipeline requires only the App Registration IDs of the skill bots, so the list is shorter. Just be sure to use the same IDs as with the [Deploy Bot Resources](../build/yaml/deployBotResources/deployBotResources.yml) pipeline.
-
+This pipeline requires only the App Registration IDs of the skill bots, so the list is shorter. 
+For example:
 - BffnEchoSkillBotComposerDotnetAppId
-- BffnEchoSkillBotDotNet21AppId
-- BffnEchoSkillBotDotNetAppId
-- BffnEchoSkillBotDotNetV3AppId
-- BffnEchoSkillBotJSAppId
-- BffnEchoSkillBotJSV3AppId
-- BffnEchoSkillBotPythonAppId
-- BffnWaterfallSkillBotDotNetAppId
+
+Just be sure to use the same IDs as with the [Deploy Bot Resources](../build/yaml/deployBotResources/deployBotResources.yml) pipeline.
+
