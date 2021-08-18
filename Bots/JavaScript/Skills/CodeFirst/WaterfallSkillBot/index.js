@@ -187,7 +187,7 @@ server.post('/api/skills/v3/conversations/:conversationId/activities/:activityId
     const claimsIdentity = await handler.authenticate(authHeader);
 
     const response = await new Promise(resolve => {
-      adapter.continueConversationAsync(process.env.MicrosoftAppId || '', ref.conversationReference, ref.oAuthScope, async context => {
+      return adapter.continueConversationAsync(process.env.MicrosoftAppId || '', ref.conversationReference, ref.oAuthScope, async context => {
         context.turnState.set(adapter.BotIdentityKey, claimsIdentity);
         context.turnState.set(adapter.SkillConversationReferenceKey, ref);
 
