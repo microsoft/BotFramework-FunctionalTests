@@ -17,6 +17,7 @@ from botbuilder.core.integration import (
     aiohttp_error_middleware,
 )
 from botbuilder.schema import Activity
+from botbuilder.core.skills import SkillConversationIdFactory
 from botbuilder.integration.aiohttp.skills import SkillHttpClient
 from botframework.connector.auth import (
     AuthenticationConfiguration,
@@ -28,7 +29,6 @@ from bots import RootBot
 from dialogs import MainDialog
 from skills_configuration import DefaultConfig, SkillsConfiguration
 from adapter_with_error_handler import AdapterWithErrorHandler
-from skill_conversation_id_factory import SkillConversationIdFactory
 from token_exchange_skill_handler import TokenExchangeSkillHandler
 
 CONFIG = DefaultConfig()
@@ -96,6 +96,6 @@ APP.router.add_routes(aiohttp_channel_service_routes(SKILL_HANDLER, "/api/skills
 
 if __name__ == "__main__":
     try:
-        web.run_app(APP, host="localhost", port=CONFIG.PORT)
+        web.run_app(APP, port=CONFIG.PORT)
     except Exception as error:
         raise error

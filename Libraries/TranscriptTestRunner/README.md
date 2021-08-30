@@ -3,21 +3,15 @@
 ## Summary
 
 Transcript Test Runner aims to simplify complex conversation scenarios against bots.
-Starting from a transcript file containing the user-bot interactions to be tested, the Transcript Test Runner converts the transcript into a test script used to replicate the messages sent by the user and evaluate the answers from the bot.
+Starting from a [test script](testscript.schema) file containing the user-bot interactions to be tested, the Transcript Test Runner replicates the messages sent by the user and evaluates the answers from the bot.
 
-The Transcript Test Runner also offers the possibility of running the tests directly from a [test script](testscript.schema), adding flexibility to the assertions for the bot's messages.
-
-The Test Runner supports different formats of transcript files (Emulator, Teams, Slack, etc.) and
-can be connected to the bots using different channels (*):
-- DirectLineClient
-- TeamsClient
-- SlackClient
-- FacebookClient
-
-(*) _This first version implements the DirectLineClient and uses Emulator transcript files. Stay tuned for the next features._
+A Test Script is basically a JSON file with an array of [TestScriptItem](TestScriptItem.cs) that will be used by the `TestRunner` as a test input.
 
 ## User Step-by-step Guide
-This step-by-step guide shows how to run a test with the `TestRunner` configuring a `DirectLine` client to communicate with the bots, and starting from an Emulator transcript file.
+This step-by-step guide shows how to run a test with the `TestRunner` configuring a `DirectLine` client to communicate with the bots.
+
+### Creating the Test Script file
+You can convert a transcript file into a test script using the [Transcript Converter](../TranscriptConverter/TranscriptConverter.csproj) tool or create one manually using this [JSON schema](testscript.schema).
 
 ### Using the TestRunner
 1- Open your test project and install the `TranscriptTestRunner` package.
@@ -32,65 +26,37 @@ This step-by-step guide shows how to run a test with the `TestRunner` configurin
 
 > **Note:** For more information on how to obtain the bot `DIRECTLINE` secret key, follow [this guide](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-channel-connect-directline).
 
-3- Add the `Emulator Transcript` file in a folder on your test project. To create a transcript file, follow [these steps](https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-debug-transcript?view=azure-bot-service-4.0#creatingstoring-a-bot-transcript-file).
+3- Add the `Test Script` file in a folder on your test project.
 
 4- Add the `TestRunner` to your test.
 
 ```csharp
+// Create the test options
+var options = new DirectLineTestClientOptions { BotId = "<bot-id>", DirectLineSecret = "<direct-line-secret>" };
+
 // Create a DirectLine client with the `TestClientFactory`.
-var directLineClient = new TestClientFactory(ClientType.DirectLine).GetTestClient();
+var directLineClient = new TestClientFactory(ClientType.DirectLine, options).GetTestClient();
 
 // Instantiate the TestRunner and set up the DirectLine client.
 var runner = new TestRunner(directLineClient);
 
-// Run the test recorded in the transcript file.
-await runner.RunTestAsync("<path to the transcript file>");
+// Run the test recorded in the test script file.
+await runner.RunTestAsync("<path to the test script file>");
 ```
-The `TestRunner` will convert the transcript file into a Test Script with the messages the user sends to the bot and the assertions that should be made to the bot's answers.
+The `TestRunner` will execute test script sending the user messages to the bot performing the assertions over the bot's answers.
 
-The `TestRunner` also allows you to run the test from a custom Test Script file.
-
-### Using a Test Script file
-A Test Script is basically a JSON file with an array of [TestScriptItem](TestScriptItem.cs) that will be used by the `TestRunner` as a test input.
-
-Create a test script file using this [JSON schema](testscript.schema).
-```json
-[
- {
-   "type": "conversationUpdate",
-   "role": "user"
- },
- {
-   "type": "message",
-   "role": "bot",
-   "text": "Hello and welcome!",
-   "assertions": [
-     "type == 'message'",
-     "from.role == 'bot'",
-     "recipient.role == 'user'",
-     "text == 'Hello and welcome!'",
-     "inputHint == 'acceptingInput'"
-   ]
- },
- {
-   "type": "message",
-   "role": "user",
-   "text": "Hi"
- }
-]
-```
-> **Note:** The JSON Schema is still a work in progress.
-
-Once the Test Script file is created, store it in a folder on your test project and pass it to the _RunTestAsync_ method of the TestRunner instead of the transcript file.
 
 ### Creating tests programmatically
-The `TestRunner` allows you to run tests in a programmatic way, sending Activities to the bot and Assert its reply.
+The `TestRunner` allows you to run tests in a programmatic way, sending Activities to the bot and asserting its reply.
 
 The following sample shows how to create a simple test programmatically.
 
 ```csharp
+// Create the test options
+var options = new DirectLineTestClientOptions { BotId = "<bot-id>", DirectLineSecret = "<direct-line-secret>" };
+
 // Create a DirectLine client instance that will be used to communicate with your bot.
-var directLineClient = new TestClientFactory(ClientType.DirectLine).GetTestClient();
+var directLineClient = new TestClientFactory(ClientType.DirectLine, options).GetTestClient();
 
 // Instantiate the TestRunner and set up the DirectLine client.
 var runner = new TestRunner(directLineClient);
@@ -119,8 +85,10 @@ This method is used when your bot has an authentication implementation and you w
 The following sample shows how to use the `ClientSignInAsync` method to sign in.
 
 ```csharp
+// Create the test options.
+var options = new DirectLineTestClientOptions { BotId = "<bot-id>", DirectLineSecret = "<direct-line-secret>" };
 // Create a DirectLine client instance that will be used to communicate with your bot.
-var directLineClient = new TestClientFactory(ClientType.DirectLine).GetTestClient();
+var directLineClient = new TestClientFactory(ClientType.DirectLine, options).GetTestClient();
 // Instantiate the TestRunner and set up the DirectLine client.
 var runner = new TestRunner(directLineClient);
 var signInUrl = string.Empty;
@@ -168,20 +136,22 @@ var loggerFactory = LoggerFactory.Create(builder =>
 // Create the `Logger` instance with a Category name.
 var logger = loggerFactory.CreateLogger("Category");
 
+// Create the test options
+var options = new DirectLineTestClientOptions { BotId = "<bot-id>", DirectLineSecret = "<direct-line-secret>" };
 // Create a DirectLine client instance that will be used to communicate with your bot.
-var directLineClient = new TestClientFactory(ClientType.DirectLine).GetTestClient();
+var directLineClient = new TestClientFactory(ClientType.DirectLine, options).GetTestClient();
 // Instantiate the TestRunner, set up the DirectLine client, and send the created `Logger`.
-var runner = new TestRunner(directLineClient, logger);
+var runner = new TestRunner(directLineClient, logger = logger);
 ```
 
 ### Extend TestRunner functionality
-TestRunner has an Xunit extention to allow the users that prefer this test framework, to override the `AssertActivityAsync` with Xunit assertions.
+TestRunner has an Xunit extension to allow the users that prefer this test framework, to override the `AssertActivityAsync` with Xunit assertions.
 
 ```csharp
 public class XUnitTestRunner : TestRunner
 {
-    public XUnitTestRunner(TestClientBase client, ILogger logger = null)
-        : base(client, logger)
+    public XUnitTestRunner(TestClientBase client, int replyTimeout = 180000, int thinkTime = 0, ILogger logger = null)
+            : base(client, replyTimeout, thinkTime, logger)
     {
     }
 

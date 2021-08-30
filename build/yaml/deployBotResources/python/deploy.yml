@@ -1,10 +1,10 @@
 parameters:
-  - name: appServicePlan
-    displayName: App Service Plan name
+  - name: appInsight
+    displayName: Azure Application Insight name
     type: string
 
-  - name: appServicePlanRG
-    displayName: App Service Plan Resource Group
+  - name: appServicePlan
+    displayName: App Service Plan name
     type: string
 
   - name: azureSubscription
@@ -31,12 +31,24 @@ parameters:
     displayName: Key Vault name
     type: string
 
+  - name: projectTag
+    displayName: Tag for bot's application service
+    type: string
+
   - name: resourceGroup
     displayName: Resource Group
     type: string
 
   - name: resourceSuffix
     displayName: Azure resources' name suffix
+    type: string
+
+  - name: sharedResourceGroup
+    displayName: Shared Resource Group
+    type: string
+
+  - name: virtualNetwork
+    displayName: Virtual network name
     type: string
 
 stages:
@@ -72,19 +84,21 @@ stages:
 
           # Prepare .env file, deleting all the declared skills, so it uses only the settings define in Azure
           - ${{ if eq(bot.type, 'Host') }}:
-              - task: PowerShell@2
-                displayName: "Prepare .env file"
-                inputs:
-                  targetType: inline
-                  script: |
-                    $file = "${{ bot.project.directory }}/.env"
-                    $content = Get-Content $file
-                    $content | ForEach-Object {
-                      $line = $_
-                      if ($line.Trim().Length -gt 0 -and -not $line.Trim().ToLower().StartsWith("skill_")) {
-                        $line
-                      }
-                    } | Set-Content $file
+            - task: PowerShell@2
+              displayName: "Prepare .env file"
+              inputs:
+                targetType: inline
+                workingDirectory: '$(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ bot.project.directory }}'
+                failOnStderr: true
+                script: |
+                  $file = "./.env"
+                  $content = Get-Content $file
+                  $content | ForEach-Object {
+                    $line = $_
+                    if ($line.Trim().Length -gt 0 -and -not $line.Trim().ToLower().StartsWith("skill_")) {
+                      $line
+                    }
+                  } | Set-Content $file;
 
           # Evaluate dependencies source and version
           - template: evaluateDependenciesVariables.yml
@@ -103,19 +117,78 @@ stages:
                 botName: "${{ bot.displayName }}"
               version: "$(DEPENDENCIESVERSIONNUMBER)"
 
+          - task: AzureCLI@2
+            displayName: "Build and Push Container"
+            inputs:
+              azureSubscription: "${{ parameters.azureSubscription }}"
+              addSpnToEnvironment: true
+              failOnStderr: true
+              scriptType: pscore
+              scriptLocation: inlineScript
+              workingDirectory: $(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ bot.project.directory }}
+              inlineScript: |
+                az acr login --name ${{ bot.container.registry }} --username="$env:SERVICEPRINCIPALID" --password="$env:SERVICEPRINCIPALKEY"
+                $container = "${{ bot.container.registry }}.azurecr.io/${{ bot.name }}:v$(DEPENDENCIESVERSIONNUMBER)";
+
+                # Copy Dockerfile
+                copy "$(SYSTEM.DEFAULTWORKINGDIRECTORY)/Bots/Python/Dockerfile" .
+
+                # Delete Container
+                $repositories = az acr repository list --name ${{ bot.container.registry }} | ConvertFrom-Json;
+                if($repositories -and $repositories.Contains("${{ bot.name }}")){
+                  "Container repository removed: '${{ bot.container.registry }}.azurecr.io/${{ bot.name }}'.";
+                  az acr repository delete --name ${{ bot.container.registry }} --repository ${{ bot.name }} --yes --output none
+                }
+
+                # Build and Push Container
+                docker build --tag $container .
+                docker push $container
+
+                # Export Bot
+                $containerId = docker create $container
+                docker cp "$($containerId):/app" .
+
+          # Zip bot
+          - task: ArchiveFiles@2
+            displayName: "Zip bot"
+            inputs:
+              rootFolderOrFile: "$(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ bot.project.directory }}/app"
+              includeRootFolder: false
+              archiveType: "zip"
+              archiveFile: "$(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ bot.name }}.zip"
+              replaceExistingArchive: true
+              verbose: true
+
+          # Upload zip to artifacts in case we want to debug it
+          - task: PublishBuildArtifacts@1
+            displayName: "Publish zip package"
+            inputs:
+              pathToPublish: "$(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ bot.name }}.zip"
+              artifactName: python-$(BUILD.BUILDID)
+
           # Create App Service and Bot Channel Registration
           - template: ../common/createAppService.yml
             parameters:
               appId: $(APPID)
               appSecret: $(APPSECRET)
+              appInsight: "${{ parameters.appInsight }}"
               appServicePlan: "${{ parameters.appServicePlan }}"
-              appServicePlanRG: "${{ parameters.appServicePlanRG }}"
               azureSubscription: "${{ parameters.azureSubscription }}"
-              botName: "${{ bot.name }}"
               botGroup: "${{ parameters.resourceGroup }}"
+              botName: "${{ bot.name }}"
               botPricingTier: "${{ parameters.botPricingTier }}"
+              container:
+                registry: "${{ bot.container.registry }}"
+                repository: "${{ bot.name }}"
+                tag: "v$(DEPENDENCIESVERSIONNUMBER)"
+                port: "${{ bot.container.port }}"
+                command: "${{ bot.container.command }}"
+              projectTag: "${{ parameters.projectTag }}"
               resourceSuffix: "${{ parameters.resourceSuffix }}"
-              templateFile: "build/templates/template-python-bot-resources.json"
+              sharedResourceGroup: "${{ parameters.sharedResourceGroup }}"
+              templateFile: "build/templates/template-container-linux-bot-resources.json"
+              virtualNetwork: "${{ parameters.virtualNetwork }}"
+              virtualNetworkSubnet: "python"
 
           # Configure OAuth
           - ${{ if eq(bot.type, 'Skill') }}:
@@ -128,47 +201,3 @@ stages:
                 botName: "${{ bot.name }}"
                 connectionName: "${{ parameters.connectionName }}"
                 resourceSuffix: "${{ parameters.resourceSuffix }}"
-
-          # Set Python version
-          - task: UsePythonVersion@0
-            displayName: "Set python version to 3.8.x"
-            inputs:
-              versionSpec: "3.8.x"
-
-          # Build Python app (linux only)
-          - script: |
-                python -m venv antenv
-                source antenv/bin/activate
-                python -m pip install --upgrade pip
-                pip install -r requirements.txt
-            workingDirectory: $(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ bot.project.directory }}
-            displayName: "Build Python app"
-
-          # Zip bot
-          - task: ArchiveFiles@2
-            displayName: "Zip bot"
-            inputs:
-              rootFolderOrFile: "$(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ bot.project.directory }}"
-              includeRootFolder: false
-              archiveType: "zip"
-              archiveFile: "$(SYSTEM.DEFAULTWORKINGDIRECTORY)/build/${{ bot.name }}.zip"
-              replaceExistingArchive: true
-              verbose: true
-
-          # Upload zip to artifacts in case we want to debug it
-          - task: PublishBuildArtifacts@1
-            displayName: "Publish zip package"
-            inputs:
-              pathToPublish: "$(SYSTEM.DEFAULTWORKINGDIRECTORY)/build/${{ bot.name }}.zip"
-              artifactName: python-$(BUILD.BUILDID)
-            
-          # Deploy bot
-          - task: AzureWebApp@1
-            displayName: "Deploy Azure Web App : ${{ bot.name }}-$(BUILD.BUILDID)"
-            inputs:
-              azureSubscription: "${{ parameters.azureSubscription }}"
-              appName: "${{ bot.name }}${{ parameters.resourceSuffix }}-$(BUILD.BUILDID)"
-              appType: webAppLinux
-              resourceGroupName: "${{ parameters.resourceGroup }}"
-              package: "$(System.DefaultWorkingDirectory)/build/${{ bot.name }}.zip"
-              deploymentMethod: runFromPackage

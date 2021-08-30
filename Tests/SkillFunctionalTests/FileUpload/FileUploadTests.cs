@@ -74,13 +74,13 @@ namespace SkillFunctionalTests.FileUpload
         [MemberData(nameof(TestCases))]
         public async Task RunTestCases(TestCaseDataObject testData)
         {
-            const string fileName = "TestFile.txt";
             var testGuid = Guid.NewGuid().ToString();
+            var fileName = $"TestFile-{testGuid}.txt";
             var testCase = testData.GetObject<TestCase>();
             Logger.LogInformation(JsonConvert.SerializeObject(testCase, Formatting.Indented));
 
             var options = TestClientOptions[testCase.HostBot];
-            var runner = new XUnitTestRunner(new TestClientFactory(testCase.ChannelId, options, Logger).GetTestClient(), TestRequestTimeout, Logger);
+            var runner = new XUnitTestRunner(new TestClientFactory(testCase.ChannelId, options, Logger).GetTestClient(), TestRequestTimeout, ThinkTime, Logger);
 
             // Execute the first part of the conversation.
             var testParams = new Dictionary<string, string>
@@ -93,14 +93,14 @@ namespace SkillFunctionalTests.FileUpload
 
             await runner.RunTestAsync(Path.Combine(_testScriptsFolder, testCase.Script), testParams);
 
-            // Create or Update testFile.
-            await using var stream = File.OpenWrite(Directory.GetCurrentDirectory() + $"/FileUpload/Media/{fileName}");
+            // Create a new file to upload.
+            await using var stream = File.Create(Directory.GetCurrentDirectory() + $"/FileUpload/{fileName}");
             await using var writer = new StreamWriter(stream);
             await writer.WriteLineAsync($"GUID:{testGuid}");
             writer.Close();
 
             // Upload file.
-            await using var file = File.OpenRead(Directory.GetCurrentDirectory() + $"/FileUpload/Media/{fileName}");
+            await using var file = File.OpenRead(Directory.GetCurrentDirectory() + $"/FileUpload/{fileName}");
             await runner.UploadAsync(file);
 
             // Execute the rest of the conversation.
