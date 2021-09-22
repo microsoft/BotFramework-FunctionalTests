@@ -17,7 +17,7 @@ For the process to be able to find the resources, the following inputs must be p
 
 | Input                   | Description                                                                                                                                                   | Condition | Default              | Example                                                           |
 | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | -------------------- | ----------------------------------------------------------------- |
-| ResourceGroup           | The Name for the specific Resource Group where the resources are deployed, For each specific language will concatenate (DotNet, JS and Python).               | Required  | BFFN                 | "bffnbots"                                                        |
+| ResourceGroup           | The Name for the specific Resource Group where the resources are deployed. For each specific language will concatenate (DotNet, JS and Python).               | Required  | BFFN                 | "bffnbots"                                                        |
 | ResourceSuffix          | The Suffix used to concatenate at the end of the Resource Name followed up by the ResourceSuffixSeparator.                                                    | Required  |                      | "microsoft-396"                                                   |
 | Subscription            | The Name or Id of the Subscription where the resources are located.                                                                                           | Optional  | Current Subscription | "00000000-0000-0000-0000-000000000000" or "bffnbots-subscription" |
 | ResourceSuffixSeparator | The separator used for the Suffix to split the Resource Name from the ResourceSuffix. <br> **Note:** _Only available when providing it through `parameters`_. | Optional  | -                    | "" or "-microsoft-"                                               |
@@ -38,7 +38,7 @@ After providing the desired [Inputs][inputs], the script will start looking for 
 
 ![sample][sample]
 
-> **Note:** When not `appsettings.Development.json` file is found, it will proceed by generating a copy from the `appsettings.json` baseline file.
+> **Note:** When no `appsettings.Development.json` file is found, it will proceed by generating a copy from the `appsettings.json` baseline file.
 
 > **Note:** Applies to `Subscription` input. When multiple Subscriptions are detected, a prompt to choose the desired one will appear. `Can be entered by Number (#), Name or Id`, otherwise the `default` one will be used instead.
 

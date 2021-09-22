@@ -9,7 +9,7 @@
   Configure AppSettings file with DirectLine Secrets gathered from Azure Bot Resources based on the Resource Group, Resource Suffix and Subscription provided by the user.
 
   .PARAMETER ResourceGroup
-  Specifies the Name for the specific Resource Group where the resources are deployed, For each specific language will concatenate (DotNet, JS and Python). Default (BFFN).
+  Specifies the Name for the specific Resource Group where the resources are deployed. For each specific language will concatenate (DotNet, JS and Python). Default (BFFN).
 
   .PARAMETER ResourceSuffix
   Specifies the Suffix used to concatenate at the end of the Resource Name followed up by the ResourceSuffixSeparator.
@@ -94,7 +94,7 @@ if ([string]::IsNullOrEmpty($Subscription)) {
   $Subscriptions = @(az account list | ConvertFrom-Json);
 
   if (-not $Subscriptions) {
-    Write-Host "There are no Subscriptions availables." -ForegroundColor Red;
+    Write-Host "There are no Subscriptions available." -ForegroundColor Red;
     exit 1;
   }
 
