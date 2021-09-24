@@ -1,0 +1,71 @@
+{
+  "$kind": "Microsoft.AdaptiveDialog",
+  "$designer": {
+    "id": "pRoesq",
+    "name": "SsoSkillSignInDialog",
+    "comment": ""
+  },
+  "autoEndDialog": true,
+  "defaultResultProperty": "dialog.result",
+  "triggers": [
+    {
+      "$kind": "Microsoft.OnBeginDialog",
+      "$designer": {
+        "name": "BeginDialog",
+        "description": "",
+        "id": "4gPSBK"
+      },
+      "actions": [
+        {
+          "$kind": "Microsoft.OAuthInput",
+          "$designer": {
+            "id": "Mlm8u9"
+          },
+          "timeout": 900000,
+          "property": "user.token",
+          "maxTurnCount": 100,
+          "allowInterruptions": true,
+          "connectionName": "=settings.SsoConnectionName",
+          "text": "Sign in to the Skill using AAD",
+          "title": "Sign In",
+          "invalidPrompt": "${OAuthInput_InvalidPrompt_Mlm8u9()}"
+        },
+        {
+          "$kind": "Microsoft.IfCondition",
+          "$designer": {
+            "id": "elvAxZ"
+          },
+          "condition": "=empty(user.token)",
+          "actions": [
+            {
+              "$kind": "Microsoft.SendActivity",
+              "$designer": {
+                "id": "CD2CgY"
+              },
+              "activity": "${SendActivity_CD2CgY()}"
+            }
+          ],
+          "elseActions": [
+            {
+              "$kind": "Microsoft.SendActivity",
+              "$designer": {
+                "id": "9kZTzY"
+              },
+              "activity": "${SendActivity_9kZTzY()}"
+            }
+          ]
+        },
+        {
+          "$kind": "Microsoft.EndDialog",
+          "$designer": {
+            "id": "GrCorU"
+          },
+          "value": "dialog.selectedSkill"
+        }
+      ]
+    }
+  ],
+  "generator": "SsoSkillSignInDialog.lg",
+  "recognizer": "SsoSkillSignInDialog.lu.qna",
+  "id": "SsoSkillSignInDialog"
+}
