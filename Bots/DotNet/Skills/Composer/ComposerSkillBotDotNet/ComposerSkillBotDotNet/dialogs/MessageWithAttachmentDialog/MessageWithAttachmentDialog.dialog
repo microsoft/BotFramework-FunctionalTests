@@ -1,0 +1,132 @@
+{
+  "$kind": "Microsoft.AdaptiveDialog",
+  "$designer": {
+    "id": "WJ6eaD",
+    "name": "MessageWithAttachmentDialog",
+    "comment": ""
+  },
+  "autoEndDialog": true,
+  "defaultResultProperty": "dialog.result",
+  "triggers": [
+    {
+      "$kind": "Microsoft.OnBeginDialog",
+      "$designer": {
+        "name": "BeginDialog",
+        "description": "",
+        "id": "5UsS6y"
+      },
+      "actions": [
+        {
+          "$kind": "Microsoft.ChoiceInput",
+          "$designer": {
+            "id": "uYVf93"
+          },
+          "defaultLocale": "en-us",
+          "disabled": false,
+          "maxTurnCount": 3,
+          "alwaysPrompt": false,
+          "allowInterruptions": false,
+          "unrecognizedPrompt": "${ChoiceInput_UnrecognizedPrompt_uYVf93()}",
+          "invalidPrompt": "",
+          "prompt": "${ChoiceInput_Prompt_uYVf93()}",
+          "choiceOptions": {
+            "includeNumbers": true,
+            "inlineOrMore": ", or ",
+            "inlineOr": " or ",
+            "inlineSeparator": ", "
+          },
+          "style": "suggestedAction",
+          "choices": [
+            "Inline",
+            "Internet"
+          ],
+          "recognizerOptions": {
+            "recognizeOrdinals": true
+          },
+          "property": "dialog.AttachmentType"
+        },
+        {
+          "$kind": "Microsoft.SwitchCondition",
+          "$designer": {
+            "id": "WOZqBf"
+          },
+          "condition": "=dialog.AttachmentType",
+          "cases": [
+            {
+              "value": "Inline",
+              "actions": [
+                {
+                  "$kind": "Microsoft.SendActivity",
+                  "$designer": {
+                    "id": "4HOnje"
+                  },
+                  "activity": "${SendActivity_4HOnje()}"
+                }
+              ]
+            },
+            {
+              "value": "Internet",
+              "actions": [
+                {
+                  "$kind": "Microsoft.SendActivity",
+                  "$designer": {
+                    "id": "uWZAVE"
+                  },
+                  "activity": "${SendActivity_uWZAVE()}"
+                }
+              ]
+            }
+          ],
+          "default": []
+        },
+        {
+          "$kind": "Microsoft.ConfirmInput",
+          "$designer": {
+            "id": "9I9pR2"
+          },
+          "defaultLocale": "en-us",
+          "disabled": false,
+          "maxTurnCount": 3,
+          "alwaysPrompt": false,
+          "allowInterruptions": false,
+          "prompt": "${ConfirmInput_Prompt_9I9pR2()}",
+          "unrecognizedPrompt": "${ConfirmInput_UnrecognizedPrompt_9I9pR2()}",
+          "invalidPrompt": "",
+          "choiceOptions": {
+            "includeNumbers": true,
+            "inlineOrMore": ", or ",
+            "inlineOr": " or "
+          },
+          "property": "turn.confirmed"
+        },
+        {
+          "$kind": "Microsoft.IfCondition",
+          "$designer": {
+            "id": "fPspOu"
+          },
+          "condition": "=turn.confirmed",
+          "actions": [
+            {
+              "$kind": "Microsoft.RepeatDialog",
+              "$designer": {
+                "id": "EfGhsM"
+              },
+              "activityProcessed": true
+            }
+          ],
+          "elseActions": [
+            {
+              "$kind": "Microsoft.EndDialog",
+              "$designer": {
+                "id": "Ey8gYo"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "generator": "MessageWithAttachmentDialog.lg",
+  "recognizer": "MessageWithAttachmentDialog.lu.qna",
+  "id": "MessageWithAttachmentDialog"
+}

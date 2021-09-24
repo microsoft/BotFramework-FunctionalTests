@@ -1,0 +1,51 @@
+[import](common.lg)
+> !# @strict = false
+> !# @namespace = attachments
+> !# @exports = GetFile
+
+# GetFile()
+- ${fromFile('../../../../wwwroot/images/architecture-resize.png', 'binary')}
+# ChoiceInput_Prompt_uYVf93()
+[Activity
+    Text = ${ChoiceInput_Prompt_uYVf93_text()}
+]
+
+# ChoiceInput_Prompt_uYVf93_text()
+- What attachment type do you want?
+# ChoiceInput_UnrecognizedPrompt_uYVf93()
+[Activity
+    Text = ${ChoiceInput_UnrecognizedPrompt_uYVf93_text()}
+]
+
+# ChoiceInput_UnrecognizedPrompt_uYVf93_text()
+- That was not a valid choice, please select a valid card type.
+# SendActivity_uWZAVE()
+[Activity
+    Text = ${SendActivity_uWZAVE_text()}
+    Attachments = ${AttachmentTemplate('Files/architecture-resize.png', 'image/png', `${user.HostUrl}/images/architecture-resize.png`)}
+]
+
+# SendActivity_uWZAVE_text()
+- This is an attachment from a HTTP URL.
+# ConfirmInput_Prompt_9I9pR2()
+[Activity
+    Text = ${ConfirmInput_Prompt_9I9pR2_text()}
+]
+
+# ConfirmInput_Prompt_9I9pR2_text()
+- Do you want another type of attachment?
+# ConfirmInput_UnrecognizedPrompt_9I9pR2()
+[Activity
+    Text = ${ConfirmInput_UnrecognizedPrompt_9I9pR2_text()}
+]
+
+# ConfirmInput_UnrecognizedPrompt_9I9pR2_text()
+- That's an invalid choice.
+# SendActivity_4HOnje()
+[Activity
+    Text = ${SendActivity_4HOnje_text()}
+    Attachments = ${AttachmentTemplate('Files/architecture-resize.png', 'image/png', `data:image/png;base64,${base64(GetFile())}`)}
+]
+
+# SendActivity_4HOnje_text()
+- This is an inline attachment.
