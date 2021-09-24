@@ -1,0 +1,292 @@
+> All cards can be defined and managed through .lg files.
+> All cards use the chatdown notation - see here - https://github.com/Microsoft/botbuilder-tools/tree/master/packages/Chatdown#message-commands
+> Multi-line text are enclosed in ```
+> Multi-line text can include inline expressions enclosed in ${expression}.
+> ${TemplateName()} is an inline expression that uses the lgTemplate pre-built function to evaluate a template by name.
+
+# HeroCard
+[HeroCard
+    title = BotFramework Hero Card
+    subtitle = Microsoft Bot Framework
+    text = Build and connect intelligent bots to interact with your users naturally wherever they are, from text/sms to Skype, Slack, Office 365 mail and other popular services.
+    image = ${CardImageTemplate('https://sec.ch9.ms/ch9/7ff5/e07cfef0-aa3b-40bb-9baa-7c9ef8ff7ff5/buildreactionbotframework_960.jpg')}
+    buttons = ${CardActionTemplate('openUrl', 'Get Started', 'Get Started', 'https://docs.microsoft.com/bot-framework')}
+]
+
+# CardActionTemplate(type, title, text, value)
+[CardAction
+    Type = ${if(type == null, 'imBack', type)}
+    Title = ${title}
+    Text = ${text}
+    Value = ${value}
+]
+
+# ThumbnailCard
+[ThumbnailCard
+    title = BotFramework Thumbnail Card
+    subtitle = Microsoft Bot Framework
+    text = Build and connect intelligent bots to interact with your users naturally wherever they are, from text/sms to Skype, Slack, Office 365 mail and other popular services.
+    image = ${CardImageTemplate('https://sec.ch9.ms/ch9/7ff5/e07cfef0-aa3b-40bb-9baa-7c9ef8ff7ff5/buildreactionbotframework_960.jpg')}
+    buttons = ${CardActionTemplate('openUrl', 'Get Started', 'Get Started', 'https://docs.microsoft.com/bot-framework')}
+]
+
+# ReceiptCard
+[ReceiptCard
+  title = John Doe
+  facts = ${FactTemplate('Order Number', '1234')} | ${FactTemplate('Payment Method', 'VISA 5555-****')}
+  items = ${ReceiptItemTemplate('Data Transfer', '$ 38.45', '368', 'https://github.com/amido/azure-vector-icons/raw/master/renders/traffic-manager.png')} | ${ReceiptItemTemplate('App Service', '$ 45.00', '720', 'https://github.com/amido/azure-vector-icons/raw/master/renders/cloud-service.png')}
+  tax = $ 7.50
+  total = $ 90.95
+  buttons = ${CardActionTemplate('openUrl', 'More information', 'More information', 'https://azure.microsoft.com/en-us/pricing/')}
+]
+
+#ReceiptItemTemplate (title, price, quantity, image)
+[ReceiptItem
+  title = ${title}
+  price = ${price}
+  quantity = ${quantity}
+  image = ${CardImageTemplate(image)}
+]
+
+#FactTemplate (key, value)
+[Fact
+  key = ${key}
+  value = ${value}
+]
+
+#CardImageTemplate (url)
+[CardImage
+  url = ${url}
+]
+
+# SigninCard
+[SigninCard
+    text = BotFramework Sign-in Card
+    buttons = ${CardActionTemplate('signin', 'Sign-in', 'Sign-in', 'https://login.microsoftonline.com/')}
+]
+
+# CarouselTemplate
+[Activity
+    Attachments = ${HeroCard()} | ${HeroCard()} | ${HeroCard()}
+    AttachmentLayout = carousel
+]
+
+# ListTemplate
+[Activity
+    Attachments = ${HeroCard()} | ${HeroCard()} | ${HeroCard()}
+    AttachmentLayout = list
+]
+
+# AnimationCard
+[AnimationCard
+    title = Animation Card
+    media = https://media3.giphy.com/media/xT0xeJpnrWC4XWblEk/giphy.gif?cid=ecf05e47mye7k75sup6tcmadoom8p1q8u03a7g2p3f76upp9&rid=giphy.gif
+    autostart = true
+]
+
+# VideoCard
+[VideoCard
+    title = Video Card
+    media = https://www.youtube.com/watch?v=LvqzubPZjHE
+]
+
+# AudioCard
+[AudioCard
+    title = Audio Card
+    media = ${user.HostUrl}/api/music
+    autoloop = true
+]
+
+# UpdateCardTemplate (cardTitle, cardText, actionTitle, actionText, actionValue)
+[HeroCard
+    title = ${cardTitle}
+    text = ${cardText}
+    buttons = ${CardActionTemplate('messageBack', `${actionTitle}`, `${actionText}`, `${actionValue}`)}
+]
+
+#O365CardTemplate
+[O365Connector
+  type = MessageCard
+  context = http://schema.org/extensions
+  title = Project Tango
+  summary = John Doe commented on Trello
+]
+
+#AttachmentTemplate (name, type, url)
+[Attachment
+  Name = ${name}
+  ContentType = ${type}
+  ContentUrl = ${url}
+]
+
+# AdaptiveCardBotAction
+[Activity
+    Attachments = ${json(adaptivecardbotactionjson())}
+]
+
+# AdaptiveCardSubmitAction
+[Activity
+    Attachments = ${json(adaptivecardsubmitactionjson())}
+]
+
+# AdaptiveCardTaskModule
+[Activity
+    Attachments = ${json(adaptivecardtaskmodulejson())}
+]
+
+# TeamsFileConsent
+[Activity
+    Attachments = ${json(teamsfileconsentjson())}
+]
+
+# O365Card
+[Activity
+    Attachments = ${json(o365cardjson())}
+]
+
+# adaptivecardbotactionjson()
+- ```
+{
+  "type": "AdaptiveCard",
+  "version": "1.2",
+  "body": [
+    {
+      "type": "TextBlock",
+      "text": "Bot Builder actions"
+    }
+  ],
+  "actions": [
+    {
+      "type": "Action.Submit",
+      "title": "imBack",
+      "data": {
+        "msteams": {
+          "type": "imBack",
+          "value": "text"
+        }
+      }
+    },
+    {
+      "type": "Action.Submit",
+      "title": "message back",
+      "data": {
+        "msteams": {
+          "type": "messageBack",
+          "value": {
+            "key": "value"
+          }
+        }
+      }
+    },
+    {
+      "type": "Action.Submit",
+      "title": "message back local echo",
+      "data": {
+        "msteams": {
+          "type": "messageBack",
+          "text": "text received by bots",
+          "displayText": "display text message back",
+          "value": {
+            "key": "value"
+          }
+        }
+      }
+    },
+    {
+      "type": "Action.Submit",
+      "title": "invoke",
+      "data": {
+        "msteams": {
+          "type": "invoke",
+          "value": {
+            "key": "value"
+          }
+        }
+      }
+    }
+  ]
+}
+```
+
+# adaptivecardsubmitactionjson()
+- ```
+{
+  "type": "AdaptiveCard",
+  "version": "1.2",
+  "body": [
+    {
+      "type": "TextBlock",
+      "text": "Bot Builder actions"
+    },
+    {
+      "type": "Input.Text",
+      "id": "x"
+    }
+  ],
+  "actions": [
+    {
+      "type": "Action.Submit",
+      "title": "Action.Submit",
+      "data": {
+        "key": "value"
+      }
+    }
+  ]
+}
+```
+
+# adaptivecardtaskmodulejson()
+- ```
+{
+  "type": "AdaptiveCard",
+  "version": "1.2",
+  "body": [
+    {
+      "type": "TextBlock",
+      "text": "Task Module Adaptive Card"
+    }
+  ],
+  "actions": [
+    {
+      "type": "Action.Submit",
+      "title": "Launch Task Module",
+      "data": {
+        "msteams": {
+          "type": "invoke",
+          "value": {
+            "hiddenKey": "hidden value from task module launcher"
+          }
+        }
+      }
+    }
+  ]
+}
+```
+
+# teamsfileconsentjson()
+- ```
+{
+  "contentType": "application/vnd.microsoft.teams.card.file.consent",
+  "name": "file_example.txt",
+  "content": {
+    "description": "bla bla",
+    "sizeInBytes": 1029393,
+    "acceptContext": {
+    },
+    "declineContext": {
+    }
+  }
+}
+```
+
+# o365cardjson()
+- ```
+{
+  "type": "MessageCard",
+  "context": "http://schema.org/extensions",
+  "summary": "John Doe commented on Trello",
+  "title": "Project Tango",
+  "sections": [],
+  "potentialAction": []
+}
+```

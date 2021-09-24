@@ -1,0 +1,25 @@
+[import](common.lg)
+> !# @strict = false
+> !# @namespace = router
+> !# @exports = GetHostUrl
+
+#GetHostUrl(url)
+- IF:${contains(['localhost', '127.0.0.1'], uriHost(url))}
+    - ${concat(`${uriScheme(url)}://localhost:${uriPort(url)}`)}
+- ELSE:
+    - ${concat(`${uriScheme(url)}://${uriHost(url)}`)}
+
+# SendActivity_DidNotUnderstand()
+[Activity
+    Text = ${SendActivity_DidNotUnderstand_text()}
+]
+
+# SendActivity_DidNotUnderstand_text()
+- Unrecognized ActivityType: ${turn.activity.type}
+# SendActivity_Wz6ESA()
+[Activity
+    Text = ${SendActivity_Wz6ESA_text()}
+]
+
+# SendActivity_Wz6ESA_text()
+- Unrecognized EventName: ${turn.activity.name}
