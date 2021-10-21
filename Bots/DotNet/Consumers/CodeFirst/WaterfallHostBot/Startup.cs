@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Bot.Builder;
@@ -9,6 +10,7 @@ using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Builder.Integration.AspNet.Core.Skills;
 using Microsoft.Bot.Builder.Skills;
 using Microsoft.Bot.Connector.Authentication;
+using Microsoft.Bot.Schema;
 using Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Bots;
 using Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs;
 using Microsoft.Extensions.Configuration;
@@ -32,26 +34,30 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot
             services.AddControllers()
                 .AddNewtonsoftJson();
 
-            // Register credential provider.
-            services.AddSingleton<ICredentialProvider, ConfigurationCredentialProvider>();
-
             // Register the skills configuration class.
             services.AddSingleton<SkillsConfiguration>();
 
-            // Register AuthConfiguration to enable custom claim validation.
-            services.AddSingleton(sp => new AuthenticationConfiguration { ClaimsValidator = new Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Authentication.AllowedSkillsClaimsValidator(sp.GetService<SkillsConfiguration>()) });
+            services.AddSingleton<ICredentialProvider, ConfigurationCredentialProvider>();
+
+            services.AddSingleton(sp => new AuthenticationConfiguration
+            {
+                ClaimsValidator = new AllowedSkillsClaimsValidator(
+                (from skill in sp.GetService<SkillsConfiguration>().Skills.Values select skill.AppId).ToList())
+            });
+
+            services.AddSingleton<BotFrameworkAuthentication, ConfigurationBotFrameworkAuthentication>();
 
             // Register the Bot Framework Adapter with error handling enabled.
             // Note: some classes expect a BotAdapter and some expect a BotFrameworkHttpAdapter, so
             // register the same adapter instance for both types.
-            services.AddSingleton<BotFrameworkHttpAdapter, AdapterWithErrorHandler>();
-            services.AddSingleton<BotAdapter>(sp => sp.GetService<BotFrameworkHttpAdapter>());
+            services.AddSingleton<CloudAdapter, AdapterWithErrorHandler>();
+            services.AddSingleton<IBotFrameworkHttpAdapter>(sp => sp.GetService<CloudAdapter>());
+            services.AddSingleton<BotAdapter>(sp => sp.GetService<CloudAdapter>());
 
             // Register the skills conversation ID factory, the client and the request handler.
             services.AddSingleton<SkillConversationIdFactoryBase, SkillConversationIdFactory>();
             services.AddHttpClient<SkillHttpClient>();
-            
-            //services.AddSingleton<ChannelServiceHandler, SkillHandler>();
+
             services.AddSingleton<ChannelServiceHandler, TokenExchangeSkillHandler>();
 
             // Register the storage we'll be using for User and Conversation state. (Memory is great for testing purposes.)
