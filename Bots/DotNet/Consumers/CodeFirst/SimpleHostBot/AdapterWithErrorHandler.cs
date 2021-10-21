@@ -5,6 +5,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
+using Microsoft.Bot.Builder.BotFramework;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Builder.Integration.AspNet.Core.Skills;
 using Microsoft.Bot.Builder.Skills;
@@ -17,7 +18,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot
 {
-    public class AdapterWithErrorHandler : BotFrameworkHttpAdapter
+    public class AdapterWithErrorHandler : CloudAdapter
     {
         private readonly ConversationState _conversationState;
         private readonly IConfiguration _configuration;
@@ -28,13 +29,14 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot
         /// <summary>
         /// Initializes a new instance of the <see cref="AdapterWithErrorHandler"/> class to handle errors.
         /// </summary>
+        /// <param name="botFrameworkAuthentication">The cloud environment for the bot.</param>
         /// <param name="configuration">The configuration properties.</param>
         /// <param name="logger">An instance of a logger.</param>
         /// <param name="conversationState">A state management object for the conversation.</param>
         /// <param name="skillClient">The HTTP client for the skills.</param>
         /// <param name="skillsConfig">The skills configuration.</param>
-        public AdapterWithErrorHandler(IConfiguration configuration, ILogger<BotFrameworkHttpAdapter> logger, ConversationState conversationState = null, SkillHttpClient skillClient = null, SkillsConfiguration skillsConfig = null)
-            : base(configuration, logger)
+        public AdapterWithErrorHandler(BotFrameworkAuthentication botFrameworkAuthentication, IConfiguration configuration, ILogger<CloudAdapter> logger, ConversationState conversationState = null, SkillHttpClient skillClient = null, SkillsConfiguration skillsConfig = null)
+            : base(botFrameworkAuthentication, logger)
         {
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             _conversationState = conversationState;
