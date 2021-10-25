@@ -296,12 +296,3 @@ stages:
                 botName: "${{ bot.name }}"
                 connectionName: "${{ parameters.connectionName }}"
                 resourceSuffix: "${{ parameters.resourceSuffix }}"
-
-          # Create DirectLine Channel Hosts
-          - ${{ if in(bot.type, 'Host', 'ComposerHost') }}:
-            - template: ../common/createDirectLine.yml
-              parameters:
-                azureSubscription: "${{ parameters.azureSubscription }}"
-                botGroup: "${{ parameters.resourceGroup }}"
-                botName: "${{ bot.name }}"
-                resourceSuffix: "${{ parameters.resourceSuffix }}"
