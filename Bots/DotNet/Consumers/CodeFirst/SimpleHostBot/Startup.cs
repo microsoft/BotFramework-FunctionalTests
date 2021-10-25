@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using System;
+using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Bot.Builder;
@@ -10,6 +10,7 @@ using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Builder.Integration.AspNet.Core.Skills;
 using Microsoft.Bot.Builder.Skills;
 using Microsoft.Bot.Connector.Authentication;
+using Microsoft.Bot.Schema;
 using Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Bots;
 using Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Dialogs;
 using Microsoft.Extensions.Configuration;
@@ -35,19 +36,24 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot
         {
             services.AddControllers().AddNewtonsoftJson();
 
-            // Configure credentials
-            services.AddSingleton<ICredentialProvider, ConfigurationCredentialProvider>();
-
             // Register the skills configuration class
             services.AddSingleton<SkillsConfiguration>();
 
-            // Register AuthConfiguration to enable custom claim validation.
-            services.AddSingleton(sp => new AuthenticationConfiguration { ClaimsValidator = new Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Authentication.AllowedSkillsClaimsValidator(sp.GetService<SkillsConfiguration>()) });
+            services.AddSingleton<ICredentialProvider, ConfigurationCredentialProvider>();
+
+            services.AddSingleton(sp => new AuthenticationConfiguration
+            {
+                ClaimsValidator = new AllowedSkillsClaimsValidator(
+                (from skill in sp.GetService<SkillsConfiguration>().Skills.Values select skill.AppId).ToList())
+            });
+
+            services.AddSingleton<BotFrameworkAuthentication, ConfigurationBotFrameworkAuthentication>();
 
             // Register the Bot Framework Adapter with error handling enabled.
             // Note: some classes use the base BotAdapter so we add an extra registration that pulls the same instance.
-            services.AddSingleton<BotFrameworkHttpAdapter, AdapterWithErrorHandler>();
-            services.AddSingleton<BotAdapter>(sp => sp.GetService<BotFrameworkHttpAdapter>());
+            services.AddSingleton<CloudAdapter, AdapterWithErrorHandler>();
+            services.AddSingleton<IBotFrameworkHttpAdapter>(sp => sp.GetService<CloudAdapter>());
+            services.AddSingleton<BotAdapter>(sp => sp.GetService<CloudAdapter>());
 
             // Register the skills client and skills request handler.
             services.AddSingleton<SkillConversationIdFactoryBase, SkillConversationIdFactory>();
