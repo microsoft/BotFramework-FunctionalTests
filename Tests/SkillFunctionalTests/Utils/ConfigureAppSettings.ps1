@@ -6,29 +6,48 @@
   Gets DirectLine Secrets from Azure.
 
   .DESCRIPTION
-  Configure AppSettings file with DirectLine Secrets gathered from Azure Bot Resources based on the Resource Group and Resource Suffix provided by the user.
+  Configure AppSettings file with DirectLine Secrets gathered from Azure Bot Resources based on the Resource Group, Resource Suffix and Subscription provided by the user.
 
   .PARAMETER ResourceGroup
-  Specifies the name for the specific Resource Group where the resources are deployed at.
+  Specifies the Name for the specific Resource Group where the resources are deployed. For each specific language will concatenate (DotNet, JS and Python). Default (BFFN).
 
   .PARAMETER ResourceSuffix
-  Specifies the suffix the resources name are built with.
+  Specifies the Suffix used to concatenate at the end of the Resource Name followed up by the ResourceSuffixSeparator.
+
+  .PARAMETER Subscription
+  Specifies the Name or Id of the Subscription where the resources are located. Default (current Subscription).
+
+  .PARAMETER ResourceSuffixSeparator
+  Specifies the separator used for the Suffix to split the Resource Name from the ResourceSuffix. Default (-).
 
   .EXAMPLE
-  PS> .\ConfigureAppSettings.ps1 -ResourceGroup "BFFN-bots" -ResourceSuffix "{suffix}-{buildId}"
+  PS> .\ConfigureAppSettings.ps1 -ResourceGroup "bffnbots" -ResourceSuffix "{buildId}"
 
   .EXAMPLE
-  PS> .\ConfigureAppSettings.ps1 -ResourceGroup "BFFN-bots"
+  PS> .\ConfigureAppSettings.ps1 -ResourceGroup "bffnbots"
+
+  .EXAMPLE
+  PS> .\ConfigureAppSettings.ps1 -Subscription 00000000-0000-0000-0000-000000000000
+
+  .EXAMPLE
+  PS> .\ConfigureAppSettings.ps1 -Subscription bffnbots-subscription
+
+  .EXAMPLE
+  PS> .\ConfigureAppSettings.ps1 -ResourceSuffixSeparator "" -ResourceSuffix "microsoft-396"
 
   .EXAMPLE
   PS> .\ConfigureAppSettings.ps1
 #>
 
 param (
-    [Parameter(Mandatory=$false)]
-    [string]$ResourceGroup,
-    [Parameter(Mandatory=$false)]
-    [string]$ResourceSuffix
+  [Parameter(Mandatory = $false)]
+  [string]$Subscription,
+  [Parameter(Mandatory = $false)]
+  [string]$ResourceGroup,
+  [Parameter(Mandatory = $false)]
+  [string]$ResourceSuffixSeparator = "-",
+  [Parameter(Mandatory = $false)]
+  [string]$ResourceSuffix
 )
 
 $PSVersion = $PSVersionTable.PSVersion;
@@ -70,6 +89,69 @@ if ($LoginOutput) {
   exit 1;
 }
 
+# Subscription Input
+if ([string]::IsNullOrEmpty($Subscription)) {
+  $Subscriptions = @(az account list | ConvertFrom-Json);
+
+  if (-not $Subscriptions) {
+    Write-Host "There are no Subscriptions available." -ForegroundColor Red;
+    exit 1;
+  }
+
+  $SubscriptionDefault = ($Subscriptions | Where-Object { $_.isDefault }) ?? $Subscriptions.GetValue(0);
+
+  if ($Subscriptions.Length -gt 1) {
+    do {
+      Write-Host "! " -ForegroundColor Yellow -NoNewline;
+      Write-Host "Multiple Subscriptions were found." -ForegroundColor White;
+  
+      $Subscriptions | Format-Table @(
+        @{Label = ' # '; Expression = { [array]::IndexOf($Subscriptions, $_) + 1 } },
+        @{Label = 'Name'; Expression = { $_.name } },
+        @{Label = 'Id'; Expression = { $_.id } },
+        @{Label = 'Default'; Expression = { $_.isDefault } }
+      ) -AutoSize
+
+      Write-Host "? " -ForegroundColor Green -NoNewline;
+      Write-Host "Enter a Subscription, by providing '#', 'Name' or 'Id': " -ForegroundColor White -NoNewline;
+      Write-Host "default (" -ForegroundColor DarkGray -NoNewline;
+      Write-Host $SubscriptionDefault.name -ForegroundColor Magenta -NoNewline;
+      Write-Host ") " -ForegroundColor DarkGray -NoNewline;
+
+      $UserInput = (Read-Host).Trim();
+    
+      if ([string]::IsNullOrEmpty($UserInput)) {
+        $SubscriptionInput = $SubscriptionDefault;
+        break;
+      }
+      else {
+        $SubscriptionInput = $Subscriptions | Where-Object {
+          $Sub = $_;
+          $Number = [array]::IndexOf($Subscriptions, $Sub) + 1;
+          if (@($Number, $Sub.id, $Sub.name) -contains $UserInput) {
+            return $true;
+          }
+        }
+  
+        if ($SubscriptionInput) {
+          break;
+        }
+        else {
+          Write-Host "  - A Subscription must be provided, could be either ('#', 'Name' or 'Id').`n" -ForegroundColor Red;
+        }
+      }
+    } while ($true)
+
+    $Inputs.Subscription = $SubscriptionInput.name;
+  }
+  else {
+    $Inputs.Subscription = $SubscriptionDefault.name;
+  }
+} 
+else {
+  $Inputs.Subscription = $Subscription;
+}
+
 # Resource Group Input
 if ([string]::IsNullOrEmpty($ResourceGroup)) {
   Write-Host "? " -ForegroundColor Green -NoNewline;
@@ -82,6 +164,9 @@ if ([string]::IsNullOrEmpty($ResourceGroup)) {
 else {
   $Inputs.ResourceGroup = $ResourceGroup;
 }
+
+# Resource Suffix Separator Input
+$Inputs.ResourceSuffixSeparator = $ResourceSuffixSeparator;
 
 # Resource Suffix Input
 if ([string]::IsNullOrEmpty($ResourceSuffix)) {
@@ -107,10 +192,14 @@ if ([string]::IsNullOrEmpty($Inputs.ResourceGroup)) {
 }
 
 Write-Host "`nSummary" -ForegroundColor Cyan;
-Write-Host "  - Resource Group  : " -ForegroundColor Gray -NoNewline;
+Write-Host "  - Subscription              : " -ForegroundColor Gray -NoNewline;
+Write-Host $Inputs.Subscription -ForegroundColor Magenta;
+Write-Host "  - Resource Group            : " -ForegroundColor Gray -NoNewline;
 Write-Host $Inputs.ResourceGroup -ForegroundColor Magenta;
-Write-Host "  - Resource Suffix : " -ForegroundColor Gray -NoNewline;
+Write-Host "  - Resource Suffix           : " -ForegroundColor Gray -NoNewline;
 Write-Host $Inputs.ResourceSuffix -ForegroundColor Magenta;
+Write-Host "  - Resource Suffix Separator : " -ForegroundColor Gray -NoNewline;
+Write-Host $Inputs.ResourceSuffixSeparator -ForegroundColor Magenta;
 
 # Read AppSettings
 Start-Sleep -Milliseconds 300;
@@ -138,27 +227,28 @@ Write-Host "  - Looking for Bot Resources existence..." -ForegroundColor Gray;
 $NonExistingResources = $AppSettings.HostBotClientOptions.PSObject.Properties | ForEach-Object -Parallel {
   $GroupsSuffix = $using:Settings.GroupsSuffix;
   $ResourceGroup = $using:Inputs.ResourceGroup;
+  $ResourceSuffixSeparator = $using:Inputs.ResourceSuffixSeparator;
   $ResourceSuffix = $using:Inputs.ResourceSuffix;
+  $Subscription = $using:Inputs.Subscription;
 
   $Bot = $_;
   $BotId = "bffn$($Bot.Name)".ToLower();
-  $Resource = "$BotId$ResourceSuffix";
+  $Resource = "$BotId$ResourceSuffixSeparator$ResourceSuffix";
   $ResourceGroupSuffix = $GroupsSuffix | Where-Object { $Bot.Name -like "*$($_)*" }
   $ResourceGroup = "$ResourceGroup-$ResourceGroupSuffix";
 
-  $exists = (az webapp show --name $Resource --resource-group $ResourceGroup 2>$null | ConvertFrom-Json).enabled;
+  $exists = (az webapp show --name $Resource --resource-group $ResourceGroup --subscription $Subscription 2>$null | ConvertFrom-Json).enabled;
 
   return [PSCustomObject]@{
-    Bot              = $Bot.Name
+    BotId            = $Resource
     'Resource Group' = $ResourceGroup
-    Resource         = $Resource
     Exists           = if ($exists) { $true } else { $false }
   }
-} | Where-Object { $_.Exists -eq $false }
+} | Where-Object { $_.Exists -eq $false } | Sort-Object -Property BotId
 
 if ($NonExistingResources) {
   Write-Host "`nThe following Bot Resources were not found. Check if they're still available in Azure." -ForegroundColor Red;
-  $NonExistingResources | Select-Object 'Resource Group', 'Resource' | Format-Table -AutoSize;
+  $NonExistingResources | Select-Object 'BotId', 'Resource Group' | Format-Table -AutoSize;
   exit 1;
 }
 else {
@@ -172,17 +262,19 @@ Write-Host "  - Getting DirectLine Secrets from Bot Resources..." -ForegroundCol
 $AppSettings.HostBotClientOptions.PSObject.Properties | ForEach-Object -Parallel {
   $GroupsSuffix = $using:Settings.GroupsSuffix;
   $ResourceGroup = $using:Inputs.ResourceGroup;
+  $ResourceSuffixSeparator = $using:Inputs.ResourceSuffixSeparator;
   $ResourceSuffix = $using:Inputs.ResourceSuffix;
+  $Subscription = $using:Inputs.Subscription;
   $BotSettings = $using:Settings.BotSettings;
   $BotResources = $using:Settings.BotResources;
 
   $Bot = $_;
   $BotId = "bffn$($Bot.Name)".ToLower();
-  $Resource = "$BotId$ResourceSuffix";
+  $Resource = "$BotId$ResourceSuffixSeparator$ResourceSuffix";
   $ResourceGroupSuffix = $GroupsSuffix | Where-Object { $Bot.Name -like "*$($_)*" };
   $ResourceGroup = "$ResourceGroup-$ResourceGroupSuffix";
 
-  $DirectLine = (az bot directline show --name $Resource --resource-group $ResourceGroup --with-secrets true 2>$null | ConvertFrom-Json).properties.properties.sites.key;
+  $DirectLine = (az bot directline show --name $Resource --resource-group $ResourceGroup --subscription $Subscription --with-secrets true 2>$null | ConvertFrom-Json).properties.properties.sites.key;
 
   $BotResource = @{
     Resource      = $Resource
@@ -197,7 +289,9 @@ $AppSettings.HostBotClientOptions.PSObject.Properties | ForEach-Object -Parallel
   $BotSettings.TryAdd($Bot.Name, $Settings) 1>$null;
 }
 
-$AppSettings.HostBotClientOptions = $Settings.BotSettings;
+$SortedBotSettings = [ordered]@{};
+$Settings.BotSettings.GetEnumerator() | Sort-Object -Property Key | ForEach-Object { $SortedBotSettings[$_.Key] = $_.Value };
+$AppSettings.HostBotClientOptions = $SortedBotSettings;
 
 $AppSettings | ConvertTo-Json | Set-Content $Settings.AppSettingsDevPath;
 Write-Host "  - AppSettings successfully configured" -ForegroundColor Gray;
@@ -207,11 +301,10 @@ Start-Sleep -Milliseconds 300;
 Write-Host "`nConfiguration saved" -ForegroundColor Cyan;
 $Settings.BotResources.GetEnumerator() | ForEach-Object { 
   return [PSCustomObject]@{ 
-    Bot                 = $_.Key
-    'Resource Group'    = $_.Value.ResourceGroup
-    Resource            = $_.Value.Resource
+    BotId               = $_.Value.Resource
     'DirectLine Secret' = $Settings.BotSettings[$_.Key].DirectLineSecret
+    'Resource Group'    = $_.Value.ResourceGroup
   }
-} | Format-Table -AutoSize;
+} | Sort-Object -Property BotId | Format-Table -AutoSize;
 
 Write-Host "Process Finished!" -ForegroundColor Green;
