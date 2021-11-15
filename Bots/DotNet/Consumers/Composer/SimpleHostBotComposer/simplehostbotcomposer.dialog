@@ -1,9 +1,11 @@
 {
   "$kind": "Microsoft.AdaptiveDialog",
   "$designer": {
-    "name": "SimpleHostBotComposer",
-    "description": "",
-    "id": "A79tBe"
+    "$designer": {
+      "name": "SimpleHostBotComposer",
+      "description": "",
+      "id": "zzc07D"
+    }
   },
   "autoEndDialog": true,
   "defaultResultProperty": "dialog.result",
@@ -15,82 +17,46 @@
       },
       "actions": [
         {
-          "$kind": "Microsoft.Foreach",
-          "$designer": {
-            "id": "518944",
-            "name": "Loop: for each item"
-          },
-          "itemsProperty": "turn.Activity.membersAdded",
-          "actions": [
-            {
-              "$kind": "Microsoft.IfCondition",
-              "$designer": {
-                "id": "641773",
-                "name": "Branch: if/else"
-              },
-              "condition": "string(dialog.foreach.value.id) != string(turn.Activity.Recipient.id)",
-              "actions": [
-                {
-                  "$kind": "Microsoft.SendActivity",
-                  "$designer": {
-                    "id": "859266",
-                    "name": "Send a response"
-                  },
-                  "activity": "${SendActivity_Greeting()}"
-                },
-                {
-                  "$kind": "Microsoft.BeginDialog",
-                  "$designer": {
-                    "id": "fTvoh5"
-                  },
-                  "activityProcessed": true,
-                  "dialog": "CallEchoSkill"
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "$kind": "Microsoft.OnUnknownIntent",
-      "$designer": {
-        "id": "mb2n1u"
-      },
-      "actions": [
-        {
           "$kind": "Microsoft.SendActivity",
           "$designer": {
-            "id": "kMjqz1"
+            "id": "1fPEND"
           },
-          "activity": "${SendActivity_DidNotUnderstand()}"
+          "activity": "${SendActivity_1fPEND()}"
+        },
+        {
+          "$kind": "Microsoft.BeginDialog",
+          "$designer": {
+            "id": "QBsvJ6"
+          },
+          "activityProcessed": true,
+          "dialog": "CallEchoSkill"
         }
       ]
     },
     {
       "$kind": "Microsoft.OnEndOfConversationActivity",
       "$designer": {
-        "id": "xPU1pB"
+        "id": "PGigli"
       },
       "actions": [
         {
           "$kind": "Microsoft.SendActivity",
           "$designer": {
-            "id": "M2LqJr"
+            "id": "Zkprn3"
           },
-          "activity": "${SendActivity_M2LqJr()}"
+          "activity": "${SendActivity_Zkprn3()}"
         },
         {
           "$kind": "Microsoft.SendActivity",
           "$designer": {
-            "id": "bgTcyn"
+            "id": "71moHf"
           },
-          "activity": "${SendActivity_bgTcyn()}"
+          "activity": "${SendActivity_71moHf()}"
         },
         {
           "$kind": "Microsoft.BeginDialog",
           "$designer": {
-            "id": "s9BrZr"
+            "id": "ZUWV1K"
           },
           "activityProcessed": true,
           "dialog": "CallEchoSkill"
@@ -98,7 +64,11 @@
       ]
     }
   ],
-  "generator": "SimpleHostBotComposer.lg",
+  "$schema": "https://raw.githubusercontent.com/microsoft/BotFramework-Composer/stable/Composer/packages/server/schemas/sdk.schema",
+  "generator": "simplehostbotcomposer.lg",
   "id": "SimpleHostBotComposer",
-  "recognizer": "SimpleHostBotComposer.lu.qna"
+  "recognizer": {
+    "$kind": "Microsoft.RegexRecognizer",
+    "intents": []
+  }
 }
