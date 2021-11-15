@@ -18,7 +18,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot
 {
-    public class AdapterWithErrorHandler : CloudAdapter
+    public class AdapterWithErrorHandler : BotFrameworkHttpAdapter
     {
         private readonly IConfiguration _configuration;
         private readonly ConversationState _conversationState;
@@ -26,8 +26,8 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot
         private readonly SkillHttpClient _skillClient;
         private readonly SkillsConfiguration _skillsConfig;
 
-        public AdapterWithErrorHandler(BotFrameworkAuthentication botFrameworkAuthentication, IConfiguration configuration, ILogger<CloudAdapter> logger, ConversationState conversationState, SkillHttpClient skillClient = null, SkillsConfiguration skillsConfig = null)
-            : base(botFrameworkAuthentication, logger)
+        public AdapterWithErrorHandler(IConfiguration configuration, ILogger<BotFrameworkHttpAdapter> logger, ConversationState conversationState, SkillHttpClient skillClient = null, SkillsConfiguration skillsConfig = null)
+            : base(configuration, logger)
         {
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             _conversationState = conversationState ?? throw new ArgumentNullException(nameof(conversationState));

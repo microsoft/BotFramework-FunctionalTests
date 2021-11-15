@@ -1,4 +1,5 @@
-#!/usr/bin/env bash
+#!/bin/bash
+runtime=${runtime:-azurewebapp}
 SCHEMA_FILE=sdk.schema
 UISCHEMA_FILE=sdk.uischema
 BACKUP_SCHEMA_FILE=sdk-backup.schema
@@ -12,11 +13,11 @@ while [ $# -gt 0 ]; do
   shift
 done
 
-echo "Running schema merge."
+echo "Running schema merge on $runtime runtime."
 [ -f "$SCHEMA_FILE" ] && mv "./$SCHEMA_FILE" "./$BACKUP_SCHEMA_FILE"
 [ -f "$UISCHEMA_FILE" ] && mv "./$UISCHEMA_FILE" "./$BACKUP_UISCHEMA_FILE"
 
-bf dialog:merge "*.schema" "!**/sdk-backup.schema" "*.uischema" "!**/sdk-backup.uischema" "!**/sdk.override.uischema" "!**/generated" "../*.csproj" "../package.json" -o $SCHEMA_FILE
+bf dialog:merge "*.schema" "!sdk-backup.schema" "*.uischema" "!sdk-backup.uischema" "!sdk.override.uischema" "../runtime/$runtime/*.csproj" -o $SCHEMA_FILE
 
 if [ -f "$SCHEMA_FILE" ]; then
   rm -rf "./$BACKUP_SCHEMA_FILE"

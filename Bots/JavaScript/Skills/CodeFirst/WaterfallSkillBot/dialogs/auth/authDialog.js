@@ -79,18 +79,8 @@ class AuthDialog extends ComponentDialog {
     }
 
     // Sign out
+    stepContext.context.adapter.signOutUser(stepContext.context, this.connectionName);
     const signOutMessage = 'I have signed you out.';
-    const oauthPrompt = new OAuthPrompt(
-      'SignOut',
-      {
-        connectionName: this.connectionName,
-        text: signOutMessage,
-        title: 'Sign Out'
-      }
-    );
-
-    oauthPrompt.signOutUser(stepContext.context);
-
     await stepContext.context.sendActivity(MessageFactory.text(signOutMessage, signOutMessage, InputHints.IgnoringInput));
 
     return stepContext.endDialog();

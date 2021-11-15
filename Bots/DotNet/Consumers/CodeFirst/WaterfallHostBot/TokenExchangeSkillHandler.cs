@@ -9,11 +9,13 @@ using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
+using Microsoft.Bot.Builder.Integration.AspNet.Core.Skills;
 using Microsoft.Bot.Builder.Skills;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot
@@ -27,35 +29,39 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot
 
         private readonly BotAdapter _adapter;
         private readonly SkillsConfiguration _skillsConfig;
+        private readonly SkillHttpClient _skillClient;
         private readonly string _botId;
         private readonly SkillConversationIdFactoryBase _conversationIdFactory;
         private readonly ILogger _logger;
+        private readonly IExtendedUserTokenProvider _tokenExchangeProvider;
         private readonly IConfiguration _configuration;
-        private readonly AuthenticationConfiguration _authConfig;
-        private readonly BotFrameworkAuthentication _botAuth;
 
         public TokenExchangeSkillHandler(
             BotAdapter adapter,
             IBot bot,
             IConfiguration configuration,
-            ICredentialProvider credentialProvider,
             SkillConversationIdFactoryBase conversationIdFactory,
-            AuthenticationConfiguration authConfig,
-            BotFrameworkAuthentication botAuth,
             SkillsConfiguration skillsConfig,
+            SkillHttpClient skillClient,
+            ICredentialProvider credentialProvider,
+            AuthenticationConfiguration authConfig,
             IChannelProvider channelProvider = null,
             ILogger<TokenExchangeSkillHandler> logger = null)
             : base(adapter, bot, conversationIdFactory, credentialProvider, authConfig, channelProvider, logger)
         {
             _adapter = adapter;
+            _tokenExchangeProvider = adapter as IExtendedUserTokenProvider;
+            if (_tokenExchangeProvider == null)
+            {
+                throw new ArgumentException($"{nameof(adapter)} does not support token exchange");
+            }
 
             _configuration = configuration;
-            _botAuth = botAuth;
-            _authConfig = authConfig;
+            _skillsConfig = skillsConfig;
+            _skillClient = skillClient;
             _conversationIdFactory = conversationIdFactory;
-            _skillsConfig = skillsConfig ?? new SkillsConfiguration(configuration);
+            _logger = logger ?? NullLogger<TokenExchangeSkillHandler>.Instance;
             _botId = configuration.GetSection(MicrosoftAppCredentials.MicrosoftAppIdKey)?.Value;
-            _logger = logger;
         }
 
         protected override async Task<ResourceResponse> OnSendToConversationAsync(ClaimsIdentity claimsIdentity, string conversationId, Activity activity, CancellationToken cancellationToken = default(CancellationToken))
@@ -109,16 +115,19 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot
                             // We need to know what connection name to use for the token exchange so we figure that out here
                             var connectionName = targetSkill.Id.Contains(WaterfallSkillBot) ? _configuration.GetSection("SsoConnectionName").Value : _configuration.GetSection("SsoConnectionNameTeams").Value;
 
+                            if (string.IsNullOrEmpty(connectionName))
+                            {
+                                throw new ArgumentNullException("The connection name cannot be null.");
+                            }
+
                             // AAD token exchange
                             try
                             {
-                                var tokenClient = await _botAuth.CreateUserTokenClientAsync(claimsIdentity, CancellationToken.None).ConfigureAwait(false);
-                                var result = await tokenClient.ExchangeTokenAsync(
-                                    activity.Recipient.Id,
+                                var result = await _tokenExchangeProvider.ExchangeTokenAsync(
+                                    context,
                                     connectionName,
-                                    activity.ChannelId,
-                                    new TokenExchangeRequest { Uri = oauthCard.TokenExchangeResource.Uri },
-                                    CancellationToken.None).ConfigureAwait(false);
+                                    activity.Recipient.Id,
+                                    new TokenExchangeRequest() { Uri = oauthCard.TokenExchangeResource.Uri }).ConfigureAwait(false);
 
                                 if (!string.IsNullOrEmpty(result?.Token))
                                 {
@@ -148,7 +157,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot
             var activity = incomingActivity.CreateReply();
             activity.Type = ActivityTypes.Invoke;
             activity.Name = SignInConstants.TokenExchangeOperationName;
-            activity.Value = new TokenExchangeInvokeRequest
+            activity.Value = new TokenExchangeInvokeRequest()
             {
                 Id = id,
                 Token = token,
@@ -157,11 +166,11 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot
 
             var skillConversationReference = await _conversationIdFactory.GetSkillConversationReferenceAsync(incomingActivity.Conversation.Id, cancellationToken).ConfigureAwait(false);
             activity.Conversation = skillConversationReference.ConversationReference.Conversation;
+            activity.ServiceUrl = skillConversationReference.ConversationReference.ServiceUrl;
 
             // route the activity to the skill
-            using var client = _botAuth.CreateBotFrameworkClient();
-            var response = await client.PostActivityAsync(_botId, targetSkill.AppId, targetSkill.SkillEndpoint, _skillsConfig.SkillHostEndpoint, incomingActivity.Conversation.Id, activity, cancellationToken);
-            
+            var response = await _skillClient.PostActivityAsync(_botId, targetSkill, _skillsConfig.SkillHostEndpoint, activity, cancellationToken);
+
             // Check response status: true if success, false if failure
             return response.Status >= 200 && response.Status <= 299;
         }
