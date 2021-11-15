@@ -173,16 +173,15 @@ steps:
             $bot = $_;
 
             if ($groups.Value -contains $bot.resourceGroup) {
-              $exists = -not (az resource wait --exists --resource-group $bot.resourceGroup --name $bot.resourceBotName --resource-type Microsoft.Web/sites --interval 1 --timeout 6);
+              $enabled = (az webapp show --name $bot.resourceBotName --resource-group $bot.resourceGroup 2>$null | ConvertFrom-Json).enabled;
 
-              if ($exists) {
+              if ($enabled) {
                 Write-Host $(AddTimeStamp -text "$($bot.key): Resource '$($bot.resourceBotName)' found.");
-              } 
+                return $bot;
+              }
               else {
                 Write-Host $(AddTimeStamp -text "$($bot.key): Unable to find the resource '$($bot.resourceBotName)'.");
               }
-
-              return $bot;
             }
           };
         }
@@ -262,30 +261,52 @@ steps:
           }
 
           $appSettings = Get-Content -Raw $appSettingsPath | ConvertFrom-Json;
-          $appSettings.HostBotClientOptions = @{}
+          $appSettings.HostBotClientOptions = [System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new();
 
           $AddTimeStampDef = $function:AddTimeStamp.ToString();
 
           $bots | ForEach-Object -Parallel {
             # Gets the Bot DirectLine
             $function:AddTimeStamp = $using:AddTimeStampDef
-            $appSettings = $using:appSettings
+            $options = $using:appSettings.HostBotClientOptions
             $bot = $_;
 
-            Write-Host $(AddTimeStamp -text "$($bot.key): Getting the DirectLine secret.");
-            $directLine = (az bot directline show --name $bot.resourceBotName --resource-group $bot.resourceGroup --with-secrets true 2>$null | ConvertFrom-Json).properties.properties.sites.key;
-                    
-            $appSettings.HostBotClientOptions[$bot.key] = @{
-              DirectLineSecret = $directLine
-              BotId            = $bot.botName
+            $tries = 3;
+            $directLine = "";
+
+            while ($tries -gt 0) {
+              $directLine = (az bot directline show --name $bot.resourceBotName --resource-group $bot.resourceGroup --with-secrets true 2>$null | ConvertFrom-Json).properties.properties.sites.key;
+              Write-Host $(AddTimeStamp -text "$($bot.key): Getting the DirectLine secret ($($directLine.Substring(0, 3) + "***")).");
+              
+              if (-not [string]::IsNullOrEmpty($directLine)) {
+                $settings = @{
+                  DirectLineSecret = $directLine
+                  BotId            = $bot.botName
+                }
+                $options.TryAdd($bot.key, $settings) 1>$null;
+                break;
+              }
+              $tries--;
             }
+          }
+
+          if ($appSettings.HostBotClientOptions.Count -ne $bots.Length) {
+            Write-Host "##vso[task.logissue type=error]Some host bots' DirectLine secrets couldn't be retrieved from Azure."
+            $config = $appSettings.HostBotClientOptions | Out-String
+            Write-Host "##vso[task.logissue type=error]$config"
+            exit 1 # Force exit
           }
 
           $appSettings | ConvertTo-Json | Set-Content $appsettingsPath;
 
           Write-Host $(AddTimeStamp -text "Test Project AppSettings saved:");
-          $appSettings.HostBotClientOptions;
-          Write-Host ""; # Separator
+          $appSettings.HostBotClientOptions.GetEnumerator() | ForEach-Object { 
+            return [PSCustomObject]@{ 
+              Key  = $_.Key
+              BotId = $_.Value.BotId
+              DirectLineSecret = $_.Value.DirectLineSecret.Substring(0, 3) + "***"
+            } 
+          } | Format-Table -AutoSize
         }
 
         function ConfigureConsumers {

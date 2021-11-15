@@ -9,19 +9,24 @@ pr: none
 variables:
   ## Azure Resources (Define these variables in Azure)
   # AzureSubscription: Service Connection Name to Manage Azure resources.
+  # AppServicePlanDotNetName: Name of the App Service Plan for DotNet bots.
+  # AppServicePlanJSName: Name of the App Service Plan for JavaScript bots.
+  # AppServicePlanPythonName: Name of the App Service Plan for Python bots.
   # DeployResourceGroup: (optional) Name of the Resource Group containing the bots.
-  # ResourceSuffix: (optional) Suffix to add to the resources' name to avoid collitions.
+  # ResourceSuffix: (optional) Alphanumeric suffix to add to the resources' name to avoid collisions.
   # SharedResourceGroup: (optional) Name of the Resource Group containing the shared resources.
 
   ## Internal variables
   InternalAppInsightsName: "bffnappinsights$($env:RESOURCESUFFIX)"
-  InternalAppServicePlanDotNetName: "bffnbotsappservicedotnet$($env:RESOURCESUFFIX)"
-  InternalAppServicePlanJSName: "bffnbotsappservicejs$($env:RESOURCESUFFIX)"
-  InternalAppServicePlanPythonName: "bffnbotsappservicepython$($env:RESOURCESUFFIX)"
+  InternalAppServicePlanDotNetName: $(APPSERVICEPLANDOTNETNAME)$($env:RESOURCESUFFIX)
+  InternalAppServicePlanJSName: $(APPSERVICEPLANJSNAME)$($env:RESOURCESUFFIX)
+  InternalAppServicePlanPythonName: $(APPSERVICEPLANPYTHONNAME)$($env:RESOURCESUFFIX)
   InternalCosmosDBName: "bffnbotstatedb$($env:RESOURCESUFFIX)"
+  InternalContainerRegistryName: "bffncontainerregistry$($env:RESOURCESUFFIX)"
   InternalKeyVaultName: "bffnbotkeyvault$($env:RESOURCESUFFIX)"
-  InternalBotResourceGroupName: $[coalesce(variables['DEPLOYRESOURCEGROUP'], 'bffnbots')]
-  InternalSharedResourceGroupName: $[coalesce(variables['SHAREDRESOURCEGROUP'], 'bffnshared')]
+  InternalBotResourceGroupName: $[coalesce(variables['DEPLOYRESOURCEGROUP'], 'BFFN')]
+  InternalSharedResourceGroupName: $[coalesce(variables['SHAREDRESOURCEGROUP'], 'BFFN-Shared')]
+  InternalVirtualNetworkName: "bffnvirtualnetwork$($env:RESOURCESUFFIX)"
 
 pool:
   vmImage: "windows-2019"
@@ -127,12 +132,38 @@ stages:
             scriptLocation: inlineScript
             inlineScript: |
               Write-Host "Looking for $(INTERNALAPPSERVICEPLANPYTHONNAME)..."
-              $exists = az appservice plan show --name "$(INTERNALAPPSERVICEPLANPYTHONNAME)" --resource-group "$(INTERNALSHAREDRESOURCEGROUPNAME)-linux"
+              $exists = az appservice plan show --name "$(INTERNALAPPSERVICEPLANPYTHONNAME)" --resource-group "$(INTERNALSHAREDRESOURCEGROUPNAME)"
               if ($exists) {
                 Write-Host "Deleting $(INTERNALAPPSERVICEPLANPYTHONNAME)..."
-                az appservice plan delete --name "$(INTERNALAPPSERVICEPLANPYTHONNAME)" --resource-group "$(INTERNALSHAREDRESOURCEGROUPNAME)-linux" --yes
+                az appservice plan delete --name "$(INTERNALAPPSERVICEPLANPYTHONNAME)" --resource-group "$(INTERNALSHAREDRESOURCEGROUPNAME)" --yes
               } else {
                 Write-Host "No pre-existing $(INTERNALAPPSERVICEPLANPYTHONNAME) resource found."
+              }
+
+- stage: "Delete_Virtual_Network"
+  displayName: "Delete Virtual Network"
+  dependsOn:
+    - Delete_App_Service_Plan_DotNet
+    - Delete_App_Service_Plan_JS
+    - Delete_App_Service_Plan_Python
+  jobs:
+    - job: "Delete"
+      displayName: "Delete steps"
+      steps:
+        - task: AzureCLI@2
+          displayName: "Delete Virtual Network"
+          inputs:
+            azureSubscription: $(AZURESUBSCRIPTION)
+            scriptType: pscore
+            scriptLocation: inlineScript
+            inlineScript: |
+              Write-Host "Looking for $(INTERNALVIRTUALNETWORKNAME)..."
+              $exists = az network vnet show --name "$(INTERNALVIRTUALNETWORKNAME)" --resource-group "$(INTERNALSHAREDRESOURCEGROUPNAME)"
+              if ($exists) {
+                Write-Host "Deleting $(INTERNALVIRTUALNETWORKNAME)..."
+                az network vnet delete --name "$(INTERNALVIRTUALNETWORKNAME)" --resource-group "$(INTERNALSHAREDRESOURCEGROUPNAME)"
+              } else {
+                Write-Host "No pre-existing $(INTERNALVIRTUALNETWORKNAME) resource found."
               }
 
 - stage: "Delete_App_Registrations"
@@ -225,17 +256,38 @@ stages:
                 Write-Host "No pre-existing $(INTERNALCOSMOSDBNAME) resource found."
               }
 
-- stage: "Delete_Resource_Group_Windows"
-  displayName: "Delete Resource Group (Windows)"
-  dependsOn: 
-    - Delete_DotNet_Resource_Group
-    - Delete_JS_Resource_Group
-    - Delete_App_Service_Plan_DotNet
-    - Delete_App_Service_Plan_JS
-    - Delete_App_Insights
-    - Delete_CosmosDB
+- stage: "Delete_Container_Registry"
+  displayName: "Delete Container Registry"
+  dependsOn: []
+  jobs:
+    - job: "Delete"
+      displayName: "Delete steps"
+      steps:
+        - task: AzureCLI@2
+          displayName: "Delete Container Registry"
+          inputs:
+            azureSubscription: $(AZURESUBSCRIPTION)
+            scriptType: pscore
+            scriptLocation: inlineScript
+            inlineScript: |
+              Write-Host "Looking for $(INTERNALCONTAINERREGISTRYNAME)..."
+              $resource = az acr check-name --name "$(INTERNALCONTAINERREGISTRYNAME)" | ConvertFrom-Json
+              if ($resource.nameAvailable) {
+                Write-Host "No pre-existing $(INTERNALCONTAINERREGISTRYNAME) resource found."
+              } else {
+                Write-Host "Deleting $(INTERNALCONTAINERREGISTRYNAME)..."
+                az acr delete --name "$(INTERNALCONTAINERREGISTRYNAME)" --resource-group "$(INTERNALSHAREDRESOURCEGROUPNAME)" --yes
+              }
+
+- stage: "Delete_Shared_Resource_Group"
+  displayName: "Delete Shared Resource Group"
+  dependsOn:
+    - Delete_Virtual_Network
     - Delete_App_Registrations
     - Delete_Key_Vault
+    - Delete_App_Insights
+    - Delete_CosmosDB
+    - Delete_Container_Registry
   jobs:
     - job: "Delete"
       displayName: "Delete steps"
@@ -244,18 +296,4 @@ stages:
           parameters:
             azureSubscription: $(AZURESUBSCRIPTION)
             name: "$(INTERNALSHAREDRESOURCEGROUPNAME)"
-
-- stage: "Delete_Resource_Group_Linux"
-  displayName: "Delete Resource Group (Linux)"
-  dependsOn: 
-    - Delete_Python_Resource_Group
-    - Delete_App_Service_Plan_Python
-  jobs:
-    - job: "Delete"
-      displayName: "Delete Resource Group (Linux)"
-      steps:
-        - template: ../common/deleteResourceGroup.yml
-          parameters:
-            azureSubscription: $(AZURESUBSCRIPTION)
-            name: "$(INTERNALSHAREDRESOURCEGROUPNAME)-linux"
 
