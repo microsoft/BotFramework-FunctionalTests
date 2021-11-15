@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-const { ActivityEx } = require('botbuilder-core');
+const { ActivityTypes } = require('botbuilder-core');
 const { SkillDefinition } = require('./skillDefinition');
 
 const SkillAction = {
@@ -22,9 +22,7 @@ class EchoSkill extends SkillDefinition {
     }
 
     // We only support one activity for Echo so no further checks are needed
-    const activity = ActivityEx.createMessageActivity();
-    activity.name = actionId;
-    activity.text = 'Begin the Echo Skill.';
+    const activity = { type: ActivityTypes.Message, name: actionId, text: 'Begin the Echo Skill.' };
 
     return activity;
   }

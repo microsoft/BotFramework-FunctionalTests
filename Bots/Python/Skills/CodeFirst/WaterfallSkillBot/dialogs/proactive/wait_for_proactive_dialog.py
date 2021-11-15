@@ -4,10 +4,7 @@
 from typing import Dict
 from botbuilder.core import MessageFactory, BotAdapter, TurnContext
 from botbuilder.dialogs import Dialog, DialogContext, DialogTurnResult, DialogTurnStatus
-from botbuilder.schema import (
-    ActivityTypes,
-    ActivityEventNames
-)
+from botbuilder.schema import ActivityTypes
 from config import DefaultConfig
 from .continuation_parameters import ContinuationParameters
 
@@ -44,7 +41,7 @@ class WaitForProactiveDialog(Dialog):
         activity = dialog_context.context.activity
         if (
             activity.type == ActivityTypes.event
-            and activity.name == ActivityEventNames.continue_conversation
+            and activity.name == "ContinueConversation"
         ):
             # We continued the conversation, forget the proactive reference.
             self.continuation_parameters_store[activity.id] = None

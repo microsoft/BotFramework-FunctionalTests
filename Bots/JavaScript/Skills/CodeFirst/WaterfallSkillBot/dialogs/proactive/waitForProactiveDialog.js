@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-const { TurnContext, MessageFactory, ActivityTypes, ActivityEventNames, EndOfConversationCodes } = require('botbuilder');
+const { TurnContext, MessageFactory, ActivityTypes, EndOfConversationCodes } = require('botbuilder');
 const { Dialog, DialogTurnStatus } = require('botbuilder-dialogs');
 
 class WaitForProactiveDialog extends Dialog {
@@ -42,7 +42,7 @@ class WaitForProactiveDialog extends Dialog {
    */
   async continueDialog (dc) {
     const { activity } = dc.context;
-    if (activity.type === ActivityTypes.Event && activity.name === ActivityEventNames.ContinueConversation) {
+    if (activity.type === ActivityTypes.Event && activity.name === "continueConversation") {
       // We continued the conversation, forget the proactive reference.
       this.continuationParametersStore[activity.from.id] = undefined;
 

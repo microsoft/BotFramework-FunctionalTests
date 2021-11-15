@@ -39,7 +39,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Proact
 
         public override async Task<DialogTurnResult> ContinueDialogAsync(DialogContext dc, CancellationToken cancellationToken = default)
         {
-            if (dc.Context.Activity.Type == ActivityTypes.Event && dc.Context.Activity.Name == ActivityEventNames.ContinueConversation)
+            if (dc.Context.Activity.Type == ActivityTypes.Event && dc.Context.Activity.Name == "ContinueConversation")
             {
                 // We continued the conversation, forget the proactive reference.
                 _continuationParametersStore.TryRemove(dc.Context.Activity.From.Id, out _);
