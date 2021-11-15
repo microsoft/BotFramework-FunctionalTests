@@ -17,9 +17,9 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Middleware
     /// </summary>
     public class LoggerMiddleware : IMiddleware
     {
-        private readonly ILogger<CloudAdapter> _logger;
+        private readonly ILogger<BotFrameworkHttpAdapter> _logger;
 
-        public LoggerMiddleware(ILogger<CloudAdapter> logger)
+        public LoggerMiddleware(ILogger<BotFrameworkHttpAdapter> logger)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }

@@ -12,7 +12,7 @@ from botbuilder.core.integration import (
     aiohttp_channel_service_routes,
     aiohttp_error_middleware,
 )
-from botbuilder.core.skills import SkillHandler, SkillConversationIdFactory
+from botbuilder.core.skills import SkillHandler
 from botbuilder.integration.aiohttp.skills import SkillHttpClient
 from botbuilder.schema import Activity
 from botframework.connector.auth import (
@@ -21,6 +21,7 @@ from botframework.connector.auth import (
 )
 
 from dialogs import SetupDialog
+from skill_conversation_id_factory import SkillConversationIdFactory
 from authentication import AllowedSkillsClaimsValidator
 from bots import HostBot
 from config import DefaultConfig, SkillConfiguration

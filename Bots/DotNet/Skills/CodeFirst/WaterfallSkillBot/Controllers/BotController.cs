@@ -20,7 +20,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Controllers
         private readonly IBot _bot;
         private readonly ILogger _logger;
 
-        public BotController(IBotFrameworkHttpAdapter adapter, IBot bot, ILogger<BotController> logger)
+        public BotController(BotFrameworkHttpAdapter adapter, IBot bot, ILogger<BotController> logger)
         {
             _adapter = adapter;
             _bot = bot;

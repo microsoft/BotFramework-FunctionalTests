@@ -25,7 +25,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Controllers
         private readonly ConversationState _conversationState;
         private readonly ActivityRouterDialog _mainDialog;
 
-        public ProactiveController(ConversationState conversationState, ActivityRouterDialog mainDialog, IBotFrameworkHttpAdapter adapter, ConcurrentDictionary<string, ContinuationParameters> continuationParametersStore)
+        public ProactiveController(ConversationState conversationState, ActivityRouterDialog mainDialog, BotFrameworkHttpAdapter adapter, ConcurrentDictionary<string, ContinuationParameters> continuationParametersStore)
         {
             _conversationState = conversationState;
             _adapter = adapter;
@@ -67,7 +67,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Controllers
                 }
 
                 // Continue the conversation with the proactive message
-                await ((CloudAdapter)_adapter).ContinueConversationAsync((ClaimsIdentity)continuationParameters.ClaimsIdentity, continuationParameters.ConversationReference, continuationParameters.OAuthScope, ContinuationBotCallback, default);
+                await ((BotFrameworkAdapter)_adapter).ContinueConversationAsync((ClaimsIdentity)continuationParameters.ClaimsIdentity, continuationParameters.ConversationReference, continuationParameters.OAuthScope, ContinuationBotCallback, default);
             }
             catch (Exception ex)
             {

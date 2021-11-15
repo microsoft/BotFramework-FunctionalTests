@@ -9,23 +9,18 @@ using Microsoft.Bot.Builder.TraceExtensions;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Bot.Schema;
 using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Middleware;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot
 {
-    public class SkillAdapterWithErrorHandler : CloudAdapter
+    public class SkillAdapterWithErrorHandler : BotFrameworkHttpAdapter
     {
         private readonly ConversationState _conversationState;
         private readonly ILogger _logger;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SkillAdapterWithErrorHandler"/> class to handle errors.
-        /// </summary>
-        /// <param name="botFrameworkAuthentication">The cloud environment for the bot.</param>
-        /// <param name="logger">An instance of a logger.</param>
-        /// <param name="conversationState">The conversation state.</param>
-        public SkillAdapterWithErrorHandler(BotFrameworkAuthentication botFrameworkAuthentication, ILogger<CloudAdapter> logger, ConversationState conversationState)
-            : base(botFrameworkAuthentication, logger)
+        public SkillAdapterWithErrorHandler(IConfiguration configuration, ICredentialProvider credentialProvider, AuthenticationConfiguration authConfig, ILogger<BotFrameworkHttpAdapter> logger, ConversationState conversationState)
+            : base(configuration, credentialProvider, authConfig, logger: logger)
         {
             _conversationState = conversationState ?? throw new ArgumentNullException(nameof(conversationState));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));

@@ -10,7 +10,6 @@ from botbuilder.core.card_factory import ContentTypes
 from botbuilder.core.skills import (
     SkillHandler,
     BotFrameworkSkill,
-    SkillConversationIdFactory,
 )
 from botbuilder.integration.aiohttp.skills import SkillHttpClient
 from botbuilder.schema import (
@@ -29,6 +28,7 @@ from botframework.connector.auth import (
 from botframework.connector.token_api.models import TokenExchangeRequest
 
 from adapter_with_error_handler import AdapterWithErrorHandler
+from skill_conversation_id_factory import SkillConversationIdFactory
 from skills.skill_definition import SkillDefinition
 from skills_configuration import SkillsConfiguration, DefaultConfig
 

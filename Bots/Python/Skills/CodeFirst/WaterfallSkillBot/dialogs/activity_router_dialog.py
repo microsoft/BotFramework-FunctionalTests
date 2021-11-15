@@ -13,7 +13,6 @@ from botbuilder.dialogs import (
     DialogTurnStatus,
     ComponentDialog,
 )
-from botbuilder.core.skills import SkillConversationIdFactory
 from botbuilder.dialogs.skills import (
     SkillDialogOptions,
     SkillDialog,
@@ -22,6 +21,7 @@ from botbuilder.dialogs.skills import (
 from botbuilder.schema import Activity, ActivityTypes, InputHints
 from botbuilder.integration.aiohttp.skills import SkillHttpClient
 from config import DefaultConfig
+from skill_conversation_id_factory import SkillConversationIdFactory
 from dialogs.cards import CardDialog
 from dialogs.delete import DeleteDialog
 from dialogs.proactive import WaitForProactiveDialog

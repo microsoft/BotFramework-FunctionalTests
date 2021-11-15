@@ -4,6 +4,7 @@
 const { v4 } = require('uuid');
 const { ActivityEx, ActivityTypes, CardFactory, SkillHandler, tokenExchangeOperationName, TurnContext } = require('botbuilder');
 const { JwtTokenValidation } = require('botframework-connector');
+const { SkillConversationIdFactory } = require('./skillConversationIdFactory');
 
 const WATERFALL_SKILL_BOT = 'WaterfallSkillBot';
 
@@ -13,7 +14,7 @@ const WATERFALL_SKILL_BOT = 'WaterfallSkillBot';
 class TokenExchangeSkillHandler extends SkillHandler {
   constructor (adapter, bot, conversationIdFactory, skillsConfig, skillClient,
     credentialProvider, authConfig, channelProvider = null, logger = null) {
-    super(adapter, bot, conversationIdFactory, credentialProvider, authConfig, channelProvider);
+    super(adapter, bot, SkillConversationIdFactory, credentialProvider, authConfig, channelProvider);
     this.adapter = adapter;
     this.tokenExchangeProvider = adapter;
 
