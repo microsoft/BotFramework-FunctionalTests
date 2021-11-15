@@ -13,7 +13,7 @@ dotenv.config({ path: ENV_FILE });
 
 // Import required bot services.
 // See https://aka.ms/bot-services to learn more about the different parts of a bot.
-const { ActivityTypes, BotFrameworkAdapter, InputHints, MemoryStorage, ConversationState, SkillHttpClient, SkillHandler, ChannelServiceRoutes, TurnContext, MessageFactory, SkillConversationIdFactory } = require('botbuilder');
+const { ActivityTypes, BotFrameworkAdapter, InputHints, MemoryStorage, ConversationState, SkillHttpClient, SkillHandler, ChannelServiceRoutes, TurnContext, MessageFactory } = require('botbuilder');
 const { AuthenticationConfiguration, SimpleCredentialProvider } = require('botframework-connector');
 
 const { SkillBot } = require('./bots/skillBot');
