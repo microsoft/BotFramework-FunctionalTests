@@ -65,7 +65,8 @@ namespace SkillFunctionalTests.SingleTurn
                 if (testCase.DeliveryMode == DeliveryModes.ExpectReplies)
                 {
                     // Note: ExpectReplies is not supported by DotNetV3 and JSV3 skills.
-                    if (testCase.TargetSkill == SkillBotNames.EchoSkillBotDotNetV3 || testCase.TargetSkill == SkillBotNames.EchoSkillBotJSV3)
+                    // BUG: ExpectReplies fails for SimpleHostBotComposerDotNet calls (remove the last OR when https://github.com/microsoft/BotFramework-FunctionalTests/issues/279 is fixed).
+                    if (testCase.TargetSkill == SkillBotNames.EchoSkillBotDotNetV3 || testCase.TargetSkill == SkillBotNames.EchoSkillBotJSV3 || testCase.HostBot == HostBot.SimpleHostBotComposerDotNet)
                     {
                         return true;
                     }
