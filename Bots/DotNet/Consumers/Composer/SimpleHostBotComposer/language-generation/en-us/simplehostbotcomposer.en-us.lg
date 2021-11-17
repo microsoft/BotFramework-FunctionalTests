@@ -18,7 +18,7 @@
 ]
 # SendActivity_Zkprn3()
 [Activity
-    Text = Received endOfConversation.\n\nCode: completedSuccessfully.
+    Text = Received endOfConversation.\n\nCode: ${turn.activity.code}.
     InputHint = acceptingInput
 ]
 # SendActivity_71moHf()
