@@ -327,16 +327,29 @@ stages:
             registry: ${{ parameters.dependenciesRegistryDotNetSkills }}
             version: ${{ parameters.dependenciesVersionDotNetSkills }}
 
-        # DotNet Composer bots
+# DotNet Composer
+  - template: dotnet/deployComposer.yml
+    parameters:
+      appInsight: "$(INTERNALAPPINSIGHTSNAME)"
+      appServicePlan: "$(INTERNALAPPSERVICEPLANDOTNETNAME)"
+      appServicePlanRG: "$(INTERNALSHAREDRESOURCEGROUPNAME)"
+      azureSubscription: "$(AZURESUBSCRIPTION)"
+      botPricingTier: $env:BOTPRICINGTIER
+      keyVault: "$(INTERNALKEYVAULTNAME)"
+      projectTag: "$(INTERNALPROJECTTAG)"
+      resourceGroup: "$(INTERNALRESOURCEGROUPNAME)-DotNet"
+      resourceSuffix: $(INTERNALRESOURCESUFFIX)
+      sharedResourceGroup: "$(INTERNALSHAREDRESOURCEGROUPNAME)"
+      virtualNetwork: "$(INTERNALVIRTUALNETWORKNAME)"
+      bots:
         - name: "bffnsimplehostbotcomposerdotnet"
           dependsOn: "Deploy_bffnechoskillbotdotnet"
-          type: "ComposerHost"
+          type: "Host"
           displayName: "DotNet Simple Composer Host Bot"
           appId: $(BFFNSIMPLEHOSTBOTCOMPOSERDOTNETAPPID)
           appSecret: $(BFFNSIMPLEHOSTBOTCOMPOSERDOTNETAPPSECRET)
           project: 
             directory: 'Bots/DotNet/Consumers/Composer/SimpleHostBotComposer'
-            name: "SimpleHostBotComposer.csproj"
             netCoreVersion: "3.1.x"
           dependency:
             registry: ${{ parameters.dependenciesRegistryDotNetHosts }}
@@ -344,13 +357,12 @@ stages:
 
         - name: "bffnechoskillbotcomposerdotnet"
           dependsOn: "Deploy_bffnechoskillbotdotnet21"
-          type: "ComposerSkill"
+          type: "Skill"
           displayName: "DotNet Echo Composer Skill Bot"
           appId: $(BFFNECHOSKILLBOTCOMPOSERDOTNETAPPID)
           appSecret: $(BFFNECHOSKILLBOTCOMPOSERDOTNETAPPSECRET)
           project: 
             directory: 'Bots/DotNet/Skills/Composer/EchoSkillBotComposer'
-            name: "EchoSkillBotComposer.csproj"
             netCoreVersion: "3.1.x"
           dependency:
             registry: ${{ parameters.dependenciesRegistryDotNetSkills }}
