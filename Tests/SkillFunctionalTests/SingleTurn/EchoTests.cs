@@ -37,7 +37,6 @@ namespace SkillFunctionalTests.SingleTurn
 
             var hostBots = new List<HostBot>
             {
-                HostBot.SimpleHostBotComposerDotNet,
                 HostBot.SimpleHostBotDotNet,
                 HostBot.SimpleHostBotDotNet21,
                 HostBot.SimpleHostBotJS,
@@ -46,7 +45,6 @@ namespace SkillFunctionalTests.SingleTurn
 
             var targetSkills = new List<string>
             {
-                SkillBotNames.EchoSkillBotComposerDotNet,
                 SkillBotNames.EchoSkillBotDotNet,
                 SkillBotNames.EchoSkillBotDotNet21,
                 SkillBotNames.EchoSkillBotDotNetV3,
