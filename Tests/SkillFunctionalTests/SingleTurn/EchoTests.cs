@@ -99,6 +99,29 @@ namespace SkillFunctionalTests.SingleTurn
                 { "TargetSkill", testCase.TargetSkill }
             };
 
+            // BUG: Composer skills don't return status code, remove this and related placeholder in script once https://github.com/microsoft/BotFramework-FunctionalTests/issues/278 is fixed
+            if (testCase.TargetSkill == SkillBotNames.EchoSkillBotComposerDotNet)
+            {
+                switch (testCase.HostBot)
+                {
+                    case HostBot.SimpleHostBotJS:
+                        testParams.Add("ExpectedEocCode", "undefined");
+                        break;
+
+                    case HostBot.SimpleHostBotPython:
+                        testParams.Add("ExpectedEocCode", "None");
+                        break;
+
+                    default:
+                        testParams.Add("ExpectedEocCode", string.Empty);
+                        break;
+                }
+            }
+            else
+            {
+                testParams.Add("ExpectedEocCode", "completedSuccessfully");
+            }
+
             await runner.RunTestAsync(Path.Combine(_testScriptsFolder, testCase.Script), testParams);
         }
     }
