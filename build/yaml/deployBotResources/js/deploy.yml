@@ -128,6 +128,9 @@ stages:
                 $version = "$(DEPENDENCIESVERSIONNUMBER)";
                 $packagejsonPath = "./package.json";
 
+                # Remove yarn.lock file to prevent outdated dependencies references from being misinterpreted by Security Audit.
+                Remove-Item -path "$(SYSTEM.DEFAULTWORKINGDIRECTORY)/Bots/JavaScript/yarn.lock"
+
                 $packagejson = Get-Content $packagejsonPath | ConvertFrom-Json
                 $dependencies = @{}
 
