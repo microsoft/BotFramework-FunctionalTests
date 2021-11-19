@@ -42,7 +42,7 @@ class WaitForProactiveDialog extends Dialog {
    */
   async continueDialog (dc) {
     const { activity } = dc.context;
-    if (activity.type === ActivityTypes.Event && activity.name === "continueConversation") {
+    if (activity.type === ActivityTypes.Event && activity.name === 'continueConversation') {
       // We continued the conversation, forget the proactive reference.
       this.continuationParametersStore[activity.from.id] = undefined;
 
