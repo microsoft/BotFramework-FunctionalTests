@@ -11,7 +11,7 @@ const CONFIRM_PROMPT = 'ConfirmPrompt';
 class AuthDialog extends ComponentDialog {
   /**
    * @param {string} dialogId
-   * @param {Object} configuration
+   * @param {import('../../config').DefaultConfig} configuration
    */
   constructor (dialogId, configuration) {
     super(dialogId);

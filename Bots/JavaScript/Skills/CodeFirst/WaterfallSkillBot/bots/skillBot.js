@@ -6,18 +6,19 @@ const { runDialog } = require('botbuilder-dialogs');
 
 class SkillBot extends ActivityHandler {
   /**
+   * @param {import('../config').DefaultConfig} configuration
    * @param {import('botbuilder').ConversationState} conversationState
    * @param {import('botbuilder-dialogs').Dialog} dialog
-   * @param {string} serverUrl
    */
-  constructor (conversationState, dialog, serverUrl) {
+  constructor (configuration, conversationState, dialog) {
     super();
+    if (!configuration) throw new Error('[SkillBot]: Missing parameter. configuration is required');
     if (!conversationState) throw new Error('[SkillBot]: Missing parameter. conversationState is required');
     if (!dialog) throw new Error('[SkillBot]: Missing parameter. dialog is required');
 
+    this.configuration = configuration;
     this.conversationState = conversationState;
     this.dialog = dialog;
-    this.serverUrl = serverUrl;
 
     this.onTurn(async (turnContext, next) => {
       if (turnContext.activity.type !== ActivityTypes.ConversationUpdate) {
@@ -37,7 +38,7 @@ class SkillBot extends ActivityHandler {
             text,
             speak: text.replace('\n\n', '')
           });
-          await turnContext.sendActivity(`You can check the skill manifest to see what it supports here: ${this.serverUrl}/manifests/waterfallskillbot-manifest-1.0.json`);
+          await turnContext.sendActivity(`You can check the skill manifest to see what it supports here: ${this.configuration.ServerUrl}/manifests/waterfallskillbot-manifest-1.0.json`);
         }
       }
 

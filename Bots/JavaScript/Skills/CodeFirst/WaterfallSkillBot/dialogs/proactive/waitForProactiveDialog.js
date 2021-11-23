@@ -7,22 +7,21 @@ const { Dialog, DialogTurnStatus } = require('botbuilder-dialogs');
 class WaitForProactiveDialog extends Dialog {
   /**
    * @param {string} dialogId
-   * @param {string} serverUrl
+   * @param {import('../../config').DefaultConfig} configuration
    * @param {Object<string, import('./continuationParameters').ContinuationParameters>} continuationParametersStore
    */
-  constructor (dialogId, serverUrl, continuationParametersStore) {
+  constructor (dialogId, configuration, continuationParametersStore) {
     super(dialogId);
-    this.serverUrl = serverUrl;
+    this.configuration = configuration;
     this.continuationParametersStore = continuationParametersStore;
   }
 
   /**
    * Message to send to users when the bot receives a Conversation Update event
-   * @param {string} url
    * @param {string} id
    */
-  notifyMessage (url, id) {
-    return `Navigate to ${url}/api/notify?user=${id} to proactively message the user.`;
+  notifyMessage (id) {
+    return `Navigate to ${this.configuration.ServerUrl}/api/notify?user=${id} to proactively message the user.`;
   }
 
   /**
@@ -33,7 +32,7 @@ class WaitForProactiveDialog extends Dialog {
     this.addOrUpdateContinuationParameters(dc.context);
 
     // Render message with continuation link.
-    await dc.context.sendActivity(MessageFactory.text(this.notifyMessage(this.serverUrl, dc.context.activity.from.id)));
+    await dc.context.sendActivity(MessageFactory.text(this.notifyMessage(dc.context.activity.from.id)));
     return Dialog.EndOfTurn;
   }
 
@@ -58,7 +57,7 @@ class WaitForProactiveDialog extends Dialog {
     }
 
     // Keep waiting for a call to the ProactiveController.
-    await dc.context.sendActivity(`We are waiting for a proactive message. ${this.notifyMessage(this.serverUrl, activity.from.id)}`);
+    await dc.context.sendActivity(`We are waiting for a proactive message. ${this.notifyMessage(activity.from.id)}`);
 
     return Dialog.EndOfTurn;
   }

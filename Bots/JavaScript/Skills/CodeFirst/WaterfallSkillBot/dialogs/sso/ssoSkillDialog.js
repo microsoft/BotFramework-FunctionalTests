@@ -12,7 +12,7 @@ const SSO_SKILL_DIALOG = 'SsoSkillDialog';
 class SsoSkillDialog extends ComponentDialog {
   /**
    * @param {string} dialogId
-   * @param {Object} configuration
+   * @param {import('../../config').DefaultConfig} configuration
    */
   constructor (dialogId, configuration) {
     super(dialogId);

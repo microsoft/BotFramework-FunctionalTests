@@ -29,24 +29,24 @@ const UPDATE_DIALOG = 'Update';
  */
 class ActivityRouterDialog extends ComponentDialog {
   /**
-   * @param {string} serverUrl
+   * @param {import('../config').DefaultConfig} configuration
    * @param {import('botbuilder').ConversationState} conversationState
-   * @param {import('../skillConversationIdFactory').SkillConversationIdFactory} conversationIdFactory
+   * @param {import('botbuilder').SkillConversationIdFactory} conversationIdFactory
    * @param {import('botbuilder').SkillHttpClient} skillClient
    * @param {Object<string, import('./proactive/continuationParameters').ContinuationParameters>} continuationParametersStore
    */
-  constructor (serverUrl, conversationState, conversationIdFactory, skillClient, continuationParametersStore) {
+  constructor (configuration, conversationState, conversationIdFactory, skillClient, continuationParametersStore) {
     super(MAIN_DIALOG);
 
-    this.addDialog(new CardDialog(CARDS_DIALOG, serverUrl))
-      .addDialog(new WaitForProactiveDialog(PROACTIVE_DIALOG, serverUrl, continuationParametersStore))
-      .addDialog(new MessageWithAttachmentDialog(ATTACHMENT_DIALOG, serverUrl))
-      .addDialog(new AuthDialog(AUTH_DIALOG, process.env))
-      .addDialog(new SsoSkillDialog(SSO_DIALOG, process.env))
+    this.addDialog(new CardDialog(CARDS_DIALOG, configuration))
+      .addDialog(new WaitForProactiveDialog(PROACTIVE_DIALOG, configuration, continuationParametersStore))
+      .addDialog(new MessageWithAttachmentDialog(ATTACHMENT_DIALOG, configuration))
+      .addDialog(new AuthDialog(AUTH_DIALOG, configuration))
+      .addDialog(new SsoSkillDialog(SSO_DIALOG, configuration))
       .addDialog(new FileUploadDialog(FILE_UPLOAD_DIALOG))
       .addDialog(new DeleteDialog(DELETE_DIALOG))
       .addDialog(new UpdateDialog(UPDATE_DIALOG))
-      .addDialog(this.createEchoSkillDialog(ECHO_DIALOG, conversationState, conversationIdFactory, skillClient, process.env))
+      .addDialog(this.createEchoSkillDialog(ECHO_DIALOG, configuration, conversationState, conversationIdFactory, skillClient))
       .addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
         this.processActivity.bind(this)
       ]));
@@ -56,22 +56,18 @@ class ActivityRouterDialog extends ComponentDialog {
 
   /**
    * @param {string} dialogId
+   * @param {import('../config').DefaultConfig} configuration
    * @param {import('botbuilder').ConversationState} conversationState
-   * @param {import('../skillConversationIdFactory').SkillConversationIdFactory} conversationIdFactory
+   * @param {import('botbuilder').SkillConversationIdFactory} conversationIdFactory
    * @param {import('botbuilder').SkillHttpClient} skillClient
-   * @param {Object} configuration
    */
-  createEchoSkillDialog (dialogId, conversationState, conversationIdFactory, skillClient, configuration) {
+  createEchoSkillDialog (dialogId, configuration, conversationState, conversationIdFactory, skillClient) {
     const skillHostEndpoint = configuration.SkillHostEndpoint;
     if (!skillHostEndpoint) {
       throw new Error('SkillHostEndpoint is not in configuration');
     }
 
-    const skill = {
-      id: configuration.EchoSkillInfo_id,
-      appId: configuration.EchoSkillInfo_appId,
-      skillEndpoint: configuration.EchoSkillInfo_skillEndpoint
-    };
+    const skill = configuration.EchoSkillInfo;
 
     if (!skill.id || !skill.skillEndpoint) {
       throw new Error('EchoSkillInfo_id and EchoSkillInfo_skillEndpoint are not set in configuration');
