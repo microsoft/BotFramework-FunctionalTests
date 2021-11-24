@@ -39,6 +39,7 @@ stages:
     - job: "Delete"
       displayName: "Delete steps"
       steps:
+        - checkout: none
         - template: ../common/deleteResourceGroup.yml
           parameters:
             azureSubscription: $(AZURESUBSCRIPTION)
@@ -51,6 +52,7 @@ stages:
     - job: "Delete"
       displayName: "Delete steps"
       steps:
+        - checkout: none
         - template: ../common/deleteResourceGroup.yml
           parameters:
             azureSubscription: $(AZURESUBSCRIPTION)
@@ -63,6 +65,7 @@ stages:
     - job: "Delete"
       displayName: "Delete steps"
       steps:
+        - checkout: none
         - template: ../common/deleteResourceGroup.yml
           parameters:
             azureSubscription: $(AZURESUBSCRIPTION)
@@ -76,6 +79,7 @@ stages:
     - job: "Delete"
       displayName: "Delete steps"
       steps:
+        - checkout: none
         - task: AzureCLI@2
           displayName: "Delete App Service Plan (DotNet)"
           inputs:
@@ -100,6 +104,7 @@ stages:
     - job: "Delete"
       displayName: "Delete steps"
       steps:
+        - checkout: none
         - task: AzureCLI@2
           displayName: "Delete App Service Plan (JS)"
           inputs:
@@ -124,6 +129,7 @@ stages:
     - job: "Delete"
       displayName: "Delete steps"
       steps:
+        - checkout: none
         - task: AzureCLI@2
           displayName: "Delete App Service Plan (Python)"
           inputs:
@@ -150,6 +156,7 @@ stages:
     - job: "Delete"
       displayName: "Delete steps"
       steps:
+        - checkout: none
         - task: AzureCLI@2
           displayName: "Delete Virtual Network"
           inputs:
@@ -173,6 +180,7 @@ stages:
     - job: "Delete"
       displayName: "Delete steps"
       steps:
+        - checkout: none
         - template: deleteAppRegistrations.yml
           parameters:
             azureSubscription: "$(AZURESUBSCRIPTION)"
@@ -187,6 +195,7 @@ stages:
     - job: "Delete"
       displayName: "Delete steps"
       steps:
+        - checkout: none
         - task: AzureCLI@2
           displayName: "Delete Key Vault"
           inputs:
@@ -211,6 +220,7 @@ stages:
     - job: "Delete"
       displayName: "Delete steps"
       steps:
+        - checkout: none
         - task: AzureCLI@2
           displayName: "Delete App Insights"
           inputs:
@@ -240,6 +250,7 @@ stages:
     - job: "Delete"
       displayName: "Delete steps"
       steps:
+        - checkout: none
         - task: AzureCLI@2
           displayName: "Delete CosmosDB"
           inputs:
@@ -263,6 +274,7 @@ stages:
     - job: "Delete"
       displayName: "Delete steps"
       steps:
+        - checkout: none
         - task: AzureCLI@2
           displayName: "Delete Container Registry"
           inputs:
@@ -292,6 +304,7 @@ stages:
     - job: "Delete"
       displayName: "Delete steps"
       steps:
+        - checkout: none
         - template: ../common/deleteResourceGroup.yml
           parameters:
             azureSubscription: $(AZURESUBSCRIPTION)
