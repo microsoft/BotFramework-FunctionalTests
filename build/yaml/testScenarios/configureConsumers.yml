@@ -549,14 +549,12 @@ steps:
           @{ 
             name      = "SingleTurn"; 
             consumers = @(
-              "SimpleHostBotComposerDotNet",
               "SimpleHostBotDotNet",
               "SimpleHostBotDotNet21",
               "SimpleHostBotJS",
               "SimpleHostBotPython"
             );
             skills    = @(
-              "EchoSkillBotComposerDotNet",
               "EchoSkillBotDotNet",
               "EchoSkillBotDotNet21",
               "EchoSkillBotDotNetV3",
