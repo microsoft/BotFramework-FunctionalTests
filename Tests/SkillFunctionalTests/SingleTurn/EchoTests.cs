@@ -112,6 +112,10 @@ namespace SkillFunctionalTests.SingleTurn
                         testParams.Add("ExpectedEocCode", "None");
                         break;
 
+                    case HostBot.SimpleHostBotComposerDotNet:
+                        testParams.Add("ExpectedEocCode", "null");
+                        break;
+
                     default:
                         testParams.Add("ExpectedEocCode", string.Empty);
                         break;
