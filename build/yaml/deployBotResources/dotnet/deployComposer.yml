@@ -32,12 +32,24 @@ parameters:
     displayName: Key Vault name
     type: string
 
+  - name: projectTag
+    displayName: Tag for bot's application service
+    type: string
+
   - name: resourceGroup
     displayName: Resource Group
     type: string
 
   - name: resourceSuffix
     displayName: Azure resources' name suffix
+    type: string
+
+  - name: sharedResourceGroup
+    displayName: Shared Resource Group
+    type: string
+
+  - name: virtualNetwork
+    displayName: Virtual network name
     type: string
 
 stages:
@@ -239,13 +251,16 @@ stages:
               appInsight: "${{ parameters.appInsight }}"
               appSecret:  $(APPSECRET)
               appServicePlan: "${{ parameters.appServicePlan }}"
-              appServicePlanRG: "${{ parameters.appServicePlanRG }}"
               azureSubscription: "${{ parameters.azureSubscription }}"
               botGroup: "${{ parameters.resourceGroup }}"
               botName: "${{ bot.name }}"
               botPricingTier: "${{ parameters.botPricingTier }}"
+              projectTag: "${{ parameters.projectTag }}"
               resourceSuffix: "${{ parameters.resourceSuffix }}"
+              sharedResourceGroup: "${{ parameters.sharedResourceGroup }}"
               templateFile: "build/templates/template-bot-resources.json"
+              virtualNetwork: "${{ parameters.virtualNetwork }}"
+              virtualNetworkSubnet: "dotnet"
 
           # Deploy bot
           - task: AzureWebApp@1
@@ -257,11 +272,14 @@ stages:
               package: '$(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ parameters.buildFolder }}/${{ bot.name }}.zip'
               deploymentMethod: runFromPackage
 
-          # Create DirectLine Channel Hosts
-          - ${{ if eq(bot.type, 'Host') }}:
-            - template: ../common/createDirectLine.yml
+          # Configure OAuth
+          - ${{ if eq(bot.type, 'Skill') }}:
+            - template: ../common/configureOAuth.yml
               parameters:
+                appId: $(APPID)
+                appSecret: $(APPSECRET)
                 azureSubscription: "${{ parameters.azureSubscription }}"
                 botGroup: "${{ parameters.resourceGroup }}"
                 botName: "${{ bot.name }}"
+                connectionName: "${{ parameters.connectionName }}"
                 resourceSuffix: "${{ parameters.resourceSuffix }}"
