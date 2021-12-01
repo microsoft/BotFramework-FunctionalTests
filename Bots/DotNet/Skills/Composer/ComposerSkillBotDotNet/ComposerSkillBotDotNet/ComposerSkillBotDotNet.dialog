@@ -183,5 +183,8 @@
   ],
   "generator": "ComposerSkillBotDotNet.lg",
   "id": "ComposerSkillBotDotNet",
-  "recognizer": "ComposerSkillBotDotNet.lu.qna"
+  "recognizer": {
+    "$kind": "Microsoft.RegexRecognizer",
+    "intents": []
+  }
 }
