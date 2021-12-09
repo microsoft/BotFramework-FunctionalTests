@@ -3,7 +3,8 @@
   "private": true,
   "workspaces": {
     "packages": [
-      "*/*/*"
+      "*/*/*",
+      "!*/*/EchoSkillBot-v3"
     ]
   },
   "devDependencies": {
