@@ -34,6 +34,9 @@ const {
 const { SkillBot } = require('./bots/skillBot');
 const { ActivityRouterDialog } = require('./dialogs/activityRouterDialog');
 const { SsoSaveStateMiddleware } = require('./middleware/ssoSaveStateMiddleware');
+const { DefaultConfig } = require('./config');
+
+const config = new DefaultConfig();
 
 // Create HTTP server
 const server = restify.createServer({ maxParamLength: 1000 });
@@ -41,7 +44,7 @@ server.use(restify.plugins.acceptParser(server.acceptable));
 server.use(restify.plugins.queryParser());
 server.use(restify.plugins.bodyParser());
 
-server.listen(process.env.port || process.env.PORT || 36420, () => {
+server.listen(config.Port, () => {
   console.log(`\n${server.name} listening to ${server.url}`);
   console.log('\nGet Bot Framework Emulator: https://aka.ms/botframework-emulator');
   console.log('\nTo talk to your bot, open the emulator select "Open Bot"');
@@ -53,16 +56,14 @@ const maxTotalSockets = (preallocatedSnatPorts, procCount = 1, weight = 0.5, ove
     preallocatedSnatPorts
   );
 
-const allowedCallers = (process.env.AllowedCallers || '').split(',').filter((val) => val) || [];
-
 const authConfig = new AuthenticationConfiguration(
   [],
-  allowedCallersClaimsValidator(allowedCallers)
+  allowedCallersClaimsValidator(config.AllowedCallers)
 );
 
 const credentialsFactory = new PasswordServiceClientCredentialFactory(
-  process.env.MicrosoftAppId || '',
-  process.env.MicrosoftAppPassword || ''
+  config.MicrosoftAppId,
+  config.MicrosoftAppPassword
 );
 
 const botFrameworkAuthentication = new ConfigurationBotFrameworkAuthentication(
@@ -143,16 +144,16 @@ adapter.use(new SsoSaveStateMiddleware(conversationState));
 const conversationIdFactory = new SkillConversationIdFactory(memoryStorage);
 
 // Create the credential provider;
-const credentialProvider = new SimpleCredentialProvider(process.env.MicrosoftAppId, process.env.MicrosoftAppPassword);
+const credentialProvider = new SimpleCredentialProvider(config.MicrosoftAppId, config.MicrosoftAppPassword);
 
 // Create the skill client
 const skillClient = new SkillHttpClient(credentialProvider, conversationIdFactory);
 
 // Create the main dialog.
-const dialog = new ActivityRouterDialog(server.url, conversationState, conversationIdFactory, skillClient, continuationParametersStore);
+const dialog = new ActivityRouterDialog(config, conversationState, conversationIdFactory, skillClient, continuationParametersStore);
 
 // Create the bot that will handle incoming messages.
-const bot = new SkillBot(conversationState, dialog, server.url);
+const bot = new SkillBot(config, conversationState, dialog);
 
 // Expose the manifest
 server.get('/manifests/*', restify.plugins.serveStatic({ directory: './manifests', appendRequestPath: false }));
@@ -162,6 +163,8 @@ server.get('/images/*', restify.plugins.serveStatic({ directory: './images', app
 
 // Listen for incoming requests.
 server.post('/api/messages', async (req, res) => {
+  config.configureServerUrl(req);
+
   await adapter.process(req, res, async (context) => {
     // Route to main dialog.
     await bot.run(context);
@@ -187,7 +190,7 @@ server.post('/api/skills/v3/conversations/:conversationId/activities/:activityId
     const claimsIdentity = await handler.authenticate(authHeader);
 
     const response = await new Promise(resolve => {
-      return adapter.continueConversationAsync(process.env.MicrosoftAppId || '', ref.conversationReference, ref.oAuthScope, async context => {
+      return adapter.continueConversationAsync(config.MicrosoftAppId || '', ref.conversationReference, ref.oAuthScope, async context => {
         context.turnState.set(adapter.BotIdentityKey, claimsIdentity);
         context.turnState.set(adapter.SkillConversationReferenceKey, ref);
 
@@ -230,7 +233,7 @@ server.get('/api/notify', async (req, res) => {
   }
 
   try {
-    await adapter.continueConversationAsync(process.env.MicrosoftAppId || '', continuationParameters.conversationReference, continuationParameters.oAuthScope, async context => {
+    await adapter.continueConversationAsync(config.MicrosoftAppId, continuationParameters.conversationReference, continuationParameters.oAuthScope, async context => {
       await context.sendActivity(`Got proactive message for user: ${user}`);
       await bot.run(context);
     });

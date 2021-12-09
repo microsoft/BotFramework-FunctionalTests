@@ -11,17 +11,17 @@ const CONFIRM_PROMPT = 'ConfirmPrompt';
 class AuthDialog extends ComponentDialog {
   /**
    * @param {string} dialogId
-   * @param {Object} configuration
+   * @param {string} connectionName
    */
-  constructor (dialogId, configuration) {
+  constructor (dialogId, connectionName) {
     super(dialogId);
 
-    this.connectionName = configuration.ConnectionName;
+    this.connectionName = connectionName;
 
     this.addDialog(new ConfirmPrompt(CONFIRM_PROMPT))
       .addDialog(new OAuthPrompt(OAUTH_PROMPT, {
-        connectionName: this.connectionName,
-        text: `Please Sign In to connection: '${this.connectionName}'`,
+        connectionName,
+        text: `Please Sign In to connection: '${connectionName}'`,
         title: 'Sign In',
         timeout: 300000 // User has 5 minutes to login (1000 * 60 * 5)
       }));
