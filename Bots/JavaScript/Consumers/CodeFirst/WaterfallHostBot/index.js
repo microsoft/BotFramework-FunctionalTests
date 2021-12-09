@@ -70,11 +70,9 @@ const maxTotalSockets = (
     preallocatedSnatPorts
   );
 
-const allowedCallers = Object.values(skillsConfig.skills).map(skill => skill.appId);
-
 const authConfig = new AuthenticationConfiguration(
   [],
-  allowedCallersClaimsValidator(allowedCallers)
+  allowedCallersClaimsValidator([...skillsConfig.skills.appIds])
 );
 
 const credentialsFactory = new PasswordServiceClientCredentialFactory(

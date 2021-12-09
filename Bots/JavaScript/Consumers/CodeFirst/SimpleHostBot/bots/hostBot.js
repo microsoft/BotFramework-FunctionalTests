@@ -43,10 +43,10 @@ class HostBot extends ActivityHandler {
     // See https://aka.ms/about-bot-activity-message to learn more about the message and other activity types.
     this.onMessage(async (context, next) => {
       const deliveryMode = await this.deliveryModeProperty.get(context);
-      const selectedSkill = this.skillsConfig.skills[context.activity.text];
-      const v3Bots = ['EchoSkillBotDotNetV3', 'EchoSkillBotJSV3'];
+      const selectedSkill = this.skillsConfig.skills.entries[context.activity.text];
+      const v3Bots = new Set(['EchoSkillBotDotNetV3', 'EchoSkillBotJSV3']);
 
-      if (selectedSkill && deliveryMode === DeliveryModes.ExpectReplies && v3Bots.includes(selectedSkill.id)) {
+      if (selectedSkill && deliveryMode === DeliveryModes.ExpectReplies && v3Bots.has(selectedSkill.id)) {
         const message = MessageFactory.text("V3 Bots do not support 'expectReplies' delivery mode.");
         await context.sendActivity(message);
 
@@ -63,7 +63,7 @@ class HostBot extends ActivityHandler {
 
     this.onEndOfConversation(async (context, next) => {
       // Handle EndOfConversation returned by the skill.
-      await this.EndConversation(context.activity, context);
+      await this.endConversation(context.activity, context);
 
       // By calling next() you ensure that the next BotHandler is run.
       await next();
@@ -83,7 +83,7 @@ class HostBot extends ActivityHandler {
     });
   }
 
-  async EndConversation (activity, context) {
+  async endConversation (activity, context) {
     if (activity.type === ActivityTypes.EndOfConversation) {
       // Forget delivery mode and skill invocation.
       await this.deliveryModeProperty.delete(context);
@@ -131,13 +131,11 @@ class HostBot extends ActivityHandler {
 
       if (expectRepliesResponse.body && expectRepliesResponse.body.activities) {
         // Route response activities back to the channel.
-        const responseActivities = expectRepliesResponse.body.activities;
-
-        for (let index = 0; index < responseActivities.length; index++) {
-          if (responseActivities[index].type === ActivityTypes.EndOfConversation) {
-            await this.EndConversation(responseActivities[index], context);
+        for (const activity of expectRepliesResponse.body.activities) {
+          if (activity.type === ActivityTypes.EndOfConversation) {
+            await this.endConversation(activity, context);
           } else {
-            await context.sendActivity(responseActivities[index]);
+            await context.sendActivity(activity);
           }
         }
       }

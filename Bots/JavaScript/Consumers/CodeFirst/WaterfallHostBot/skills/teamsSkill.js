@@ -4,31 +4,29 @@
 const { ActivityEx } = require('botbuilder-core');
 const { SkillDefinition } = require('./skillDefinition');
 
-const SkillAction = {
-  TeamsTaskModule: 'TeamsTaskModule',
-  TeamsCardAction: 'TeamsCardAction',
-  TeamsConversation: 'TeamsConversation',
-  Cards: 'Cards',
-  Proactive: 'Proactive',
-  Attachment: 'Attachment',
-  Auth: 'Auth',
-  Sso: 'Sso',
-  Echo: 'Echo',
-  FileUpload: 'FileUpload',
-  Delete: 'Delete',
-  Update: 'Update'
-};
-
 class TeamsSkill extends SkillDefinition {
   getActions () {
-    return Object.values(SkillAction);
+    return new Set([
+      'TeamsTaskModule',
+      'TeamsCardAction',
+      'TeamsConversation',
+      'Cards',
+      'Proactive',
+      'Attachment',
+      'Auth',
+      'Sso',
+      'Echo',
+      'FileUpload',
+      'Delete',
+      'Update'
+    ]);
   }
 
   /**
    * @param {string} actionId
    */
   createBeginActivity (actionId) {
-    if (!this.getActions().includes(actionId)) {
+    if (!this.getActions().has(actionId)) {
       throw new Error(`[TeamsSkill]: Unable to create begin activity for "${actionId}".`);
     }
 
