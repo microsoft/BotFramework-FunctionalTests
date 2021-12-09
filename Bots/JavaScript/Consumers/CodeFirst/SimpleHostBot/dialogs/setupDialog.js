@@ -35,11 +35,11 @@ class SetupDialog extends ComponentDialog {
   }
 
   /**
-     * The run method handles the incoming activity (in the form of a TurnContext) and passes it through the dialog system.
-     * If no dialog is active, it will start the default dialog.
-     * @param {*} turnContext
-     * @param {*} accessor
-     */
+   * The run method handles the incoming activity (in the form of a TurnContext) and passes it through the dialog system.
+   * If no dialog is active, it will start the default dialog.
+   * @param {*} turnContext
+   * @param {*} accessor
+   */
   async run (turnContext, accessor) {
     const dialogSet = new DialogSet(accessor);
     dialogSet.add(this);
@@ -52,8 +52,8 @@ class SetupDialog extends ComponentDialog {
   }
 
   /**
-     * Render a prompt to select the delivery mode to use.
-     */
+   * Render a prompt to select the delivery mode to use.
+   */
   async selectDeliveryModeStep (stepContext) {
     // Create the PromptOptions with the delivery modes supported.
     const messageText = 'What delivery mode would you like to use?';
@@ -69,8 +69,8 @@ class SetupDialog extends ComponentDialog {
   }
 
   /**
-     * Render a prompt to select the skill to call.
-     */
+   * Render a prompt to select the skill to call.
+   */
   async selectSkillStep (stepContext) {
     // Set delivery mode.
     this.deliveryMode = stepContext.result.value;
@@ -82,7 +82,7 @@ class SetupDialog extends ComponentDialog {
     const options = {
       prompt: MessageFactory.text(messageText, messageText, InputHints.ExpectingInput),
       retryPrompt: MessageFactory.text(repromptMessageText, repromptMessageText, InputHints.ExpectingInput),
-      choices: Object.keys(this.skillsConfig.skills),
+      choices: [...this.skillsConfig.skills.ids],
       style: ListStyle.suggestedAction
     };
 
@@ -91,16 +91,16 @@ class SetupDialog extends ComponentDialog {
   }
 
   /**
-     * The SetupDialog has ended, we go back to the HostBot to connect with the selected skill.
-     */
+   * The SetupDialog has ended, we go back to the HostBot to connect with the selected skill.
+   */
   async finalStep (stepContext) {
-    const selectedSkill = this.skillsConfig.skills[stepContext.result.value];
-    const v3Bots = ['EchoSkillBotDotNetV3', 'EchoSkillBotJSV3'];
+    const selectedSkill = this.skillsConfig.skills.entries[stepContext.result.value];
+    const v3Bots = new Set(['EchoSkillBotDotNetV3', 'EchoSkillBotJSV3']);
 
     // Set active skill
     await this.activeSkillProperty.set(stepContext.context, selectedSkill);
 
-    if (this.deliveryMode === DeliveryModes.ExpectReplies && v3Bots.includes(selectedSkill.id)) {
+    if (this.deliveryMode === DeliveryModes.ExpectReplies && v3Bots.has(selectedSkill.id)) {
       const message = MessageFactory.text("V3 Bots do not support 'expectReplies' delivery mode.");
       await stepContext.context.sendActivity(message);
 

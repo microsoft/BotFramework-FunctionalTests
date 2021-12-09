@@ -67,3 +67,5 @@ module.exports.CardOptions = {
    */
   End: 'End'
 };
+
+module.exports.CardOptionsNames = new Set(Object.keys(this.CardOptions));
