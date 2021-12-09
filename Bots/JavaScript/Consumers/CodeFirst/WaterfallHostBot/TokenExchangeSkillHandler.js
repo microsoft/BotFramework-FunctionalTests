@@ -51,7 +51,7 @@ class TokenExchangeSkillHandler extends SkillHandler {
       return null;
     }
 
-    return Object.values(this.skillsConfig.skills).find(skill => skill.appId === appId);
+    return Object.values(this.skillsConfig.skills.entries).find(skill => skill.appId === appId);
   }
 
   async interceptOAuthCards (claimsIdentity, activity) {

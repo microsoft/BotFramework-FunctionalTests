@@ -136,8 +136,6 @@ variables:
   ## Bots Configuration (Define these variables in Azure)
   # BffnEchoSkillBotComposerDotNetAppId: (optional) App Id for BffnEchoSkillBotComposerDotNet bot.
   # BffnEchoSkillBotComposerDotNetAppSecret: (optional) App Secret for BffnEchoSkillBotComposerDotNet bot.
-  # BffnEchoSkillBotDotNet21AppId: (optional) App Id for BffnEchoSkillBotDotNet21 bot.
-  # BffnEchoSkillBotDotNet21AppSecret: (optional) App Secret for BffnEchoSkillBotDotNet21 bot.
   # BffnEchoSkillBotDotNetAppId: (optional) App Id for BffnEchoSkillBotDotNet bot.
   # BffnEchoSkillBotDotNetAppSecret: (optional) App Secret for BffnEchoSkillBotDotNet bot.
   # BffnEchoSkillBotDotNetV3AppId: (optional) App Id for BffnEchoSkillBotDotNetV3 bot.
@@ -150,8 +148,6 @@ variables:
   # BffnEchoSkillBotPythonAppSecret: (optional) App Secret for BffnEchoSkillBotPython bot.
   # BffnSimpleHostBotComposerDotNetAppId: (optional) App Id for BffnSimpleHostBotComposerDotNet bot.
   # BffnSimpleHostBotComposerDotNetAppSecret: (optional) App Secret for BffnSimpleHostBotComposerDotNet bot.
-  # BffnSimpleHostBotDotNet21AppId: (optional) App Id for BffnSimpleHostBotDotNet21 bot.
-  # BffnSimpleHostBotDotNet21AppSecret: (optional) App Secret for BffnSimpleHostBotDotNet21 bot.
   # BffnSimpleHostBotDotNetAppId: (optional) App Id for BffnSimpleHostBotDotNet bot.
   # BffnSimpleHostBotDotNetAppSecret: (optional) App Secret for BffnSimpleHostBotDotNet bot.
   # BffnSimpleHostBotJSAppId: (optional) App Id for BffnSimpleHostBotJS bot.
@@ -243,20 +239,6 @@ stages:
             registry: ${{ parameters.dependenciesRegistryDotNetHosts }}
             version: ${{ parameters.dependenciesVersionDotNetHosts }}
 
-        - name: "bffnsimplehostbotdotnet21"
-          dependsOn: "Prepare_DotNetGroup"
-          type: "Host"
-          displayName: "DotNet Simple Host Bot 2.1"
-          appId: $(BFFNSIMPLEHOSTBOTDOTNET21APPID)
-          appSecret: $(BFFNSIMPLEHOSTBOTDOTNET21APPSECRET)
-          project: 
-            directory: 'Bots/DotNet/Consumers/CodeFirst/SimpleHostBot-2.1'
-            name: "SimpleHostBot-2.1.csproj"
-            netCoreVersion: "2.1.x"
-          dependency:
-            registry: ${{ parameters.dependenciesRegistryDotNetHosts }}
-            version: ${{ parameters.dependenciesVersionDotNetHosts }}
-
         - name: "bffnechoskillbotdotnet"
           dependsOn: "Prepare_DotNetGroup"
           type: "Skill"
@@ -267,20 +249,6 @@ stages:
             directory: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot'
             name: "EchoSkillBot.csproj"
             netCoreVersion: "3.1.x"
-          dependency:
-            registry: ${{ parameters.dependenciesRegistryDotNetSkills }}
-            version: ${{ parameters.dependenciesVersionDotNetSkills }}
-
-        - name: "bffnechoskillbotdotnet21"
-          dependsOn: "Prepare_DotNetGroup"
-          type: "Skill"
-          displayName: "DotNet Echo Skill Bot 2.1"
-          appId: $(BFFNECHOSKILLBOTDOTNET21APPID)
-          appSecret: $(BFFNECHOSKILLBOTDOTNET21APPSECRET)
-          project: 
-            directory: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot-2.1'
-            name: "EchoSkillBot-2.1.csproj"
-            netCoreVersion: "2.1.x"
           dependency:
             registry: ${{ parameters.dependenciesRegistryDotNetSkills }}
             version: ${{ parameters.dependenciesVersionDotNetSkills }}
@@ -300,7 +268,7 @@ stages:
             version: ${{ parameters.dependenciesVersionDotNetSkillsV3 }}
 
         - name: "bffnwaterfallhostbotdotnet"
-          dependsOn: "Deploy_bffnsimplehostbotdotnet"
+          dependsOn: "Prepare_DotNetGroup"
           type: "Host"
           displayName: "DotNet Waterfall Host Bot"
           appId: $(BFFNWATERFALLHOSTBOTDOTNETAPPID)
@@ -314,7 +282,7 @@ stages:
             version: ${{ parameters.dependenciesVersionDotNetHosts }}
 
         - name: "bffnwaterfallskillbotdotnet"
-          dependsOn: "Deploy_bffnsimplehostbotdotnet21"
+          dependsOn: "Prepare_DotNetGroup"
           type: "Skill"
           displayName: "DotNet Waterfall Skill Bot"
           appId: $(BFFNWATERFALLSKILLBOTDOTNETAPPID)
@@ -329,7 +297,7 @@ stages:
 
         # DotNet Composer bots
         - name: "bffnsimplehostbotcomposerdotnet"
-          dependsOn: "Deploy_bffnechoskillbotdotnet"
+          dependsOn: "Deploy_bffnsimplehostbotdotnet"
           type: "ComposerHost"
           displayName: "DotNet Simple Composer Host Bot"
           appId: $(BFFNSIMPLEHOSTBOTCOMPOSERDOTNETAPPID)
@@ -343,7 +311,7 @@ stages:
             version: ${{ parameters.dependenciesVersionDotNetHosts }}
 
         - name: "bffnechoskillbotcomposerdotnet"
-          dependsOn: "Deploy_bffnechoskillbotdotnet21"
+          dependsOn: "Deploy_bffnechoskillbotdotnet"
           type: "ComposerSkill"
           displayName: "DotNet Echo Composer Skill Bot"
           appId: $(BFFNECHOSKILLBOTCOMPOSERDOTNETAPPID)

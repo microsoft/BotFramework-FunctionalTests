@@ -5,7 +5,7 @@ const { InputHints, MessageFactory, CardFactory, ActionTypes } = require('botbui
 const { ComponentDialog, WaterfallDialog, ChoicePrompt, ListStyle, ChoiceFactory, DialogTurnStatus } = require('botbuilder-dialogs');
 const fs = require('fs');
 const path = require('path');
-const { CardOptions } = require('./cardOptions');
+const { CardOptions, CardOptionsNames } = require('./cardOptions');
 const { CardSampleHelper } = require('./cardSampleHelper');
 const { ChannelSupportedCards } = require('./channelSupportedCards');
 
@@ -68,7 +68,7 @@ class CardDialog extends ComponentDialog {
     const options = {
       prompt: MessageFactory.text(messageText, messageText, InputHints.ExpectingInput),
       retryPrompt: MessageFactory.text(repromptMessageText, repromptMessageText, InputHints.ExpectingInput),
-      choices: ChoiceFactory.toChoices(Object.values(CardOptions)),
+      choices: ChoiceFactory.toChoices([...CardOptionsNames]),
       style: ListStyle.list
     };
 
@@ -85,7 +85,7 @@ class CardDialog extends ComponentDialog {
     } else {
       // Checks to see if the activity is an adaptive card update or a bot action respose.
       const card = stepContext.result.value;
-      const cardType = Object.keys(CardOptions).find(key => CardOptions[key].toLowerCase() === card.toLowerCase());
+      const cardType = CardOptions[card];
       const { channelId } = stepContext.context.activity;
 
       if (ChannelSupportedCards.isCardSupported(channelId, cardType)) {

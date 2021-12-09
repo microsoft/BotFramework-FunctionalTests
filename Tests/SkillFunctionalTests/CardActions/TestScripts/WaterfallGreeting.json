@@ -16,6 +16,7 @@
         "inputHint == 'acceptingInput'",
         "attachments[0].contentType == 'application/vnd.microsoft.card.adaptive'",
         "attachments[0].content.type == 'AdaptiveCard'",
+        "attachments[0].content.version == '1.0'",
         "attachments[0].content.body[0].type == 'Image'",
         "attachments[0].content.body[0].size == 'stretch'",
         "attachments[0].content.body[1].type == 'TextBlock'",
@@ -24,10 +25,13 @@
         "attachments[0].content.body[1].weight == 'Bolder'",
         "attachments[0].content.body[1].text == 'Welcome to the Skill Dialog Sample!'",
         "attachments[0].content.body[1].wrap == True",
+        "attachments[0].content.body[1].maxLines == 0",
         "attachments[0].content.body[1].color == 'Accent'",
         "attachments[0].content.body[2].type == 'TextBlock'",
+        "attachments[0].content.body[2].size == 'default'",
         "attachments[0].content.body[2].text == 'This sample allows you to connect to a skill using a SkillDialog and invoke several actions.'",
-        "attachments[0].content.body[2].wrap == True"
+        "attachments[0].content.body[2].wrap == True",
+        "attachments[0].content.body[2].maxLines == 0"
       ]
     },
     {
@@ -47,6 +51,17 @@
         "suggestedActions.actions[1].type == 'imBack'",
         "suggestedActions.actions[1].title == 'expectReplies'",
         "suggestedActions.actions[1].value == 'expectReplies'"
+      ]
+    },
+    {
+      "type": "trace",
+      "role": "bot",
+      "assertions": [
+        "type == 'trace'",
+        "from.role == 'bot'",
+        "recipient.role == 'user'",
+        "label == 'Bot State'",
+        "name == 'BotState'"
       ]
     },
     {
@@ -71,6 +86,17 @@
       ]
     },
     {
+      "type": "trace",
+      "role": "bot",
+      "assertions": [
+        "type == 'trace'",
+        "from.role == 'bot'",
+        "recipient.role == 'user'",
+        "label == 'Bot State'",
+        "name == 'BotState'"
+      ]
+    },
+    {
       "type": "message",
       "role": "user",
       "text": "Waterfall"
@@ -89,6 +115,17 @@
       ]
     },
     {
+      "type": "trace",
+      "role": "bot",
+      "assertions": [
+        "type == 'trace'",
+        "from.role == 'bot'",
+        "recipient.role == 'user'",
+        "label == 'Bot State'",
+        "name == 'BotState'"
+      ]
+    },
+    {
       "type": "message",
       "role": "user",
       "text": "${TargetSkill}"
@@ -96,7 +133,7 @@
     {
       "type": "message",
       "role": "bot",
-      "text": "Select an action # to send to **${TargetSkill}**.\n\n   1. Cards\n   2. Proactive\n   3. Auth\n   4. MessageWithAttachment\n   5. Sso\n   6. FileUpload\n   7. Echo\n   8. Delete\n   9. Update",
+      "text": "Select an action to send to **${TargetSkill}**.\n\n   1. Cards\n   2. Proactive\n   3. Auth\n   4. MessageWithAttachment\n   5. Sso\n   6. FileUpload\n   7. Echo\n   8. Delete\n   9. Update",
       "assertions": [
         "type == 'message'",
         "from.role == 'bot'",
@@ -104,6 +141,17 @@
         "text == 'Select an action to send to **${TargetSkill}**.\n\n   1. Cards\n   2. Proactive\n   3. Auth\n   4. MessageWithAttachment\n   5. Sso\n   6. FileUpload\n   7. Echo\n   8. Delete\n   9. Update'",
         "speak == 'Select an action to send to **${TargetSkill}**.'",
         "inputHint == 'expectingInput'"
+      ]
+    },
+    {
+      "type": "trace",
+      "role": "bot",
+      "assertions": [
+        "type == 'trace'",
+        "from.role == 'bot'",
+        "recipient.role == 'user'",
+        "label == 'Bot State'",
+        "name == 'BotState'"
       ]
     },
     {
@@ -136,12 +184,36 @@
     {
       "type": "message",
       "role": "bot",
+      "text": "What card do you want?\n\n   1. AdaptiveCardBotAction\n   2. AdaptiveCardTeamsTaskModule\n   3. AdaptiveCardSubmitAction\n   4. Hero\n   5. Thumbnail\n   6. Receipt\n   7. Signin\n   8. Carousel\n   9. List\n   10. O365\n   11. TeamsFileConsent\n   12. Animation\n   13. Audio\n   14. Video\n   15. AdaptiveUpdate\n   16. End",
       "assertions": [
         "type == 'message'",
         "from.role == 'bot'",
         "recipient.role == 'user'",
+        "text == 'What card do you want?\n\n   1. AdaptiveCardBotAction\n   2. AdaptiveCardTeamsTaskModule\n   3. AdaptiveCardSubmitAction\n   4. Hero\n   5. Thumbnail\n   6. Receipt\n   7. Signin\n   8. Carousel\n   9. List\n   10. O365\n   11. TeamsFileConsent\n   12. Animation\n   13. Audio\n   14. Video\n   15. AdaptiveUpdate\n   16. End'",
         "speak == 'What card do you want?'",
         "inputHint == 'expectingInput'"
+      ]
+    },
+    {
+      "type": "trace",
+      "role": "bot",
+      "assertions": [
+        "type == 'trace'",
+        "from.role == 'bot'",
+        "recipient.role == 'user'",
+        "label == 'Skill State'",
+        "name == 'BotState'"
+      ]
+    },
+    {
+      "type": "trace",
+      "role": "bot",
+      "assertions": [
+        "type == 'trace'",
+        "from.role == 'bot'",
+        "recipient.role == 'user'",
+        "label == 'Bot State'",
+        "name == 'BotState'"
       ]
     }
   ]

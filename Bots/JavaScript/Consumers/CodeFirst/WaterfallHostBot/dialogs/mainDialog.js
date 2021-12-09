@@ -138,17 +138,11 @@ class MainDialog extends ComponentDialog {
     const messageText = 'What group of skills would you like to use?';
     const retryMessageText = 'That was not a valid choice, please select a valid skill group.';
 
-    // Get a list of the groups for the skills in skillsConfig.
-    const groups = Object.values(this.skillsConfig.skills)
-      .map(skill => skill.group);
-    // Remove duplicates
-    const choices = [...new Set(groups)];
-
     // Create the PromptOptions from the skill configuration which contains the list of configured skills.
     return stepContext.prompt(SKILL_GROUP_PROMPT, {
       prompt: MessageFactory.text(messageText, messageText, InputHints.ExpectingInput),
       retryPrompt: MessageFactory.text(retryMessageText, retryMessageText, InputHints.ExpectingInput),
-      choices: ChoiceFactory.toChoices(choices)
+      choices: ChoiceFactory.toChoices([...this.skillsConfig.skills.groups])
     });
   }
 
@@ -164,9 +158,9 @@ class MainDialog extends ComponentDialog {
     const retryMessageText = 'That was not a valid choice, please select a valid skill.';
 
     // Get skills for the selected group.
-    const choices = Object.entries(this.skillsConfig.skills)
-      .filter(([, skill]) => skill.group === skillGroup)
-      .map(([id]) => id);
+    const choices = Object.values(this.skillsConfig.skills.entries)
+      .filter(skill => skill.group === skillGroup)
+      .map(skill => skill.id);
 
     return stepContext.prompt(SKILL_PROMPT, {
       prompt: MessageFactory.text(messageText, messageText, InputHints.ExpectingInput),
@@ -181,15 +175,15 @@ class MainDialog extends ComponentDialog {
    * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
    */
   async selectSkillActionStep (stepContext) {
-    const selectedSkill = this.skillsConfig.skills[stepContext.result.value];
-    const v3Bots = ['EchoSkillBotDotNetV3', 'EchoSkillBotJSV3'];
+    const selectedSkill = this.skillsConfig.skills.entries[stepContext.result.value];
+    const v3Bots = new Set(['EchoSkillBotDotNetV3', 'EchoSkillBotJSV3']);
 
     // Set active skill.
     await this.activeSkillProperty.set(stepContext.context, selectedSkill);
 
     // Exclude v3 bots from ExpectReplies.
-    if (this.deliveryMode === DeliveryModes.ExpectReplies && v3Bots.includes(selectedSkill.id)) {
-      await stepContext.context.SendActivityAsync(MessageFactory.text("V3 Bots do not support 'expectReplies' delivery mode."));
+    if (this.deliveryMode === DeliveryModes.ExpectReplies && v3Bots.has(selectedSkill.id)) {
+      await stepContext.context.sendActivity(MessageFactory.text("V3 Bots do not support 'expectReplies' delivery mode."));
 
       // Forget delivery mode and skill invocation.
       await this.deliveryModeProperty.delete(stepContext.context);
@@ -201,9 +195,10 @@ class MainDialog extends ComponentDialog {
 
     const skillActionChoices = selectedSkill.getActions();
 
-    if (skillActionChoices && skillActionChoices.length === 1) {
+    if (skillActionChoices && skillActionChoices.size === 1) {
       // The skill only supports one action (e.g. Echo), skip the prompt.
-      return stepContext.next({ value: skillActionChoices[0] });
+      const [value] = skillActionChoices;
+      return stepContext.next({ value });
     }
 
     // Create the PromptOptions with the actions supported by the selected skill.
@@ -211,7 +206,7 @@ class MainDialog extends ComponentDialog {
 
     return stepContext.prompt(SKILL_ACTION_PROMPT, {
       prompt: MessageFactory.text(messageText, messageText, InputHints.ExpectingInput),
-      choices: ChoiceFactory.toChoices(skillActionChoices)
+      choices: ChoiceFactory.toChoices([...skillActionChoices])
     });
   }
 
@@ -225,7 +220,7 @@ class MainDialog extends ComponentDialog {
     await this.activeSkillProperty.set(stepContext.context, selectedSkill);
 
     // Create the initial activity to call the skill.
-    const skillActivity = this.skillsConfig.skills[selectedSkill.id].createBeginActivity(stepContext.result.value);
+    const skillActivity = this.skillsConfig.skills.entries[selectedSkill.id].createBeginActivity(stepContext.result.value);
 
     if (skillActivity.name === 'Sso') {
       // Special case, we start the SSO dialog to prepare the host to call the skill.
@@ -279,20 +274,18 @@ class MainDialog extends ComponentDialog {
    * @param {string} botId
    */
   addSkillDialogs (conversationState, conversationIdFactory, skillClient, skillsConfig, botId) {
-    Object.keys(skillsConfig.skills).forEach((skillId) => {
-      const skillInfo = skillsConfig.skills[skillId];
-
+    Object.values(skillsConfig.skills.entries).forEach((skill) => {
       const skillDialogOptions = {
-        botId: botId,
+        botId,
         conversationIdFactory,
         conversationState,
-        skill: skillInfo,
+        skill,
         skillHostEndpoint: process.env.SkillHostEndpoint,
         skillClient
       };
 
       // Add a SkillDialog for the selected skill.
-      this.addDialog(new SkillDialog(skillDialogOptions, skillInfo.id));
+      this.addDialog(new SkillDialog(skillDialogOptions, skill.id));
     });
   }
 
