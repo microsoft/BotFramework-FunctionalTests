@@ -1,6 +1,28 @@
 {
   "items": [
     {
+      "type": "trace",
+      "role": "bot",
+      "assertions": [
+        "type == 'trace'",
+        "from.role == 'bot'",
+        "recipient.role == 'user'",
+        "label == 'Skill State'",
+        "name == 'BotState'"
+      ]
+    },
+    {
+      "type": "trace",
+      "role": "bot",
+      "assertions": [
+        "type == 'trace'",
+        "from.role == 'bot'",
+        "recipient.role == 'user'",
+        "label == 'Bot State'",
+        "name == 'BotState'"
+      ]
+    },
+    {
       "type": "message",
       "role": "bot",
       "text": "Got proactive message for user: ${UserId}",
@@ -25,6 +47,17 @@
       ]
     },
     {
+      "type": "trace",
+      "role": "bot",
+      "assertions": [
+        "type == 'trace'",
+        "from.role == 'bot'",
+        "recipient.role == 'user'",
+        "label == 'Skill State'",
+        "name == 'BotState'"
+      ]
+    },
+    {
       "type": "message",
       "role": "bot",
       "text": "Done with \"${TargetSkill}\". \n\n What delivery mode would you like to use?",
@@ -41,6 +74,17 @@
         "suggestedActions.actions[1].type == 'imBack'",
         "suggestedActions.actions[1].title == 'expectReplies'",
         "suggestedActions.actions[1].value == 'expectReplies'"
+      ]
+    },
+    {
+      "type": "trace",
+      "role": "bot",
+      "assertions": [
+        "type == 'trace'",
+        "from.role == 'bot'",
+        "recipient.role == 'user'",
+        "label == 'Skill State'",
+        "name == 'BotState'"
       ]
     }
   ]
