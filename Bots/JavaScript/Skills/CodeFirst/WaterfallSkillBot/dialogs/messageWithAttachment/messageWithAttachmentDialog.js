@@ -13,13 +13,13 @@ const WATERFALL_DIALOG = 'WaterfallDialog';
 class MessageWithAttachmentDialog extends ComponentDialog {
   /**
    * @param {string} dialogId
-   * @param {import('../../config').DefaultConfig} configuration
+   * @param {string} serverUrl
    */
-  constructor (dialogId, configuration) {
+  constructor (dialogId, serverUrl) {
     super(dialogId);
 
     this.picture = 'architecture-resize.png';
-    this.configuration = configuration;
+    this.serverUrl = serverUrl;
 
     this.addDialog(new ChoicePrompt(ATTACHMENT_TYPE_PROMPT))
       .addDialog(new ConfirmPrompt(CONFIRM_PROMPT))
@@ -116,7 +116,7 @@ class MessageWithAttachmentDialog extends ComponentDialog {
     return {
       name: `Files/${this.picture}`,
       contentType: 'image/png',
-      contentUrl: `${this.configuration.ServerUrl}/images/architecture-resize.png`
+      contentUrl: `${this.serverUrl}/images/architecture-resize.png`
     };
   }
 }

@@ -7,12 +7,12 @@ const { Dialog, DialogTurnStatus } = require('botbuilder-dialogs');
 class WaitForProactiveDialog extends Dialog {
   /**
    * @param {string} dialogId
-   * @param {import('../../config').DefaultConfig} configuration
+   * @param {string} serverUrl
    * @param {Object<string, import('./continuationParameters').ContinuationParameters>} continuationParametersStore
    */
-  constructor (dialogId, configuration, continuationParametersStore) {
+  constructor (dialogId, serverUrl, continuationParametersStore) {
     super(dialogId);
-    this.configuration = configuration;
+    this.serverUrl = serverUrl;
     this.continuationParametersStore = continuationParametersStore;
   }
 
@@ -21,7 +21,7 @@ class WaitForProactiveDialog extends Dialog {
    * @param {string} id
    */
   notifyMessage (id) {
-    return `Navigate to ${this.configuration.ServerUrl}/api/notify?user=${id} to proactively message the user.`;
+    return `Navigate to ${this.serverUrl}/api/notify?user=${id} to proactively message the user.`;
   }
 
   /**

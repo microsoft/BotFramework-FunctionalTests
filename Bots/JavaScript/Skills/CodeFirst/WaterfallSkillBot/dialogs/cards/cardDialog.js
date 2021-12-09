@@ -15,12 +15,12 @@ const CARD_PROMPT = 'CardPrompt';
 class CardDialog extends ComponentDialog {
   /**
    * @param {string} dialogId
-   * @param {import('../../config').DefaultConfig} configuration
+   * @param {string} serverUrl
    */
-  constructor (dialogId, configuration) {
+  constructor (dialogId, serverUrl) {
     super(dialogId);
 
-    this.configuration = configuration;
+    this.serverUrl = serverUrl;
     this.mindBlownGif = 'https://media3.giphy.com/media/xT0xeJpnrWC4XWblEk/giphy.gif?cid=ecf05e47mye7k75sup6tcmadoom8p1q8u03a7g2p3f76upp9&rid=giphy.gif';
     this.corgiOnCarouselVideo = 'https://www.youtube.com/watch?v=LvqzubPZjHE';
     this.teamsLogoFileName = 'teams-logo.png';
@@ -150,7 +150,7 @@ class CardDialog extends ComponentDialog {
             break;
 
           case CardOptions.Audio:
-            await stepContext.context.sendActivity(MessageFactory.attachment(CardSampleHelper.createAudioCard(`${this.configuration.ServerUrl}/api/music`)));
+            await stepContext.context.sendActivity(MessageFactory.attachment(CardSampleHelper.createAudioCard(`${this.serverUrl}/api/music`)));
             break;
 
           case CardOptions.Video:

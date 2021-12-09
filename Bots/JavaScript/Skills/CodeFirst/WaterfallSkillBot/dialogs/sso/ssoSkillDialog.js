@@ -12,14 +12,14 @@ const SSO_SKILL_DIALOG = 'SsoSkillDialog';
 class SsoSkillDialog extends ComponentDialog {
   /**
    * @param {string} dialogId
-   * @param {import('../../config').DefaultConfig} configuration
+   * @param {string} connectionName
    */
-  constructor (dialogId, configuration) {
+  constructor (dialogId, connectionName) {
     super(dialogId);
 
-    this.connectionName = configuration.SsoConnectionName;
+    this.connectionName = connectionName;
 
-    this.addDialog(new SsoSkillSignInDialog(SSO_SKILL_DIALOG, this.connectionName))
+    this.addDialog(new SsoSkillSignInDialog(SSO_SKILL_DIALOG, connectionName))
       .addDialog(new ChoicePrompt(ACTION_PROMPT))
       .addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
         this.promptActionStep.bind(this),

@@ -38,11 +38,13 @@ class ActivityRouterDialog extends ComponentDialog {
   constructor (configuration, conversationState, conversationIdFactory, skillClient, continuationParametersStore) {
     super(MAIN_DIALOG);
 
-    this.addDialog(new CardDialog(CARDS_DIALOG, configuration))
-      .addDialog(new WaitForProactiveDialog(PROACTIVE_DIALOG, configuration, continuationParametersStore))
-      .addDialog(new MessageWithAttachmentDialog(ATTACHMENT_DIALOG, configuration))
-      .addDialog(new AuthDialog(AUTH_DIALOG, configuration))
-      .addDialog(new SsoSkillDialog(SSO_DIALOG, configuration))
+    const { ConnectionName, SsoConnectionName, ServerUrl } = configuration;
+
+    this.addDialog(new CardDialog(CARDS_DIALOG, ServerUrl))
+      .addDialog(new WaitForProactiveDialog(PROACTIVE_DIALOG, ServerUrl, continuationParametersStore))
+      .addDialog(new MessageWithAttachmentDialog(ATTACHMENT_DIALOG, ServerUrl))
+      .addDialog(new AuthDialog(AUTH_DIALOG, ConnectionName))
+      .addDialog(new SsoSkillDialog(SSO_DIALOG, SsoConnectionName))
       .addDialog(new FileUploadDialog(FILE_UPLOAD_DIALOG))
       .addDialog(new DeleteDialog(DELETE_DIALOG))
       .addDialog(new UpdateDialog(UPDATE_DIALOG))
@@ -62,22 +64,21 @@ class ActivityRouterDialog extends ComponentDialog {
    * @param {import('botbuilder').SkillHttpClient} skillClient
    */
   createEchoSkillDialog (dialogId, configuration, conversationState, conversationIdFactory, skillClient) {
-    const skillHostEndpoint = configuration.SkillHostEndpoint;
-    if (!skillHostEndpoint) {
+    const { MicrosoftAppId, SkillHostEndpoint, EchoSkillInfo: skill } = configuration;
+
+    if (!SkillHostEndpoint) {
       throw new Error('SkillHostEndpoint is not in configuration');
     }
-
-    const skill = configuration.EchoSkillInfo;
 
     if (!skill.id || !skill.skillEndpoint) {
       throw new Error('EchoSkillInfo_id and EchoSkillInfo_skillEndpoint are not set in configuration');
     }
 
     return new SkillDialog({
-      botId: configuration.MicrosoftAppId,
+      botId: MicrosoftAppId,
       conversationIdFactory,
       skillClient,
-      skillHostEndpoint,
+      skillHostEndpoint: SkillHostEndpoint,
       conversationState,
       skill
     }, dialogId);
