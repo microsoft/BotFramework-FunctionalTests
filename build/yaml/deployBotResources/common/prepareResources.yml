@@ -16,6 +16,7 @@ stages:
       - job: "Prepare"
         displayName: "Prepare steps"
         steps:
+          - checkout: none
           - template: ../../common/deleteResourceGroup.yml 
             parameters:
               azureSubscription: "${{ parameters.azureSubscription }}"

@@ -22,7 +22,7 @@ namespace TranscriptConverter
         public static TestScript ConvertTranscript(string transcriptPath)
         {
             using var reader = new StreamReader(Path.GetFullPath(transcriptPath));
-            
+
             var transcript = reader.ReadToEnd();
 
             var cleanedTranscript = RemoveUndesiredFields(transcript);
@@ -148,55 +148,57 @@ namespace TranscriptConverter
         }
 
         /// <summary>
-        /// Checks if a string is a GUID value.
+        /// Checks if a string is a Base64 image.
         /// </summary>
-        /// <param name="guid">The string to check.</param>
-        /// <returns>True if the string is a GUID, otherwise, returns false.</returns>
-        private static bool IsGuid(string guid)
+        /// <param name="base64">The string to check.</param>
+        /// <returns>True if the string is a Base64 image, otherwise, returns false.</returns>
+        private static bool IsBase64Image(string base64)
         {
-            var guidMatch = Regex.Match(
-                guid,
-                @"([a-z0-9]{8}[-][a-z0-9]{4}[-][a-z0-9]{4}[-][a-z0-9]{4}[-][a-z0-9]{12})",
+            var base64Match = Regex.Match(
+                base64,
+                @"^data:image\/png;base64,",
                 RegexOptions.IgnoreCase);
-            return guidMatch.Success;
+            return base64Match.Success;
         }
 
         /// <summary>
-        /// Checks if a string is an ID value.
+        /// Checks if a property is an ID value.
         /// </summary>
-        /// <param name="id">The string to check.</param>
+        /// <param name="property">The ID property name to check.</param>
+        /// <param name="value">The ID property value to check.</param>
         /// <returns>True if the string is an ID, otherwise, returns false.</returns>
-        private static bool IsId(string id)
+        private static bool IsId(string property, string value)
         {
-            var idMatch = Regex.Match(
-                id,
-                @"([a-z0-9]{23})",
+            var specialCharactersMatch = Regex.Match(value, @"\r|\n|\t");
+
+            var guidMatch = Regex.Match(
+                value,
+                @"^([a-z0-9]{8}[-][a-z0-9]{4}[-][a-z0-9]{4}[-][a-z0-9]{4}[-][a-z0-9]{12})$",
                 RegexOptions.IgnoreCase);
-            return idMatch.Success;
+
+            var idPropertyMatch = Regex.Match(
+                property,
+                @"^id|id$",
+                RegexOptions.IgnoreCase);
+
+            return !specialCharactersMatch.Success && (guidMatch.Success || idPropertyMatch.Success);
         }
 
         /// <summary>
-        /// Checks if a string is a service url value.
+        /// Checks if a string is an url value.
         /// </summary>
+        /// <remarks>
+        /// Evaluates if the value starts with udp://, ftp://, http://, https://, etc.
+        /// </remarks>
         /// <param name="url">The string to check.</param>
         /// <returns>True if the string is an url, otherwise, returns false.</returns>
-        private static bool IsServiceUrl(string url)
+        private static bool IsUrl(string url)
         {
             var idMatch = Regex.Match(
                 url,
-                @"https://([a-z0-9]{12})",
+                @"^[a-z]*:\/\/",
                 RegexOptions.IgnoreCase);
             return idMatch.Success;
-        }
-
-        /// <summary>
-        /// Checks if a string is a channel ID value.
-        /// </summary>
-        /// <param name="value">The string to check.</param>
-        /// <returns>True if the string is a channel ID (Emulator), otherwise, returns false.</returns>
-        private static bool IsChannelId(string value)
-        {
-            return value.ToUpper(CultureInfo.InvariantCulture) == "EMULATOR";
         }
 
         /// <summary>
@@ -208,13 +210,24 @@ namespace TranscriptConverter
         {
             try
             {
-                JsonConvert.DeserializeObject(value);
-                return true;
+                var json = JsonConvert.DeserializeObject<JToken>(value);
+                return json != null && (json.Type == JTokenType.Object || json.Type == JTokenType.Array);
             }
             catch (JsonException)
             {
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Checks if a string is a DateTime value.
+        /// </summary>
+        /// <param name="datetime">The string to check.</param>
+        /// <returns>True if the string is a DateTime, otherwise, returns false.</returns>
+        private static bool IsDateTime(string datetime)
+        {
+            var dateMatch = DateTime.TryParse(datetime, out _);
+            return dateMatch;
         }
 
         /// <summary>
@@ -228,6 +241,7 @@ namespace TranscriptConverter
 
             RemoveFields(token, (attr) =>
             {
+                var name = attr.Name.ToString();
                 var value = attr.Value.ToString();
 
                 if (IsJsonObject(value))
@@ -235,20 +249,14 @@ namespace TranscriptConverter
                     return false;
                 }
 
-                return IsGuid(value) || IsDateTime(value) || IsId(value) || IsServiceUrl(value) || IsChannelId(value);
+                return string.IsNullOrEmpty(value)
+                    || IsDateTime(value)
+                    || IsUrl(value)
+                    || IsBase64Image(value)
+                    || IsId(name, value);
             });
 
             return token.ToString();
-        }
-
-        /// <summary>
-        /// Checks if a string is a DateTime value.
-        /// </summary>
-        /// <param name="datetime">The string to check.</param>
-        /// <returns>True if the string is a DateTime, otherwise, returns false.</returns>
-        private static bool IsDateTime(string datetime)
-        {
-            return DateTime.TryParse(datetime, out _);
         }
     }
 }

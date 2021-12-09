@@ -40,7 +40,7 @@ class SsoSkillDialog extends ComponentDialog {
     return stepContext.prompt(ACTION_PROMPT, {
       prompt: MessageFactory.text(messageText, messageText, InputHints.ExpectingInput),
       retryPrompt: MessageFactory.text(repromptMessageText, repromptMessageText, InputHints.ExpectingInput),
-      choices: ChoiceFactory.toChoices(await this.getPromptChoices(stepContext))
+      choices: await this.getPromptChoices(stepContext)
     });
   }
 
@@ -48,19 +48,19 @@ class SsoSkillDialog extends ComponentDialog {
    * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
    */
   async getPromptChoices (stepContext) {
-    const choices = [];
+    const choices = new Set();
     const token = await stepContext.context.adapter.getUserToken(stepContext.context, this.connectionName);
 
     if (!token) {
-      choices.push('Login');
+      choices.add('Login');
     } else {
-      choices.push('Logout');
-      choices.push('Show token');
+      choices.add('Logout');
+      choices.add('Show token');
     }
 
-    choices.push('End');
+    choices.add('End');
 
-    return choices;
+    return ChoiceFactory.toChoices([...choices]);
   }
 
   /**

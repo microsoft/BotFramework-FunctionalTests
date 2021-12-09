@@ -6,47 +6,29 @@
  */
 class SkillsConfiguration {
   constructor () {
-    this.skillsData = {};
+    this.skills = Object.entries(process.env)
+      .filter(([key]) => key.startsWith('skill_'))
+      .reduce((acc, [key, value]) => {
+        const [, id, attr] = key.split('_');
 
-    const skillVariables = Object.keys(process.env).filter(prop => prop.startsWith('skill_'));
+        acc.entries[id] = acc.entries[id] || { id };
 
-    for (const val of skillVariables) {
-      const names = val.split('_');
-      const id = names[1];
-      const attr = names[2];
-      let propName;
-      if (!(id in this.skillsData)) {
-        this.skillsData[id] = { id: id };
-      }
-      switch (attr.toLowerCase()) {
-        case 'appid':
-          propName = 'appId';
-          break;
-        case 'endpoint':
-          propName = 'skillEndpoint';
-          break;
-        case 'group':
-          propName = 'group';
-          break;
-        default:
-          throw new Error(`[SkillsConfiguration]: Invalid environment variable declaration ${val}`);
-      }
+        const propName = { appid: 'appId', endpoint: 'skillEndpoint', group: 'group' }[attr.toLowerCase()];
+        if (!propName) { throw new Error(`[SkillsConfiguration]: Invalid environment variable declaration ${key}`); }
 
-      this.skillsData[id][propName] = process.env[val];
-    }
+        acc.entries[id][propName] = value;
 
-    this.skillHostEndpointValue = process.env.SkillHostEndpoint;
-    if (!this.skillHostEndpointValue) {
+        !acc.ids.has(id) && acc.ids.add(id);
+        propName === 'appId' && acc.appIds.add(value);
+        propName === 'group' && acc.groups.add(value);
+
+        return acc;
+      }, { ids: new Set(), appIds: new Set(), groups: new Set(), entries: {} });
+
+    this.skillHostEndpoint = process.env.SkillHostEndpoint;
+    if (!this.skillHostEndpoint) {
       throw new Error('[SkillsConfiguration]: Missing configuration parameter. SkillHostEndpoint is required');
     }
-  }
-
-  get skills () {
-    return this.skillsData;
-  }
-
-  get skillHostEndpoint () {
-    return this.skillHostEndpointValue;
   }
 }
 
