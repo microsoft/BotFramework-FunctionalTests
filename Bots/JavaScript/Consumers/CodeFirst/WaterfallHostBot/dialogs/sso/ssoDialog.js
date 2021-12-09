@@ -55,24 +55,24 @@ class SsoDialog extends ComponentDialog {
    * @param {import('botbuilder-dialogs').WaterfallStepContext} stepContext
    */
   async getPromptChoices (stepContext) {
-    const promptChoices = [];
+    const promptChoices = new Set();
     const adapter = stepContext.context.adapter;
     const token = await adapter.getUserToken(stepContext.context, this.connectionName);
 
     if (!token) {
-      promptChoices.push('Login');
+      promptChoices.add('Login');
       // Token exchange will fail when the host is not logged on and the skill should
       // show a regular OAuthPrompt.
-      promptChoices.push('Call Skill (without SSO)');
+      promptChoices.add('Call Skill (without SSO)');
     } else {
-      promptChoices.push('Logout');
-      promptChoices.push('Show token');
-      promptChoices.push('Call Skill (with SSO)');
+      promptChoices.add('Logout');
+      promptChoices.add('Show token');
+      promptChoices.add('Call Skill (with SSO)');
     }
 
-    promptChoices.push('Back');
+    promptChoices.add('Back');
 
-    return ChoiceFactory.toChoices(promptChoices);
+    return ChoiceFactory.toChoices([...promptChoices]);
   }
 
   /**
