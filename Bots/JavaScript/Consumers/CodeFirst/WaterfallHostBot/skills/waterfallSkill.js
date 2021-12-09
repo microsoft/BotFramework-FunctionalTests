@@ -4,28 +4,26 @@
 const { ActivityEx } = require('botbuilder-core');
 const { SkillDefinition } = require('./skillDefinition');
 
-const SkillAction = {
-  Cards: 'Cards',
-  Proactive: 'Proactive',
-  Auth: 'Auth',
-  MessageWithAttachment: 'MessageWithAttachment',
-  Sso: 'Sso',
-  FileUpload: 'FileUpload',
-  Echo: 'Echo',
-  Delete: 'Delete',
-  Update: 'Update'
-};
-
 class WaterfallSkill extends SkillDefinition {
   getActions () {
-    return Object.values(SkillAction);
+    return new Set([
+      'Cards',
+      'Proactive',
+      'Auth',
+      'MessageWithAttachment',
+      'Sso',
+      'FileUpload',
+      'Echo',
+      'Delete',
+      'Update'
+    ]);
   }
 
   /**
    * @param {string} actionId
    */
   createBeginActivity (actionId) {
-    if (!this.getActions().includes(actionId)) {
+    if (!this.getActions().has(actionId)) {
       throw new Error(`[WaterfallSkill]: Unable to create begin activity for "${actionId}".`);
     }
 

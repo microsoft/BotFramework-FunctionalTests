@@ -2,21 +2,59 @@
 
 ## ConfigureAppSettings
 
-This script configures the _appsettings.Development.json_ file from the SkillsFunctionalTest project to be able to run the tests locally connecting them with bots deployed in Azure. Its behavior consists on gathering the DirectLine Secrets from the deployed Azure Bot Resources and configure this file with them. For its purpose it uses the '**ResourceGroup**' and '**ResourceSuffix**' provided by the user when running it.
+### Description
 
->**ResourceGroup**: the specific Resource Group where the Azure Resource Bots are deployed in. The default value is 'BFFN'. _Eg: bffnbots_
->
->**ResourceSuffix**: the suffix the resources name is built with. It will be a combination of the suffix itself and the build id where the resource was created. _Eg: gitali-218_
+This script configures the `appsettings.Development.json` file from the SkillsFunctionalTest project to be able to run the tests locally, connecting them with bots deployed in Azure. Its behavior consists on gathering the DirectLine Secrets from the deployed Azure Bot Resources and configure this file with them.
 
-The user can execute the script providing one or both parameters and the process will start automatically, or execute it without parameters and provide them using the prompt.
+For the process to be able to find the resources, the following inputs must be provided.
 
-<p align="center">
-  <img src="https://user-images.githubusercontent.com/54330145/124808628-899d9a00-df35-11eb-9b1c-bc88c352636a.png" />
-</p>
+### Requirements
 
-The script will communicate with Azure through the **azure-cli** tool and gather the DirectLine secrets from each Azure Resource Bot deployed in the Resource Group resultant from the combination of the provided one with the language (DotNet, JS or Python) extracted from the _HostBotClientOptions_ keys, and '**ResourceSuffix**' parameter.
+- [Azure CLI][azure-cli]
+- [PowerShell 7+][powershell]
 
-Here you can see the entire process being executed
-<p align="center">
-  <img src="https://user-images.githubusercontent.com/54330145/124788742-0756ab00-df20-11eb-8eea-8f54c07708f1.png" />
-</p>
+### Inputs
+
+| Input                   | Description                                                                                                                                                   | Condition | Default              | Example                                                           |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | -------------------- | ----------------------------------------------------------------- |
+| ResourceGroup           | The Name for the specific Resource Group where the resources are deployed. For each specific language will concatenate (DotNet, JS and Python).               | Required  | BFFN                 | "bffnbots"                                                        |
+| ResourceSuffix          | The Suffix used to concatenate at the end of the Resource Name followed up by the ResourceSuffixSeparator.                                                    | Required  |                      | "microsoft-396"                                                   |
+| Subscription            | The Name or Id of the Subscription where the resources are located.                                                                                           | Optional  | Current Subscription | "00000000-0000-0000-0000-000000000000" or "bffnbots-subscription" |
+| ResourceSuffixSeparator | The separator used for the Suffix to split the Resource Name from the ResourceSuffix. <br> **Note:** _Only available when providing it through `parameters`_. | Optional  | -                    | "" or "-microsoft-"                                               |
+
+### The inputs can be provided as `prompts` or `parameters`
+
+1. When using `prompts`, it will ask for the `required` inputs to be provided. When no input is entered, it will use the `default (...)` value instead. For more information about, see [Inputs][inputs].
+
+   ![prompts][prompts]
+
+2. When using `parameters`, all listed inputs can be provided before executing the script. When no input is entered, it will use the `default` value instead. For more information, see [Inputs][inputs].
+
+   ![parameters][parameters]
+
+### Result
+
+After providing the desired [Inputs][inputs], the script will start looking for the Bot Resources, followed up by gathering each DirectLine Secret from the Azure Bot Resource and set it in the `appsettings.Development.json`. Moreover, all steps will be shown in the terminal as well as the result with each DirectLine Secret set for each Bot.
+
+![sample][sample]
+
+> **Note:** When no `appsettings.Development.json` file is found, it will proceed by generating a copy from the `appsettings.json` baseline file.
+
+> **Note:** Applies to `Subscription` input. When multiple Subscriptions are detected, a prompt to choose the desired one will appear. `Can be entered by Number (#), Name or Id`, otherwise the `default` one will be used instead.
+
+> **Note:** Applies to all `Inputs`. A mix between the two ways (`prompts` and `parameters`) to provide the inputs can be used. _E.g. prompts: ResourceSuffix and ResourceGroup, parameters: Subscription and ResourceSuffixSeparator_.
+
+<!-- Requirements -->
+
+[azure-cli]: https://docs.microsoft.com/en-us/cli/azure/install-azure-cli
+[powershell]: https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.1
+
+<!-- Inputs -->
+
+[inputs]: #inputs
+
+<!-- Images -->
+
+[prompts]: https://user-images.githubusercontent.com/62260472/134236938-b85fd5a1-6e32-4b78-a67f-cf9d8d98c3b4.png
+[parameters]: https://user-images.githubusercontent.com/62260472/134376619-aa7c27b7-52e6-4d72-837a-ec92e59afff6.png
+[sample]: https://user-images.githubusercontent.com/62260472/134376693-f8c109f8-a735-4be1-a601-5fdfb087078a.png

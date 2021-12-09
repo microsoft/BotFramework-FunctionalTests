@@ -86,6 +86,7 @@ stages:
     - job: Check_Key_Vault_Object_Id
       displayName: Check KeyVaultObjectId value
       steps:
+        - checkout: none
         - powershell: |
               $keyVaultObjectId = '$(INTERNALKEYVAULTOBJECTID)'
               if ($keyVaultObjectId -ne '') {
@@ -134,6 +135,7 @@ stages:
     - job: Check_App_Service_Plan_Creation
       displayName: "Check AppServicePlan Creation"
       steps:
+      - checkout: none
       - powershell: |
             $AppServicePlanDotNet = '$(INTERNALAPPSERVICEPLANDOTNETNAME)'
             $AppServicePlanJS = '$(INTERNALAPPSERVICEPLANJSNAME)'

@@ -20,38 +20,70 @@
         "attachments[0].content.text == 'Build and connect intelligent bots to interact with your users naturally wherever they are, from text/sms to Skype, Slack, Office 365 mail and other popular services.'",
         "attachments[0].content.buttons[0].type == 'openUrl'",
         "attachments[0].content.buttons[0].title == 'Get Started'",
-        "attachments[0].content.buttons[0].value == 'https://docs.microsoft.com/bot-framework'",
         "attachments[1].contentType == 'application/vnd.microsoft.card.hero'",
         "attachments[1].content.title == 'BotFramework Hero Card'",
         "attachments[1].content.subtitle == 'Microsoft Bot Framework'",
         "attachments[1].content.text == 'Build and connect intelligent bots to interact with your users naturally wherever they are, from text/sms to Skype, Slack, Office 365 mail and other popular services.'",
         "attachments[1].content.buttons[0].type == 'openUrl'",
         "attachments[1].content.buttons[0].title == 'Get Started'",
-        "attachments[1].content.buttons[0].value == 'https://docs.microsoft.com/bot-framework'",
         "attachments[2].contentType == 'application/vnd.microsoft.card.hero'",
         "attachments[2].content.title == 'BotFramework Hero Card'",
         "attachments[2].content.subtitle == 'Microsoft Bot Framework'",
         "attachments[2].content.text == 'Build and connect intelligent bots to interact with your users naturally wherever they are, from text/sms to Skype, Slack, Office 365 mail and other popular services.'",
         "attachments[2].content.buttons[0].type == 'openUrl'",
-        "attachments[2].content.buttons[0].title == 'Get Started'",
-        "attachments[2].content.buttons[0].value == 'https://docs.microsoft.com/bot-framework'"
+        "attachments[2].content.buttons[0].title == 'Get Started'"
       ]
     },
     {
       "type": "message",
       "role": "bot",
+      "text": "What card do you want?\n\n   1. AdaptiveCardBotAction\n   2. AdaptiveCardTeamsTaskModule\n   3. AdaptiveCardSubmitAction\n   4. Hero\n   5. Thumbnail\n   6. Receipt\n   7. Signin\n   8. Carousel\n   9. List\n   10. O365\n   11. TeamsFileConsent\n   12. Animation\n   13. Audio\n   14. Video\n   15. AdaptiveUpdate\n   16. End",
       "assertions": [
         "type == 'message'",
         "from.role == 'bot'",
         "recipient.role == 'user'",
+        "text == 'What card do you want?\n\n   1. AdaptiveCardBotAction\n   2. AdaptiveCardTeamsTaskModule\n   3. AdaptiveCardSubmitAction\n   4. Hero\n   5. Thumbnail\n   6. Receipt\n   7. Signin\n   8. Carousel\n   9. List\n   10. O365\n   11. TeamsFileConsent\n   12. Animation\n   13. Audio\n   14. Video\n   15. AdaptiveUpdate\n   16. End'",
         "speak == 'What card do you want?'",
         "inputHint == 'expectingInput'"
       ]
     },
     {
+      "type": "trace",
+      "role": "bot",
+      "assertions": [
+        "type == 'trace'",
+        "from.role == 'bot'",
+        "recipient.role == 'user'",
+        "label == 'Skill State'",
+        "name == 'BotState'"
+      ]
+    },
+    {
+      "type": "trace",
+      "role": "bot",
+      "assertions": [
+        "type == 'trace'",
+        "from.role == 'bot'",
+        "recipient.role == 'user'",
+        "label == 'Bot State'",
+        "name == 'BotState'"
+      ]
+    },
+    {
       "type": "message",
       "role": "user",
-      "text": "end"
+      "text": "End"
+    },
+    {
+      "type": "trace",
+      "role": "bot",
+      "assertions": [
+        "type == 'trace'",
+        "from.role == 'bot'",
+        "recipient.role == 'user'",
+        "label == 'Skill State'",
+        "name == 'BotState'"
+      ]
     },
     {
       "type": "message",
@@ -70,6 +102,17 @@
         "suggestedActions.actions[1].type == 'imBack'",
         "suggestedActions.actions[1].title == 'expectReplies'",
         "suggestedActions.actions[1].value == 'expectReplies'"
+      ]
+    },
+    {
+      "type": "trace",
+      "role": "bot",
+      "assertions": [
+        "type == 'trace'",
+        "from.role == 'bot'",
+        "recipient.role == 'user'",
+        "label == 'Bot State'",
+        "name == 'BotState'"
       ]
     }
   ]

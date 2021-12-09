@@ -1,66 +1,144 @@
 [
   {
-    "type": "message",
-    "serviceUrl": "https://9ed82cccfc76.ngrok.io",
+    "type": "trace",
+    "serviceUrl": "http://localhost:53810",
     "channelId": "emulator",
     "from": {
-      "id": "48224d50-60a5-11eb-881a-afe376da3863",
+      "id": "dad9ecf0-4e09-11ec-804d-a1ff51c75ee9",
       "name": "Bot",
       "role": "bot"
     },
     "conversation": {
-      "id": "980966c0-616b-11eb-881a-afe376da3863|livechat"
+      "id": "48ccf8d0-4ec1-11ec-804d-a1ff51c75ee9|livechat"
     },
     "recipient": {
-      "id": "bc95d182-9d74-4d9d-82ec-d650cb5e83d8",
+      "id": "73a7684c-2ed4-41dd-baa6-3fb27aa93acc",
       "role": "user"
     },
     "locale": "",
-    "text": "Got proactive message for user: ${UserId}",
-    "inputHint": "acceptingInput",
-    "replyToId": "5dfebb53-9851-449a-a86f-dff9a9155816",
-    "id": "f44c7b20-616b-11eb-b46e-c3c3213a748e",
-    "localTimestamp": "2021-01-28T10:23:05-03:00",
-    "timestamp": "2021-01-28T13:23:05.298Z"
+    "replyToId": "53b66600-4ec1-11ec-9ab7-193a6c7a03a0",
+    "label": "Skill State",
+    "valueType": "https://www.botframework.com/schemas/botState",
+    "value": {},
+    "name": "BotState",
+    "id": "5466f150-4ec1-11ec-9ab7-193a6c7a03a0",
+    "localTimestamp": "2021-11-26T11:01:19-03:00",
+    "timestamp": "2021-11-26T14:01:19.332Z"
   },
   {
-    "type": "message",
-    "serviceUrl": "https://9ed82cccfc76.ngrok.io",
+    "type": "trace",
+    "serviceUrl": "http://localhost:53810",
     "channelId": "emulator",
     "from": {
-      "id": "48224d50-60a5-11eb-881a-afe376da3863",
+      "id": "dad9ecf0-4e09-11ec-804d-a1ff51c75ee9",
       "name": "Bot",
       "role": "bot"
     },
     "conversation": {
-      "id": "980966c0-616b-11eb-881a-afe376da3863|livechat"
+      "id": "48ccf8d0-4ec1-11ec-804d-a1ff51c75ee9|livechat"
     },
     "recipient": {
-      "id": "bc95d182-9d74-4d9d-82ec-d650cb5e83d8",
+      "id": "73a7684c-2ed4-41dd-baa6-3fb27aa93acc",
+      "role": "user"
+    },
+    "locale": "",
+    "replyToId": "53b66600-4ec1-11ec-9ab7-193a6c7a03a0",
+    "label": "Bot State",
+    "valueType": "https://www.botframework.com/schemas/botState",
+    "value": {},
+    "name": "BotState",
+    "id": "549c5930-4ec1-11ec-9ab7-193a6c7a03a0",
+    "localTimestamp": "2021-11-26T11:01:19-03:00",
+    "timestamp": "2021-11-26T14:01:19.683Z"
+  },
+  {
+    "type": "message",
+    "serviceUrl": "http://localhost:53810",
+    "channelId": "emulator",
+    "from": {
+      "id": "dad9ecf0-4e09-11ec-804d-a1ff51c75ee9",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "conversation": {
+      "id": "48ccf8d0-4ec1-11ec-804d-a1ff51c75ee9|livechat"
+    },
+    "recipient": {
+      "id": "73a7684c-2ed4-41dd-baa6-3fb27aa93acc",
+      "role": "user"
+    },
+    "locale": "",
+    "text": "Got proactive message for user: 73a7684c-2ed4-41dd-baa6-3fb27aa93acc",
+    "inputHint": "acceptingInput",
+    "replyToId": "3a3199be-4d0c-4546-8457-aa5036faa4d3",
+    "id": "58ed63d0-4ec1-11ec-9ab7-193a6c7a03a0",
+    "localTimestamp": "2021-11-26T11:01:26-03:00",
+    "timestamp": "2021-11-26T14:01:26.925Z"
+  },
+  {
+    "type": "message",
+    "serviceUrl": "http://localhost:53810",
+    "channelId": "emulator",
+    "from": {
+      "id": "dad9ecf0-4e09-11ec-804d-a1ff51c75ee9",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "conversation": {
+      "id": "48ccf8d0-4ec1-11ec-804d-a1ff51c75ee9|livechat"
+    },
+    "recipient": {
+      "id": "73a7684c-2ed4-41dd-baa6-3fb27aa93acc",
       "role": "user"
     },
     "locale": "",
     "text": "We received a proactive message, ending the dialog",
     "inputHint": "acceptingInput",
-    "replyToId": "5dfebb53-9851-449a-a86f-dff9a9155816",
-    "id": "f4789430-616b-11eb-b46e-c3c3213a748e",
-    "localTimestamp": "2021-01-28T10:23:05-03:00",
-    "timestamp": "2021-01-28T13:23:05.587Z"
+    "replyToId": "3a3199be-4d0c-4546-8457-aa5036faa4d3",
+    "id": "59c37880-4ec1-11ec-9ab7-193a6c7a03a0",
+    "localTimestamp": "2021-11-26T11:01:28-03:00",
+    "timestamp": "2021-11-26T14:01:28.328Z"
   },
   {
-    "type": "message",
-    "serviceUrl": "https://9ed82cccfc76.ngrok.io",
+    "type": "trace",
+    "serviceUrl": "http://localhost:53810",
     "channelId": "emulator",
     "from": {
-      "id": "48224d50-60a5-11eb-881a-afe376da3863",
+      "id": "dad9ecf0-4e09-11ec-804d-a1ff51c75ee9",
       "name": "Bot",
       "role": "bot"
     },
     "conversation": {
-      "id": "980966c0-616b-11eb-881a-afe376da3863|livechat"
+      "id": "48ccf8d0-4ec1-11ec-804d-a1ff51c75ee9|livechat"
     },
     "recipient": {
-      "id": "bc95d182-9d74-4d9d-82ec-d650cb5e83d8",
+      "id": "73a7684c-2ed4-41dd-baa6-3fb27aa93acc",
+      "role": "user"
+    },
+    "locale": "",
+    "replyToId": "3a3199be-4d0c-4546-8457-aa5036faa4d3",
+    "label": "Skill State",
+    "valueType": "https://www.botframework.com/schemas/botState",
+    "value": {},
+    "name": "BotState",
+    "id": "5a120db0-4ec1-11ec-9ab7-193a6c7a03a0",
+    "localTimestamp": "2021-11-26T11:01:28-03:00",
+    "timestamp": "2021-11-26T14:01:28.843Z"
+  },
+  {
+    "type": "message",
+    "serviceUrl": "http://localhost:53810",
+    "channelId": "emulator",
+    "from": {
+      "id": "dad9ecf0-4e09-11ec-804d-a1ff51c75ee9",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "conversation": {
+      "id": "48ccf8d0-4ec1-11ec-804d-a1ff51c75ee9|livechat"
+    },
+    "recipient": {
+      "id": "73a7684c-2ed4-41dd-baa6-3fb27aa93acc",
       "role": "user"
     },
     "locale": "",
@@ -83,9 +161,35 @@
     },
     "attachments": [],
     "entities": [],
-    "replyToId": "5dfebb53-9851-449a-a86f-dff9a9155816",
-    "id": "f4a4fb60-616b-11eb-b46e-c3c3213a748e",
-    "localTimestamp": "2021-01-28T10:23:05-03:00",
-    "timestamp": "2021-01-28T13:23:05.878Z"
+    "replyToId": "3a3199be-4d0c-4546-8457-aa5036faa4d3",
+    "id": "5a7d0480-4ec1-11ec-9ab7-193a6c7a03a0",
+    "localTimestamp": "2021-11-26T11:01:29-03:00",
+    "timestamp": "2021-11-26T14:01:29.544Z"
+  },
+  {
+    "type": "trace",
+    "serviceUrl": "http://localhost:53810",
+    "channelId": "emulator",
+    "from": {
+      "id": "dad9ecf0-4e09-11ec-804d-a1ff51c75ee9",
+      "name": "Bot",
+      "role": "bot"
+    },
+    "conversation": {
+      "id": "48ccf8d0-4ec1-11ec-804d-a1ff51c75ee9|livechat"
+    },
+    "recipient": {
+      "id": "73a7684c-2ed4-41dd-baa6-3fb27aa93acc",
+      "role": "user"
+    },
+    "locale": "",
+    "replyToId": "3a3199be-4d0c-4546-8457-aa5036faa4d3",
+    "label": "Skill State",
+    "valueType": "https://www.botframework.com/schemas/botState",
+    "value": {},
+    "name": "BotState",
+    "id": "5a8b8370-4ec1-11ec-9ab7-193a6c7a03a0",
+    "localTimestamp": "2021-11-26T11:01:29-03:00",
+    "timestamp": "2021-11-26T14:01:29.639Z"
   }
 ]
