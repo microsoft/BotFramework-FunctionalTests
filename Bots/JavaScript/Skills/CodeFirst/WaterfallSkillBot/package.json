@@ -10,13 +10,13 @@
     "watch": "nodemon index.js"
   },
   "dependencies": {
-    "botbuilder": "~4.15.0-dev.20210805.26f7f44",
-    "botbuilder-dialogs": "~4.15.0-dev.20210805.26f7f44",
+    "botbuilder": "~4.15.0",
+    "botbuilder-dialogs": "~4.15.0",
     "dotenv": "^10.0.0",
     "node-fetch": "^2.6.1",
     "restify": "~8.5.1"
   },
   "devDependencies": {
-    "nodemon": "^2.0.8"
+    "nodemon": "^2.0.15"
   }
 }
