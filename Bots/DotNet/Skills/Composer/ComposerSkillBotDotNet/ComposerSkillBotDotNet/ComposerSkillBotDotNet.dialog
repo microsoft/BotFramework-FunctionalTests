@@ -36,7 +36,7 @@
             "id": "z2JNUs"
           },
           "value": "=router.GetHostUrl(settings.skillHostEndpoint)",
-          "property": "user.HostUrl"
+          "property": "conversation.HostUrl"
         },
         {
           "$kind": "Microsoft.SwitchCondition",
