@@ -17,7 +17,6 @@ variables:
 
   ## Bots Configuration (Define these variables in Azure)
   # BffnEchoSkillBotComposerDotNetAppId: (optional) App Id for BffnEchoSkillBotComposerDotNet bot.
-  # BffnEchoSkillBotDotNet21AppId: (optional) App Id for BffnEchoSkillBotDotNet21 bot.
   # BffnEchoSkillBotDotNetAppId: (optional) App Id for BffnEchoSkillBotDotNet bot.
   # BffnEchoSkillBotDotNetV3AppId: (optional) App Id for BffnEchoSkillBotDotNetV3 bot.
   # BffnEchoSkillBotJSAppId: (optional) App Id for BffnEchoSkillBotJS bot.
@@ -73,7 +72,6 @@ stages:
       appIds:
         EchoSkillBotComposerDotNet: "$(BFFNECHOSKILLBOTCOMPOSERDOTNETAPPID)"
         EchoSkillBotDotNet: "$(BFFNECHOSKILLBOTDOTNETAPPID)"
-        EchoSkillBotDotNet21: "$(BFFNECHOSKILLBOTDOTNET21APPID)"
         EchoSkillBotDotNetV3: "$(BFFNECHOSKILLBOTDOTNETV3APPID)"
         EchoSkillBotJS: "$(BFFNECHOSKILLBOTJSAPPID)"
         EchoSkillBotJSV3: "$(BFFNECHOSKILLBOTJSV3APPID)"
