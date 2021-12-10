@@ -196,11 +196,6 @@
         },
         {
           "type": "imBack",
-          "title": "EchoSkillBotDotNet21",
-          "value": "EchoSkillBotDotNet21"
-        },
-        {
-          "type": "imBack",
           "title": "EchoSkillBotDotNetV3",
           "value": "EchoSkillBotDotNetV3"
         },
