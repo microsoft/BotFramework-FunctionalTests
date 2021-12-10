@@ -22,13 +22,41 @@
         "from.role == 'bot'",
         "recipient.role == 'user'",
         "text == 'Would you like to view your token?'",
-        "inputHint == 'acceptingInput'"
+        "inputHint == 'acceptingInput'",
+        "suggestedActions.actions[0].type == 'imBack'",
+        "suggestedActions.actions[0].title == 'Yes'",
+        "suggestedActions.actions[0].value == 'Yes'",
+        "suggestedActions.actions[1].type == 'imBack'",
+        "suggestedActions.actions[1].title == 'No'",
+        "suggestedActions.actions[1].value == 'No'"
+      ]
+    },
+    {
+      "type": "trace",
+      "role": "bot",
+      "assertions": [
+        "type == 'trace'",
+        "from.role == 'bot'",
+        "recipient.role == 'user'",
+        "label == 'Skill State'",
+        "name == 'BotState'"
+      ]
+    },
+    {
+      "type": "trace",
+      "role": "bot",
+      "assertions": [
+        "type == 'trace'",
+        "from.role == 'bot'",
+        "recipient.role == 'user'",
+        "label == 'Bot State'",
+        "name == 'BotState'"
       ]
     },
     {
       "type": "message",
       "role": "user",
-      "text": "yes"
+      "text": "Yes"
     },
     {
       "type": "message",
@@ -55,6 +83,17 @@
       ]
     },
     {
+      "type": "trace",
+      "role": "bot",
+      "assertions": [
+        "type == 'trace'",
+        "from.role == 'bot'",
+        "recipient.role == 'user'",
+        "label == 'Skill State'",
+        "name == 'BotState'"
+      ]
+    },
+    {
       "type": "message",
       "role": "bot",
       "text": "Done with \"${TargetSkill}\". \n\n What delivery mode would you like to use?",
@@ -71,6 +110,17 @@
         "suggestedActions.actions[1].type == 'imBack'",
         "suggestedActions.actions[1].title == 'expectReplies'",
         "suggestedActions.actions[1].value == 'expectReplies'"
+      ]
+    },
+    {
+      "type": "trace",
+      "role": "bot",
+      "assertions": [
+        "type == 'trace'",
+        "from.role == 'bot'",
+        "recipient.role == 'user'",
+        "label == 'Bot State'",
+        "name == 'BotState'"
       ]
     }
   ]
