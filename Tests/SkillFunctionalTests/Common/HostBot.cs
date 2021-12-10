@@ -16,11 +16,6 @@ namespace SkillFunctionalTests.Common
         SimpleHostBotDotNet,
 
         /// <summary>
-        /// Simple host implemented using dotnet 2.1.
-        /// </summary>
-        SimpleHostBotDotNet21,
-
-        /// <summary>
         /// Simple host implemented using JS.
         /// </summary>
         SimpleHostBotJS,

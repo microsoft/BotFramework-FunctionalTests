@@ -10,32 +10,33 @@ const { TeamsSkill } = require('./skills/teamsSkill');
  */
 class SkillsConfiguration {
   constructor () {
-    this.skillsData = Object.entries(process.env)
+    this.skills = Object.entries(process.env)
       .filter(([key]) => key.startsWith('skill_'))
       .reduce((acc, [key, value]) => {
         const [, id, attr] = key.split('_');
-        acc[id] = acc[id] || {};
+
+        acc.entries[id] = acc.entries[id] || { id };
+
         const propName = { appid: 'appId', endpoint: 'skillEndpoint', group: 'group' }[attr.toLowerCase()];
         if (!propName) { throw new Error(`[SkillsConfiguration]: Invalid environment variable declaration ${key}`); }
-        acc[id][propName] = value;
-        if (propName === 'group') {
-          acc[id] = this.createSkillDefinition({ id, ...acc[id] });
-        }
-        return acc;
-      }, {});
 
-    this.skillHostEndpointValue = process.env.SkillHostEndpoint;
-    if (!this.skillHostEndpointValue) {
+        acc.entries[id][propName] = value;
+
+        !acc.ids.has(id) && acc.ids.add(id);
+        propName === 'appId' && acc.appIds.add(value);
+
+        if (propName === 'group') {
+          acc.groups.add(value);
+          acc.entries[id] = this.createSkillDefinition(acc.entries[id]);
+        }
+
+        return acc;
+      }, { ids: new Set(), appIds: new Set(), groups: new Set(), entries: {} });
+
+    this.skillHostEndpoint = process.env.SkillHostEndpoint;
+    if (!this.skillHostEndpoint) {
       throw new Error('[SkillsConfiguration]: Missing configuration parameter. SkillHostEndpoint is required');
     }
-  }
-
-  get skills () {
-    return this.skillsData;
-  }
-
-  get skillHostEndpoint () {
-    return this.skillHostEndpointValue;
   }
 
   createSkillDefinition (skill) {
