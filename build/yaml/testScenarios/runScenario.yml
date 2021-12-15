@@ -5,7 +5,6 @@ parameters:
   default:
     EchoSkillBotComposerDotNet: ""
     EchoSkillBotDotNet: ""
-    EchoSkillBotDotNet21: ""
     EchoSkillBotDotNetV3: ""
     EchoSkillBotJS: ""
     EchoSkillBotJSV3: ""

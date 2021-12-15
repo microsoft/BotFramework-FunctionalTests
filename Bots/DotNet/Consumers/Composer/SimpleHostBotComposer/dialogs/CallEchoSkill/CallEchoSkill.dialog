@@ -62,7 +62,6 @@
           "choices": [
             "EchoSkillBotComposerDotNet",
             "EchoSkillBotDotNet",
-            "EchoSkillBotDotNet21",
             "EchoSkillBotDotNetV3",
             "EchoSkillBotJS",
             "EchoSkillBotJSV3",
@@ -126,25 +125,6 @@
                   "skillEndpoint": "=settings.skill['echoSkillBotDotNet'].endpointUrl",
                   "skillAppId": "=settings.skill['echoSkillBotDotNet'].msAppId",
                   "activity": "${BeginSkill_Activity_92WLGJ()}"
-                }
-              ]
-            },
-            {
-              "value": "EchoSkillBotDotNet21",
-              "actions": [
-                {
-                  "$kind": "Microsoft.BeginSkill",
-                  "$designer": {
-                    "id": "9zIod8"
-                  },
-                  "activityProcessed": true,
-                  "botId": "=settings.MicrosoftAppId",
-                  "skillHostEndpoint": "=settings.skillHostEndpoint",
-                  "connectionName": "=settings.connectionName",
-                  "allowInterruptions": true,
-                  "skillEndpoint": "=settings.skill['echoSkillBotDotNet21'].endpointUrl",
-                  "skillAppId": "=settings.skill['echoSkillBotDotNet21'].msAppId",
-                  "activity": "${BeginSkill_Activity_9zIod8()}"
                 }
               ]
             },

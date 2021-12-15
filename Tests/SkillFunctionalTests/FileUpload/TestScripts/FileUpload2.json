@@ -32,9 +32,42 @@
       ]
     },
     {
+      "type": "trace",
+      "role": "bot",
+      "assertions": [
+        "type == 'trace'",
+        "from.role == 'bot'",
+        "recipient.role == 'user'",
+        "label == 'Skill State'",
+        "name == 'BotState'"
+      ]
+    },
+    {
+      "type": "trace",
+      "role": "bot",
+      "assertions": [
+        "type == 'trace'",
+        "from.role == 'bot'",
+        "recipient.role == 'user'",
+        "label == 'Bot State'",
+        "name == 'BotState'"
+      ]
+    },
+    {
       "type": "message",
       "role": "user",
       "text": "No"
+    },
+    {
+      "type": "trace",
+      "role": "bot",
+      "assertions": [
+        "type == 'trace'",
+        "from.role == 'bot'",
+        "recipient.role == 'user'",
+        "label == 'Skill State'",
+        "name == 'BotState'"
+      ]
     },
     {
       "type": "message",
@@ -53,6 +86,28 @@
         "suggestedActions.actions[1].type == 'imBack'",
         "suggestedActions.actions[1].title == 'expectReplies'",
         "suggestedActions.actions[1].value == 'expectReplies'"
+      ]
+    },
+    {
+      "type": "trace",
+      "role": "bot",
+      "assertions": [
+        "type == 'trace'",
+        "from.role == 'bot'",
+        "recipient.role == 'user'",
+        "label == 'Skill State'",
+        "name == 'BotState'"
+      ]
+    },
+    {
+      "type": "trace",
+      "role": "bot",
+      "assertions": [
+        "type == 'trace'",
+        "from.role == 'bot'",
+        "recipient.role == 'user'",
+        "label == 'Bot State'",
+        "name == 'BotState'"
       ]
     }
   ]
