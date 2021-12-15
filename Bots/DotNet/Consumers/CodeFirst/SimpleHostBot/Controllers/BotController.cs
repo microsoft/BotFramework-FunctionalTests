@@ -15,7 +15,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Controllers
     [ApiController]
     public class BotController : ControllerBase
     {
-        private readonly BotFrameworkHttpAdapter _adapter;
+        private readonly IBotFrameworkHttpAdapter _adapter;
         private readonly IBot _bot;
 
         /// <summary>
@@ -23,7 +23,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Controllers
         /// </summary>
         /// <param name="adapter">Adapter for the BotController.</param>
         /// <param name="bot">Bot for the BotController.</param>
-        public BotController(BotFrameworkHttpAdapter adapter, IBot bot)
+        public BotController(IBotFrameworkHttpAdapter adapter, IBot bot)
         {
             _adapter = adapter;
             _bot = bot;

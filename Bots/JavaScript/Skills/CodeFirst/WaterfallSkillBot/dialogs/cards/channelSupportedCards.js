@@ -8,22 +8,22 @@ const { CardOptions } = require('./cardOptions');
  * This tracks what cards are not supported in a given channel.
  */
 const unsupportedChannelCards = {
-  [Channels.Emulator]: [
+  [Channels.Emulator]: new Set([
     CardOptions.AdaptiveCardTeamsTaskModule,
     CardOptions.AdaptiveUpdate,
     CardOptions.TeamsFileConsent,
     CardOptions.O365
-  ],
-  [Channels.Directline]: [
+  ]),
+  [Channels.Directline]: new Set([
     CardOptions.AdaptiveUpdate
-  ],
-  [Channels.Telegram]: [
+  ]),
+  [Channels.Telegram]: new Set([
     CardOptions.AdaptiveCardBotAction,
     CardOptions.AdaptiveCardTeamsTaskModule,
     CardOptions.AdaptiveCardSubmitAction,
     CardOptions.List,
     CardOptions.TeamsFileConsent
-  ]
+  ])
 };
 
 class ChannelSupportedCards {
@@ -36,7 +36,7 @@ class ChannelSupportedCards {
   static isCardSupported (channel, type) {
     const unsupportedChannel = unsupportedChannelCards[channel];
     if (unsupportedChannel) {
-      return !unsupportedChannel.includes(type);
+      return !unsupportedChannel.has(type);
     }
 
     return true;
