@@ -17,65 +17,147 @@ steps:
     inputs:
       targetType: inline
       failOnStderr: true
+      pwsh: true
       script: |
-        # Get Source
-        $sourceDotNetv3MyGet = "https://botbuilder.myget.org/F/botbuilder-v3-dotnet-daily/api/v3/index.json"
-        $sourceDotNetArtifacts = "https://pkgs.dev.azure.com/ConversationalAI/BotFramework/_packaging/SDK/nuget/v3/index.json"
-        $sourceDotNetMyGet = "https://botbuilder.myget.org/F/botbuilder-v4-dotnet-daily/api/v3/index.json"
-        $sourceDotNetNuGet = "https://api.nuget.org/v3/index.json"
+        $botType = "${{ parameters.botType }}";
+        $version = "${{ parameters.version }}";
+        $registry = "${{ parameters.registry }}";
 
-        switch -regex ("${{ parameters.registry }}") {
-          "^($null|)$" {
-            switch ("${{ parameters.botType }}") {
-              "SkillV3" { $source = $sourceDotNetv3MyGet }
-              default { $source = $sourceDotNetArtifacts }
-            }
-          }
-          "Artifacts" { $source = $sourceDotNetArtifacts }
-          "MyGet" { 
-            switch ("${{ parameters.botType }}") {
-              "SkillV3" { $source = $sourceDotNetv3MyGet }
-              default { $source = $sourceDotNetMyGet }
-            }
-          }
-          "NuGet" { $source = $sourceDotNetNuGet }
-          default { $source = "${{ parameters.registry }}" }
+        Set-Variable ARTIFACTS -Option ReadOnly -Value "Artifacts"
+        Set-Variable MYGET -Option ReadOnly -Value "MyGet"
+        Set-Variable NUGET -Option ReadOnly -Value "NuGet"
+        Set-Variable CUSTOM -Option ReadOnly -Value "Custom"
+
+        $isPreRelease = $version -match "^($null||LATEST)$";
+        $isRelease = $version -match "^(STABLE)$";
+        $isCustomVersion = -not ($isPreRelease -or $isRelease);
+        $isSkillV3 = $botType -eq "SkillV3";
+        $isComposer = $botType -in "ComposerHost", "ComposerSkill";
+
+        function ExitWithError ($message) {
+          [Console]::ForegroundColor = "red"
+          [Console]::Error.WriteLine($message)
+          [Console]::ResetColor()
+          exit 1 # Force exit
         }
-        Write-Host "Source: $source"
 
-        # Get Version Number
-        $tags = ""
-        switch -regex ("${{ parameters.version }}") {
-          "^($null||LATEST||STABLE)$" {
-            if (("${{ parameters.version }}" -in "STABLE") -and ($source -match $sourceDotNetArtifacts)) {
-              [Console]::ForegroundColor = "red"
-              [Console]::Error.WriteLine("Stable versions of BotBuilder DotNet are not available for this source.")
-              [Console]::ResetColor()
-              exit 1 # Force exit
-            }
-
-            if("${{ parameters.version }}" -notin "STABLE") {
-              $tags = "-PreRelease"
-            }
-
-            # NOTE: The extra space for the -Pattern flag is intentional. E.g.: -Pattern "^Microsoft.Bot.Builder ".
-            if ("${{ parameters.botType }}" -in "Host", "Skill") {
-              $PackageList = nuget list "Microsoft.Bot.Builder" -Source "$source" "$tags" | Select-String -Pattern "^Microsoft.Bot.Builder "
-              $versionNumber = ($PackageList -split " ")[-1]
-
-            } elseif ("${{ parameters.botType }}" -in "ComposerHost", "ComposerSkill") {
-              $PackageList = nuget list "Microsoft.Bot.Builder.Dialogs.Adaptive.Runtime" -Source "$source" "$tags" | Select-String -Pattern "^Microsoft.Bot.Builder.Dialogs.Adaptive.Runtime "
-              $versionNumber = ($PackageList -split " ")[-1]
-
-            } elseif ("${{ parameters.botType }}" -eq "SkillV3") {
-              $PackageList = nuget list "Microsoft.Bot.Builder.History" -Source "$source" "$tags" | Select-String -Pattern "^Microsoft.Bot.Builder.History "
-              $versionNumber = ($PackageList -split " ")[-1]
-            }
-          }
-          default { $versionNumber = "${{ parameters.version }}" }
+        $versions = @();
+        $filters = @{
+          query      = "";
+          library    = "Microsoft.Bot.Builder.Integration.AspNet.Core";
+          version    = "^4.";
+          prerelease = [System.Convert]::ToString($isPreRelease).ToLower();
         }
-        Write-Host "Version Number: $versionNumber"
+
+        $result = @{
+          version = "";
+          source  = "";
+        }
+
+        # Empty Registry
+        if ($registry -match "^($null|)$") {
+          $registry = $isSkillV3 ? $MYGET : $ARTIFACTS;
+        }
+        # Artifacts
+        elseif ($registry -match "^($ARTIFACTS)$") {
+          $registry = $ARTIFACTS;
+        }
+        # MyGet
+        elseif ($registry -match "^($MYGET)$") {
+          $registry = $MYGET;
+        }
+        # NuGet
+        elseif ($registry -match "^($NUGET)$") {
+          $registry = $NUGET;
+        }
+        # Custom Registry
+        else {
+          $filters.query = $registry;
+          $filters.prerelease = $isPreRelease ? "-PreRelease" : "";
+          $registry = $CUSTOM;
+        }
+
+        if ($isRelease -and $registry -eq $ARTIFACTS) {
+          ExitWithError "Stable versions of BotBuilder DotNet are not available in $ARTIFACTS.";
+        }
+
+        if ($isComposer) {
+          $filters.library = "Microsoft.Bot.Builder.Dialogs.Adaptive.Runtime";
+        }
+
+        if ($isSkillV3) {
+          $filters.version = "^3.";
+          $filters.library = "Microsoft.Bot.Builder.History";
+        }
+
+        if ($isCustomVersion) {
+          $filters.version = "^($version)$";
+        }
+
+        switch ($registry) {
+          $ARTIFACTS {
+            $result.source = "https://pkgs.dev.azure.com/ConversationalAI/BotFramework/_packaging/SDK/nuget/v3/index.json";
+            $filters.query = "https://feeds.dev.azure.com/ConversationalAI/BotFramework/_apis/packaging/Feeds/SDK/packages?includeAllVersions=true&api-version=6.0-preview.1&packageNameQuery=$($filters.library)&`$top=1";
+            $data = Invoke-RestMethod -Uri $filters.query;
+            $versions = @($data.value[0].versions);
+          }
+          $MYGET {
+            $feed = $isSkillV3 ? "botbuilder-v3-dotnet-daily" : "botbuilder-v4-dotnet-daily";
+            $result.source = "https://botbuilder.myget.org/F/$($feed)/api/v3/index.json";
+            $filters.query = "https://botbuilder.myget.org/F/$($feed)/api/v3/query?q=packageid:$($filters.library)&prerelease=$($filters.prerelease)";
+            $data = Invoke-RestMethod -Uri $filters.query;
+            $versions = @($data.data[0].versions);
+            $versions = $versions[($versions.count - 1)..0];
+          }
+          $NUGET {
+            $result.source = "https://api.nuget.org/v3/index.json";
+            $filters.query = "https://azuresearch-usnc.nuget.org/query?q=packageid:$($filters.library)&prerelease=$($filters.prerelease)&semVerLevel=2.0.0";
+            $data = Invoke-RestMethod -Uri $filters.query;
+            $versions = @($data.data[0].versions);
+            $versions = $versions[($versions.count - 1)..0];
+          }
+          Default {
+            # Custom Registry
+            $result.source = $filters.query;
+            $data = nuget list $filters.library -Source $filters.query -AllVersions $filters.prerelease;
+            $versions = $data | ForEach-Object {
+              $lib, $ver = $_ -split " ";
+              return [PSCustomObject]@{ Package = $lib; Version = $ver };
+            } | Sort-Object -Descending { [regex]::Replace($_.Version, '\d+', { $args[0].Value.PadLeft(20) }) }
+          }
+        }
+
+        $result.version = @($versions | Select-Object -ExpandProperty version | Where-Object { $_ -match $filters.version } | Select-Object -First 1);
+
+        if ($isPreRelease) {
+          $label = "Latest";
+        }
+        elseif ($isRelease) {
+          $label = "Stable";
+        }
+        else {
+          $label = "Custom";
+        }
+
+        if (-not $result.version) {
+          $message = @"
+        Unable to find the Version in the selected Registry:
+          Version       : $version ($label)
+          Registry      : $registry
+          Source        : $($result.source)
+          Search Query  : $($filters.query)
+        "@;
+          ExitWithError $message
+        }
+
+        @"
+        Version & Registry to install the packages:
+          Version       : $($result.version) ($label)
+          Registry      : $registry
+          Source        : $($result.source)
+          Search Query  : $($filters.query)
+        "@
 
         # Set environment variables
-        Write-Host "##vso[task.setvariable variable=DependenciesSource]$source"
-        Write-Host "##vso[task.setvariable variable=DependenciesVersionNumber]$versionNumber"
+        Write-Host "##vso[task.setvariable variable=DependenciesSource]$($result.source)"
+        Write-Host "##vso[task.setvariable variable=DependenciesVersionNumber]$($result.version)"
