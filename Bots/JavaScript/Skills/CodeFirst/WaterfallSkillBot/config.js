@@ -18,7 +18,6 @@ class DefaultConfig {
       PORT
     } = process.env;
 
-    this.ServerUrl = '';
     this.Port = port || PORT || 36420;
     this.MicrosoftAppId = MicrosoftAppId;
     this.MicrosoftAppPassword = MicrosoftAppPassword;
@@ -35,19 +34,14 @@ class DefaultConfig {
       appId: process.env.EchoSkillInfo_appId,
       skillEndpoint: process.env.EchoSkillInfo_skillEndpoint
     };
-  }
 
-  /**
-   * @param {import('restify').Request} request
-   */
-  configureServerUrl (request) {
     // Workaround for Restify known issues to construct the server.url.
     // Restify:
     //   [#1029](https://github.com/restify/node-restify/issues/1029)
     //   [#1274](https://github.com/restify/node-restify/issues/1274)
-    const protocol = request.headers['x-appservice-proto'] ?? 'http';
-    const url = process.env.WEBSITE_HOSTNAME ?? request.headers.host;
-    this.ServerUrl = `${protocol}://${url}`;
+    const { WEBSITE_HOSTNAME } = process.env;
+    const url = WEBSITE_HOSTNAME ? `https://${WEBSITE_HOSTNAME}` : `http://localhost:${this.Port}`;
+    this.ServerUrl = new URL(url).origin;
   }
 }
 
