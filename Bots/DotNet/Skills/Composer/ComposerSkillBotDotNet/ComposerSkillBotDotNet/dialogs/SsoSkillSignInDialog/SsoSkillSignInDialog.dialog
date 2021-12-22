@@ -66,6 +66,9 @@
     }
   ],
   "generator": "SsoSkillSignInDialog.lg",
-  "recognizer": "SsoSkillSignInDialog.lu.qna",
+  "recognizer": {
+    "$kind": "Microsoft.RegexRecognizer",
+    "intents": []
+  },
   "id": "SsoSkillSignInDialog"
 }
