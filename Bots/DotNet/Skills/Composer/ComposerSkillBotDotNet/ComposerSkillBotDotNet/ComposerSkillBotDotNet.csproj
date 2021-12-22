@@ -18,7 +18,9 @@
     <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive.Runtime" Version="4.14.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GetTokenDialog\GetUserTokenDialog.csproj" />
+    <Content Update="wwwroot\images\architecture-resize.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Update="media\architecture-resize.png">
@@ -27,5 +29,8 @@
     <None Update="media\teams-logo.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GetTokenDialog\GetUserTokenDialog.csproj" />
   </ItemGroup>
 </Project>

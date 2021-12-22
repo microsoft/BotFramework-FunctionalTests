@@ -6,12 +6,10 @@ These are the bots currently available. This list will be expanded in the future
   - Consumers
     - BffnSimpleComposerHostBotDotNet
     - BffnSimpleHostBotDotNet
-    - BffnSimpleHostBotDotNet21
     - BffnWaterfallHostBotDotNet
   - Skills
     - BffnEchoComposerSkillBotDotNet
     - BffnEchoSkillBotDotNet
-    - BffnEchoSkillBotDotNet21
     - BffnEchoSkillBotDotNetV3
     - BffnWaterfallSkillBotDotNet
 

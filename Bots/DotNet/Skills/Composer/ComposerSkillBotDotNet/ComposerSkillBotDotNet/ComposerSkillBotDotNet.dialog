@@ -36,7 +36,7 @@
             "id": "z2JNUs"
           },
           "value": "=router.GetHostUrl(settings.skillHostEndpoint)",
-          "property": "user.HostUrl"
+          "property": "conversation.HostUrl"
         },
         {
           "$kind": "Microsoft.SwitchCondition",
@@ -190,5 +190,8 @@
   ],
   "generator": "ComposerSkillBotDotNet.lg",
   "id": "ComposerSkillBotDotNet",
-  "recognizer": "ComposerSkillBotDotNet.lu.qna"
+  "recognizer": {
+    "$kind": "Microsoft.RegexRecognizer",
+    "intents": []
+  }
 }

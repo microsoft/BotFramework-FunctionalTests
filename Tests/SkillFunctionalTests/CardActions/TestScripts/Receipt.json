@@ -17,37 +17,71 @@
         "attachments[0].contentType == 'application/vnd.microsoft.card.receipt'",
         "attachments[0].content.title == 'John Doe'",
         "attachments[0].content.facts[0].key == 'Order Number'",
+        "attachments[0].content.facts[0].value == '1234'",
         "attachments[0].content.facts[1].key == 'Payment Method'",
         "attachments[0].content.facts[1].value == 'VISA 5555-****'",
         "attachments[0].content.items[0].title == 'Data Transfer'",
-        "attachments[0].content.items[0].image.url == 'https://github.com/amido/azure-vector-icons/raw/master/renders/traffic-manager.png'",
         "attachments[0].content.items[0].price == '$ 38.45'",
+        "attachments[0].content.items[0].quantity == '368'",
         "attachments[0].content.items[1].title == 'App Service'",
-        "attachments[0].content.items[1].image.url == 'https://github.com/amido/azure-vector-icons/raw/master/renders/cloud-service.png'",
         "attachments[0].content.items[1].price == '$ 45.00'",
+        "attachments[0].content.items[1].quantity == '720'",
         "attachments[0].content.total == '$ 90.95'",
         "attachments[0].content.tax == '$ 7.50'",
         "attachments[0].content.buttons[0].type == 'openUrl'",
-        "attachments[0].content.buttons[0].title == 'More information'",
-        "attachments[0].content.buttons[0].image == 'https://account.windowsazure.com/content/6.10.1.38-.8225.160809-1618/aux-pre/images/offer-icon-freetrial.png'",
-        "attachments[0].content.buttons[0].value == 'https://azure.microsoft.com/en-us/pricing/'"
+        "attachments[0].content.buttons[0].title == 'More information'"
       ]
     },
     {
       "type": "message",
       "role": "bot",
+      "text": "What card do you want?\n\n   1. AdaptiveCardBotAction\n   2. AdaptiveCardTeamsTaskModule\n   3. AdaptiveCardSubmitAction\n   4. Hero\n   5. Thumbnail\n   6. Receipt\n   7. Signin\n   8. Carousel\n   9. List\n   10. O365\n   11. TeamsFileConsent\n   12. Animation\n   13. Audio\n   14. Video\n   15. AdaptiveUpdate\n   16. End",
       "assertions": [
         "type == 'message'",
         "from.role == 'bot'",
         "recipient.role == 'user'",
+        "text == 'What card do you want?\n\n   1. AdaptiveCardBotAction\n   2. AdaptiveCardTeamsTaskModule\n   3. AdaptiveCardSubmitAction\n   4. Hero\n   5. Thumbnail\n   6. Receipt\n   7. Signin\n   8. Carousel\n   9. List\n   10. O365\n   11. TeamsFileConsent\n   12. Animation\n   13. Audio\n   14. Video\n   15. AdaptiveUpdate\n   16. End'",
         "speak == 'What card do you want?'",
         "inputHint == 'expectingInput'"
       ]
     },
     {
+      "type": "trace",
+      "role": "bot",
+      "assertions": [
+        "type == 'trace'",
+        "from.role == 'bot'",
+        "recipient.role == 'user'",
+        "label == 'Skill State'",
+        "name == 'BotState'"
+      ]
+    },
+    {
+      "type": "trace",
+      "role": "bot",
+      "assertions": [
+        "type == 'trace'",
+        "from.role == 'bot'",
+        "recipient.role == 'user'",
+        "label == 'Bot State'",
+        "name == 'BotState'"
+      ]
+    },
+    {
       "type": "message",
       "role": "user",
-      "text": "end"
+      "text": "End"
+    },
+    {
+      "type": "trace",
+      "role": "bot",
+      "assertions": [
+        "type == 'trace'",
+        "from.role == 'bot'",
+        "recipient.role == 'user'",
+        "label == 'Skill State'",
+        "name == 'BotState'"
+      ]
     },
     {
       "type": "message",
@@ -66,6 +100,17 @@
         "suggestedActions.actions[1].type == 'imBack'",
         "suggestedActions.actions[1].title == 'expectReplies'",
         "suggestedActions.actions[1].value == 'expectReplies'"
+      ]
+    },
+    {
+      "type": "trace",
+      "role": "bot",
+      "assertions": [
+        "type == 'trace'",
+        "from.role == 'bot'",
+        "recipient.role == 'user'",
+        "label == 'Bot State'",
+        "name == 'BotState'"
       ]
     }
   ]

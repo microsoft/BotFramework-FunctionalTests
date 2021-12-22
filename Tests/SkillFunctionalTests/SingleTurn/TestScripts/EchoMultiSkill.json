@@ -36,6 +36,17 @@
       ]
     },
     {
+      "type": "trace",
+      "role": "bot",
+      "assertions": [
+        "type == 'trace'",
+        "from.role == 'bot'",
+        "recipient.role == 'user'",
+        "label == 'Bot State'",
+        "name == 'BotState'"
+      ]
+    },
+    {
       "type": "message",
       "role": "user",
       "text": "${DeliveryMode}"
@@ -54,6 +65,17 @@
       ]
     },
     {
+      "type": "trace",
+      "role": "bot",
+      "assertions": [
+        "type == 'trace'",
+        "from.role == 'bot'",
+        "recipient.role == 'user'",
+        "label == 'Bot State'",
+        "name == 'BotState'"
+      ]
+    },
+    {
       "type": "message",
       "role": "user",
       "text": "${TargetSkill}"
@@ -67,7 +89,19 @@
         "from.role == 'bot'",
         "recipient.role == 'user'",
         "text == 'Type anything to send to the skill.'",
+        "speak == 'Type anything to send to the skill.'",
         "inputHint == 'expectingInput'"
+      ]
+    },
+    {
+      "type": "trace",
+      "role": "bot",
+      "assertions": [
+        "type == 'trace'",
+        "from.role == 'bot'",
+        "recipient.role == 'user'",
+        "label == 'Bot State'",
+        "name == 'BotState'"
       ]
     },
     {
@@ -157,6 +191,17 @@
         "suggestedActions.actions[1].type == 'imBack'",
         "suggestedActions.actions[1].title == 'expectReplies'",
         "suggestedActions.actions[1].value == 'expectReplies'"
+      ]
+    },
+    {
+      "type": "trace",
+      "role": "bot",
+      "assertions": [
+        "type == 'trace'",
+        "from.role == 'bot'",
+        "recipient.role == 'user'",
+        "label == 'Skill State'",
+        "name == 'BotState'"
       ]
     }
   ]
