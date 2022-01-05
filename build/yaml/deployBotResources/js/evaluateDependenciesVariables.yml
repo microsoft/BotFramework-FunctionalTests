@@ -32,13 +32,15 @@ steps:
               default { $source = $sourceJSMyGet }
             }
           }
-          "Npm" { $source = $sourceJSNpm 
+          "Npm" { 
+            $source = $sourceJSNpm 
             if ([string]::IsNullOrEmpty($versionNumber)){
               $versionNumber = "STABLE"
             }
           }
           default { $source = $registry }
         }
+        Write-Host "Source: $source"
         npm config set registry $source
 
         # Get Version Number
@@ -64,6 +66,7 @@ steps:
             $versionNumber = ($PackageList.Split(" ")[-1]).Trim().TrimStart("'").TrimEnd("'");
           }
         }
+        Write-Host "Version Number: $versionNumber"
  
         # Set environment variables
         Write-Host "##vso[task.setvariable variable=DependenciesSource]$source"
