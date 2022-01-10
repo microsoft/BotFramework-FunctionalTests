@@ -105,13 +105,6 @@
               "value": "Sso",
               "actions": [
                 {
-                  "$kind": "GetUserTokenDialog",
-                  "$designer": {
-                    "id": "Qeb1Vx"
-                  },
-                  "resultProperty": "user.token"
-                },
-                {
                   "$kind": "Microsoft.BeginDialog",
                   "$designer": {
                     "id": "tQ6oU7"
