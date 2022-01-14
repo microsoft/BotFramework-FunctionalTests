@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs.Adaptive.Runtime.Extensions;
+using Microsoft.Bot.Builder.LanguageGeneration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -27,6 +28,8 @@ namespace ComposerSkillBotDotNet
 
             // Gives us access to HttpContext so we can create URLs with the host name.
             services.AddHttpContextAccessor();
+
+            Templates.EnableFromFile = true;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
