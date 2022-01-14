@@ -300,6 +300,7 @@ class MainDialog extends ComponentDialog {
       .forEach(skill => this.addDialog(new SsoDialog(`${SSO_DIALOG_PREFIX}${skill.id}`, skill, connectionName)));
 
     addDialogs('WaterfallSkillBot', process.env.SsoConnectionName);
+    addDialogs('ComposerSkillBot', process.env.SsoConnectionName);
     addDialogs('TeamsSkillBot', process.env.SsoConnectionNameTeams);
   }
 }
