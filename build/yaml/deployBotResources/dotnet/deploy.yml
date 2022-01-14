@@ -286,7 +286,7 @@ stages:
               deploymentMethod: runFromPackage
 
           # Configure OAuth
-          - ${{ if eq(bot.type, 'Skill') }}:
+          - ${{ if in(bot.type, 'Skill', 'ComposerSkill') }}:
             - template: ../common/configureOAuth.yml
               parameters:
                 appId: $(APPID)
