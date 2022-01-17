@@ -20,7 +20,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{5A0C68F1-6CA7-43D7-8F01-70A484D8D412}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TranscriptTestRunnerTests", "Libraries\TranscriptTestRunnerTests\TranscriptTestRunnerTests.csproj", "{5CAE9F80-9BD3-480C-8504-552B31B265E0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TranscriptTestRunnerTests", "Tests\TranscriptTestRunnerTests\TranscriptTestRunnerTests.csproj", "{5CAE9F80-9BD3-480C-8504-552B31B265E0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
