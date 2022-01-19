@@ -9,33 +9,32 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Skills", "Skills", "{39117C
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CodeFirst", "CodeFirst", "{C7A60083-78C8-4CEF-A358-4E53CBF0D12A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleHostBot", "Consumers\CodeFirst\SimpleHostBot\SimpleHostBot.csproj", "{AAE978F8-D22B-41E8-B445-872FF4194713}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleHostBot", "SimpleHostBot\SimpleHostBot.csproj", "{AAE978F8-D22B-41E8-B445-872FF4194713}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CodeFirst", "CodeFirst", "{6EF38D8C-7953-4D54-BA31-FFF055B7B217}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EchoSkillBot", "Skills\CodeFirst\EchoSkillBot\EchoSkillBot.csproj", "{692F26DD-F7BA-49F3-AC6D-73047C1E5D61}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EchoSkillBot", "EchoSkillBot\EchoSkillBot.csproj", "{692F26DD-F7BA-49F3-AC6D-73047C1E5D61}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Composer", "Composer", "{33FA275E-9E5D-4582-BFF7-24B2C5DB2962}"
-	ProjectSection(SolutionItems) = preProject
-		Consumers\Composer\Directory.Build.props = Consumers\Composer\Directory.Build.props
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Composer", "Composer", "{33E2281F-C6A7-40EC-961A-FF9FF254FDDC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WaterfallHostBot", "WaterfallHostBot\WaterfallHostBot.csproj", "{15A946BE-39F9-4945-9895-0019ED3392FC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WaterfallSkillBot", "WaterfallSkillBot\WaterfallSkillBot.csproj", "{E3BECBEF-E41F-48D1-9EEB-A4D7E1CD34E3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EchoSkillBot-v3", "EchoSkillBot-v3\EchoSkillBot-v3.csproj", "{41BC9547-FD9E-40E1-B1D9-C3F25BC9A2F3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleHostBotComposer", "SimpleHostBotComposer\SimpleHostBotComposer.csproj", "{FDC53B3A-0E15-4FDF-A587-05C8F90BC2B6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EchoSkillBotComposer", "EchoSkillBotComposer\EchoSkillBotComposer.csproj", "{9BA47CF9-7D90-4B5C-A9FA-01797A435D53}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComposerSkillBotDotNet", "ComposerSkillBotDotNet\ComposerSkillBotDotNet.csproj", "{925E0E3F-194D-4E56-AE78-6FF6D49B7E7E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9B137F7B-3097-4122-AC2B-FBE4FBFE7FEC}"
 	ProjectSection(SolutionItems) = preProject
-		Skills\Composer\Directory.Build.props = Skills\Composer\Directory.Build.props
+		Directory.Build.props = Directory.Build.props
 	EndProjectSection
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WaterfallHostBot", "Consumers\CodeFirst\WaterfallHostBot\WaterfallHostBot.csproj", "{15A946BE-39F9-4945-9895-0019ED3392FC}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WaterfallSkillBot", "Skills\CodeFirst\WaterfallSkillBot\WaterfallSkillBot.csproj", "{E3BECBEF-E41F-48D1-9EEB-A4D7E1CD34E3}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EchoSkillBot-v3", "Skills\CodeFirst\EchoSkillBot-v3\EchoSkillBot-v3.csproj", "{41BC9547-FD9E-40E1-B1D9-C3F25BC9A2F3}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleHostBotComposer", "Consumers\Composer\SimpleHostBotComposer\SimpleHostBotComposer.csproj", "{FDC53B3A-0E15-4FDF-A587-05C8F90BC2B6}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EchoSkillBotComposer", "Skills\Composer\EchoSkillBotComposer\EchoSkillBotComposer.csproj", "{9BA47CF9-7D90-4B5C-A9FA-01797A435D53}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComposerSkillBotDotNet", "Skills\Composer\ComposerSkillBotDotNet\ComposerSkillBotDotNet\ComposerSkillBotDotNet.csproj", "{925E0E3F-194D-4E56-AE78-6FF6D49B7E7E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
