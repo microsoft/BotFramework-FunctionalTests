@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Bot.Connector;
 using Microsoft.Bot.Schema;
@@ -15,14 +15,14 @@ using TranscriptTestRunner.XUnit;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace SkillFunctionalTests.SignIn
+namespace SkillFunctionalTests.Skills.FileUpload
 {
-    [Trait("TestCategory", "SignIn")]
-    public class SignInTests : ScriptTestBase
+    [Trait("TestCategory", "FileUpload")]
+    public class FileUploadTests : ScriptTestBase
     {
-        private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/SignIn/TestScripts";
+        private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/FileUpload/TestScripts";
 
-        public SignInTests(ITestOutputHelper output)
+        public FileUploadTests(ITestOutputHelper output)
             : base(output)
         {
         }
@@ -30,39 +30,39 @@ namespace SkillFunctionalTests.SignIn
         public static IEnumerable<object[]> TestCases()
         {
             var channelIds = new List<string> { Channels.Directline };
+
             var deliverModes = new List<string>
             {
                 DeliveryModes.Normal,
-                DeliveryModes.ExpectReplies,
+                DeliveryModes.ExpectReplies
             };
 
             var hostBots = new List<HostBot>
             {
                 HostBot.WaterfallHostBotDotNet,
                 HostBot.WaterfallHostBotJS,
-                HostBot.WaterfallHostBotPython,
+                HostBot.WaterfallHostBotPython
 
-                // TODO: Enable this when the port to composer is ready
-                //HostBot.ComposerHostBotDotNet
+                // TODO: Enable these when the port to composer is ready
+                //HostBotNames.ComposerHostBotDotNet
             };
 
             var targetSkills = new List<string>
             {
                 SkillBotNames.WaterfallSkillBotDotNet,
                 SkillBotNames.WaterfallSkillBotJS,
-                SkillBotNames.WaterfallSkillBotPython,
-                
-                // TODO: Enable this when the port to composer is ready
+                SkillBotNames.WaterfallSkillBotPython
+
+                // TODO: Enable these when the port to composer is ready
                 //SkillBotNames.ComposerSkillBotDotNet
             };
 
             var scripts = new List<string>
             {
-                "SignIn1.json"
+                "FileUpload1.json"
             };
 
             var testCaseBuilder = new TestCaseBuilder();
-
             var testCases = testCaseBuilder.BuildTestCases(channelIds, deliverModes, hostBots, targetSkills, scripts);
             foreach (var testCase in testCases)
             {
@@ -74,38 +74,37 @@ namespace SkillFunctionalTests.SignIn
         [MemberData(nameof(TestCases))]
         public async Task RunTestCases(TestCaseDataObject testData)
         {
-            var signInUrl = string.Empty;
+            var testGuid = Guid.NewGuid().ToString();
+            var fileName = $"TestFile-{testGuid}.txt";
             var testCase = testData.GetObject<TestCase>();
             Logger.LogInformation(JsonConvert.SerializeObject(testCase, Formatting.Indented));
 
             var options = TestClientOptions[testCase.HostBot];
             var runner = new XUnitTestRunner(new TestClientFactory(testCase.ChannelId, options, Logger).GetTestClient(), TestRequestTimeout, ThinkTime, Logger);
 
+            // Execute the first part of the conversation.
             var testParams = new Dictionary<string, string>
             {
                 { "DeliveryMode", testCase.DeliveryMode },
-                { "TargetSkill", testCase.TargetSkill }
+                { "TargetSkill", testCase.TargetSkill },
+                { "FileName", fileName },
+                { "TestGuid", testGuid }
             };
 
-            // Execute the first part of the conversation.
             await runner.RunTestAsync(Path.Combine(_testScriptsFolder, testCase.Script), testParams);
 
-            await runner.AssertReplyAsync(activity =>
-            {
-                Assert.Equal(ActivityTypes.Message, activity.Type);
-                Assert.True(activity.Attachments.Count > 0);
+            // Create a new file to upload.
+            await using var stream = File.Create(Directory.GetCurrentDirectory() + $"/FileUpload/{fileName}");
+            await using var writer = new StreamWriter(stream);
+            await writer.WriteLineAsync($"GUID:{testGuid}");
+            writer.Close();
 
-                var card = JsonConvert.DeserializeObject<SigninCard>(JsonConvert.SerializeObject(activity.Attachments.FirstOrDefault().Content));
-                signInUrl = card.Buttons[0].Value?.ToString();
+            // Upload file.
+            await using var file = File.OpenRead(Directory.GetCurrentDirectory() + $"/FileUpload/{fileName}");
+            await runner.UploadAsync(file);
 
-                Assert.False(string.IsNullOrEmpty(signInUrl));
-            });
-
-            // Execute the SignIn.
-            await runner.ClientSignInAsync(signInUrl);
-
-            // Execute the rest of the conversation passing the messageId.
-            await runner.RunTestAsync(Path.Combine(_testScriptsFolder, "SignIn2.json"), testParams);
+            // Execute the rest of the conversation.
+            await runner.RunTestAsync(Path.Combine(_testScriptsFolder, "FileUpload2.json"), testParams);
         }
     }
 }

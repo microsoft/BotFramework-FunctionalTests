@@ -14,7 +14,7 @@ using TranscriptTestRunner.XUnit;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace SkillFunctionalTests.MessageWithAttachment
+namespace SkillFunctionalTests.Skills.MessageWithAttachment
 {
     [Trait("TestCategory", "Attachments")]
     public class MessageWithAttachmentTests : ScriptTestBase

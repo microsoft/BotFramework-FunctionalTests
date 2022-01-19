@@ -24,6 +24,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Libraries\TranscriptTestRunner\TranscriptTestRunner.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="appsettings*.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -45,10 +49,6 @@
     <None Update="**/TestScripts/**/*.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\Libraries\TranscriptTestRunner\TranscriptTestRunner.csproj" />
   </ItemGroup>
 
   <ProjectExtensions>

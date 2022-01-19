@@ -14,7 +14,7 @@ using TranscriptTestRunner.XUnit;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace SkillFunctionalTests.Sso
+namespace SkillFunctionalTests.Skills.Sso
 {
     public class SsoTests : ScriptTestBase
     {

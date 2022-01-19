@@ -14,7 +14,7 @@ using TranscriptTestRunner.XUnit;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace SkillFunctionalTests.SingleTurn
+namespace SkillFunctionalTests.Skills.SingleTurn
 {
     [Trait("TestCategory", "SingleTurn")]
     public class EchoTests : ScriptTestBase

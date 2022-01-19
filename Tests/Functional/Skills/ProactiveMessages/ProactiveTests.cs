@@ -15,7 +15,7 @@ using TranscriptTestRunner.XUnit;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace SkillFunctionalTests.ProactiveMessages
+namespace SkillFunctionalTests.Skills.ProactiveMessages
 {
     [Trait("TestCategory", "ProactiveMessages")]
     public class ProactiveTests : ScriptTestBase

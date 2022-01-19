@@ -5,7 +5,7 @@ using Moq;
 using TranscriptTestRunner;
 using Xunit;
 
-namespace TranscriptTestRunnerTests
+namespace TranscriptTestRunner.Tests
 {
     public class TestRunnerTests
     {
