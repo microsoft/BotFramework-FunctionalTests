@@ -232,7 +232,7 @@ stages:
           appId: $(BFFNSIMPLEHOSTBOTDOTNETAPPID)
           appSecret: $(BFFNSIMPLEHOSTBOTDOTNETAPPSECRET)
           project:
-            directory: 'Bots/DotNet/Consumers/CodeFirst/SimpleHostBot'
+            directory: 'Bots/DotNet/SimpleHostBot'
             name: "SimpleHostBot.csproj"
             netCoreVersion: "3.1.x"
           dependency:
@@ -246,7 +246,7 @@ stages:
           appId: $(BFFNECHOSKILLBOTDOTNETAPPID)
           appSecret: $(BFFNECHOSKILLBOTDOTNETAPPSECRET)
           project: 
-            directory: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot'
+            directory: 'Bots/DotNet/EchoSkillBot'
             name: "EchoSkillBot.csproj"
             netCoreVersion: "3.1.x"
           dependency:
@@ -261,7 +261,7 @@ stages:
           appId: $(BFFNECHOSKILLBOTDOTNETV3APPID)
           appSecret: $(BFFNECHOSKILLBOTDOTNETV3APPSECRET)
           project:
-            directory: 'Bots/DotNet/Skills/CodeFirst/EchoSkillBot-v3'
+            directory: 'Bots/DotNet/EchoSkillBot-v3'
             name: "EchoSkillBot-v3.csproj"
           dependency:
             registry: ${{ parameters.dependenciesRegistryDotNetSkillsV3 }}
@@ -274,7 +274,7 @@ stages:
           appId: $(BFFNWATERFALLHOSTBOTDOTNETAPPID)
           appSecret: $(BFFNWATERFALLHOSTBOTDOTNETAPPSECRET)
           project:
-            directory: 'Bots/DotNet/Consumers/CodeFirst/WaterfallHostBot'
+            directory: 'Bots/DotNet/WaterfallHostBot'
             name: "WaterfallHostBot.csproj"
             netCoreVersion: "3.1.x"
           dependency:
@@ -288,7 +288,7 @@ stages:
           appId: $(BFFNWATERFALLSKILLBOTDOTNETAPPID)
           appSecret: $(BFFNWATERFALLSKILLBOTDOTNETAPPSECRET)
           project: 
-            directory: 'Bots/DotNet/Skills/CodeFirst/WaterfallSkillBot'
+            directory: 'Bots/DotNet/WaterfallSkillBot'
             name: "WaterfallSkillBot.csproj"
             netCoreVersion: "3.1.x"
           dependency:
@@ -303,7 +303,7 @@ stages:
           appId: $(BFFNSIMPLEHOSTBOTCOMPOSERDOTNETAPPID)
           appSecret: $(BFFNSIMPLEHOSTBOTCOMPOSERDOTNETAPPSECRET)
           project: 
-            directory: 'Bots/DotNet/Consumers/Composer/SimpleHostBotComposer'
+            directory: 'Bots/DotNet/SimpleHostBotComposer'
             name: "SimpleHostBotComposer.csproj"
             netCoreVersion: "3.1.x"
           dependency:
@@ -317,7 +317,7 @@ stages:
           appId: $(BFFNECHOSKILLBOTCOMPOSERDOTNETAPPID)
           appSecret: $(BFFNECHOSKILLBOTCOMPOSERDOTNETAPPSECRET)
           project: 
-            directory: 'Bots/DotNet/Skills/Composer/EchoSkillBotComposer'
+            directory: 'Bots/DotNet/EchoSkillBotComposer'
             name: "EchoSkillBotComposer.csproj"
             netCoreVersion: "3.1.x"
           dependency:
@@ -346,7 +346,7 @@ stages:
           appId: $(BFFNSIMPLEHOSTBOTJSAPPID)
           appSecret: $(BFFNSIMPLEHOSTBOTJSAPPSECRET)
           project:
-            directory: 'Bots/JavaScript/Consumers/CodeFirst/SimpleHostBot'
+            directory: 'Bots/JavaScript/SimpleHostBot'
           dependency:
             registry: ${{ parameters.dependenciesRegistryJSHosts }}
             version: ${{ parameters.dependenciesVersionJSHosts }}
@@ -361,7 +361,7 @@ stages:
           appId: $(BFFNECHOSKILLBOTJSAPPID)
           appSecret: $(BFFNECHOSKILLBOTJSAPPSECRET)
           project: 
-            directory: 'Bots/JavaScript/Skills/CodeFirst/EchoSkillBot'
+            directory: 'Bots/JavaScript/EchoSkillBot'
           dependency:
             registry: ${{ parameters.dependenciesRegistryJSSkills }}
             version: ${{ parameters.dependenciesVersionJSSkills }}
@@ -376,7 +376,7 @@ stages:
           appId: $(BFFNECHOSKILLBOTJSV3APPID)
           appSecret: $(BFFNECHOSKILLBOTJSV3APPSECRET)
           project:
-            directory: 'Bots/JavaScript/Skills/CodeFirst/EchoSkillBot-v3'
+            directory: 'Bots/JavaScript/EchoSkillBot-v3'
           dependency:
             registry: ${{ parameters.dependenciesRegistryJSSkillsV3 }}
             version: ${{ parameters.dependenciesVersionJSSkillsV3 }}
@@ -391,7 +391,7 @@ stages:
           appId: $(BFFNWATERFALLHOSTBOTJSAPPID)
           appSecret: $(BFFNWATERFALLHOSTBOTJSAPPSECRET)
           project:
-            directory: 'Bots/JavaScript/Consumers/CodeFirst/WaterfallHostBot'
+            directory: 'Bots/JavaScript/WaterfallHostBot'
           dependency:
             registry: ${{ parameters.dependenciesRegistryJSHosts }}
             version: ${{ parameters.dependenciesVersionJSHosts }}
@@ -406,7 +406,7 @@ stages:
           appId: $(BFFNWATERFALLSKILLBOTJSAPPID)
           appSecret: $(BFFNWATERFALLSKILLBOTJSAPPSECRET)
           project: 
-            directory: 'Bots/JavaScript/Skills/CodeFirst/WaterfallSkillBot'
+            directory: 'Bots/JavaScript/WaterfallSkillBot'
           dependency:
             registry: ${{ parameters.dependenciesRegistryJSSkills }}
             version: ${{ parameters.dependenciesVersionJSSkills }}
@@ -437,7 +437,7 @@ stages:
           appId: $(BFFNSIMPLEHOSTBOTPYTHONAPPID)
           appSecret: $(BFFNSIMPLEHOSTBOTPYTHONAPPSECRET)
           project:
-            directory: 'Bots/Python/Consumers/CodeFirst/SimpleHostBot'
+            directory: 'Bots/Python/SimpleHostBot'
           dependency:
             registry: ${{ parameters.dependenciesRegistryPythonHosts }}
             version: ${{ parameters.dependenciesVersionPythonHosts }}
@@ -452,7 +452,7 @@ stages:
           appId: $(BFFNECHOSKILLBOTPYTHONAPPID)
           appSecret: $(BFFNECHOSKILLBOTPYTHONAPPSECRET)
           project: 
-            directory: 'Bots/Python/Skills/CodeFirst/EchoSkillBot'
+            directory: 'Bots/Python/EchoSkillBot'
           dependency:
             registry: ${{ parameters.dependenciesRegistryPythonSkills }}
             version: ${{ parameters.dependenciesVersionPythonSkills }}
@@ -467,7 +467,7 @@ stages:
           appId: $(BFFNWATERFALLHOSTBOTPYTHONAPPID)
           appSecret: $(BFFNWATERFALLHOSTBOTPYTHONAPPSECRET)
           project:
-            directory: 'Bots/Python/Consumers/CodeFirst/WaterfallHostBot'
+            directory: 'Bots/Python/WaterfallHostBot'
           dependency:
             registry: ${{ parameters.dependenciesRegistryPythonHosts }}
             version: ${{ parameters.dependenciesVersionPythonHosts }}
@@ -482,7 +482,7 @@ stages:
           appId: $(BFFNWATERFALLSKILLBOTPYTHONAPPID)
           appSecret: $(BFFNWATERFALLSKILLBOTPYTHONAPPSECRET)
           project: 
-            directory: 'Bots/Python/Skills/CodeFirst/WaterfallSkillBot'
+            directory: 'Bots/Python/WaterfallSkillBot'
           dependency:
             registry: ${{ parameters.dependenciesRegistryPythonSkills }}
             version: ${{ parameters.dependenciesVersionPythonSkills }}

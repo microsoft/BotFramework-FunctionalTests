@@ -600,7 +600,7 @@ steps:
 
         # Configure steps.
         Write-Host $(AddTimeStamp -text "Configuring the Test Project.");
-        ConfigureTestProjectAppSettings -bots $consumersToConfigure -appSettingsPath "tests/SkillFunctionalTests/appsettings.json";
+        ConfigureTestProjectAppSettings -bots $consumersToConfigure -appSettingsPath "Tests/Functional/appsettings.json";
 
         Write-Host $(AddTimeStamp -text "Configuring the Consumer bots App Settings in Azure.");
         ConfigureConsumers -consumers $consumersToConfigure -skills $skillsToConfigure
