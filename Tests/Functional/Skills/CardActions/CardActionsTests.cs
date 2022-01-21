@@ -8,7 +8,7 @@ using Microsoft.Bot.Connector;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using SkillFunctionalTests.Common;
+using SkillFunctionalTests.Skills.Common;
 using TranscriptTestRunner;
 using TranscriptTestRunner.XUnit;
 using Xunit;
@@ -19,7 +19,7 @@ namespace SkillFunctionalTests.Skills.CardActions
     [Trait("TestCategory", "CardActions")]
     public class CardActionsTests : ScriptTestBase
     {
-        private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/CardActions/TestScripts";
+        private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/Skills/CardActions/TestScripts";
 
         public CardActionsTests(ITestOutputHelper output)
             : base(output)

@@ -8,7 +8,7 @@ using Microsoft.Bot.Connector;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using SkillFunctionalTests.Common;
+using SkillFunctionalTests.Skills.Common;
 using TranscriptTestRunner;
 using TranscriptTestRunner.XUnit;
 using Xunit;
@@ -18,7 +18,7 @@ namespace SkillFunctionalTests.Skills.Sso
 {
     public class SsoTests : ScriptTestBase
     {
-        private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/Sso/TestScripts";
+        private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/Skills/Sso/TestScripts";
 
         public SsoTests(ITestOutputHelper output)
             : base(output)

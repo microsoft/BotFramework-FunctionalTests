@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using SkillFunctionalTests.Common;
+using SkillFunctionalTests.Skills.Common;
 using TranscriptTestRunner.TestClients;
 using Xunit.Abstractions;
 

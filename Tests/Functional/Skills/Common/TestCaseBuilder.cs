@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using TranscriptTestRunner;
 
-namespace SkillFunctionalTests.Common
+namespace SkillFunctionalTests.Skills.Common
 {
     public class TestCaseBuilder
     {

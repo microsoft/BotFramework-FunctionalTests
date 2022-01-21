@@ -8,7 +8,7 @@ using Microsoft.Bot.Connector;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using SkillFunctionalTests.Common;
+using SkillFunctionalTests.Skills.Common;
 using TranscriptTestRunner;
 using TranscriptTestRunner.XUnit;
 using Xunit;
@@ -19,7 +19,7 @@ namespace SkillFunctionalTests.Skills.SingleTurn
     [Trait("TestCategory", "SingleTurn")]
     public class EchoTests : ScriptTestBase
     {
-        private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/SingleTurn/TestScripts";
+        private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/Skills/SingleTurn/TestScripts";
 
         public EchoTests(ITestOutputHelper output)
             : base(output)

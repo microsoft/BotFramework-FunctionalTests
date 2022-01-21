@@ -9,7 +9,7 @@ using Microsoft.Bot.Connector;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using SkillFunctionalTests.Common;
+using SkillFunctionalTests.Skills.Common;
 using TranscriptTestRunner;
 using TranscriptTestRunner.XUnit;
 using Xunit;
@@ -20,7 +20,7 @@ namespace SkillFunctionalTests.Skills.FileUpload
     [Trait("TestCategory", "FileUpload")]
     public class FileUploadTests : ScriptTestBase
     {
-        private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/FileUpload/TestScripts";
+        private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/Skills/FileUpload/TestScripts";
 
         public FileUploadTests(ITestOutputHelper output)
             : base(output)
@@ -94,13 +94,13 @@ namespace SkillFunctionalTests.Skills.FileUpload
             await runner.RunTestAsync(Path.Combine(_testScriptsFolder, testCase.Script), testParams);
 
             // Create a new file to upload.
-            await using var stream = File.Create(Directory.GetCurrentDirectory() + $"/FileUpload/{fileName}");
+            await using var stream = File.Create(Directory.GetCurrentDirectory() + $"/Skills/FileUpload/{fileName}");
             await using var writer = new StreamWriter(stream);
             await writer.WriteLineAsync($"GUID:{testGuid}");
             writer.Close();
 
             // Upload file.
-            await using var file = File.OpenRead(Directory.GetCurrentDirectory() + $"/FileUpload/{fileName}");
+            await using var file = File.OpenRead(Directory.GetCurrentDirectory() + $"/Skills/FileUpload/{fileName}");
             await runner.UploadAsync(file);
 
             // Execute the rest of the conversation.

@@ -8,7 +8,7 @@ using Microsoft.Bot.Connector;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using SkillFunctionalTests.Common;
+using SkillFunctionalTests.Skills.Common;
 using TranscriptTestRunner;
 using TranscriptTestRunner.XUnit;
 using Xunit;
@@ -19,7 +19,7 @@ namespace SkillFunctionalTests.Skills.MessageWithAttachment
     [Trait("TestCategory", "Attachments")]
     public class MessageWithAttachmentTests : ScriptTestBase
     {
-        private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/MessageWithAttachment/TestScripts";
+        private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/Skills/MessageWithAttachment/TestScripts";
 
         public MessageWithAttachmentTests(ITestOutputHelper output)
             : base(output)
