@@ -1718,9 +1718,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"echo-skill-bot@workspace:Skills/CodeFirst/EchoSkillBot":
+"echo-skill-bot@workspace:EchoSkillBot":
   version: 0.0.0-use.local
-  resolution: "echo-skill-bot@workspace:Skills/CodeFirst/EchoSkillBot"
+  resolution: "echo-skill-bot@workspace:EchoSkillBot"
   dependencies:
     botbuilder: ~4.15.0
     botframework-connector: ~4.15.0
@@ -4905,9 +4905,9 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"simple-root-bot@workspace:Consumers/CodeFirst/SimpleHostBot":
+"simple-root-bot@workspace:SimpleHostBot":
   version: 0.0.0-use.local
-  resolution: "simple-root-bot@workspace:Consumers/CodeFirst/SimpleHostBot"
+  resolution: "simple-root-bot@workspace:SimpleHostBot"
   dependencies:
     botbuilder: ~4.15.0
     botbuilder-dialogs: ~4.15.0
@@ -5511,9 +5511,9 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"v3-skill-bot@workspace:Skills/CodeFirst/EchoSkillBot-v3":
+"v3-skill-bot@workspace:EchoSkillBot-v3":
   version: 0.0.0-use.local
-  resolution: "v3-skill-bot@workspace:Skills/CodeFirst/EchoSkillBot-v3"
+  resolution: "v3-skill-bot@workspace:EchoSkillBot-v3"
   dependencies:
     botbuilder: ^3.30.0
     dotenv: ^8.2.0
@@ -5548,9 +5548,9 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"waterfall-host-bot@workspace:Consumers/CodeFirst/WaterfallHostBot":
+"waterfall-host-bot@workspace:WaterfallHostBot":
   version: 0.0.0-use.local
-  resolution: "waterfall-host-bot@workspace:Consumers/CodeFirst/WaterfallHostBot"
+  resolution: "waterfall-host-bot@workspace:WaterfallHostBot"
   dependencies:
     botbuilder: ~4.15.0
     botbuilder-dialogs: ~4.15.0
@@ -5560,9 +5560,9 @@ fsevents@~2.3.2:
   languageName: unknown
   linkType: soft
 
-"waterfall-skill-bot@workspace:Skills/CodeFirst/WaterfallSkillBot":
+"waterfall-skill-bot@workspace:WaterfallSkillBot":
   version: 0.0.0-use.local
-  resolution: "waterfall-skill-bot@workspace:Skills/CodeFirst/WaterfallSkillBot"
+  resolution: "waterfall-skill-bot@workspace:WaterfallSkillBot"
   dependencies:
     botbuilder: ~4.15.0
     botbuilder-dialogs: ~4.15.0
