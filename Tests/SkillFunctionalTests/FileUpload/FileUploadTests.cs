@@ -39,12 +39,10 @@ namespace SkillFunctionalTests.FileUpload
 
             var hostBots = new List<HostBot>
             {
+                HostBot.ComposerHostBotDotNet,
                 HostBot.WaterfallHostBotDotNet,
                 HostBot.WaterfallHostBotJS,
                 HostBot.WaterfallHostBotPython
-
-                // TODO: Enable these when the port to composer is ready
-                //HostBotNames.ComposerHostBotDotNet
             };
 
             var targetSkills = new List<string>
