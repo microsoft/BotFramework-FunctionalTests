@@ -1,0 +1,58 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/BotFramework-Composer/main/Composer/packages/server/schemas/botproject.schema",
+  "name": "WaterfallHostBotComposer",
+  "skills": {
+    "echoSkillBotDotNet": {
+      "manifest": "",
+      "remote": true
+    },
+    "echoSkillBotDotNet21": {
+      "manifest": "",
+      "remote": true
+    },
+    "echoSkillBotDotNetV3": {
+      "manifest": "",
+      "remote": true
+    },
+    "echoSkillBotJs": {
+      "manifest": "",
+      "remote": true
+    },
+    "echoSkillBotJsv3": {
+      "manifest": "",
+      "remote": true
+    },
+    "echoSkillBotPython": {
+      "manifest": "",
+      "remote": true
+    },
+    "teamsSkillBotDotNet": {
+      "manifest": "",
+      "remote": true
+    },
+    "teamsSkillBotJs": {
+      "manifest": "",
+      "remote": true
+    },
+    "teamsSkillBotPython": {
+      "manifest": "",
+      "remote": true
+    },
+    "waterfallSkillBotDotNet": {
+      "manifest": "",
+      "remote": true
+    },
+    "waterfallSkillBotJs": {
+      "manifest": "",
+      "remote": true
+    },
+    "waterfallSkillBotPython": {
+      "manifest": "",
+      "remote": true
+    },
+    "composerSkillBotDotNet": {
+      "manifest": "",
+      "remote": true
+    }
+  }
+}
