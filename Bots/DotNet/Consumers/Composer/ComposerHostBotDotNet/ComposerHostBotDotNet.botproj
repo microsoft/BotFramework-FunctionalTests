@@ -2,56 +2,61 @@
   "$schema": "https://raw.githubusercontent.com/microsoft/BotFramework-Composer/main/Composer/packages/server/schemas/botproject.schema",
   "name": "WaterfallHostBotComposer",
   "skills": {
+	"echoSkillBotComposerDotNet": {
+      "manifest": "http://localhost:35410/manifests/echoskillbotcomposer-manifest.json",
+      "remote": true,
+      "endpointName": "default"
+    },
     "echoSkillBotDotNet": {
-      "manifest": "",
+      "manifest": "http://localhost:35400/manifests/echoSkillBotDotNet-manifest.json",
       "remote": true
     },
     "echoSkillBotDotNet21": {
-      "manifest": "",
+      "manifest": "http://localhost:35405/manifests/echoSkillBotDotNet21-manifest.json",
       "remote": true
     },
     "echoSkillBotDotNetV3": {
-      "manifest": "",
+      "manifest": "http://localhost:35407/manifests/echoSkillBotDotNetV3-manifest.json",
       "remote": true
     },
     "echoSkillBotJs": {
-      "manifest": "",
+      "manifest": "http://localhost:36400/manifests/echoSkillBotJs-manifest.json",
       "remote": true
     },
     "echoSkillBotJsv3": {
-      "manifest": "",
+      "manifest": "http://localhost:36407/manifests/echoSkillBotJsv3-manifest.json",
       "remote": true
     },
     "echoSkillBotPython": {
-      "manifest": "",
+      "manifest": "http://localhost:37400/manifests/echoSkillBotPython-manifest.json",
       "remote": true
     },
     "teamsSkillBotDotNet": {
-      "manifest": "",
+      "manifest": "http://localhost:35430/manifests/teamsSkillBotDotNet-manifest.json",
       "remote": true
     },
     "teamsSkillBotJs": {
-      "manifest": "",
+      "manifest": "http://localhost:36430/manifests/teamsSkillBotJs-manifest.json",
       "remote": true
     },
     "teamsSkillBotPython": {
-      "manifest": "",
+      "manifest": "http://localhost:37430/manifests/teamsSkillBotPython-manifest.json",
       "remote": true
     },
     "waterfallSkillBotDotNet": {
-      "manifest": "",
+      "manifest": "http://localhost:35420/manifests/waterfallSkillBotDotNet-manifest.json",
       "remote": true
     },
     "waterfallSkillBotJs": {
-      "manifest": "",
+      "manifest": "http://localhost:36420/manifests/waterfallSkillBotJs-manifest.json",
       "remote": true
     },
     "waterfallSkillBotPython": {
-      "manifest": "",
+      "manifest": "http://localhost:37420/manifests/waterfallSkillBotPython-manifest.json",
       "remote": true
     },
     "composerSkillBotDotNet": {
-      "manifest": "",
+      "manifest": "http://localhost:35440/manifests/composerSkillBotDotNet-manifest.json",
       "remote": true
     }
   }
