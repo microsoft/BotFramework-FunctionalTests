@@ -7,6 +7,16 @@ name: $(BUILD.BUILDID)
 trigger: none
 pr: none
 
+resources:
+  pipelines:
+  - pipeline: "02ADeploySkillBots"
+    source: "02.A. Deploy skill bots (daily)"
+    trigger:
+      branches:
+        include:
+        - main
+        - releases/*
+
 variables:
   BuildConfiguration: "Debug"
 
@@ -44,7 +54,7 @@ stages:
         steps:
           - checkout: none
           - powershell: |
-              $pipelineGuid = if ([string]::IsNullOrEmpty("$env:DEPLOYBOTRESOURCESGUID")) { "02 - Deploy Bot Resources" } else { "$(DEPLOYBOTRESOURCESGUID)" }
+              $pipelineGuid = if ([string]::IsNullOrEmpty("$env:DEPLOYBOTRESOURCESGUID")) { "02.A. Deploy skill bots (daily)" } else { "$(DEPLOYBOTRESOURCESGUID)" }
               Write-Host "Deploy Bot Resources Pipeline GUID: " $pipelineGuid
               Write-Host "##vso[task.setvariable variable=PipelineGuid]$pipelineGuid"
             displayName: "Set Deploy Bot Resources GUID"

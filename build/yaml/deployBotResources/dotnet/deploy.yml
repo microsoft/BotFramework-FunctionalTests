@@ -109,14 +109,6 @@ stages:
                   $content.BotFrameworkSkills = @()
                   $content | ConvertTo-Json | Set-Content $file
 
-          # Run NuGet restore SkillV3
-          - ${{ if eq(bot.type, 'SkillV3') }}:
-            - task: NuGetCommand@2
-              displayName: "NuGet restore"
-              inputs:
-                restoreSolution: "${{ bot.project.directory }}/${{ bot.project.name }}"
-                restoreDirectory: "$(SOLUTIONDIR)packages"
-
           # Evaluate dependencies source and version
           - template: evaluateDependenciesVariables.yml
             parameters:
@@ -124,19 +116,8 @@ stages:
               registry: "${{ bot.dependency.registry }}"
               version: "${{ bot.dependency.version }}"
 
-          # Start of DotNet Install & Build
-          - ${{ if in(bot.type, 'Host', 'Skill') }}:
-            # Install dependencies
-            - template: installDependencies.yml
-              parameters:
-                project: "${{ bot.project }}"
-                registry: "$(DEPENDENCIESSOURCE)"
-                version: "$(DEPENDENCIESVERSIONNUMBER)"
-                packages:
-                  Microsoft.Bot.Builder.Dialogs
-                  Microsoft.Bot.Builder.Integration.AspNet.Core
-
-            # Build Bot
+          # Build Bot
+          - ${{ if in(bot.type, 'Host', 'Skill', 'ComposerHost', 'ComposerSkill') }}:
             - task: DotNetCoreCLI@2
               displayName: "Build"
               inputs:
@@ -145,23 +126,19 @@ stages:
                 projects: "${{ bot.project.directory }}/${{ bot.project.name }}"
                 arguments: "--output $(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ parameters.buildFolder }}/${{ bot.name }}"
                 modifyOutputPath: false
-
-            # Get BotBuilder package version
-            - task: PowerShell@2
-              displayName: 'Get BotBuilder Version'
-              inputs:
-                targetType: inline
-                workingDirectory: '$(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ bot.project.directory }}'
-                failOnStderr: true
-                script: |
-                  [XML]$data = Get-Content "./${{ bot.project.name }}"
-                  $package = $data.Project.ItemGroup.PackageReference | Where-Object { $_.Include -eq "Microsoft.Bot.Builder.Integration.AspNet.Core" }
-                  Write-Host "##vso[task.setvariable variable=BotBuilderVersionNumber]$($package.version)"
-
-          # End of DotNet Install & Build
+              env:
+                BotBuilderVersion: "$(DEPENDENCIESVERSIONNUMBER)"
+                BotBuilderRegistry: "$(DEPENDENCIESSOURCE)"
 
           # Start DotNet v3 Install & Build
           - ${{ if eq(bot.type, 'SkillV3') }}:
+            # Run NuGet restore SkillV3
+            - task: NuGetCommand@2
+              displayName: "NuGet restore"
+              inputs:
+                restoreSolution: "${{ bot.project.directory }}/${{ bot.project.name }}"
+                restoreDirectory: "$(SOLUTIONDIR)packages"
+
             # Install dependencies
             - template: installDependenciesV3.yml
               parameters:
@@ -191,7 +168,7 @@ stages:
                 script: |
                   $result = @(Get-ChildItem "$(SOLUTIONDIR)packages\Microsoft.Bot.Builder.[0-9]*" -directory | Sort LastWriteTime -Descending)
                   $version = $result[0].Name.Replace("Microsoft.Bot.Builder.", "")
-                  Write-Host "##vso[task.setvariable variable=BotBuilderVersionNumber]$($version)"
+                  Write-Host "##vso[task.setvariable variable=DependenciesVersionNumber]$($version)"
 
             # Zip bot
             - task: ArchiveFiles@2
@@ -205,42 +182,6 @@ stages:
                 verbose: true
           # End of DotNet v3 Install & Build
 
-          # Start of DotNet Composer Install & Build
-          - ${{ if in(bot.type, 'ComposerHost', 'ComposerSkill') }}:
-            # Install dependencies
-            - template: installDependencies.yml
-              parameters:
-                project: "${{ bot.project }}"
-                registry: "$(DEPENDENCIESSOURCE)"
-                version: "$(DEPENDENCIESVERSIONNUMBER)"
-                packages:
-                  Microsoft.Bot.Builder.AI.Luis
-                  Microsoft.Bot.Builder.AI.QnA
-                  Microsoft.Bot.Builder.Dialogs.Adaptive.Runtime
-
-            # Build Bot
-            - task: DotNetCoreCLI@2
-              displayName: "Build"
-              inputs:
-                command: publish
-                publishWebProjects: false
-                projects: "${{ bot.project.directory }}/${{ bot.project.name }}"
-                arguments: "--output $(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ parameters.buildFolder }}/${{ bot.name }}"
-                modifyOutputPath: false
-
-            # Get BotBuilder package version
-            - task: PowerShell@2
-              displayName: 'Get BotBuilder Version'
-              inputs:
-                targetType: inline
-                workingDirectory: '$(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ bot.project.directory }}'
-                failOnStderr: true
-                script: |
-                  [XML]$data = Get-Content "./${{ bot.project.name }}"
-                  $package = $data.Project.ItemGroup.PackageReference | Where-Object { $_.Include -eq "Microsoft.Bot.Builder.Dialogs.Adaptive.Runtime" }
-                  Write-Host "##vso[task.setvariable variable=BotBuilderVersionNumber]$($package.version)"
-          # End of DotNet Composer Install & Build
-
           # Tag BotBuilder package version
           - template: ../common/tagBotBuilderVersion.yml
             parameters:
@@ -248,7 +189,7 @@ stages:
                 botName: "${{ bot.name }}"
               ${{ if ne(bot.displayName, '') }}:
                 botName: "${{ bot.displayName }}"
-              version: "$(BOTBUILDERVERSIONNUMBER)"
+              version: "$(DEPENDENCIESVERSIONNUMBER)"
 
           # Upload zip to artifacts in case we want to debug it
           - task: PublishBuildArtifacts@1

@@ -163,8 +163,6 @@ server.get('/images/*', restify.plugins.serveStatic({ directory: './images', app
 
 // Listen for incoming requests.
 server.post('/api/messages', async (req, res) => {
-  config.configureServerUrl(req);
-
   await adapter.process(req, res, async (context) => {
     // Route to main dialog.
     await bot.run(context);
