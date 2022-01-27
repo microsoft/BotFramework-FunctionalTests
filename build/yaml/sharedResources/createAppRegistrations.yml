@@ -97,6 +97,7 @@ steps:
           @{ appName = "bffnechoskillbotcomposerdotnet"; variables = @{ appId = "BffnEchoSkillBotComposerDotNetAppId"; appSecret = "BffnEchoSkillBotComposerDotNetAppSecret"; objectId = "BffnEchoSkillBotComposerDotNetAppObjectId" }},
           @{ appName = "bffnwaterfallhostbotdotnet"; variables = @{ appId = "BffnWaterfallHostBotDotNetAppId"; appSecret = "BffnWaterfallHostBotDotNetAppSecret"; objectId = "BffnWaterfallHostBotDotNetAppObjectId" }},
           @{ appName = "bffnwaterfallskillbotdotnet"; variables = @{ appId = "BffnWaterfallSkillBotDotNetAppId"; appSecret = "BffnWaterfallSkillBotDotNetAppSecret"; objectId = "BffnWaterfallSkillBotDotNetAppObjectId" }},
+          @{ appName = "bffncomposerskillbotdotnet"; variables = @{ appId = "BffnComposerSkillBotDotNetAppId"; appSecret = "BffnComposerSkillBotDotNetAppSecret"; objectId = "BffnComposerSkillBotDotNetAppObjectId" }},
           @{ appName = "bffnsimplehostbotjs"; variables = @{ appId = "BffnSimpleHostBotJSAppId"; appSecret = "BffnSimpleHostBotJSAppSecret"; objectId = "BffnSimpleHostBotJSAppObjectId" }},
           @{ appName = "bffnechoskillbotjs"; variables = @{ appId = "BffnEchoSkillBotJSAppId"; appSecret = "BffnEchoSkillBotJSAppSecret"; objectId = "BffnEchoSkillBotJSAppObjectId" }},
           @{ appName = "bffnechoskillbotjsv3"; variables = @{ appId = "BffnEchoSkillBotJSV3AppId"; appSecret = "BffnEchoSkillBotJSV3AppSecret"; objectId = "BffnEchoSkillBotJSV3AppObjectId" }},
