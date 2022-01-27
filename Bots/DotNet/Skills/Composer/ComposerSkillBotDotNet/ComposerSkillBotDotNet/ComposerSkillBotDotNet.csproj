@@ -11,6 +11,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Bot.Builder.Community.Components.TokenExchangeSkillHandler" Version="4.13.2" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.8" />
     <PackageReference Include="Microsoft.Bot.Builder.AI.Luis" Version="$(BotBuilderVersion)" />
     <PackageReference Include="Microsoft.Bot.Builder.AI.QnA" Version="$(BotBuilderVersion)" />
