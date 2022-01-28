@@ -19,14 +19,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EchoSkillBotComposer", "Ech
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComposerSkillBotDotNet", "ComposerSkillBotDotNet\ComposerSkillBotDotNet.csproj", "{925E0E3F-194D-4E56-AE78-6FF6D49B7E7E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DownloadFileDialog", "ComposerSkillBotDotNet\DownloadFileDialog\DownloadFileDialog.csproj", "{64115A63-A08D-4032-833A-4F2C49336C81}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9B137F7B-3097-4122-AC2B-FBE4FBFE7FEC}"
 	ProjectSection(SolutionItems) = preProject
 		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
-
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Composer", "Composer", "{675CF63E-2129-4931-A3CE-E41340D8EAE4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CustomActions", "CustomActions", "{E2747F3B-BE5F-495F-89ED-025DE72DE5F3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DownloadFileDialog", "Composer\CustomActions\DownloadFileDialog\DownloadFileDialog.csproj", "{C3796ECA-E952-47EB-B54E-CE0A0B8A7F6C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -65,13 +68,17 @@ Global
 		{925E0E3F-194D-4E56-AE78-6FF6D49B7E7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{925E0E3F-194D-4E56-AE78-6FF6D49B7E7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{925E0E3F-194D-4E56-AE78-6FF6D49B7E7E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{64115A63-A08D-4032-833A-4F2C49336C81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{64115A63-A08D-4032-833A-4F2C49336C81}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{64115A63-A08D-4032-833A-4F2C49336C81}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{64115A63-A08D-4032-833A-4F2C49336C81}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3796ECA-E952-47EB-B54E-CE0A0B8A7F6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3796ECA-E952-47EB-B54E-CE0A0B8A7F6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3796ECA-E952-47EB-B54E-CE0A0B8A7F6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3796ECA-E952-47EB-B54E-CE0A0B8A7F6C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E2747F3B-BE5F-495F-89ED-025DE72DE5F3} = {675CF63E-2129-4931-A3CE-E41340D8EAE4}
+		{C3796ECA-E952-47EB-B54E-CE0A0B8A7F6C} = {E2747F3B-BE5F-495F-89ED-025DE72DE5F3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2B77A921-EEA6-4006-ABD2-159C92F9F874}

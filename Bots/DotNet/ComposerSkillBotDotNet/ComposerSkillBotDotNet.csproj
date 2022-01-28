@@ -18,7 +18,7 @@
     <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive.Runtime" Version="$(BotBuilderVersion)" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DownloadFileDialog\DownloadFileDialog.csproj" />
+    <ProjectReference Include="..\Composer\CustomActions\DownloadFileDialog\DownloadFileDialog.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Content Update="wwwroot\images\architecture-resize.png">
