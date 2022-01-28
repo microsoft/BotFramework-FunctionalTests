@@ -145,6 +145,10 @@
             {
               "name": "ApplicationInsightsAgent_EXTENSION_VERSION",
               "value": "~2"
+            },
+            {
+              "name": "SkillHostEndpoint",
+              "value": "[concat('https://', variables('siteHost'), '/api/skills')]"
             }
           ],
           "webSocketsEnabled": true,

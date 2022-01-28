@@ -50,9 +50,7 @@ namespace SkillFunctionalTests.MessageWithAttachment
                 SkillBotNames.WaterfallSkillBotDotNet,
                 SkillBotNames.WaterfallSkillBotJS,
                 SkillBotNames.WaterfallSkillBotPython,
-
-                // TODO: Enable this when the port to composer is ready
-                //SkillBotNames.ComposerSkillBotDotNet
+                SkillBotNames.ComposerSkillBotDotNet
             };
 
             var scripts = new List<string>

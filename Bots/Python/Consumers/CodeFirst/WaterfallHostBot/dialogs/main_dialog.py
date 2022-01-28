@@ -445,7 +445,7 @@ class MainDialog(ComponentDialog):
         for sso_skill_dialog in [
             skill_dialog
             for skill_dialog in self._dialogs._dialogs.values()  # pylint: disable=W0212
-            if skill_dialog.id.startswith("WATERFALLSKILL")
+            if skill_dialog.id.startswith("WATERFALLSKILL") or skill_dialog.id.startswith("COMPOSERSKILL")
         ]:
             self.add_dialog(
                 SsoDialog(
