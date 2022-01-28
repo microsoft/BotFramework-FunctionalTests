@@ -3,6 +3,7 @@ parameters:
   displayName: Bot's App Registration Ids
   type: object
   default:
+    ComposerSkillBotDotNet: ""
     EchoSkillBotComposerDotNet: ""
     EchoSkillBotDotNet: ""
     EchoSkillBotDotNetV3: ""

@@ -49,10 +49,8 @@ namespace SkillFunctionalTests.FileUpload
             {
                 SkillBotNames.WaterfallSkillBotDotNet,
                 SkillBotNames.WaterfallSkillBotJS,
-                SkillBotNames.WaterfallSkillBotPython
-
-                // TODO: Enable these when the port to composer is ready
-                //SkillBotNames.ComposerSkillBotDotNet
+                SkillBotNames.WaterfallSkillBotPython,
+                SkillBotNames.ComposerSkillBotDotNet
             };
 
             var scripts = new List<string>

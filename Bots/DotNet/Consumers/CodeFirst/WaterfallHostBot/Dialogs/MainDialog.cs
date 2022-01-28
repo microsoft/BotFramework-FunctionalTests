@@ -335,6 +335,11 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs
                 AddDialog(new SsoDialog($"{SsoDialogPrefix}{ssoSkillDialog.Id}", ssoSkillDialog, connectionName));
             }
 
+            foreach (var ssoSkillDialog in Dialogs.GetDialogs().Where(dialog => dialog.Id.StartsWith("ComposerSkillBot")).ToList())
+            {
+                AddDialog(new SsoDialog($"{SsoDialogPrefix}{ssoSkillDialog.Id}", ssoSkillDialog, connectionName));
+            }
+
             connectionName = configuration.GetSection("SsoConnectionNameTeams")?.Value;
             foreach (var ssoSkillDialog in Dialogs.GetDialogs().Where(dialog => dialog.Id.StartsWith("TeamsSkillBot")).ToList())
             {

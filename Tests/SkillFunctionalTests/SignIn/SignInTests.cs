@@ -50,7 +50,7 @@ namespace SkillFunctionalTests.SignIn
                 SkillBotNames.WaterfallSkillBotJS,
                 SkillBotNames.WaterfallSkillBotPython,
                 
-                // TODO: Enable this when the port to composer is ready
+                // TODO: Enable after fixing issue (The test is failing with timeout after the signIn).
                 //SkillBotNames.ComposerSkillBotDotNet
             };
 
