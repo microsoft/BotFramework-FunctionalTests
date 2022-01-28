@@ -1,5 +1,10 @@
-<!-- Contains common properties that apply to projects under the Composer folder -->
 <Project>
+  <PropertyGroup>
+    <BotBuilderVersion Condition="'$(BotBuilderVersion)' == ''">4.15.0</BotBuilderVersion>
+    <BotBuilderVersion Condition="'$(BotBuilderVersion)' != ''">$(BotBuilderVersion)</BotBuilderVersion>
+    <RestoreAdditionalProjectSources>$(BotBuilderRegistry)</RestoreAdditionalProjectSources>
+  </PropertyGroup>
+
   <PropertyGroup>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
@@ -11,5 +16,4 @@
 
   <!-- This ensures that Directory.Build.props in parent folders are merged with this one -->
   <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
-  
 </Project>

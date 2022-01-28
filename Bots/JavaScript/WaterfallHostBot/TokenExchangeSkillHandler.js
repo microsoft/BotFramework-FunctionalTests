@@ -6,6 +6,7 @@ const { ActivityEx, ActivityTypes, CardFactory, SkillHandler, tokenExchangeOpera
 const { JwtTokenValidation } = require('botframework-connector');
 
 const WATERFALL_SKILL_BOT = 'WaterfallSkillBot';
+const COMPOSER_SKILL_BOT = 'ComposerSkillBot';
 
 /**
  * A SkillHandler specialized to support SSO Token exchanges.
@@ -66,7 +67,7 @@ class TokenExchangeSkillHandler extends SkillHandler {
           context.turnState.push('BotIdentity', claimsIdentity);
 
           // We need to know what connection name to use for the token exchange so we figure that out here
-          const connectionName = targetSkill.id.includes(WATERFALL_SKILL_BOT) ? process.env.SsoConnectionName : process.env.SsoConnectionNameTeams;
+          const connectionName = targetSkill.id.includes(WATERFALL_SKILL_BOT) || targetSkill.id.includes(COMPOSER_SKILL_BOT) ? process.env.SsoConnectionName : process.env.SsoConnectionNameTeams;
 
           if (!connectionName) {
             throw new Error('The connection name cannot be null.');

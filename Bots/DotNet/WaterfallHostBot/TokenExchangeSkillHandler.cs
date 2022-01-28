@@ -24,6 +24,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot
     public class TokenExchangeSkillHandler : SkillHandler
     {
         private const string WaterfallSkillBot = "WaterfallSkillBot";
+        private const string ComposerSkillBot = "ComposerSkillBot";
 
         private readonly BotAdapter _adapter;
         private readonly SkillsConfiguration _skillsConfig;
@@ -107,7 +108,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot
                             context.TurnState.Add<IIdentity>("BotIdentity", claimsIdentity);
 
                             // We need to know what connection name to use for the token exchange so we figure that out here
-                            var connectionName = targetSkill.Id.Contains(WaterfallSkillBot) ? _configuration.GetSection("SsoConnectionName").Value : _configuration.GetSection("SsoConnectionNameTeams").Value;
+                            var connectionName = targetSkill.Id.Contains(WaterfallSkillBot) || targetSkill.Id.Contains(ComposerSkillBot) ? _configuration.GetSection("SsoConnectionName").Value : _configuration.GetSection("SsoConnectionNameTeams").Value;
 
                             // AAD token exchange
                             try

@@ -1,0 +1,37 @@
+[import](common.lg)
+
+# SendActivity_9lzNuU()
+[Activity
+    Text = ${SendActivity_9lzNuU_text()}
+]
+
+# SendActivity_9lzNuU_text()
+- Update is not supported in the ${dialog.channel} channel.
+# ConfirmInput_Prompt_hCsQTN()
+[Activity
+    Text = ${ConfirmInput_Prompt_hCsQTN_text()}
+]
+
+# ConfirmInput_Prompt_hCsQTN_text()
+- Do you want to update the activity again?
+# ConfirmInput_UnrecognizedPrompt_hCsQTN()
+[Activity
+    Text = ${ConfirmInput_UnrecognizedPrompt_hCsQTN_text()}
+]
+
+# ConfirmInput_UnrecognizedPrompt_hCsQTN_text()
+- Please select a valid answer
+# SendActivity_sW8Iiw()
+[Activity
+    Text = ${SendActivity_sW8Iiw_text()}
+]
+
+# SendActivity_sW8Iiw_text()
+- Here is the original activity
+# UpdateActivity_Activity_ootCWz()
+[Activity
+    Text = ${UpdateActivity_Activity_ootCWz_text()}
+]
+
+# UpdateActivity_Activity_ootCWz_text()
+- This message has been updated ${user.updateCount} time(s).
