@@ -2,7 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/microsoft/BotFramework-Composer/main/Composer/packages/server/schemas/botproject.schema",
   "name": "ComposerHostBotDotNet",
   "skills": {
-	"echoSkillBotComposerDotNet": {
+    "echoSkillBotComposerDotNet": {
       "manifest": "http://localhost:35410/manifests/echoskillbotcomposer-manifest.json",
       "remote": true,
       "endpointName": "default"
