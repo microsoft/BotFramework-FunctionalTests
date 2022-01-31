@@ -12,11 +12,6 @@
       "remote": true,
       "endpointName": "default"
     },
-    "echoSkillBotDotNet21": {
-      "manifest": "http://localhost:35405/manifests/echoSkillBotDotNet21-manifest.json",
-      "remote": true,
-      "endpointName": "default"
-    },
     "echoSkillBotDotNetV3": {
       "manifest": "http://localhost:35407/manifests/echoSkillBotDotNetV3-manifest.json",
       "remote": true,
