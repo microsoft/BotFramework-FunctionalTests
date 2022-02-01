@@ -333,7 +333,7 @@ stages:
           appId: $(BFFNCOMPOSERSKILLBOTDOTNETAPPID)
           appSecret: $(BFFNCOMPOSERSKILLBOTDOTNETAPPSECRET)
           project: 
-            directory: 'Bots/DotNet/Skills/Composer/ComposerSkillBotDotNet/ComposerSkillBotDotNet'
+            directory: 'Bots/DotNet/ComposerSkillBotDotNet'
             name: "ComposerSkillBotDotNet.csproj"
             netCoreVersion: "3.1.x"
           dependency:
