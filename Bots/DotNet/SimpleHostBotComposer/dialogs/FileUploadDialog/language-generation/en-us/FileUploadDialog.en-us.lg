@@ -6,7 +6,7 @@
 ]
 
 # AttachmentInput_Prompt_JKtU0T_text()
-- Please upload a file to continue
+- Please upload a file to continue.
 # AttachmentInput_UnrecognizedPrompt_JKtU0T()
 [Activity
     Text = ${AttachmentInput_UnrecognizedPrompt_JKtU0T_text()}
