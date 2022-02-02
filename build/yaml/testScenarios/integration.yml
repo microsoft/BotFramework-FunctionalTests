@@ -1,0 +1,70 @@
+parameters:
+  - name: azureSubscription
+    displayName: Azure Service Connection
+    type: string
+
+  - name: cosmosDb
+    displayName: CosmosDb name
+    type: string
+
+  - name: dotnet
+    displayName: DotNet Integration configuration
+    type: object
+    default:
+      registry: ""
+      version: ""
+
+  - name: resourceGroup
+    displayName: Resource Group name
+    type: string
+
+stages:
+  - stage: "Build_DotNet_Integration"
+    displayName: "Build DotNet Integration"
+    dependsOn: []
+    jobs:
+      - job: "Build"
+        displayName: "Build IntegrationTests.csproj"
+        steps:
+          - template: ../common/dotnet/evaluateDependenciesVariables.yml
+            parameters:
+              registry: "${{ parameters.dotnet.registry }}"
+              version: "${{ parameters.dotnet.version }}"
+          - template: ../common/tagBotBuilderVersion.yml
+            parameters:
+              name: "DotNet Integration"
+              version: "$(DEPENDENCIESVERSIONNUMBER)"
+          - template: build.yml
+            parameters:
+              destZip: "Integration/DotNet.zip"
+              env:
+                BotBuilderVersion: "$(DEPENDENCIESVERSIONNUMBER)"
+                BotBuilderRegistry: "$(DEPENDENCIESSOURCE)"
+              project: "Tests/Integration/DotNet/IntegrationTests.csproj"
+
+  - stage: "Test_DotNet_Integration"
+    displayName: "Test DotNet Integration"
+    dependsOn: Build_DotNet_Integration
+    variables:
+      Zip: "Integration/DotNet.zip"
+      Dll: "IntegrationTests.dll"
+      BaseNamespace: "IntegrationTests.Azure"
+    jobs:
+      - job: "Test_Azure_CosmosDb"
+        displayName: "Test Azure.CosmosDb"
+        steps:
+          - checkout: none
+          - template: ../common/getCosmosDbConnectionVariables.yml
+            parameters:
+              azureSubscription: "${{ parameters.azureSubscription }}"
+              resourceName: "${{ parameters.cosmosDb }}"
+              resourceGroup: "${{ parameters.resourceGroup }}"
+          - template: test.yml
+            parameters:
+              dll: "$(DLL)"
+              env:
+                Azure:CosmosDb:ServiceEndpoint: "$(COSMOSDBSERVICEENDPOINT)"
+                Azure:CosmosDb:AuthKey: "$(COSMOSDBAUTHKEY)"
+              namespace: "$(BASENAMESPACE).CosmosDb"
+              trx: "$(BASENAMESPACE).CosmosDb-$(BUILD.BUILDNUMBER).trx"
+              zip: "$(ZIP)"
