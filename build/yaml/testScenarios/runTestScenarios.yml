@@ -7,6 +7,16 @@ name: $(BUILD.BUILDID)
 trigger: none
 pr: none
 
+resources:
+  pipelines:
+  - pipeline: "02ADeploySkillBots"
+    source: "02.A. Deploy skill bots (daily)"
+    trigger:
+      branches:
+        include:
+        - main
+        - releases/*
+
 variables:
   BuildConfiguration: "Debug"
 
@@ -16,6 +26,7 @@ variables:
   # ResourceSuffix: (optional) Alphanumeric suffix to add to the resources' name to avoid collisions.
 
   ## Bots Configuration (Define these variables in Azure)
+  # BffnComposerSkillBotDotNetAppId: (optional) App Id for BffnComposerSkillBotDotNet bot.
   # BffnEchoSkillBotComposerDotNetAppId: (optional) App Id for BffnEchoSkillBotComposerDotNet bot.
   # BffnEchoSkillBotDotNetAppId: (optional) App Id for BffnEchoSkillBotDotNet bot.
   # BffnEchoSkillBotDotNetV3AppId: (optional) App Id for BffnEchoSkillBotDotNetV3 bot.
@@ -44,7 +55,7 @@ stages:
         steps:
           - checkout: none
           - powershell: |
-              $pipelineGuid = if ([string]::IsNullOrEmpty("$env:DEPLOYBOTRESOURCESGUID")) { "02 - Deploy Bot Resources" } else { "$(DEPLOYBOTRESOURCESGUID)" }
+              $pipelineGuid = if ([string]::IsNullOrEmpty("$env:DEPLOYBOTRESOURCESGUID")) { "02.A. Deploy skill bots (daily)" } else { "$(DEPLOYBOTRESOURCESGUID)" }
               Write-Host "Deploy Bot Resources Pipeline GUID: " $pipelineGuid
               Write-Host "##vso[task.setvariable variable=PipelineGuid]$pipelineGuid"
             displayName: "Set Deploy Bot Resources GUID"
@@ -70,6 +81,7 @@ stages:
   - template: runScenario.yml
     parameters:
       appIds:
+        ComposerSkillBotDotNet: "$(BFFNCOMPOSERSKILLBOTDOTNETAPPID)"
         EchoSkillBotComposerDotNet: "$(BFFNECHOSKILLBOTCOMPOSERDOTNETAPPID)"
         EchoSkillBotDotNet: "$(BFFNECHOSKILLBOTDOTNETAPPID)"
         EchoSkillBotDotNetV3: "$(BFFNECHOSKILLBOTDOTNETV3APPID)"

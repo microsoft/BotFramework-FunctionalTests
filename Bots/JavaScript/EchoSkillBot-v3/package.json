@@ -1,0 +1,20 @@
+{
+  "name": "v3-skill-bot",
+  "version": "1.0.0",
+  "description": "An example of a V3 bot that can be used as a skill",
+  "author": "Microsoft Corp.",
+  "license": "MIT",
+  "scripts": {
+    "start": "node ./index.js",
+    "postinstall": "rimraf -rf node_modules/botbuilder/node_modules/chrono-node"
+  },
+  "dependencies": {
+    "botbuilder": "^3.30.0",
+    "chrono-node": "2.2.4",
+    "dotenv": "^8.2.0",
+    "restify": "^8.5.1"
+  },
+  "devDependencies": {
+    "rimraf": "^3.0.2"
+  }
+}

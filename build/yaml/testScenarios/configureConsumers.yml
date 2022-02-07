@@ -3,6 +3,7 @@ parameters:
   displayName: Bot's App Registration Ids
   type: object
   default:
+    ComposerSkillBotDotNet: ""
     EchoSkillBotComposerDotNet: ""
     EchoSkillBotDotNet: ""
     EchoSkillBotDotNetV3: ""
@@ -217,9 +218,7 @@ steps:
 
           return $consumers | Sort-Object { $_.key } | ForEach-Object {
             $consumer = $_;
-            $consumer.appSettings = @(
-              @{name = "SkillHostEndpoint"; value = "https://$($consumer.resourceBotName).azurewebsites.net/api/skills" };
-            );
+            $consumer.appSettings = @();
 
             $orderedSkills = $skills | Sort-Object { $_.key }
 
@@ -324,9 +323,8 @@ steps:
             $output = @();
 
             $conditions = @(
-              "SkillHostEndpoint"
               "BotFrameworkSkills*"
-              "skill_*"
+              "skill_(.*)"
             )
           
             $output += AddTimeStamp -text "$($consumer.key): Looking for existing Azure AppSettings ...";
@@ -351,36 +349,36 @@ steps:
                 $settings.toRemove.Add($appSetting);
               }
             }
-          
+
             if ($settings.toRemove) {
               $output += AddTimeStamp -text "$($consumer.key): Removing unnecessary Azure AppSettings ...";
-              
+
               $config = $settings.toRemove | ForEach-Object { $_.name }
               az webapp config appsettings delete --name $consumer.resourceBotName --resource-group $consumer.resourceGroup --setting-names $config --output none
-              
+
               $output += AddTimeStamp -text "$($consumer.key): Azure AppSettings removed:";
               $output += $config | ForEach-Object { [PSCustomObject]@{ Name = $_ } } | Format-Table -AutoSize;
             }
-          
+
             if ($settings.toSet) {
               $output += AddTimeStamp -text "$($consumer.key): Adding new Azure AppSettings ...";
-              
+
               $config = $settings.toSet | ForEach-Object { "$($_.name)=$($_.value)" }
               az webapp config appsettings set --name $consumer.resourceBotName --resource-group $consumer.resourceGroup --settings $config --output none
-              
+
               $output += AddTimeStamp -text "$($consumer.key): Azure AppSettings added:";
               # Format output
               $output += $settings.toSet | ForEach-Object { 
                 $setting = $_;
-                        
+
                 if ($setting.name.ToLower().EndsWith("appid")) {
                   $setting.value = $setting.value.Substring(0, 3) + "***"
                 }
-                      
+
                 return [PSCustomObject]@{ 
                   Name  = $setting.name
                   Value = $setting.value
-                } 
+                }
               } | Format-Table -AutoSize
             }
 
@@ -488,6 +486,14 @@ steps:
             group         = "Waterfall"
           }
           @{
+            key           = "ComposerSkillBotDotNet"
+            keyComposer   = "composerSkillBotDotNet" 
+            botName       = "bffncomposerskillbotdotnet"
+            appId         = "${{ parameters.appIds.ComposerSkillBotDotNet }}"
+            resourceGroup = $groups.DotNet
+            group         = "Waterfall"
+          }
+          @{
             key           = "EchoSkillBotJS"
             keyComposer   = "echoSkillBotJs" 
             botName       = "bffnechoskillbotjs"
@@ -558,7 +564,8 @@ steps:
             skills    = @(
               "WaterfallSkillBotDotNet",
               "WaterfallSkillBotJS",
-              "WaterfallSkillBotPython"
+              "WaterfallSkillBotPython",
+              "ComposerSkillBotDotNet"
             );
           }
         )
@@ -600,7 +607,7 @@ steps:
 
         # Configure steps.
         Write-Host $(AddTimeStamp -text "Configuring the Test Project.");
-        ConfigureTestProjectAppSettings -bots $consumersToConfigure -appSettingsPath "tests/SkillFunctionalTests/appsettings.json";
+        ConfigureTestProjectAppSettings -bots $consumersToConfigure -appSettingsPath "Tests/Functional/appsettings.json";
 
         Write-Host $(AddTimeStamp -text "Configuring the Consumer bots App Settings in Azure.");
         ConfigureConsumers -consumers $consumersToConfigure -skills $skillsToConfigure
