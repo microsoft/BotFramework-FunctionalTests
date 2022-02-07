@@ -50,7 +50,6 @@ variables:
   # BffnWaterfallSkillBotDotNetAppId: (optional) App Id for BffnWaterfallSkillBotDotNet bot.
   # BffnWaterfallSkillBotJSAppId: (optional) App Id for BffnWaterfallSkillBotJS bot.
   # BffnWaterfallSkillBotPythonAppId: (optional) App Id for BffnWaterfallSkillBotPython bot.
-  # DeployBotResourcesGuid: (optional) Deploy Bot Resources pipeline GUID.
 
   ## DependenciesVersion (Define these variables in Azure) Possible values are: Latest (default), Stable, or specific version numbers.
   # DependenciesVersionDotNet: (optional) Bot Builder dependency version to use for DotNet.
