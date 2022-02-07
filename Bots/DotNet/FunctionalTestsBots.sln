@@ -30,7 +30,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CustomActions", "CustomActi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DownloadFileDialog", "Composer\CustomActions\DownloadFileDialog\DownloadFileDialog.csproj", "{C3796ECA-E952-47EB-B54E-CE0A0B8A7F6C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComposerHostBotDotNet", "Consumers\Composer\ComposerHostBotDotNet\ComposerHostBotDotNet.csproj", "{E3FCDDD4-553D-44BA-8B2F-82BA778261BC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComposerHostBotDotNet", "ComposerHostBotDotNet\ComposerHostBotDotNet.csproj", "{E3FCDDD4-553D-44BA-8B2F-82BA778261BC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
