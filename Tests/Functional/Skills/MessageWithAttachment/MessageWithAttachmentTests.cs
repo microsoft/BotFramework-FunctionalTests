@@ -16,7 +16,6 @@ using Xunit.Abstractions;
 
 namespace SkillFunctionalTests.Skills.MessageWithAttachment
 {
-    [Trait("TestCategory", "Attachments")]
     public class MessageWithAttachmentTests : ScriptTestBase
     {
         private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/Skills/MessageWithAttachment/TestScripts";

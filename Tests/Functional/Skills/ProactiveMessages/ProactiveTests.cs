@@ -17,7 +17,6 @@ using Xunit.Abstractions;
 
 namespace SkillFunctionalTests.Skills.ProactiveMessages
 {
-    [Trait("TestCategory", "ProactiveMessages")]
     public class ProactiveTests : ScriptTestBase
     {
         private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/Skills/ProactiveMessages/TestScripts";

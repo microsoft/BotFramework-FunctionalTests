@@ -17,7 +17,6 @@ using Xunit.Abstractions;
 
 namespace SkillFunctionalTests.Skills.SignIn
 {
-    [Trait("TestCategory", "SignIn")]
     public class SignInTests : ScriptTestBase
     {
         private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/Skills/SignIn/TestScripts";

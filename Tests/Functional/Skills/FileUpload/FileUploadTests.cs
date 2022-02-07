@@ -17,7 +17,6 @@ using Xunit.Abstractions;
 
 namespace SkillFunctionalTests.Skills.FileUpload
 {
-    [Trait("TestCategory", "FileUpload")]
     public class FileUploadTests : ScriptTestBase
     {
         private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/Skills/FileUpload/TestScripts";
