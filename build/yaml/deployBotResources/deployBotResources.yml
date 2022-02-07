@@ -327,7 +327,7 @@ stages:
           dependency:
             registry: ${{ parameters.dependenciesRegistryDotNetSkills }}
             version: ${{ parameters.dependenciesVersionDotNetSkills }}
-        
+
         - name: "bffncomposerhostbotdotnet"
           dependsOn: "Deploy_bffnechoskillbotdotnetv3"
           type: "ComposerHost"
@@ -335,7 +335,7 @@ stages:
           appId: $(BFFNCOMPOSERHOSTBOTDOTNETAPPID)
           appSecret: $(BFFNCOMPOSERHOSTBOTDOTNETAPPSECRET)
           project: 
-            directory: 'Bots/DotNet/Consumers/Composer/ComposerHostBotDotNet'
+            directory: 'Bots/DotNet/ComposerHostBotDotNet'
             name: "ComposerHostBotDotNet.csproj"
             netCoreVersion: "3.1.x"
           dependency:
