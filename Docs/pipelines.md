@@ -97,7 +97,7 @@ Supported Version inputs are:
 | Name                 | Description                                                                                                                 | Example |
 | -------------------- | --------------------------------------------------------------------------------------------------------------------------- | ------- |
 | **LATEST**           | (default) The latest published version available in the chosen registry, it will search for `stable` or `preview` versions. | LATEST  |
-| **STABLE**           | The latest stable published version available in the chosen registry, it only will search for `stable` versions.            | STABLE  |
+| **STABLE**           | The latest stable published version available in the chosen registry, it will only search for `stable` versions.            | STABLE  |
 | **Specific Version** | Version format based on how it's published in the chosen registry.                                                          | 4.13.0  |
 
 ## 03 - Run Test Scenarios Pipeline
@@ -142,7 +142,7 @@ Supported Version inputs are:
 | Name                 | Description                                                                                                                 | Example |
 | -------------------- | --------------------------------------------------------------------------------------------------------------------------- | ------- |
 | **LATEST**           | (default) The latest published version available in the chosen registry, it will search for `stable` or `preview` versions. | LATEST  |
-| **STABLE**           | The latest stable published version available in the chosen registry, it only will search for `stable` versions.            | STABLE  |
+| **STABLE**           | The latest stable published version available in the chosen registry, it will only search for `stable` versions.            | STABLE  |
 | **Specific Version** | Version format based on how it's published in the chosen registry.                                                          | 4.13.0  |
 
 ## 04 - Cleanup Resources Pipeline
