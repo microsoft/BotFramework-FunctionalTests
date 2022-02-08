@@ -50,8 +50,8 @@ stages:
       Dll: "IntegrationTests.dll"
       BaseNamespace: "IntegrationTests.Azure"
     jobs:
-      - job: "Test_Azure_CosmosDb"
-        displayName: "Test Azure.CosmosDb"
+      - job: "Test_Azure_Cosmos"
+        displayName: "Test Azure.Cosmos"
         steps:
           - checkout: none
           - template: ../common/getCosmosDbConnectionVariables.yml
@@ -63,8 +63,8 @@ stages:
             parameters:
               dll: "$(DLL)"
               env:
-                Azure:CosmosDb:ServiceEndpoint: "$(COSMOSDBSERVICEENDPOINT)"
-                Azure:CosmosDb:AuthKey: "$(COSMOSDBAUTHKEY)"
-              namespace: "$(BASENAMESPACE).CosmosDb"
-              trx: "$(BASENAMESPACE).CosmosDb-$(BUILD.BUILDNUMBER).trx"
+                Azure:Cosmos:ServiceEndpoint: "$(COSMOSDBSERVICEENDPOINT)"
+                Azure:Cosmos:AuthKey: "$(COSMOSDBAUTHKEY)"
+              namespace: "$(BASENAMESPACE).Cosmos"
+              trx: "$(BASENAMESPACE).Cosmos-$(BUILD.BUILDNUMBER).trx"
               zip: "$(ZIP)"
