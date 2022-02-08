@@ -6,12 +6,11 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Documents.Client;
-using Microsoft.Extensions.Configuration;
 using Xunit;
 
-namespace IntegrationTests.Azure.CosmosDb
+namespace IntegrationTests.Azure.Cosmos
 {
-    public abstract class CosmosDbBaseFixture : IAsyncLifetime
+    public abstract class CosmosDbBaseFixture : ConfigurationFixture, IAsyncLifetime
     {
         public string AuthKey { get; private set; }
 
@@ -31,14 +30,8 @@ namespace IntegrationTests.Azure.CosmosDb
             DatabaseId = attr?.DatabaseId;
             ContainerId = attr?.ContainerId;
 
-            var configuration = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
-                .AddJsonFile("appsettings.Development.json", true, true)
-                .AddEnvironmentVariables()
-                .Build();
-
-            ServiceEndpoint = configuration["Azure:CosmosDb:ServiceEndpoint"];
-            AuthKey = configuration["Azure:CosmosDb:AuthKey"];
+            ServiceEndpoint = Configuration["Azure:Cosmos:ServiceEndpoint"];
+            AuthKey = Configuration["Azure:Cosmos:AuthKey"];
 
             Client = new CosmosClient(
                 ServiceEndpoint,
@@ -68,7 +61,7 @@ namespace IntegrationTests.Azure.CosmosDb
             }
             catch (Exception ex)
             {
-                const string message = "CosmosDB: Error cleaning up resources.";
+                const string message = "Cosmos: Error cleaning up resources.";
                 throw new Exception(message, ex);
             }
         }
@@ -83,7 +76,7 @@ namespace IntegrationTests.Azure.CosmosDb
             }
             catch (Exception ex)
             {
-                var message = $"CosmosDB: Unable to connect to the '{ServiceEndpoint}' endpoint.";
+                var message = $"Cosmos: Unable to connect to the '{ServiceEndpoint}' endpoint.";
                 throw new Exception(message, ex);
             }
         }

@@ -10,7 +10,7 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Azure;
 using Xunit;
 
-namespace IntegrationTests.Azure.CosmosDb
+namespace IntegrationTests.Azure.Cosmos
 {
     [CosmosDb(databaseId: "CosmosDbStorageTests")]
     public class CosmosDbStorageFixture : CosmosDbBaseFixture, IAsyncLifetime

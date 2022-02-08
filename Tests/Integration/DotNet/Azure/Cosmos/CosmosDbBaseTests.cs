@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Xunit;
 
-namespace IntegrationTests.Azure.CosmosDb
+namespace IntegrationTests.Azure.Cosmos
 {
     public class CosmosDbBaseTests
     {

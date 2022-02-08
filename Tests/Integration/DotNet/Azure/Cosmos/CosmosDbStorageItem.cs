@@ -4,7 +4,7 @@
 using Microsoft.Bot.Builder;
 using Newtonsoft.Json;
 
-namespace IntegrationTests.Azure.CosmosDb
+namespace IntegrationTests.Azure.Cosmos
 {
     public class CosmosDbStorageItem : IStoreItem
     {
