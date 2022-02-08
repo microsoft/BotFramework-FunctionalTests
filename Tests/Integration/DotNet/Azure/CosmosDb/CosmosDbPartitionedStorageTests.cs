@@ -13,8 +13,6 @@ using Xunit;
 
 namespace IntegrationTests.Azure.CosmosDb
 {
-    [Trait("TestCategory", "Storage")]
-    [Trait("TestCategory", "CosmosDb Partitioned")]
     public class CosmosDbPartitionedStorageTests : CosmosDbBaseTests, IClassFixture<CosmosDbPartitionedStorageFixture>
     {
         private readonly CosmosDbPartitionedStorageFixture _cosmosDbFixture;
@@ -96,7 +94,7 @@ namespace IntegrationTests.Azure.CosmosDb
         {
             async Task TestDialogNestAsync(int dialogDepth)
             {
-                Dialog CreateNestedDialog(int depth) => new ComponentDialog(nameof(ComponentDialog))
+                static Dialog CreateNestedDialog(int depth) => new ComponentDialog(nameof(ComponentDialog))
                     .AddDialog(depth > 0
                         ? CreateNestedDialog(depth - 1)
                         : new WaterfallDialog(
