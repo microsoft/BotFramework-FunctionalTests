@@ -27,6 +27,7 @@ variables:
   InternalBotResourceGroupName: $[coalesce(variables['DEPLOYRESOURCEGROUP'], 'BFFN')]
   InternalSharedResourceGroupName: $[coalesce(variables['SHAREDRESOURCEGROUP'], 'BFFN-Shared')]
   InternalVirtualNetworkName: "bffnvirtualnetwork$($env:RESOURCESUFFIX)"
+  InternalStorageName: "bffnstorageaccount$($env:RESOURCESUFFIX)"
 
 pool:
   vmImage: "windows-2019"
@@ -291,6 +292,30 @@ stages:
                 az acr delete --name "$(INTERNALCONTAINERREGISTRYNAME)" --resource-group "$(INTERNALSHAREDRESOURCEGROUPNAME)" --yes
               }
 
+- stage: "Delete_Storage_Account"
+  displayName: "Delete Storage Account"
+  dependsOn: []
+  jobs:
+    - job: "Delete"
+      displayName: "Delete steps"
+      steps:
+        - checkout: none
+        - task: AzureCLI@2
+          displayName: "Delete Storage Account"
+          inputs:
+            azureSubscription: $(AZURESUBSCRIPTION)
+            scriptType: pscore
+            scriptLocation: inlineScript
+            inlineScript: |
+              Write-Host "Looking for $(INTERNALSTORAGENAME)..."
+              $check = az storage account check-name --name "$(INTERNALSTORAGENAME)" | ConvertFrom-Json
+              if ($check.nameAvailable -eq $false) {
+                Write-Host "Deleting $(INTERNALSTORAGENAME)..."
+                az storage account delete --name "$(INTERNALSTORAGENAME)" --resource-group "$(INTERNALSHAREDRESOURCEGROUPNAME)" --yes
+              } else {
+                Write-Host "No pre-existing $(INTERNALSTORAGENAME) resource found."
+              }
+
 - stage: "Delete_Shared_Resource_Group"
   displayName: "Delete Shared Resource Group"
   dependsOn:
@@ -300,6 +325,7 @@ stages:
     - Delete_App_Insights
     - Delete_CosmosDB
     - Delete_Container_Registry
+    - Delete_Storage_Account
   jobs:
     - job: "Delete"
       displayName: "Delete steps"
@@ -309,4 +335,3 @@ stages:
           parameters:
             azureSubscription: $(AZURESUBSCRIPTION)
             name: "$(INTERNALSHAREDRESOURCEGROUPNAME)"
-
