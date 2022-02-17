@@ -32,6 +32,7 @@ variables:
   InternalResourceGroupName: $[coalesce(variables['RESOURCEGROUPNAME'], 'BFFN-Shared')]
   InternalVirtualNetworkName: "bffnvirtualnetwork$($env:RESOURCESUFFIX)"
   InternalKeyVaultObjectId: $[coalesce(variables['KEYVAULTOBJECTID'], '')]
+  InternalStorageName: "bffnstorageaccount$($env:RESOURCESUFFIX)"
 
 stages:
 - stage: Create_Resource_Group
@@ -237,3 +238,18 @@ stages:
           inlineScript: |
             $containerRegistryPricingTier = if ($env:CONTAINERREGISTRYPRICINGTIER) { "skuName=$env:CONTAINERREGISTRYPRICINGTIER" }
             az deployment group create --name "$(INTERNALCONTAINERREGISTRYNAME)" --resource-group "$(INTERNALRESOURCEGROUPNAME)" --template-file build/templates/template-container-registry-resources.json --parameters $containerRegistryPricingTier containerRegistryName="$(INTERNALCONTAINERREGISTRYNAME)"
+
+- stage: Create_StorageAccount
+  displayName: "Create Storage Account"
+  dependsOn: Create_Resource_Group
+  jobs:
+    - job: Deploy_Storage_Account
+      displayName: "Deploy steps"
+      steps:
+      - task: AzureCLI@2
+        displayName: "Deploy Storage Account"
+        inputs:
+          azureSubscription: $(AZURESUBSCRIPTION)
+          scriptType: pscore
+          scriptLocation: inlineScript
+          inlineScript: "az deployment group create --name $(INTERNALSTORAGENAME) --resource-group $(INTERNALRESOURCEGROUPNAME) --template-file build/templates/template-storage-account-resources.json --parameters storageAccountName=$(INTERNALSTORAGENAME)"
