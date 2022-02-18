@@ -32,7 +32,7 @@ variables:
   InternalResourceGroupName: $[coalesce(variables['RESOURCEGROUPNAME'], 'BFFN-Shared')]
   InternalVirtualNetworkName: "bffnvirtualnetwork$($env:RESOURCESUFFIX)"
   InternalKeyVaultObjectId: $[coalesce(variables['KEYVAULTOBJECTID'], '')]
-  InternalStorageName: "bffnstorageaccount$($env:RESOURCESUFFIX)"
+  InternalStorageAccountName: "bffnstorageaccount$($env:RESOURCESUFFIX)"
 
 stages:
 - stage: Create_Resource_Group
@@ -252,4 +252,4 @@ stages:
           azureSubscription: $(AZURESUBSCRIPTION)
           scriptType: pscore
           scriptLocation: inlineScript
-          inlineScript: "az deployment group create --name $(INTERNALSTORAGENAME) --resource-group $(INTERNALRESOURCEGROUPNAME) --template-file build/templates/template-storage-account-resources.json --parameters storageAccountName=$(INTERNALSTORAGENAME)"
+          inlineScript: "az deployment group create --name $(INTERNALSTORAGEACCOUNTNAME) --resource-group $(INTERNALRESOURCEGROUPNAME) --template-file build/templates/template-storage-account-resources.json --parameters storageAccountName=$(INTERNALSTORAGEACCOUNTNAME)"

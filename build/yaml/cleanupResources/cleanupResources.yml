@@ -27,7 +27,7 @@ variables:
   InternalBotResourceGroupName: $[coalesce(variables['DEPLOYRESOURCEGROUP'], 'BFFN')]
   InternalSharedResourceGroupName: $[coalesce(variables['SHAREDRESOURCEGROUP'], 'BFFN-Shared')]
   InternalVirtualNetworkName: "bffnvirtualnetwork$($env:RESOURCESUFFIX)"
-  InternalStorageName: "bffnstorageaccount$($env:RESOURCESUFFIX)"
+  InternalStorageAccountName: "bffnstorageaccount$($env:RESOURCESUFFIX)"
 
 pool:
   vmImage: "windows-2019"
@@ -307,13 +307,13 @@ stages:
             scriptType: pscore
             scriptLocation: inlineScript
             inlineScript: |
-              Write-Host "Looking for $(INTERNALSTORAGENAME)..."
-              $check = az storage account check-name --name "$(INTERNALSTORAGENAME)" | ConvertFrom-Json
+              Write-Host "Looking for $(INTERNALSTORAGEACCOUNTNAME)..."
+              $check = az storage account check-name --name "$(INTERNALSTORAGEACCOUNTNAME)" | ConvertFrom-Json
               if ($check.nameAvailable -eq $false) {
-                Write-Host "Deleting $(INTERNALSTORAGENAME)..."
-                az storage account delete --name "$(INTERNALSTORAGENAME)" --resource-group "$(INTERNALSHAREDRESOURCEGROUPNAME)" --yes
+                Write-Host "Deleting $(INTERNALSTORAGEACCOUNTNAME)..."
+                az storage account delete --name "$(INTERNALSTORAGEACCOUNTNAME)" --resource-group "$(INTERNALSHAREDRESOURCEGROUPNAME)" --yes
               } else {
-                Write-Host "No pre-existing $(INTERNALSTORAGENAME) resource found."
+                Write-Host "No pre-existing $(INTERNALSTORAGEACCOUNTNAME) resource found."
               }
 
 - stage: "Delete_Shared_Resource_Group"
