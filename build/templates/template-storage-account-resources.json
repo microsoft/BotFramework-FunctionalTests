@@ -44,19 +44,6 @@
       },
       "kind": "StorageV2",
       "properties": {}
-    },
-    {
-      "type": "Microsoft.Storage/storageAccounts/queueServices",
-      "apiVersion": "2021-06-01",
-      "name": "[concat(parameters('storageAccountName'), '/default')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
-      ],
-      "properties": {
-        "cors": {
-          "corsRules": []
-        }
-      }
     }
   ],
   "outputs": {
