@@ -3,13 +3,13 @@
 
 using System.Collections.Generic;
 using System.IO;
+using Microsoft.Bot.Builder.Testing.TestRunner.TestClients;
+using Microsoft.Bot.Builder.Tests.Functional.Skills.Common;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using SkillFunctionalTests.Skills.Common;
-using TranscriptTestRunner.TestClients;
 using Xunit.Abstractions;
 
-namespace SkillFunctionalTests
+namespace Microsoft.Bot.Builder.Tests.Functional
 {
     public class ScriptTestBase
     {

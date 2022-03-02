@@ -5,17 +5,17 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.Bot.Builder.Testing.TestRunner;
+using Microsoft.Bot.Builder.Testing.TestRunner.XUnit;
+using Microsoft.Bot.Builder.Tests.Functional.Skills.Common;
 using Microsoft.Bot.Connector;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using SkillFunctionalTests.Skills.Common;
-using TranscriptTestRunner;
-using TranscriptTestRunner.XUnit;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace SkillFunctionalTests.Skills.FileUpload
+namespace Microsoft.Bot.Builder.Tests.Functional.Skills.FileUpload
 {
     [Trait("TestCategory", "FileUpload")]
     public class FileUploadTests : ScriptTestBase

@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FunctionalTests", "Tests\Functional\FunctionalTests.csproj", "{DE0231D9-A9BE-4D4C-A830-7ADCF28EA5D6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Bot.Builder.Tests.Functional", "Tests\Functional\Microsoft.Bot.Builder.Tests.Functional.csproj", "{DE0231D9-A9BE-4D4C-A830-7ADCF28EA5D6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TranscriptTestRunner", "Libraries\TranscriptTestRunner\TranscriptTestRunner.csproj", "{65C3A2E0-FDC5-4132-9980-3BAE230E9F2E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Bot.Builder.Testing.TestRunner", "Libraries\TranscriptTestRunner\Microsoft.Bot.Builder.Testing.TestRunner.csproj", "{65C3A2E0-FDC5-4132-9980-3BAE230E9F2E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BCBFF5A2-F2CD-4F82-BCD1-ED8E7950D82F}"
 	ProjectSection(SolutionItems) = preProject
@@ -14,13 +14,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TranscriptConverter", "Libraries\TranscriptConverter\TranscriptConverter.csproj", "{EF963904-79CB-4222-811A-E24B73E5DC1A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TranscriptConverter", "Libraries\TranscriptConverter\Microsoft.Bot.Builder.Testing.TranscriptConverter.csproj", "{EF963904-79CB-4222-811A-E24B73E5DC1A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{B5E35C94-0880-4AEB-8F3C-940FECA7A8C7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{5A0C68F1-6CA7-43D7-8F01-70A484D8D412}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TranscriptTestRunner.Tests", "Libraries\TranscriptTestRunner.Tests\TranscriptTestRunner.Tests.csproj", "{5CAE9F80-9BD3-480C-8504-552B31B265E0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TranscriptTestRunner.Tests", "Libraries\TranscriptTestRunner.Tests\Microsoft.Bot.Builder.Testing.TestRunner.Tests.csproj", "{5CAE9F80-9BD3-480C-8504-552B31B265E0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Functional", "Functional", "{DDEE53CF-F094-4009-B198-AA656CB7A009}"
 EndProject
