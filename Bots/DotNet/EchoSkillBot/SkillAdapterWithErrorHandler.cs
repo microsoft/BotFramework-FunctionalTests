@@ -2,14 +2,13 @@
 // Licensed under the MIT License.
 
 using System;
-using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Builder.TraceExtensions;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 
-namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot
+namespace Microsoft.Bot.Builder.FunctionalTestsBots.EchoSkillBot
 {
     public class SkillAdapterWithErrorHandler : CloudAdapter
     {
