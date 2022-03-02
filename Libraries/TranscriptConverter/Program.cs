@@ -4,7 +4,7 @@
 using System.CommandLine.Builder;
 using System.CommandLine.Parsing;
 
-namespace TranscriptConverter
+namespace Microsoft.Bot.Builder.Testing.TranscriptConverter
 {
     public class Program
     {
