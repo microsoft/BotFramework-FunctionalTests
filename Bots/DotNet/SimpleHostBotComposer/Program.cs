@@ -1,10 +1,10 @@
-using System;
+﻿using System;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Bot.Builder.Dialogs.Adaptive.Runtime.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 
-namespace SimpleHostBotComposer
+namespace Microsoft.Bot.Builder.FunctionalTestsBots.SimpleHostBotComposer
 {
     public class Program
     {

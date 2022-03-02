@@ -5,7 +5,7 @@ using Microsoft.Bot.Connector.SkillAuthentication;
 using System.Configuration;
 using System.Linq;
 
-namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBotv3.Authentication
+namespace Microsoft.Bot.Builder.FunctionalTestsBots.EchoSkillBotv3.Authentication
 {
     public class CustomSkillAuthenticationConfiguration : AuthenticationConfiguration
     {
