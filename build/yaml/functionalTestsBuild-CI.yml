@@ -24,12 +24,12 @@ steps:
 - task: NuGetCommand@2
   displayName: "NuGet restore"
   inputs:
-    restoreSolution: FunctionalTests.sln
+    restoreSolution: Tests.sln
 
 - task: MSBuild@1
   displayName: "Build"
   inputs:
-    solution: "FunctionalTests.sln"
+    solution: "Tests.sln"
     vsVersion: 16.0
     platform: "${{ parameters.buildPlatform }}"
     configuration: "${{ parameters.buildConfiguration }}"
@@ -38,7 +38,7 @@ steps:
   displayName: 'Run Unit Tests'
   inputs:
     command: test
-    projects: 'Libraries/TranscriptTestRunner.Tests/TranscriptTestRunner.Tests.csproj'
+    projects: 'Libraries/TranscriptTestRunner.Tests/Microsoft.Bot.Builder.Testing.TestRunner.Tests.csproj'
     testRunTitle: 'FunctionalTests-CI-Results-$(BUILD.BUILDNUMBER)'
     arguments: '-v n --configuration ${{ parameters.buildConfiguration }} --no-build --no-restore --collect "Code Coverage" --logger "trx;LogFileName=FunctionalTests-CI-Results-$(BUILD.BUILDNUMBER).trx"'
 
