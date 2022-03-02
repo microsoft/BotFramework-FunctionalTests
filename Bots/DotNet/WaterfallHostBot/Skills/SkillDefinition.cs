@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using Microsoft.Bot.Builder.Skills;
 using Microsoft.Bot.Schema;
 
-namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Skills
+namespace Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallHostBot.Skills
 {
     /// <summary>
     /// Extends <see cref="BotFrameworkSkill"/> and provides methods to return the actions and the begin activity to start a skill.
