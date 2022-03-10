@@ -4,7 +4,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace TranscriptTestRunner
+namespace Microsoft.Bot.Builder.Testing.TestRunner
 {
     /// <summary>
     /// <see cref="TestRunner"/> representation of an activity.
