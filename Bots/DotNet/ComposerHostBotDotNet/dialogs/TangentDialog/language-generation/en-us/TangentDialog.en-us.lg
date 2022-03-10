@@ -1,0 +1,16 @@
+[import](common.lg)
+
+# TextInput_Prompt_6Q2paQ()
+[Activity
+    Text = ${TextInput_Prompt_6Q2paQ_text()}
+]
+
+# TextInput_Prompt_6Q2paQ_text()
+- Tangent step 1 of 2, say something.
+# TextInput_Prompt_NTpixO()
+[Activity
+    Text = ${TextInput_Prompt_NTpixO_text()}
+]
+
+# TextInput_Prompt_NTpixO_text()
+- Tangent step 2 of 2, say something.

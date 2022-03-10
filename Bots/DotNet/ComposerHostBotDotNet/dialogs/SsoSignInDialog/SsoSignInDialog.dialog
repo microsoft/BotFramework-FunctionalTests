@@ -1,0 +1,71 @@
+{
+  "$kind": "Microsoft.AdaptiveDialog",
+  "$designer": {
+    "id": "8EzA5m",
+    "name": "SsoSignInDialog",
+    "comment": ""
+  },
+  "autoEndDialog": true,
+  "defaultResultProperty": "dialog.result",
+  "triggers": [
+    {
+      "$kind": "Microsoft.OnBeginDialog",
+      "$designer": {
+        "name": "BeginDialog",
+        "description": "",
+        "id": "4vxs0q"
+      },
+      "actions": [
+        {
+          "$kind": "Microsoft.OAuthInput",
+          "$designer": {
+            "id": "Mlm8u9"
+          },
+          "timeout": 900000,
+          "property": "user.token",
+          "maxTurnCount": 3,
+          "allowInterruptions": true,
+          "defaultValueResponse": "${OAuthInput_DefaultValueResponse_Mlm8u9()}",
+          "connectionName": "=settings.SsoConnectionName",
+          "text": "Sign in to the host bot using AAD for SSO and connection ${settings.SsoConnectionName}",
+          "title": "Sign In"
+        },
+        {
+          "$kind": "Microsoft.IfCondition",
+          "$designer": {
+            "id": "elvAxZ"
+          },
+          "condition": "=user.token.token != null",
+          "actions": [
+            {
+              "$kind": "Microsoft.SendActivity",
+              "$designer": {
+                "id": "9kZTzY"
+              },
+              "activity": "${SendActivity_9kZTzY()}"
+            }
+          ],
+          "elseActions": [
+            {
+              "$kind": "Microsoft.SendActivity",
+              "$designer": {
+                "id": "CD2CgY"
+              },
+              "activity": "${SendActivity_CD2CgY()}"
+            }
+          ]
+        },
+        {
+          "$kind": "Microsoft.EndDialog",
+          "$designer": {
+            "id": "GrCorU"
+          },
+          "value": "dialog.selectedSkill"
+        }
+      ]
+    }
+  ],
+  "generator": "SsoSignInDialog.lg",
+  "recognizer": "SsoSignInDialog.lu.qna",
+  "id": "SsoSignInDialog"
+}

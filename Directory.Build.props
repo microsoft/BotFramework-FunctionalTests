@@ -1,16 +1,16 @@
 <Project>
-  
+
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
-  
+
   <PropertyGroup>
     <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)BotFramework-FunctionalTests.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <!-- This applies for SDK-style projects only-->
   <Import Project="PackageReferences.props" Condition="'$(UsingMicrosoftNETSdk)' == 'true'"/>
-  
+
   <PropertyGroup>
     <Company>Microsoft</Company>
 
@@ -30,5 +30,10 @@
     <NeutralLanguage>en-US</NeutralLanguage>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
   </PropertyGroup>
-  
+
+  <PropertyGroup>
+    <BotBuilderVersion Condition="'$(BotBuilderVersion)' == ''">4.15.0</BotBuilderVersion>
+    <BotBuilderVersion Condition="'$(BotBuilderVersion)' != ''">$(BotBuilderVersion)</BotBuilderVersion>
+    <RestoreAdditionalProjectSources>$(BotBuilderRegistry)</RestoreAdditionalProjectSources>
+  </PropertyGroup>
 </Project>

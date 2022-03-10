@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EchoSkillBotComposer", "Ech
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComposerSkillBotDotNet", "ComposerSkillBotDotNet\ComposerSkillBotDotNet.csproj", "{925E0E3F-194D-4E56-AE78-6FF6D49B7E7E}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComposerHostBotDotNet", "ComposerHostBotDotNet\ComposerHostBotDotNet.csproj", "{E3FCDDD4-553D-44BA-8B2F-82BA778261BC}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9B137F7B-3097-4122-AC2B-FBE4FBFE7FEC}"
 	ProjectSection(SolutionItems) = preProject
 		Directory.Build.props = Directory.Build.props
@@ -68,6 +70,10 @@ Global
 		{925E0E3F-194D-4E56-AE78-6FF6D49B7E7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{925E0E3F-194D-4E56-AE78-6FF6D49B7E7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{925E0E3F-194D-4E56-AE78-6FF6D49B7E7E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3FCDDD4-553D-44BA-8B2F-82BA778261BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3FCDDD4-553D-44BA-8B2F-82BA778261BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3FCDDD4-553D-44BA-8B2F-82BA778261BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3FCDDD4-553D-44BA-8B2F-82BA778261BC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C3796ECA-E952-47EB-B54E-CE0A0B8A7F6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C3796ECA-E952-47EB-B54E-CE0A0B8A7F6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C3796ECA-E952-47EB-B54E-CE0A0B8A7F6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
