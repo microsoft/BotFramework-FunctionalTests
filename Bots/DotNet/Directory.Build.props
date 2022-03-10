@@ -1,11 +1,5 @@
 <Project>
   <PropertyGroup>
-    <BotBuilderVersion Condition="'$(BotBuilderVersion)' == ''">4.15.0</BotBuilderVersion>
-    <BotBuilderVersion Condition="'$(BotBuilderVersion)' != ''">$(BotBuilderVersion)</BotBuilderVersion>
-    <RestoreAdditionalProjectSources>$(BotBuilderRegistry)</RestoreAdditionalProjectSources>
-  </PropertyGroup>
-
-  <PropertyGroup>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 

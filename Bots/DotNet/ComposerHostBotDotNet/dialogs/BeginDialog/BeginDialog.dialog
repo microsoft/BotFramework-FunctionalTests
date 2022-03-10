@@ -1,0 +1,733 @@
+{
+  "$kind": "Microsoft.AdaptiveDialog",
+  "$designer": {
+    "id": "WMP78d",
+    "name": "MainDialog",
+    "comment": ""
+  },
+  "autoEndDialog": true,
+  "defaultResultProperty": "dialog.result",
+  "triggers": [
+    {
+      "$kind": "Microsoft.OnBeginDialog",
+      "$designer": {
+        "name": "BeginDialog",
+        "description": "",
+        "id": "0eWsik"
+      },
+      "actions": [
+        {
+          "$kind": "Microsoft.IfCondition",
+          "$designer": {
+            "id": "tOIrGL"
+          },
+          "actions": [
+            {
+              "$kind": "Microsoft.ChoiceInput",
+              "$designer": {
+                "id": "UYSxl6"
+              },
+              "defaultLocale": "en-us",
+              "disabled": false,
+              "maxTurnCount": 3,
+              "alwaysPrompt": false,
+              "allowInterruptions": false,
+              "prompt": "${ChoiceInput_Prompt_UYSxl6()}",
+              "unrecognizedPrompt": "${ChoiceInput_UnrecognizedPrompt_UYSxl6()}",
+              "choiceOptions": {
+                "includeNumbers": true,
+                "inlineOrMore": ", or ",
+                "inlineOr": " or ",
+                "inlineSeparator": ", "
+              },
+              "style": "suggestedAction",
+              "choices": [
+                "normal",
+                "expectReplies"
+              ],
+              "property": "dialog.deliveryMode",
+              "recognizerOptions": {
+                "recognizeOrdinals": true,
+                "recognizeNumbers": true
+              },
+              "validations": [],
+              "defaultValue": "normal"
+            }
+          ],
+          "elseActions": [
+            {
+              "$kind": "Microsoft.ChoiceInput",
+              "$designer": {
+                "id": "vv4fal"
+              },
+              "defaultLocale": "en-us",
+              "disabled": false,
+              "maxTurnCount": 3,
+              "alwaysPrompt": false,
+              "allowInterruptions": false,
+              "prompt": "${ChoiceInput_Prompt_vv4fal()}",
+              "unrecognizedPrompt": "${ChoiceInput_UnrecognizedPrompt_vv4fal()}",
+              "choiceOptions": {
+                "includeNumbers": true,
+                "inlineOrMore": ", or ",
+                "inlineOr": " or ",
+                "inlineSeparator": ", "
+              },
+              "style": "suggestedAction",
+              "choices": [
+                "normal",
+                "expectReplies"
+              ],
+              "property": "dialog.deliveryMode",
+              "recognizerOptions": {
+                "recognizeOrdinals": true,
+                "recognizeNumbers": true
+              },
+              "validations": [],
+              "defaultValue": "normal"
+            },
+            {
+              "$kind": "Microsoft.DeleteProperty",
+              "$designer": {
+                "id": "hniAZE"
+              },
+              "property": "dialog.initialMessage"
+            }
+          ],
+          "condition": "=empty(dialog.initialMessage)"
+        },
+        {
+          "$kind": "Microsoft.ChoiceInput",
+          "$designer": {
+            "id": "bGBaUQ",
+            "comment": ""
+          },
+          "defaultLocale": "en-us",
+          "disabled": false,
+          "maxTurnCount": 3,
+          "alwaysPrompt": false,
+          "allowInterruptions": false,
+          "unrecognizedPrompt": "${ChoiceInput_UnrecognizedPrompt_bGBaUQ()}",
+          "invalidPrompt": "",
+          "prompt": "${ChoiceInput_Prompt_bGBaUQ()}",
+          "choiceOptions": {
+            "includeNumbers": true,
+            "inlineOrMore": ", or ",
+            "inlineOr": " or ",
+            "inlineSeparator": ", "
+          },
+          "choices": [
+            "Echo",
+            "Waterfall",
+            "Teams"
+          ],
+          "property": "dialog.skillGroup",
+          "recognizerOptions": {
+            "recognizeOrdinals": true,
+            "recognizeNumbers": true
+          }
+        },
+        {
+          "$kind": "Microsoft.SwitchCondition",
+          "$designer": {
+            "id": "14GlUH"
+          },
+          "cases": [
+            {
+              "value": "Echo",
+              "actions": [
+                {
+                  "$kind": "Microsoft.ChoiceInput",
+                  "$designer": {
+                    "id": "bz0HFw"
+                  },
+                  "defaultLocale": "en-us",
+                  "disabled": false,
+                  "maxTurnCount": 3,
+                  "alwaysPrompt": false,
+                  "allowInterruptions": false,
+                  "unrecognizedPrompt": "${ChoiceInput_UnrecognizedPrompt_bz0HFw()}",
+                  "invalidPrompt": "",
+                  "choiceOptions": {
+                    "includeNumbers": true,
+                    "inlineOrMore": ", or ",
+                    "inlineOr": " or ",
+                    "inlineSeparator": ", "
+                  },
+                  "choices": [
+                    "EchoSkillBotDotNet",
+                    "EchoSkillBotDotNet21",
+                    "EchoSkillBotDotNetV3",
+                    "EchoSkillBotJS",
+                    "EchoSkillBotJSV3",
+                    "EchoSkillBotPython"
+                  ],
+                  "property": "dialog.selectedSkill",
+                  "recognizerOptions": {
+                    "recognizeOrdinals": true,
+                    "recognizeNumbers": true
+                  },
+                  "prompt": "${ChoiceInput_Prompt_bz0HFw()}"
+                },
+                {
+                  "$kind": "Microsoft.IfCondition",
+                  "$designer": {
+                    "id": "lTuWin"
+                  },
+                  "condition": "dialog.deliveryMode == \"expectReplies\" && (dialog.selectedSkill == \"EchoSkillBotDotNetV3\" || dialog.selectedSkill == \"EchoSkillBotJSV3\")",
+                  "actions": [
+                    {
+                      "$kind": "Microsoft.SendActivity",
+                      "$designer": {
+                        "id": "s2Y3dm"
+                      },
+                      "activity": "${SendActivity_s2Y3dm()}"
+                    },
+                    {
+                      "$kind": "Microsoft.ReplaceDialog",
+                      "$designer": {
+                        "id": "rXukLj"
+                      },
+                      "activityProcessed": true,
+                      "dialog": "BeginDialog"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "value": "Waterfall",
+              "actions": [
+                {
+                  "$kind": "Microsoft.ChoiceInput",
+                  "$designer": {
+                    "id": "bz0HFw"
+                  },
+                  "defaultLocale": "en-us",
+                  "disabled": false,
+                  "maxTurnCount": 3,
+                  "alwaysPrompt": false,
+                  "allowInterruptions": false,
+                  "unrecognizedPrompt": "${ChoiceInput_UnrecognizedPrompt_bz0HFw()}",
+                  "invalidPrompt": "",
+                  "choiceOptions": {
+                    "includeNumbers": true,
+                    "inlineOrMore": ", or ",
+                    "inlineOr": " or ",
+                    "inlineSeparator": ", "
+                  },
+                  "choices": [
+                    "WaterfallSkillBotDotNet",
+                    "WaterfallSkillBotJS",
+                    "WaterfallSkillBotPython",
+                    "ComposerSkillBotDotNet"
+                  ],
+                  "property": "dialog.selectedSkill",
+                  "recognizerOptions": {
+                    "recognizeOrdinals": true,
+                    "recognizeNumbers": true
+                  },
+                  "prompt": "${ChoiceInput_Prompt_bz0HFw()}"
+                },
+                {
+                  "$kind": "Microsoft.SetProperty",
+                  "$designer": {
+                    "id": "LLmuOl"
+                  },
+                  "property": "dialogContext._activeSkillProperty",
+                  "value": "=dialog.selectedSkill"
+                },
+                {
+                  "$kind": "Microsoft.ChoiceInput",
+                  "$designer": {
+                    "id": "6CZhXf"
+                  },
+                  "defaultLocale": "en-us",
+                  "disabled": false,
+                  "maxTurnCount": 3,
+                  "alwaysPrompt": false,
+                  "allowInterruptions": false,
+                  "unrecognizedPrompt": "",
+                  "invalidPrompt": "",
+                  "defaultValueResponse": "",
+                  "choiceOptions": {
+                    "includeNumbers": true,
+                    "inlineOrMore": ", or ",
+                    "inlineOr": " or ",
+                    "inlineSeparator": ", "
+                  },
+                  "choices": [
+                    "Cards",
+                    "Proactive",
+                    "Auth",
+                    "MessageWithAttachment",
+                    "Sso",
+                    "FileUpload",
+                    "Echo",
+                    "Delete",
+                    "Update"
+                  ],
+                  "prompt": "${ChoiceInput_Prompt_6CZhXf()}",
+                  "property": "dialog.skillActivity"
+                }
+              ]
+            },
+            {
+              "value": "Teams",
+              "actions": [
+                {
+                  "$kind": "Microsoft.ChoiceInput",
+                  "$designer": {
+                    "id": "s6M1vB"
+                  },
+                  "defaultLocale": "en-us",
+                  "disabled": false,
+                  "maxTurnCount": 3,
+                  "alwaysPrompt": false,
+                  "allowInterruptions": false,
+                  "prompt": "${ChoiceInput_Prompt_s6M1vB()}",
+                  "unrecognizedPrompt": "${ChoiceInput_UnrecognizedPrompt_s6M1vB()}",
+                  "invalidPrompt": "",
+                  "choiceOptions": {
+                    "includeNumbers": true,
+                    "inlineOrMore": ", or ",
+                    "inlineOr": " or ",
+                    "inlineSeparator": ", "
+                  },
+                  "choices": [
+                    "TeamsSkillBotDotNet",
+                    "TeamsSkillBotJS",
+                    "TeamsSkillBotPython"
+                  ],
+                  "property": "dialog.selectedSkill",
+                  "recognizerOptions": {
+                    "recognizeOrdinals": true,
+                    "recognizeNumbers": true
+                  }
+                },
+                {
+                  "$kind": "Microsoft.SetProperty",
+                  "$designer": {
+                    "id": "HpK3l3"
+                  },
+                  "property": "dialogContext._activeSkillProperty",
+                  "value": "=dialog.selectedSkill"
+                },
+                {
+                  "$kind": "Microsoft.ChoiceInput",
+                  "$designer": {
+                    "id": "IU6NEf"
+                  },
+                  "defaultLocale": "en-us",
+                  "disabled": false,
+                  "maxTurnCount": 3,
+                  "alwaysPrompt": false,
+                  "allowInterruptions": false,
+                  "prompt": "${ChoiceInput_Prompt_IU6NEf()}",
+                  "unrecognizedPrompt": "",
+                  "invalidPrompt": "",
+                  "choiceOptions": {
+                    "includeNumbers": true,
+                    "inlineOrMore": ", or ",
+                    "inlineOr": " or ",
+                    "inlineSeparator": ", "
+                  },
+                  "choices": [
+                    "TeamsTaskModule",
+                    "TeamsCardAction",
+                    "TeamsConversation",
+                    "Cards",
+                    "Proactive",
+                    "Attachment",
+                    "Auth",
+                    "Sso",
+                    "Echo",
+                    "FileUpload",
+                    "Delete",
+                    "Update"
+                  ],
+                  "property": "dialog.skillActivity",
+                  "recognizerOptions": {
+                    "recognizeOrdinals": true
+                  }
+                }
+              ]
+            }
+          ],
+          "condition": "dialog.skillGroup"
+        },
+        {
+          "$kind": "Microsoft.IfCondition",
+          "$designer": {
+            "id": "Ku9r7B"
+          },
+          "condition": "dialog.skillActivity == \"Sso\"",
+          "actions": [
+            {
+              "$kind": "Microsoft.BeginDialog",
+              "$designer": {
+                "id": "mYIYdG"
+              },
+              "activityProcessed": true,
+              "dialog": "SsoDialog",
+              "options": "={selectedSkill:dialog.selectedSkill}"
+            },
+            {
+              "$kind": "Microsoft.SendActivity",
+              "$designer": {
+                "id": "hxrWDN"
+              },
+              "activity": "${SendActivity_hxrWDN()}"
+            },
+            {
+              "$kind": "Microsoft.RepeatDialog",
+              "$designer": {
+                "id": "tojAr8"
+              },
+              "activityProcessed": true
+            }
+          ]
+        },
+        {
+          "$kind": "Microsoft.SetProperty",
+          "$designer": {
+            "id": "AiUc4h"
+          },
+          "property": "user.activeSkillProperty",
+          "value": "dialog.selectedSkill"
+        },
+        {
+          "$kind": "Microsoft.SwitchCondition",
+          "$designer": {
+            "id": "EAjBkM"
+          },
+          "condition": "dialog.selectedSkill",
+          "cases": [
+            {
+              "value": "EchoSkillBotDotNet",
+              "actions": [
+                {
+                  "$kind": "Microsoft.BeginSkill",
+                  "$designer": {
+                    "id": "JTQiNu"
+                  },
+                  "activityProcessed": true,
+                  "botId": "=settings.MicrosoftAppId",
+                  "skillHostEndpoint": "=settings.skillHostEndpoint",
+                  "connectionName": "=settings.connectionName",
+                  "allowInterruptions": true,
+                  "skillEndpoint": "=settings.skill['echoSkillBotDotNet'].endpointUrl",
+                  "skillAppId": "=settings.skill['echoSkillBotDotNet'].msAppId",
+                  "activity": "${BeginSkill_Activity_JTQiNu()}"
+                }
+              ]
+            },
+            {
+              "value": "EchoSkillBotDotNet21",
+              "actions": [
+                {
+                  "$kind": "Microsoft.BeginSkill",
+                  "$designer": {
+                    "id": "onxlr1"
+                  },
+                  "activityProcessed": true,
+                  "botId": "=settings.MicrosoftAppId",
+                  "skillHostEndpoint": "=settings.skillHostEndpoint",
+                  "connectionName": "=settings.connectionName",
+                  "allowInterruptions": true,
+                  "skillEndpoint": "=settings.skill['echoSkillBotDotNet21'].endpointUrl",
+                  "skillAppId": "=settings.skill['echoSkillBotDotNet21'].msAppId",
+                  "activity": "${BeginSkill_Activity_onxlr1()}"
+                }
+              ]
+            },
+            {
+              "value": "EchoSkillBotDotNetV3",
+              "actions": [
+                {
+                  "$kind": "Microsoft.BeginSkill",
+                  "$designer": {
+                    "id": "3Re00E"
+                  },
+                  "activityProcessed": true,
+                  "botId": "=settings.MicrosoftAppId",
+                  "skillHostEndpoint": "=settings.skillHostEndpoint",
+                  "connectionName": "=settings.connectionName",
+                  "allowInterruptions": true,
+                  "skillEndpoint": "=settings.skill['echoSkillBotDotNetV3'].endpointUrl",
+                  "skillAppId": "=settings.skill['echoSkillBotDotNetV3'].msAppId",
+                  "activity": "${BeginSkill_Activity_3Re00E()}"
+                }
+              ]
+            },
+            {
+              "value": "EchoSkillBotJS",
+              "actions": [
+                {
+                  "$kind": "Microsoft.BeginSkill",
+                  "$designer": {
+                    "id": "HGIdXR"
+                  },
+                  "activityProcessed": true,
+                  "botId": "=settings.MicrosoftAppId",
+                  "skillHostEndpoint": "=settings.skillHostEndpoint",
+                  "connectionName": "=settings.connectionName",
+                  "allowInterruptions": true,
+                  "skillEndpoint": "=settings.skill['echoSkillBotJs'].endpointUrl",
+                  "skillAppId": "=settings.skill['echoSkillBotJs'].msAppId",
+                  "activity": "${BeginSkill_Activity_HGIdXR()}"
+                }
+              ]
+            },
+            {
+              "value": "EchoSkillBotJSV3",
+              "actions": [
+                {
+                  "$kind": "Microsoft.BeginSkill",
+                  "$designer": {
+                    "id": "uVoFid"
+                  },
+                  "activityProcessed": true,
+                  "botId": "=settings.MicrosoftAppId",
+                  "skillHostEndpoint": "=settings.skillHostEndpoint",
+                  "connectionName": "=settings.connectionName",
+                  "allowInterruptions": true,
+                  "skillEndpoint": "=settings.skill['echoSkillBotJsv3'].endpointUrl",
+                  "skillAppId": "=settings.skill['echoSkillBotJsv3'].msAppId",
+                  "activity": "${BeginSkill_Activity_uVoFid()}"
+                }
+              ]
+            },
+            {
+              "value": "EchoSkillBotPython",
+              "actions": [
+                {
+                  "$kind": "Microsoft.BeginSkill",
+                  "$designer": {
+                    "id": "uDdZsE"
+                  },
+                  "activityProcessed": true,
+                  "botId": "=settings.MicrosoftAppId",
+                  "skillHostEndpoint": "=settings.skillHostEndpoint",
+                  "connectionName": "=settings.connectionName",
+                  "allowInterruptions": true,
+                  "skillEndpoint": "=settings.skill['echoSkillBotPython'].endpointUrl",
+                  "skillAppId": "=settings.skill['echoSkillBotPython'].msAppId",
+                  "activity": "${BeginSkill_Activity_uDdZsE()}"
+                }
+              ]
+            },
+            {
+              "value": "WaterfallSkillBotDotNet",
+              "actions": [
+                {
+                  "$kind": "Microsoft.BeginSkill",
+                  "$designer": {
+                    "id": "7dUPiO"
+                  },
+                  "activityProcessed": true,
+                  "botId": "=settings.MicrosoftAppId",
+                  "skillHostEndpoint": "=settings.skillHostEndpoint",
+                  "connectionName": "=settings.connectionName",
+                  "allowInterruptions": true,
+                  "skillEndpoint": "=settings.skill['waterfallSkillBotDotNet'].endpointUrl",
+                  "skillAppId": "=settings.skill['waterfallSkillBotDotNet'].msAppId",
+                  "activity": "${BeginSkill_Activity_7dUPiO()}"
+                }
+              ]
+            },
+            {
+              "value": "WaterfallSkillBotJS",
+              "actions": [
+                {
+                  "$kind": "Microsoft.BeginSkill",
+                  "$designer": {
+                    "id": "Mo7LPU"
+                  },
+                  "activityProcessed": true,
+                  "botId": "=settings.MicrosoftAppId",
+                  "skillHostEndpoint": "=settings.skillHostEndpoint",
+                  "connectionName": "=settings.connectionName",
+                  "allowInterruptions": true,
+                  "skillEndpoint": "=settings.skill['waterfallSkillBotJs'].endpointUrl",
+                  "skillAppId": "=settings.skill['waterfallSkillBotJs'].msAppId",
+                  "activity": "${BeginSkill_Activity_Mo7LPU()}"
+                }
+              ]
+            },
+            {
+              "value": "WaterfallSkillBotPython",
+              "actions": [
+                {
+                  "$kind": "Microsoft.BeginSkill",
+                  "$designer": {
+                    "id": "wANrC6"
+                  },
+                  "activityProcessed": true,
+                  "botId": "=settings.MicrosoftAppId",
+                  "skillHostEndpoint": "=settings.skillHostEndpoint",
+                  "connectionName": "=settings.connectionName",
+                  "allowInterruptions": true,
+                  "skillEndpoint": "=settings.skill['waterfallSkillBotPython'].endpointUrl",
+                  "skillAppId": "=settings.skill['waterfallSkillBotPython'].msAppId",
+                  "activity": "${BeginSkill_Activity_wANrC6()}"
+                }
+              ]
+            },
+            {
+              "value": "TeamsSkillBotDotNet",
+              "actions": [
+                {
+                  "$kind": "Microsoft.BeginSkill",
+                  "$designer": {
+                    "id": "CWZ93Z"
+                  },
+                  "activityProcessed": true,
+                  "botId": "=settings.MicrosoftAppId",
+                  "skillHostEndpoint": "=settings.skillHostEndpoint",
+                  "connectionName": "=settings.connectionName",
+                  "allowInterruptions": true,
+                  "skillEndpoint": "=settings.skill['teamsSkillBotDotNet'].endpointUrl",
+                  "skillAppId": "=settings.skill['teamsSkillBotDotNet'].msAppId",
+                  "activity": "${BeginSkill_Activity_CWZ93Z()}"
+                }
+              ]
+            },
+            {
+              "value": "TeamsSkillBotJS",
+              "actions": [
+                {
+                  "$kind": "Microsoft.BeginSkill",
+                  "$designer": {
+                    "id": "lXz5s4"
+                  },
+                  "activityProcessed": true,
+                  "botId": "=settings.MicrosoftAppId",
+                  "skillHostEndpoint": "=settings.skillHostEndpoint",
+                  "connectionName": "=settings.connectionName",
+                  "allowInterruptions": true,
+                  "skillEndpoint": "=settings.skill['teamsSkillBotJs'].endpointUrl",
+                  "skillAppId": "=settings.skill['teamsSkillBotJs'].msAppId",
+                  "activity": "${BeginSkill_Activity_lXz5s4()}"
+                }
+              ]
+            },
+            {
+              "value": "TeamsSkillBotPython",
+              "actions": [
+                {
+                  "$kind": "Microsoft.BeginSkill",
+                  "$designer": {
+                    "id": "yEraYF"
+                  },
+                  "activityProcessed": true,
+                  "botId": "=settings.MicrosoftAppId",
+                  "skillHostEndpoint": "=settings.skillHostEndpoint",
+                  "connectionName": "=settings.connectionName",
+                  "allowInterruptions": true,
+                  "skillEndpoint": "=settings.skill['waterfallSkillBotPython'].endpointUrl",
+                  "skillAppId": "=settings.skill['waterfallSkillBotPython'].msAppId",
+                  "activity": "${BeginSkill_Activity_yEraYF()}"
+                }
+              ]
+            },
+            {
+              "value": "ComposerSkillBotDotNet",
+              "actions": [
+                {
+                  "$kind": "Microsoft.BeginSkill",
+                  "$designer": {
+                    "id": "H67YQK"
+                  },
+                  "activityProcessed": true,
+                  "botId": "=settings.MicrosoftAppId",
+                  "skillHostEndpoint": "=settings.skillHostEndpoint",
+                  "connectionName": "=settings.connectionName",
+                  "allowInterruptions": true,
+                  "skillEndpoint": "=settings.skill['composerSkillBotDotNet'].endpointUrl",
+                  "skillAppId": "=settings.skill['composerSkillBotDotNet'].msAppId",
+                  "activity": "${BeginSkill_Activity_H67YQK()}"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "$kind": "Microsoft.RepeatDialog",
+          "$designer": {
+            "id": "Y327G2"
+          },
+          "activityProcessed": true,
+          "options": {
+            "initialMessage": "Done with \"${dialog.selectedSkill}\". \n\n What delivery mode would you like to use?"
+          }
+        }
+      ]
+    },
+    {
+      "$kind": "Microsoft.OnMessageActivity",
+      "$designer": {
+        "id": "yC1EwY",
+        "name": "Message received (Message received activity)"
+      },
+      "actions": [
+        {
+          "$kind": "Microsoft.SwitchCondition",
+          "$designer": {
+            "id": "MEYmPs"
+          },
+          "condition": "turn.activity.text",
+          "cases": [
+            {
+              "value": "abort",
+              "actions": [
+                {
+                  "$kind": "Microsoft.DeleteProperty",
+                  "$designer": {
+                    "id": "QNqnCh"
+                  },
+                  "property": "user.activeSkillProperty"
+                },
+                {
+                  "$kind": "Microsoft.SetProperty",
+                  "$designer": {
+                    "id": "Q57OQX"
+                  },
+                  "property": "user.welcomeMessage",
+                  "value": true
+                },
+                {
+                  "$kind": "Microsoft.RepeatDialog",
+                  "$designer": {
+                    "id": "73BYhF"
+                  },
+                  "activityProcessed": true,
+                  "options": {
+                    "initialMessage": "Canceled! \n\n What delivery mode would you like to use?"
+                  }
+                }
+              ]
+            },
+            {
+              "value": "tangent",
+              "actions": [
+                {
+                  "$kind": "Microsoft.BeginDialog",
+                  "$designer": {
+                    "id": "HXNmfM"
+                  },
+                  "activityProcessed": true,
+                  "dialog": "TangentDialog"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "condition": "=user.activeSkillProperty != null && turn.activity.type == \"message\" && (turn.activity.text == \"abort\" || turn.activity.text == \"tangent\")"
+    }
+  ],
+  "generator": "BeginDialog.lg",
+  "recognizer": "BeginDialog.lu.qna",
+  "id": "BeginDialog"
+}
