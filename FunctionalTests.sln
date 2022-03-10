@@ -26,6 +26,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Functional", "Functional", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Integration", "Integration", "{9027483A-C2FD-48FF-922A-9050ED490B03}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationTests", "Tests\Integration\DotNet\IntegrationTests.csproj", "{BF885B2E-942C-43F3-BECA-64EFBB0598F4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,6 +50,10 @@ Global
 		{5CAE9F80-9BD3-480C-8504-552B31B265E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5CAE9F80-9BD3-480C-8504-552B31B265E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5CAE9F80-9BD3-480C-8504-552B31B265E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF885B2E-942C-43F3-BECA-64EFBB0598F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF885B2E-942C-43F3-BECA-64EFBB0598F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF885B2E-942C-43F3-BECA-64EFBB0598F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF885B2E-942C-43F3-BECA-64EFBB0598F4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -59,6 +65,7 @@ Global
 		{5CAE9F80-9BD3-480C-8504-552B31B265E0} = {B5E35C94-0880-4AEB-8F3C-940FECA7A8C7}
 		{DDEE53CF-F094-4009-B198-AA656CB7A009} = {5A0C68F1-6CA7-43D7-8F01-70A484D8D412}
 		{9027483A-C2FD-48FF-922A-9050ED490B03} = {5A0C68F1-6CA7-43D7-8F01-70A484D8D412}
+		{BF885B2E-942C-43F3-BECA-64EFBB0598F4} = {9027483A-C2FD-48FF-922A-9050ED490B03}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CF79F565-B676-4679-83A1-DDE5CB729723}
