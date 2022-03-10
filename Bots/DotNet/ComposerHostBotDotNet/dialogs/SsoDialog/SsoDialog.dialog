@@ -1,0 +1,243 @@
+{
+  "$kind": "Microsoft.AdaptiveDialog",
+  "$designer": {
+    "id": "EDcvkz",
+    "name": "SsoDialog",
+    "comment": ""
+  },
+  "autoEndDialog": true,
+  "defaultResultProperty": "dialog.result",
+  "triggers": [
+    {
+      "$kind": "Microsoft.OnBeginDialog",
+      "$designer": {
+        "name": "BeginDialog",
+        "description": "",
+        "id": "ZpG8to"
+      },
+      "actions": [
+        {
+          "$kind": "Microsoft.IfCondition",
+          "$designer": {
+            "id": "6nE0Cp"
+          },
+          "condition": "user.token == null",
+          "actions": [
+            {
+              "$kind": "Microsoft.ChoiceInput",
+              "$designer": {
+                "id": "GGvInh"
+              },
+              "defaultLocale": "en-us",
+              "disabled": false,
+              "maxTurnCount": 3,
+              "alwaysPrompt": false,
+              "allowInterruptions": false,
+              "prompt": "${ChoiceInput_Prompt_GGvInh()}",
+              "unrecognizedPrompt": "${ChoiceInput_UnrecognizedPrompt_GGvInh()}",
+              "invalidPrompt": "",
+              "choiceOptions": {
+                "includeNumbers": true,
+                "inlineOrMore": ", or ",
+                "inlineOr": " or ",
+                "inlineSeparator": ", "
+              },
+              "choices": [
+                "Login",
+                "Call Skill (without SSO)",
+                "Back"
+              ],
+              "property": "dialog.selectedAction",
+              "recognizerOptions": {
+                "recognizeOrdinals": true,
+                "recognizeNumbers": true
+              }
+            }
+          ],
+          "elseActions": [
+            {
+              "$kind": "Microsoft.ChoiceInput",
+              "$designer": {
+                "id": "IhCNP7"
+              },
+              "defaultLocale": "en-us",
+              "disabled": false,
+              "maxTurnCount": 3,
+              "alwaysPrompt": false,
+              "allowInterruptions": false,
+              "prompt": "${ChoiceInput_Prompt_IhCNP7()}",
+              "unrecognizedPrompt": "${ChoiceInput_UnrecognizedPrompt_IhCNP7()}",
+              "invalidPrompt": "",
+              "choiceOptions": {
+                "includeNumbers": true,
+                "inlineOrMore": ", or ",
+                "inlineOr": " or "
+              },
+              "choices": [
+                "Logout",
+                "Show token",
+                "Call Skill (with SSO)",
+                "Back"
+              ],
+              "property": "dialog.selectedAction",
+              "recognizerOptions": {
+                "recognizeOrdinals": true,
+                "recognizeNumbers": true
+              }
+            }
+          ]
+        },
+        {
+          "$kind": "Microsoft.SwitchCondition",
+          "$designer": {
+            "id": "Kl4aPr"
+          },
+          "condition": "dialog.selectedAction",
+          "cases": [
+            {
+              "value": "Login",
+              "actions": [
+                {
+                  "$kind": "Microsoft.BeginDialog",
+                  "$designer": {
+                    "id": "JfCLm2"
+                  },
+                  "activityProcessed": true,
+                  "dialog": "SsoSignInDialog",
+                  "options": "={selectedSkill:dialog.selectedSkill}",
+                  "resultProperty": "dialog.selectedAction"
+                }
+              ]
+            },
+            {
+              "value": "Logout",
+              "actions": [
+                {
+                  "$kind": "Microsoft.SignOutUser",
+                  "$designer": {
+                    "id": "noKcHw"
+                  },
+                  "userId": "=user.id",
+                  "connectionName": "=settings.SsoConnectionName"
+                },
+                {
+                  "$kind": "Microsoft.DeleteProperty",
+                  "$designer": {
+                    "id": "m1AfRS"
+                  },
+                  "property": "user.token"
+                },
+                {
+                  "$kind": "Microsoft.SendActivity",
+                  "$designer": {
+                    "id": "QdUNO8"
+                  },
+                  "activity": "${SendActivity_QdUNO8()}"
+                }
+              ]
+            },
+            {
+              "value": "Show token",
+              "actions": [
+                {
+                  "$kind": "Microsoft.IfCondition",
+                  "$designer": {
+                    "id": "GHNviq"
+                  },
+                  "condition": "user.token == null",
+                  "actions": [
+                    {
+                      "$kind": "Microsoft.SendActivity",
+                      "$designer": {
+                        "id": "fEp1Uf"
+                      },
+                      "activity": "${SendActivity_fEp1Uf()}"
+                    }
+                  ],
+                  "elseActions": [
+                    {
+                      "$kind": "Microsoft.SendActivity",
+                      "$designer": {
+                        "id": "XHYEM8"
+                      },
+                      "activity": "${SendActivity_XHYEM8()}"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "value": "Call Skill (with SSO)",
+              "actions": [
+                {
+                  "$kind": "Microsoft.BeginSkill",
+                  "$designer": {
+                    "id": "igBBnQ"
+                  },
+                  "activityProcessed": true,
+                  "botId": "=settings.MicrosoftAppId",
+                  "skillHostEndpoint": "=settings.skillHostEndpoint",
+                  "connectionName": "=settings.connectionName",
+                  "allowInterruptions": false,
+                  "skillEndpoint": "${settings.skill[dialog.selectedSkill].endpointUrl}",
+                  "skillAppId": "${settings.skill[dialog.selectedSkill].msAppId}",
+                  "activity": "${BeginSkill_Activity_igBBnQ()}"
+                }
+              ]
+            },
+            {
+              "value": "Call Skill (without SSO)",
+              "actions": [
+                {
+                  "$kind": "Microsoft.BeginSkill",
+                  "$designer": {
+                    "id": "LwActw"
+                  },
+                  "activityProcessed": true,
+                  "botId": "=settings.MicrosoftAppId",
+                  "skillHostEndpoint": "=settings.skillHostEndpoint",
+                  "connectionName": "=settings.connectionName",
+                  "allowInterruptions": false,
+                  "skillEndpoint": "${settings.skill[dialog.selectedSkill].endpointUrl}",
+                  "skillAppId": "${settings.skill[dialog.selectedSkill].msAppId}",
+                  "activity": "${BeginSkill_Activity_LwActw()}"
+                }
+              ]
+            },
+            {
+              "value": "Back",
+              "actions": [
+                {
+                  "$kind": "Microsoft.EndDialog",
+                  "$designer": {
+                    "id": "YjBa5g"
+                  }
+                }
+              ]
+            }
+          ],
+          "default": [
+            {
+              "$kind": "Microsoft.ThrowException",
+              "$designer": {
+                "id": "YXtopj"
+              },
+              "errorValue": "=\"Unrecognized action: ${dialog.selectedAction}\""
+            }
+          ]
+        },
+        {
+          "$kind": "Microsoft.RepeatDialog",
+          "$designer": {
+            "id": "IXOq1P"
+          },
+          "activityProcessed": true,
+          "options": "={selectedSkill:dialog.selectedSkill}"
+        }
+      ]
+    }
+  ],
+  "generator": "SsoDialog.lg",
+  "recognizer": "SsoDialog.lu.qna",
+  "id": "SsoDialog"
+}
