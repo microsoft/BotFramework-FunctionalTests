@@ -1,0 +1,49 @@
+[import](common.lg)
+
+# SendActivity_DidNotUnderstand()
+[Activity
+    Text = ${SendActivity_DidNotUnderstand_text()}
+]
+
+# SendActivity_DidNotUnderstand_text()
+- Sorry, I didn't get that.
+# SendActivity_859266()
+[Activity
+    Attachments = ${json(SendActivity_859266_attachment_6dK9Hy())}
+    AttachmentLayout = list
+    InputHint = acceptingInput
+    Speak = Welcome to the waterfall host bot
+]
+
+# SendActivity_859266_attachment_6dK9Hy()
+> To learn more Adaptive Cards format, read the documentation at
+> https://docs.microsoft.com/en-us/adaptive-cards/getting-started/bots
+- ```{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.0",
+  "body": [
+    {
+      "type": "Image",
+      "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtB3AwMUeNoq4gUBGe6Ocj8kyh3bXa9ZbV7u1fVKQoyKFHdkqU",
+      "size": "stretch"
+    },
+    {
+      "type": "TextBlock",
+      "spacing": "Medium",
+      "size": "Medium",
+      "weight": "Bolder",
+      "text": "Welcome to the Skill Dialog Sample!",
+      "wrap": true,
+      "maxLines": 0,
+      "color": "Accent"
+    },
+    {
+      "type": "TextBlock",
+      "size": "default",
+      "text": "This sample allows you to connect to a skill using a SkillDialog and invoke several actions.",
+      "wrap": true,
+      "maxLines": 0
+    }
+  ]
+}```
