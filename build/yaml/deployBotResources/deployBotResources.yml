@@ -134,6 +134,8 @@ variables:
   # VirtualNetworkName: (optional) Name of the Virtual Network.
 
   ## Bots Configuration (Define these variables in Azure)
+  # BffnComposerHostBotDotNetAppId: (optional) App Id for BffnComposerHostBotDotNet bot.
+  # BffnComposerHostBotDotNetAppSecret: (optional) App Secret for BffnComposerHostBotDotNet bot.
   # BffnComposerSkillBotDotNetAppId: (optional) App Id for BffnComposerSkillBotDotNet bot.
   # BffnComposerSkillBotDotNetAppSecret: (optional) App Secret for BffnComposerSkillBotDotNet bot.
   # BffnEchoSkillBotComposerDotNetAppId: (optional) App Id for BffnEchoSkillBotComposerDotNet bot.
@@ -321,6 +323,20 @@ stages:
           project: 
             directory: 'Bots/DotNet/EchoSkillBotComposer'
             name: "EchoSkillBotComposer.csproj"
+            netCoreVersion: "3.1.x"
+          dependency:
+            registry: ${{ parameters.dependenciesRegistryDotNetSkills }}
+            version: ${{ parameters.dependenciesVersionDotNetSkills }}
+
+        - name: "bffncomposerhostbotdotnet"
+          dependsOn: "Deploy_bffnechoskillbotdotnetv3"
+          type: "ComposerHost"
+          displayName: "DotNet Composer Host Bot"
+          appId: $(BFFNCOMPOSERHOSTBOTDOTNETAPPID)
+          appSecret: $(BFFNCOMPOSERHOSTBOTDOTNETAPPSECRET)
+          project: 
+            directory: 'Bots/DotNet/ComposerHostBotDotNet'
+            name: "ComposerHostBotDotNet.csproj"
             netCoreVersion: "3.1.x"
           dependency:
             registry: ${{ parameters.dependenciesRegistryDotNetSkills }}

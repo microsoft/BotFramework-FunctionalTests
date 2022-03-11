@@ -38,12 +38,10 @@ namespace SkillFunctionalTests.Skills.SignIn
 
             var hostBots = new List<HostBot>
             {
+                HostBot.ComposerHostBotDotNet,
                 HostBot.WaterfallHostBotDotNet,
                 HostBot.WaterfallHostBotJS,
                 HostBot.WaterfallHostBotPython,
-
-                // TODO: Enable this when the port to composer is ready
-                //HostBot.ComposerHostBotDotNet
             };
 
             var targetSkills = new List<string>

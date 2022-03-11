@@ -421,6 +421,12 @@ steps:
             configType    = $types.Composer
           }
           @{
+            key           = "ComposerHostBotDotNet"
+            botName       = "bffncomposerhostbotdotnet"
+            resourceGroup = $groups.DotNet
+            configType    = $types.Composer
+          }
+          @{
             key           = "WaterfallHostBotDotNet"
             botName       = "bffnwaterfallhostbotdotnet"
             resourceGroup = $groups.DotNet
@@ -557,6 +563,7 @@ steps:
           @{ 
             name      = "Waterfall"; 
             consumers = @(
+              "ComposerHostBotDotNet",
               "WaterfallHostBotDotNet",
               "WaterfallHostBotJS",
               "WaterfallHostBotPython"
