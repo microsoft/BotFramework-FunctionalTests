@@ -60,12 +60,12 @@ steps:
             }
           }
 
-          ## Update requirements.txt
+          # Update requirements.txt
           $file = "${{ parameters.source }}/requirements.txt"
           $content = @(Get-Content $file)
           $rootFile = "Bots/Python/requirements.txt"
 
-          # replace root requirements.txt reference with file content
+          # Replace root requirements.txt reference with file content
           $matchref = Select-String -Path $file -Pattern "-r ../requirements.txt"
           if($matchref.LineNumber -gt 0) {
               $content[$matchinfo.LineNumber - 1] = @(Get-Content $rootFile)
