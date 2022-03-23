@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.BotFramework;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
-using Microsoft.Bot.Builder.Integration.AspNet.Core.Skills;
 using Microsoft.Bot.Builder.Skills;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Bots;
@@ -37,8 +36,6 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot
             services.AddControllers()
                 .AddNewtonsoftJson();
 
-            services.AddSingleton<ICredentialProvider, ConfigurationCredentialProvider>();
-
             services.AddSingleton(sp =>
             {
                 // AllowedCallers is the setting in the appsettings.json file that consists of the list of parent bot IDs that are allowed to access the skill.
@@ -65,9 +62,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot
             // Register the skills conversation ID factory, the client and the request handler.
             services.AddSingleton<SkillConversationIdFactoryBase, SkillConversationIdFactory>();
 
-            services.AddHttpClient<SkillHttpClient>();
-
-            services.AddSingleton<ChannelServiceHandler, SkillHandler>();
+            services.AddSingleton<ChannelServiceHandlerBase, CloudSkillHandler>();
 
             // Create the storage we'll be using for User and Conversation state. (Memory is great for testing purposes.)
             services.AddSingleton<IStorage, MemoryStorage>();
