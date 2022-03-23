@@ -116,36 +116,20 @@ stages:
                 botName: "${{ bot.displayName }}"
               version: "$(DEPENDENCIESVERSIONNUMBER)"
 
-          # Set BotBuilder source and version
+          # Set BotBuilder registry source
           - task: PowerShell@2
-            displayName: 'Set BotBuilder source and version'
+            displayName: 'Set BotBuilder registry source'
             inputs:
               targetType: inline
               workingDirectory: '$(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ bot.project.directory }}'
               failOnStderr: true
               script: |
                 $registry = "$(DEPENDENCIESSOURCE)";
-                $version = "$(DEPENDENCIESVERSIONNUMBER)";
-                $packagejsonPath = "./package.json";
 
                 # Remove yarn.lock file to prevent outdated dependencies references from being misinterpreted by Security Audit.
                 Remove-Item -path "$(SYSTEM.DEFAULTWORKINGDIRECTORY)/Bots/JavaScript/yarn.lock"
 
-                $packagejson = Get-Content $packagejsonPath | ConvertFrom-Json
-                $dependencies = @{}
-
-                $packagejson.dependencies.psobject.properties | ForEach-Object {
-                  $dependencies[$_.Name] = if ($_.Name -match "botbuilder*") { $version } else { $_.Value }
-                }
-
-                $packagejson.dependencies = $dependencies
-                
-                Set-Content $packagejsonPath -Value ($packagejson | ConvertTo-Json)
-
-                Write-Host "Updated BotBuilder packages version:";
-                $dependencies
-
-                Write-Host "`nUsing the registry source: $registry";
+                Write-Host "Setting the registry '$registry' in the '.npmrc' file.";
                 New-Item -Path . -Name ".npmrc" -ItemType "file" -Value "registry=$registry";
 
           - task: AzureCLI@2
@@ -161,8 +145,9 @@ stages:
                 az acr login --name ${{ bot.container.registry }} --username="$env:SERVICEPRINCIPALID" --password="$env:SERVICEPRINCIPALKEY"
                 $container = "${{ bot.container.registry }}.azurecr.io/${{ bot.name }}:v$(DEPENDENCIESVERSIONNUMBER)";
 
-                # Copy Dockerfile
-                copy "$(SYSTEM.DEFAULTWORKINGDIRECTORY)/Bots/JavaScript/Dockerfile" .
+                # Move Utils and Dockerfile
+                move "$(SYSTEM.DEFAULTWORKINGDIRECTORY)/Bots/JavaScript/Utils" .
+                move "$(SYSTEM.DEFAULTWORKINGDIRECTORY)/Bots/JavaScript/Dockerfile" .
 
                 # Delete Container
                 $repositories = az acr repository list --name ${{ bot.container.registry }} | ConvertFrom-Json;
@@ -172,7 +157,7 @@ stages:
                 }
 
                 # Build and Push Container
-                docker build --tag $container .
+                docker build --build-arg BotBuilderVersion=$(DEPENDENCIESVERSIONNUMBER) --tag $container .
                 docker push $container
 
                 # Export Bot
