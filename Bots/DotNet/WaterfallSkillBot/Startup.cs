@@ -3,6 +3,8 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Globalization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Bot.Builder;
@@ -36,19 +38,33 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot
             services.AddControllers()
                 .AddNewtonsoftJson();
 
+            // Register AuthConfiguration to enable custom claim validation.
             services.AddSingleton(sp =>
             {
-                // AllowedCallers is the setting in the appsettings.json file that consists of the list of parent bot IDs that are allowed to access the skill.
-                // To add a new parent bot, simply edit the AllowedCallers and add the parent bot's Microsoft app ID to the list.
-                // In this sample, we allow all callers if AllowedCallers contains an "*".
-                var callersSection = Configuration.GetSection(CallersConfigKey);
-                var callers = callersSection.Get<string[]>();
-                if (callers == null)
+                var allowedCallers = new List<string>(sp.GetService<IConfiguration>().GetSection(CallersConfigKey).Get<string[]>());
+
+                var claimsValidator = new AllowedCallersClaimsValidator(allowedCallers);
+
+                // If TenantId is specified in config, add the tenant as a valid JWT token issuer for Bot to Skill conversation.
+                // The token issuer for MSI and single tenant scenarios will be the tenant where the bot is registered.
+                var validTokenIssuers = new List<string>();
+                var tenantId = sp.GetService<IConfiguration>().GetSection(MicrosoftAppCredentials.MicrosoftAppTenantIdKey)?.Value;
+
+                if (!string.IsNullOrWhiteSpace(tenantId))
                 {
-                    throw new ArgumentNullException($"\"{CallersConfigKey}\" not found in configuration.");
+                    // For SingleTenant/MSI auth, the JWT tokens will be issued from the bot's home tenant.
+                    // Therefore, these issuers need to be added to the list of valid token issuers for authenticating activity requests.
+                    validTokenIssuers.Add(string.Format(CultureInfo.InvariantCulture, AuthenticationConstants.ValidTokenIssuerUrlTemplateV1, tenantId));
+                    validTokenIssuers.Add(string.Format(CultureInfo.InvariantCulture, AuthenticationConstants.ValidTokenIssuerUrlTemplateV2, tenantId));
+                    validTokenIssuers.Add(string.Format(CultureInfo.InvariantCulture, AuthenticationConstants.ValidGovernmentTokenIssuerUrlTemplateV1, tenantId));
+                    validTokenIssuers.Add(string.Format(CultureInfo.InvariantCulture, AuthenticationConstants.ValidGovernmentTokenIssuerUrlTemplateV2, tenantId));
                 }
 
-                return new AuthenticationConfiguration { ClaimsValidator = new AllowedCallersClaimsValidator(callers) };
+                return new AuthenticationConfiguration
+                {
+                    ClaimsValidator = claimsValidator,
+                    ValidTokenIssuers = validTokenIssuers
+                };
             });
 
             services.AddSingleton<BotFrameworkAuthentication, ConfigurationBotFrameworkAuthentication>();
