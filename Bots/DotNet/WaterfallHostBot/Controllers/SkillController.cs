@@ -14,7 +14,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Controllers
 {
     /// <summary>
     /// A controller that handles skill replies to the bot.
-    /// This example uses the <see cref="SkillHandler"/> that is registered as a <see cref="ChannelServiceHandler"/> in startup.cs.
+    /// This example uses the <see cref="CloudSkillHandler"/> that is registered as a <see cref="ChannelServiceHandlerBase"/> in startup.cs.
     /// </summary>
     [ApiController]
     [Route("api/skills")]
@@ -22,7 +22,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Controllers
     {
         private readonly ILogger _logger;
 
-        public SkillController(ChannelServiceHandler handler, ILogger<SkillController> logger)
+        public SkillController(ChannelServiceHandlerBase handler, ILogger<SkillController> logger)
             : base(handler)
         {
             _logger = logger;
