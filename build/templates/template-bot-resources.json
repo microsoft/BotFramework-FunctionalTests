@@ -10,6 +10,7 @@
     },
     "appSecret": {
       "type": "string",
+      "defaultValue": "",
       "metadata": {
         "description": "Active Directory App Password, set as MicrosoftAppPassword in the Web App's Application Settings."
       }
@@ -20,6 +21,14 @@
     },
     "appServicePlanName": {
       "type": "string"
+    },
+    "appType": {
+      "type": "string",
+      "defaultValue": "MultiTenant",
+      "allowedValues": ["MultiTenant", "SingleTenant", "UserAssignedMSI"],
+      "metadata": {
+        "description": "Type of Bot Authentication, set as MicrosoftAppType in the Web App's Application Settings. Allowed values are: MultiTenant, SingleTenant, UserAssignedMSI. Defaults to \"MultiTenant\"."
+      }
     },
     "botName": {
       "type": "string"
@@ -40,6 +49,13 @@
     "sharedResourceGroup": {
       "type": "string"
     },
+    "userAssignedMSIName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+          "description": "The User-Assigned Managed Identity Resource used for the Bot's Authentication. Defaults to \"\"."
+      }
+    },
     "virtualNetwork": {
       "type": "string"
     },
@@ -50,7 +66,36 @@
   "variables": {
     "siteHost": "[concat(parameters('botName'), '.azurewebsites.net')]",
     "botEndpoint": "[concat('https://', variables('siteHost'), '/api/messages')]",
-    "publishingUsername": "[concat('$', parameters('botName'))]"
+    "publishingUsername": "[concat('$', parameters('botName'))]",
+    "tenantId": "[subscription().tenantId]",
+    "msiResourceId": "[concat(subscription().id, '/resourceGroups/', parameters('sharedResourceGroup'), '/providers/', 'Microsoft.ManagedIdentity/userAssignedIdentities/', parameters('userAssignedMSIName'))]",
+    "appTypeDef": {
+      "MultiTenant": {
+        "tenantId": "",
+        "msiResourceId": "",
+        "identity": { "type": "None" }
+      },
+      "SingleTenant": {
+        "tenantId": "[variables('tenantId')]",
+        "msiResourceId": "",
+        "identity": { "type": "None" }
+      },
+      "UserAssignedMSI": {
+        "tenantId": "[variables('tenantId')]",
+        "msiResourceId": "[variables('msiResourceId')]",
+        "identity": {
+          "type": "UserAssigned",
+          "userAssignedIdentities": {
+            "[variables('msiResourceId')]": {}
+          }
+        }
+      }
+    },
+    "appType": {
+      "tenantId": "[variables('appTypeDef')[parameters('appType')].tenantId]",
+      "msiResourceId": "[variables('appTypeDef')[parameters('appType')].msiResourceId]",
+      "identity": "[variables('appTypeDef')[parameters('appType')].identity]"
+    }
   },
   "resources": [
     {
@@ -58,6 +103,7 @@
       "apiVersion": "2020-09-01",
       "name": "[parameters('botName')]",
       "location": "[parameters('botLocation')]",
+      "identity": "[variables('appType').identity]",
       "tags": {
         "Project": "[parameters('projectTag')]"
       },
@@ -90,12 +136,20 @@
               "value": "10.14.1"
             },
             {
+              "name": "MicrosoftAppType",
+              "value": "[parameters('appType')]"
+            },
+            {
               "name": "MicrosoftAppId",
               "value": "[parameters('appId')]"
             },
             {
               "name": "MicrosoftAppPassword",
               "value": "[parameters('appSecret')]"
+            },
+            {
+              "name": "MicrosoftAppTenantId",
+              "value": "[variables('appType').tenantId]"
             },
             {
               "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
@@ -226,6 +280,9 @@
         "iconUrl": "https://docs.botframework.com/static/devportal/client/images/bot-framework-default.png",
         "endpoint": "[variables('botEndpoint')]",
         "msaAppId": "[parameters('appId')]",
+        "msaAppTenantId": "[variables('appType').tenantId]",
+        "msaAppMSIResourceId": "[variables('appType').msiResourceId]",
+        "msaAppType": "[parameters('appType')]",
         "luisAppIds": [],
         "schemaTransformationVersion": "1.3",
         "isCmekEnabled": false,

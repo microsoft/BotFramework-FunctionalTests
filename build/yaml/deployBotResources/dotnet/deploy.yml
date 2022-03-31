@@ -80,9 +80,12 @@ stages:
             parameters:
               appId: ${{ bot.appId }}
               appSecret: ${{ bot.appSecret }}
+              appType: ${{ bot.appType }}
               azureSubscription: "${{ parameters.azureSubscription }}"
               botName: "${{ bot.name }}"
               keyVault: "${{ parameters.keyVault }}"
+              resourceSuffix: "${{ parameters.resourceSuffix }}"
+              sharedResourceGroup: "${{ parameters.sharedResourceGroup }}"
 
           # Use Net Core version
           - ${{ if ne(bot.project.netCoreVersion, '') }}:
@@ -198,12 +201,13 @@ stages:
               pathToPublish: "$(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ parameters.buildFolder }}/${{ bot.name }}/${{ bot.name }}.zip"
               artifactName: dotnet-$(BUILD.BUILDID)
 
-          # Create App Service and Bot Channel Registration
+          # Create App Service and Azure Bot
           - template: ../common/createAppService.yml
             parameters:
               appId: $(APPID)
               appInsight: "${{ parameters.appInsight }}"
               appSecret: $(APPSECRET)
+              appType: "${{ bot.appType }}"
               appServicePlan: "${{ parameters.appServicePlan }}"
               azureSubscription: "${{ parameters.azureSubscription }}"
               botGroup: "${{ parameters.resourceGroup }}"
