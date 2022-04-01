@@ -4,16 +4,18 @@
 const { ActivityHandler, ActivityTypes, DeliveryModes, MessageFactory } = require('botbuilder');
 
 class HostBot extends ActivityHandler {
-  constructor (dialog, conversationState, skillsConfig, skillClient) {
+  constructor (dialog, conversationState, skillsConfig, skillClient, conversationIdFactory) {
     super();
     if (!conversationState) throw new Error('[HostBot]: Missing parameter. conversationState is required');
     if (!skillsConfig) throw new Error('[HostBot]: Missing parameter. skillsConfig is required');
     if (!skillClient) throw new Error('[HostBot]: Missing parameter. skillClient is required');
+    if (!conversationIdFactory) throw new Error('[HostBot]: Missing parameter. conversationIdFactory is required');
 
     this.conversationState = conversationState;
     this.skillsConfig = skillsConfig;
     this.skillClient = skillClient;
     this.dialog = dialog;
+    this.conversationIdFactory = conversationIdFactory;
     this.dialogStateProperty = this.conversationState.createProperty('DialogState');
 
     this.botId = process.env.MicrosoftAppId;
@@ -116,13 +118,21 @@ class HostBot extends ActivityHandler {
     // will have access to current accurate state.
     await this.conversationState.saveChanges(context, true);
 
+    // Create a conversationId to interact with the skill and send the activity
+    const skillConversationId = await this.conversationIdFactory.createSkillConversationIdWithOptions({
+      fromBotOAuthScope: context.turnState.get(context.adapter.OAuthScopeKey),
+      fromBotId: this.botId,
+      activity: context.activity,
+      botFrameworkSkill: targetSkill
+    });
+
     if (deliveryMode === DeliveryModes.ExpectReplies) {
       // Clone activity and update its delivery mode.
       const activity = JSON.parse(JSON.stringify(context.activity));
       activity.deliveryMode = deliveryMode;
 
-      // Route the activity to the skill.
-      const expectRepliesResponse = await this.skillClient.postToSkill(this.botId, targetSkill, this.skillsConfig.skillHostEndpoint, activity);
+      // route the activity to the skill
+      const expectRepliesResponse = await this.skillClient.postActivity(this.botId, targetSkill.appId, targetSkill.skillEndpoint, this.skillsConfig.skillHostEndpoint, skillConversationId, activity);
 
       // Check response status.
       if (!(expectRepliesResponse.status >= 200 && expectRepliesResponse.status <= 299)) {
@@ -141,7 +151,7 @@ class HostBot extends ActivityHandler {
       }
     } else {
       // Route the activity to the skill.
-      const response = await this.skillClient.postToSkill(this.botId, targetSkill, this.skillsConfig.skillHostEndpoint, context.activity);
+      const response = await this.skillClient.postActivity(this.botId, targetSkill.appId, targetSkill.skillEndpoint, this.skillsConfig.skillHostEndpoint, skillConversationId, context.activity);
 
       // Check response status.
       if (!(response.status >= 200 && response.status <= 299)) {

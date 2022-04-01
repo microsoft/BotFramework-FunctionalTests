@@ -12,8 +12,9 @@ const restify = require('restify');
 // See https://aka.ms/bot-services to learn more about the different parts of a bot.
 const {
   ActivityTypes,
-  CallerIdConstants,
   CloudAdapter,
+  ConfigurationServiceClientCredentialFactory,
+  createBotFrameworkAuthenticationFromConfiguration,
   InputHints,
   MessageFactory
 } = require('botbuilder');
@@ -21,8 +22,6 @@ const {
 const {
   AuthenticationConfiguration,
   AuthenticationConstants,
-  BotFrameworkAuthenticationFactory,
-  PasswordServiceClientCredentialFactory,
   allowedCallersClaimsValidator
 } = require('botframework-connector');
 
@@ -66,25 +65,37 @@ const maxTotalSockets = (
 const allowedCallers =
   (process.env.AllowedCallers || '').split(',').filter((val) => val) || [];
 
-const authConfig = new AuthenticationConfiguration(
-  [],
-  allowedCallersClaimsValidator(allowedCallers)
-);
+const claimsValidators = allowedCallersClaimsValidator(allowedCallers);
 
-const botFrameworkAuthentication = BotFrameworkAuthenticationFactory.create(
-  '',
-  true,
-  AuthenticationConstants.ToChannelFromBotLoginUrl,
-  AuthenticationConstants.ToChannelFromBotOAuthScope,
-  AuthenticationConstants.ToBotFromChannelTokenIssuer,
-  AuthenticationConstants.OAuthUrl,
-  AuthenticationConstants.ToBotFromChannelOpenIdMetadataUrl,
-  AuthenticationConstants.ToBotFromEmulatorOpenIdMetadataUrl,
-  CallerIdConstants.PublicAzureChannel,
-  new PasswordServiceClientCredentialFactory(
-    process.env.MicrosoftAppId || '',
-    process.env.MicrosoftAppPassword || ''
-  ),
+// If the MicrosoftAppTenantId is specified in the environment config, add the tenant as a valid JWT token issuer for Bot to Skill conversation.
+// The token issuer for MSI and single tenant scenarios will be the tenant where the bot is registered.
+let validTokenIssuers = [];
+const { MicrosoftAppTenantId } = process.env;
+
+if (MicrosoftAppTenantId) {
+    // For SingleTenant/MSI auth, the JWT tokens will be issued from the bot's home tenant.
+    // Therefore, these issuers need to be added to the list of valid token issuers for authenticating activity requests.
+    validTokenIssuers = [
+        `${ AuthenticationConstants.ValidTokenIssuerUrlTemplateV1 }${ MicrosoftAppTenantId }/`,
+        `${ AuthenticationConstants.ValidTokenIssuerUrlTemplateV2 }${ MicrosoftAppTenantId }/v2.0/`,
+        `${ AuthenticationConstants.ValidGovernmentTokenIssuerUrlTemplateV1 }${ MicrosoftAppTenantId }/`,
+        `${ AuthenticationConstants.ValidGovernmentTokenIssuerUrlTemplateV2 }${ MicrosoftAppTenantId }/v2.0/`
+    ];
+}
+
+// Define our authentication configuration.
+const authConfig = new AuthenticationConfiguration([], claimsValidators, validTokenIssuers);
+
+const credentialsFactory = new ConfigurationServiceClientCredentialFactory({
+    MicrosoftAppId: process.env.MicrosoftAppId,
+    MicrosoftAppPassword: process.env.MicrosoftAppPassword,
+    MicrosoftAppType: process.env.MicrosoftAppType,
+    MicrosoftAppTenantId: process.env.MicrosoftAppTenantId
+});
+
+const botFrameworkAuthentication = createBotFrameworkAuthenticationFromConfiguration(
+  null,
+  credentialsFactory,
   authConfig,
   undefined,
   {

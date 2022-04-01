@@ -18,20 +18,19 @@ const {
   TurnContext,
   ActivityTypes,
   ChannelServiceRoutes,
-  ConfigurationBotFrameworkAuthentication,
+  CloudSkillHandler,
+  ConfigurationServiceClientCredentialFactory,
   ConversationState,
+  createBotFrameworkAuthenticationFromConfiguration,
   InputHints,
   MemoryStorage,
-  SkillHandler,
-  SkillHttpClient,
   MessageFactory,
   SkillConversationIdFactory
 } = require('botbuilder');
 
 const {
   AuthenticationConfiguration,
-  PasswordServiceClientCredentialFactory,
-  SimpleCredentialProvider,
+  AuthenticationConstants,
   allowedCallersClaimsValidator
 } = require('botframework-connector');
 
@@ -66,21 +65,39 @@ const maxTotalSockets = (
     preallocatedSnatPorts
   );
 
-const authConfig = new AuthenticationConfiguration(
-  [],
-  allowedCallersClaimsValidator([...skillsConfig.skills.appIds])
-);
+  const claimsValidators = allowedCallersClaimsValidator([...skillsConfig.skills.appIds]);
 
-const credentialsFactory = new PasswordServiceClientCredentialFactory(
-  process.env.MicrosoftAppId || '',
-  process.env.MicrosoftAppPassword || ''
-);
+  // If the MicrosoftAppTenantId is specified in the environment config, add the tenant as a valid JWT token issuer for Bot to Skill conversation.
+  // The token issuer for MSI and single tenant scenarios will be the tenant where the bot is registered.
+  let validTokenIssuers = [];
+  const { MicrosoftAppTenantId } = process.env;
+  
+  if (MicrosoftAppTenantId) {
+      // For SingleTenant/MSI auth, the JWT tokens will be issued from the bot's home tenant.
+      // Therefore, these issuers need to be added to the list of valid token issuers for authenticating activity requests.
+      validTokenIssuers = [
+          `${ AuthenticationConstants.ValidTokenIssuerUrlTemplateV1 }${ MicrosoftAppTenantId }/`,
+          `${ AuthenticationConstants.ValidTokenIssuerUrlTemplateV2 }${ MicrosoftAppTenantId }/v2.0/`,
+          `${ AuthenticationConstants.ValidGovernmentTokenIssuerUrlTemplateV1 }${ MicrosoftAppTenantId }/`,
+          `${ AuthenticationConstants.ValidGovernmentTokenIssuerUrlTemplateV2 }${ MicrosoftAppTenantId }/v2.0/`
+      ];
+  }
+  
+  // Define our authentication configuration.
+  const authConfig = new AuthenticationConfiguration([], claimsValidators, validTokenIssuers);
 
-const botFrameworkAuthentication = new ConfigurationBotFrameworkAuthentication(
-  {},
+  const credentialsFactory = new ConfigurationServiceClientCredentialFactory({
+    MicrosoftAppId: process.env.MicrosoftAppId,
+    MicrosoftAppPassword: process.env.MicrosoftAppPassword,
+    MicrosoftAppType: process.env.MicrosoftAppType,
+    MicrosoftAppTenantId: process.env.MicrosoftAppTenantId
+});
+
+const botFrameworkAuthentication = createBotFrameworkAuthenticationFromConfiguration(
+  null,
   credentialsFactory,
   authConfig,
-  null,
+  undefined,
   {
     agentSettings: {
       http: new http.Agent({
@@ -174,17 +191,14 @@ const memoryStorage = new MemoryStorage();
 const conversationState = new ConversationState(memoryStorage);
 
 // Create the conversationIdFactory
-const conversationIdFactory = new SkillConversationIdFactory(memoryStorage);
+const conversationIdFactory = new SkillConversationIdFactory(new MemoryStorage());
 
-// Create the credential provider;
-const credentialProvider = new SimpleCredentialProvider(process.env.MicrosoftAppId, process.env.MicrosoftAppPassword);
-
-// Create the skill client
-const skillClient = new SkillHttpClient(credentialProvider, conversationIdFactory);
+// Create the skill client.
+const skillClient = botFrameworkAuthentication.createBotFrameworkClient();
 
 // Create the main dialog.
 const dialog = new SetupDialog(conversationState, skillsConfig);
-const bot = new HostBot(dialog, conversationState, skillsConfig, skillClient);
+const bot = new HostBot(dialog, conversationState, skillsConfig, skillClient, conversationIdFactory);
 
 // Listen for incoming activities and route them to your bot main dialog.
 server.post('/api/messages', async (req, res) => {
@@ -196,6 +210,6 @@ server.post('/api/messages', async (req, res) => {
 });
 
 // Create and initialize the skill classes
-const handler = new SkillHandler(adapter, bot, conversationIdFactory, credentialProvider, authConfig);
+const handler = new CloudSkillHandler(adapter, (context) => bot.run(context), conversationIdFactory, botFrameworkAuthentication);
 const skillEndpoint = new ChannelServiceRoutes(handler);
 skillEndpoint.register(server, '/api/skills');
