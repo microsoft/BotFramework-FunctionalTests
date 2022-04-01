@@ -17,21 +17,19 @@ const {
   CloudAdapter,
   TurnContext,
   ActivityTypes,
-  BotFrameworkAdapter,
   ChannelServiceRoutes,
-  ConfigurationBotFrameworkAuthentication,
+  ConfigurationServiceClientCredentialFactory,
   ConversationState,
+  createBotFrameworkAuthenticationFromConfiguration,
   InputHints,
   MemoryStorage,
-  SkillHttpClient,
   MessageFactory,
   SkillConversationIdFactory
 } = require('botbuilder');
 
 const {
   AuthenticationConfiguration,
-  PasswordServiceClientCredentialFactory,
-  SimpleCredentialProvider,
+  AuthenticationConstants,
   allowedCallersClaimsValidator
 } = require('botframework-connector');
 
@@ -70,21 +68,39 @@ const maxTotalSockets = (
     preallocatedSnatPorts
   );
 
-const authConfig = new AuthenticationConfiguration(
-  [],
-  allowedCallersClaimsValidator([...skillsConfig.skills.appIds])
-);
+const claimsValidators = allowedCallersClaimsValidator([...skillsConfig.skills.appIds]);
 
-const credentialsFactory = new PasswordServiceClientCredentialFactory(
-  process.env.MicrosoftAppId || '',
-  process.env.MicrosoftAppPassword || ''
-);
+// If the MicrosoftAppTenantId is specified in the environment config, add the tenant as a valid JWT token issuer for Bot to Skill conversation.
+// The token issuer for MSI and single tenant scenarios will be the tenant where the bot is registered.
+let validTokenIssuers = [];
+const { MicrosoftAppTenantId } = process.env;
 
-const botFrameworkAuthentication = new ConfigurationBotFrameworkAuthentication(
-  {},
+if (MicrosoftAppTenantId) {
+    // For SingleTenant/MSI auth, the JWT tokens will be issued from the bot's home tenant.
+    // Therefore, these issuers need to be added to the list of valid token issuers for authenticating activity requests.
+    validTokenIssuers = [
+        `${ AuthenticationConstants.ValidTokenIssuerUrlTemplateV1 }${ MicrosoftAppTenantId }/`,
+        `${ AuthenticationConstants.ValidTokenIssuerUrlTemplateV2 }${ MicrosoftAppTenantId }/v2.0/`,
+        `${ AuthenticationConstants.ValidGovernmentTokenIssuerUrlTemplateV1 }${ MicrosoftAppTenantId }/`,
+        `${ AuthenticationConstants.ValidGovernmentTokenIssuerUrlTemplateV2 }${ MicrosoftAppTenantId }/v2.0/`
+    ];
+}
+
+// Define our authentication configuration.
+const authConfig = new AuthenticationConfiguration([], claimsValidators, validTokenIssuers);
+
+const credentialsFactory = new ConfigurationServiceClientCredentialFactory({
+    MicrosoftAppId: process.env.MicrosoftAppId,
+    MicrosoftAppPassword: process.env.MicrosoftAppPassword,
+    MicrosoftAppType: process.env.MicrosoftAppType,
+    MicrosoftAppTenantId: process.env.MicrosoftAppTenantId
+});
+
+const botFrameworkAuthentication = createBotFrameworkAuthenticationFromConfiguration(
+  null,
   credentialsFactory,
   authConfig,
-  null,
+  undefined,
   {
     agentSettings: {
       http: new http.Agent({
@@ -166,7 +182,8 @@ async function endSkillConversation (context) {
         endOfConversation, TurnContext.getConversationReference(context.activity), true);
 
       await conversationState.saveChanges(context, true);
-      await skillClient.postToSkill(botId, activeSkill, skillsConfig.skillHostEndpoint, endOfConversation);
+      const client = skillClient.createBotFrameworkClient();
+      await client.postActivity(botId, activeSkill.appId, activeSkill.skillEndpoint, skillsConfig.skillHostEndpoint, endOfConversation.conversation.id, endOfConversation);
     }
   } catch (err) {
     console.error(`\n [onTurnError] Exception caught on attempting to send EndOfConversation : ${err}`);
@@ -197,17 +214,14 @@ const memoryStorage = new MemoryStorage();
 const conversationState = new ConversationState(memoryStorage);
 
 // Create the conversationIdFactory
-const conversationIdFactory = new SkillConversationIdFactory(memoryStorage);
-
-// Create the credential provider;
-const credentialProvider = new SimpleCredentialProvider(process.env.MicrosoftAppId, process.env.MicrosoftAppPassword);
+const conversationIdFactory = new SkillConversationIdFactory(new MemoryStorage());
 
 // Create the skill client
-const skillClient = new SkillHttpClient(credentialProvider, conversationIdFactory);
+const skillClient = botFrameworkAuthentication;
 
 // Create the main dialog.
-const mainDialog = new MainDialog(conversationState, skillsConfig, skillClient, conversationIdFactory);
-const bot = new RootBot(conversationState, skillClient, mainDialog);
+const mainDialog = new MainDialog(skillClient, conversationState, conversationIdFactory, skillsConfig);
+const bot = new RootBot(conversationState, mainDialog);
 
 // Listen for incoming activities and route them to your bot main dialog.
 server.post('/api/messages', async (req, res) => {
@@ -219,23 +233,17 @@ server.post('/api/messages', async (req, res) => {
 });
 
 // Create and initialize the skill classes
-const handler = new TokenExchangeSkillHandler(adapter, bot, conversationIdFactory, skillsConfig, skillClient, credentialProvider, authConfig);
+const handler = new TokenExchangeSkillHandler(adapter, (context) => bot.run(context), conversationIdFactory, skillClient, skillsConfig);
 const skillEndpoint = new ChannelServiceRoutes(handler);
 skillEndpoint.register(server, '/api/skills');
 
 // Listen for Upgrade requests for Streaming.
-server.on('upgrade', (req, socket, head) => {
+server.on('upgrade', async (req, socket, head) => {
   // Create an adapter scoped to this WebSocket connection to allow storing session data.
-  const streamingAdapter = new BotFrameworkAdapter({
-    appId: process.env.MicrosoftAppId,
-    appPassword: process.env.MicrosoftAppPassword
-  });
-    // Set onTurnError for the BotFrameworkAdapter created for each connection.
+  const streamingAdapter = new CloudAdapter(botFrameworkAuthentication);
+
+  // Set onTurnError for the BotFrameworkAdapter created for each connection.
   streamingAdapter.onTurnError = onTurnErrorHandler;
 
-  streamingAdapter.useWebSocket(req, socket, head, async (context) => {
-    // After connecting via WebSocket, run this logic for every request sent over
-    // the WebSocket connection.
-    await bot.run(context);
-  });
+  await streamingAdapter.process(req, socket, head, async (context) => await bot.run(context));
 });

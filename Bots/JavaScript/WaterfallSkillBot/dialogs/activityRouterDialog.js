@@ -39,6 +39,7 @@ class ActivityRouterDialog extends ComponentDialog {
     super(MAIN_DIALOG);
 
     const { ConnectionName, SsoConnectionName, ServerUrl } = configuration;
+    this.skillClient = skillClient.createBotFrameworkClient();
 
     this.addDialog(new CardDialog(CARDS_DIALOG, ServerUrl))
       .addDialog(new WaitForProactiveDialog(PROACTIVE_DIALOG, ServerUrl, continuationParametersStore))
@@ -48,7 +49,7 @@ class ActivityRouterDialog extends ComponentDialog {
       .addDialog(new FileUploadDialog(FILE_UPLOAD_DIALOG))
       .addDialog(new DeleteDialog(DELETE_DIALOG))
       .addDialog(new UpdateDialog(UPDATE_DIALOG))
-      .addDialog(this.createEchoSkillDialog(ECHO_DIALOG, configuration, conversationState, conversationIdFactory, skillClient))
+      .addDialog(this.createEchoSkillDialog(ECHO_DIALOG, configuration, conversationState, conversationIdFactory, this.skillClient))
       .addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
         this.processActivity.bind(this)
       ]));
