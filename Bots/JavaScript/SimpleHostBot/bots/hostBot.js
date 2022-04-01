@@ -131,7 +131,7 @@ class HostBot extends ActivityHandler {
       const activity = JSON.parse(JSON.stringify(context.activity));
       activity.deliveryMode = deliveryMode;
 
-      // route the activity to the skill
+      // Route the activity to the skill
       const expectRepliesResponse = await this.skillClient.postActivity(this.botId, targetSkill.appId, targetSkill.skillEndpoint, this.skillsConfig.skillHostEndpoint, skillConversationId, activity);
 
       // Check response status.

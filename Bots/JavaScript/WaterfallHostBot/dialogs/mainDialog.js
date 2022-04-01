@@ -281,7 +281,7 @@ class MainDialog extends ComponentDialog {
         skillClient: this.auth.createBotFrameworkClient(),
         skillHostEndpoint: process.env.SkillHostEndpoint,
         conversationState,
-        skill,
+        skill
       };
 
       // Add a SkillDialog for the selected skill.

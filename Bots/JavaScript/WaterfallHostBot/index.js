@@ -76,24 +76,24 @@ let validTokenIssuers = [];
 const { MicrosoftAppTenantId } = process.env;
 
 if (MicrosoftAppTenantId) {
-    // For SingleTenant/MSI auth, the JWT tokens will be issued from the bot's home tenant.
-    // Therefore, these issuers need to be added to the list of valid token issuers for authenticating activity requests.
-    validTokenIssuers = [
-        `${ AuthenticationConstants.ValidTokenIssuerUrlTemplateV1 }${ MicrosoftAppTenantId }/`,
-        `${ AuthenticationConstants.ValidTokenIssuerUrlTemplateV2 }${ MicrosoftAppTenantId }/v2.0/`,
-        `${ AuthenticationConstants.ValidGovernmentTokenIssuerUrlTemplateV1 }${ MicrosoftAppTenantId }/`,
-        `${ AuthenticationConstants.ValidGovernmentTokenIssuerUrlTemplateV2 }${ MicrosoftAppTenantId }/v2.0/`
-    ];
+  // For SingleTenant/MSI auth, the JWT tokens will be issued from the bot's home tenant.
+  // Therefore, these issuers need to be added to the list of valid token issuers for authenticating activity requests.
+  validTokenIssuers = [
+      `${AuthenticationConstants.ValidTokenIssuerUrlTemplateV1}${MicrosoftAppTenantId}/`,
+      `${AuthenticationConstants.ValidTokenIssuerUrlTemplateV2}${MicrosoftAppTenantId}/v2.0/`,
+      `${AuthenticationConstants.ValidGovernmentTokenIssuerUrlTemplateV1}${MicrosoftAppTenantId}/`,
+      `${AuthenticationConstants.ValidGovernmentTokenIssuerUrlTemplateV2}${MicrosoftAppTenantId}/v2.0/`
+  ];
 }
 
 // Define our authentication configuration.
 const authConfig = new AuthenticationConfiguration([], claimsValidators, validTokenIssuers);
 
 const credentialsFactory = new ConfigurationServiceClientCredentialFactory({
-    MicrosoftAppId: process.env.MicrosoftAppId,
-    MicrosoftAppPassword: process.env.MicrosoftAppPassword,
-    MicrosoftAppType: process.env.MicrosoftAppType,
-    MicrosoftAppTenantId: process.env.MicrosoftAppTenantId
+  MicrosoftAppId: process.env.MicrosoftAppId,
+  MicrosoftAppPassword: process.env.MicrosoftAppPassword,
+  MicrosoftAppType: process.env.MicrosoftAppType,
+  MicrosoftAppTenantId: process.env.MicrosoftAppTenantId
 });
 
 const botFrameworkAuthentication = createBotFrameworkAuthenticationFromConfiguration(

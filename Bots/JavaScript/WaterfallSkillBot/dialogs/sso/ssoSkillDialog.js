@@ -80,11 +80,12 @@ class SsoSkillDialog extends ComponentDialog {
       case 'login':
         return stepContext.beginDialog(SSO_SKILL_DIALOG);
 
-      case 'logout':
+      case 'logout': {
         const { activity } = stepContext.context;
         await userTokenClient.signOutUser(activity.from.id, this.connectionName, activity.channelId);
         await stepContext.context.sendActivity('You have been signed out.');
         return stepContext.next();
+      }
 
       case 'show token': {
         const tokenResponse = await userTokenClient.getUserToken(
