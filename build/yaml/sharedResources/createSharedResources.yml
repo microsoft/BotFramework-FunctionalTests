@@ -237,3 +237,22 @@ stages:
           inlineScript: |
             $containerRegistryPricingTier = if ($env:CONTAINERREGISTRYPRICINGTIER) { "skuName=$env:CONTAINERREGISTRYPRICINGTIER" }
             az deployment group create --name "$(INTERNALCONTAINERREGISTRYNAME)" --resource-group "$(INTERNALRESOURCEGROUPNAME)" --template-file build/templates/template-container-registry-resources.json --parameters $containerRegistryPricingTier containerRegistryName="$(INTERNALCONTAINERREGISTRYNAME)"
+
+- stage: Create_User_Identities
+  displayName: "Create User Assigned Managed Identities"
+  dependsOn: Create_Resource_Group
+  jobs:
+    - job: Deploy_User_Identities
+      displayName: "Deploy steps"
+      steps:
+      - task: AzureCLI@2
+        displayName: "Deploy User Assigned Managed Identities"
+        inputs:
+          azureSubscription: $(AZURESUBSCRIPTION)
+          scriptType: pscore
+          scriptLocation: inlineScript
+          inlineScript: |
+            az identity create -g "$(INTERNALRESOURCEGROUPNAME)" -n "bffnsimplehostbotdotnetmsi$($env:RESOURCESUFFIX)"
+            az identity create -g "$(INTERNALRESOURCEGROUPNAME)" -n "bffnsimplehostbotjsmsi$($env:RESOURCESUFFIX)"
+            az identity create -g "$(INTERNALRESOURCEGROUPNAME)" -n "bffnechoskillbotdotnetmsi$($env:RESOURCESUFFIX)"
+            az identity create -g "$(INTERNALRESOURCEGROUPNAME)" -n "bffnechoskillbotjsmsi$($env:RESOURCESUFFIX)"
