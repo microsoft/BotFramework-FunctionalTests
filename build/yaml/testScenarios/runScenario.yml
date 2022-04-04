@@ -6,8 +6,10 @@ parameters:
     ComposerSkillBotDotNet: ""
     EchoSkillBotComposerDotNet: ""
     EchoSkillBotDotNet: ""
+    EchoSkillBotDotNetST: ""
     EchoSkillBotDotNetV3: ""
     EchoSkillBotJS: ""
+    EchoSkillBotJSST: ""
     EchoSkillBotJSV3: ""
     EchoSkillBotPython: ""
     WaterfallSkillBotDotNet: ""
@@ -38,6 +40,10 @@ parameters:
   displayName: Azure resources' name suffix
   type: string
 
+- name: sharedResourceGroup
+  displayName: Shared Resource Group
+  type: string
+
 - name: scenarios
   displayName: Test Scenarios
   type: object
@@ -56,9 +62,11 @@ stages:
               parameters:
                 appIds: "${{ parameters.appIds }}"
                 azureSubscription: "${{ parameters.azureSubscription }}"
+                buildIdSuffix: "$(BUILDIDSUFFIX)"
                 keyVault: "${{ parameters.keyVault }}"
                 resourceGroup: "${{ parameters.resourceGroup }}"
-                resourceSuffix: "${{ parameters.resourceSuffix }}$(BUILDIDSUFFIX)"
+                resourceSuffix: "${{ parameters.resourceSuffix }}"
+                sharedResourceGroup: "${{ parameters.sharedResourceGroup }}"
                 scenario: "${{ scenario.name }}"
 
             - task: UseDotNet@2

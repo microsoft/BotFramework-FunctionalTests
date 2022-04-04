@@ -24,13 +24,16 @@ variables:
   # AzureSubscription: Service Connection Name to Manage Azure resources.
   # ResourceGroup: (optional) Name of the Resource Group where the bots are deployed.
   # ResourceSuffix: (optional) Alphanumeric suffix to add to the resources' name to avoid collisions.
+  # SharedResourceGroup: (optional) Name of the Shared Resource Group.
 
   ## Bots Configuration (Define these variables in Azure)
   # BffnComposerSkillBotDotNetAppId: (optional) App Id for BffnComposerSkillBotDotNet bot.
   # BffnEchoSkillBotComposerDotNetAppId: (optional) App Id for BffnEchoSkillBotComposerDotNet bot.
   # BffnEchoSkillBotDotNetAppId: (optional) App Id for BffnEchoSkillBotDotNet bot.
+  # BffnEchoSkillBotDotNetSTAppId: (optional) App Id for BffnEchoSkillBotDotNetST bot.
   # BffnEchoSkillBotDotNetV3AppId: (optional) App Id for BffnEchoSkillBotDotNetV3 bot.
   # BffnEchoSkillBotJSAppId: (optional) App Id for BffnEchoSkillBotJS bot.
+  # BffnEchoSkillBotJSSTAppId: (optional) App Id for BffnEchoSkillBotJSST bot.
   # BffnEchoSkillBotJSV3AppId: (optional) App Id for BffnEchoSkillBotJSV3 bot.
   # BffnEchoSkillBotPythonAppId: (optional) App Id for BffnEchoSkillBotPython bot.
   # BffnWaterfallSkillBotDotNetAppId: (optional) App Id for BffnWaterfallSkillBotDotNet bot.
@@ -42,6 +45,7 @@ variables:
   InternalKeyVaultName: "bffnbotkeyvault$(INTERNALRESOURCESUFFIX)"
   InternalResourceGroupName: $[coalesce(variables['RESOURCEGROUP'], 'BFFN')]
   InternalResourceSuffix: $[coalesce(variables['RESOURCESUFFIX'], '')]
+  InternalSharedResourceGroupName: $[coalesce(variables['SHAREDRESOURCEGROUP'], 'BFFN-Shared')]
 
 pool:
   vmImage: "windows-2019"
@@ -84,8 +88,10 @@ stages:
         ComposerSkillBotDotNet: "$(BFFNCOMPOSERSKILLBOTDOTNETAPPID)"
         EchoSkillBotComposerDotNet: "$(BFFNECHOSKILLBOTCOMPOSERDOTNETAPPID)"
         EchoSkillBotDotNet: "$(BFFNECHOSKILLBOTDOTNETAPPID)"
+        EchoSkillBotDotNetST: "$(BFFNECHOSKILLBOTDOTNETSTAPPID)"
         EchoSkillBotDotNetV3: "$(BFFNECHOSKILLBOTDOTNETV3APPID)"
         EchoSkillBotJS: "$(BFFNECHOSKILLBOTJSAPPID)"
+        EchoSkillBotJSST: "$(BFFNECHOSKILLBOTJSSTAPPID)"
         EchoSkillBotJSV3: "$(BFFNECHOSKILLBOTJSV3APPID)"
         EchoSkillBotPython: "$(BFFNECHOSKILLBOTPYTHONAPPID)"
         WaterfallSkillBotDotNet: "$(BFFNWATERFALLSKILLBOTDOTNETAPPID)"
@@ -97,6 +103,7 @@ stages:
       keyVault: "$(INTERNALKEYVAULTNAME)"
       resourceGroup: "$(INTERNALRESOURCEGROUPNAME)"
       resourceSuffix: "$(INTERNALRESOURCESUFFIX)"
+      sharedResourceGroup: "$(INTERNALSHAREDRESOURCEGROUPNAME)"
       scenarios:
         - name: Waterfall
           dependsOn: [Download_Variables]
@@ -111,3 +118,8 @@ stages:
           dependsOn: [Download_Variables]
           testCategories:
             - SingleTurn
+
+        - name: Authentication
+          dependsOn: [Download_Variables]
+          testCategories:
+            - Authentication
