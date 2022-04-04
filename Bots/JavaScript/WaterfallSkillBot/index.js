@@ -56,7 +56,7 @@ const maxTotalSockets = (preallocatedSnatPorts, procCount = 1, weight = 0.5, ove
 
 const allowedCallers = (process.env.AllowedCallers || '').split(',').filter((val) => val) || [];
 
- const claimsValidators = allowedCallersClaimsValidator(allowedCallers);
+const claimsValidators = allowedCallersClaimsValidator(allowedCallers);
 
 // If the MicrosoftAppTenantId is specified in the environment config, add the tenant as a valid JWT token issuer for Bot to Skill conversation.
 // The token issuer for MSI and single tenant scenarios will be the tenant where the bot is registered.

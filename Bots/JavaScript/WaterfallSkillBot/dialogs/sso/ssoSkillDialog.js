@@ -51,10 +51,10 @@ class SsoSkillDialog extends ComponentDialog {
     const choices = new Set();
     const userTokenClient = stepContext.context.turnState.get(stepContext.context.adapter.UserTokenClientKey);
     const tokenResponse = await userTokenClient.getUserToken(
-        stepContext.context.activity.from.id,
-        this.connectionName,
-        stepContext.context.activity.channelId,
-        null
+      stepContext.context.activity.from.id,
+      this.connectionName,
+      stepContext.context.activity.channelId,
+      null
     );
 
     if (!tokenResponse || !tokenResponse.token) {
