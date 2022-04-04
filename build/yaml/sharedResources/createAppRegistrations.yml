@@ -48,7 +48,7 @@ steps:
           Invoke-WebRequest -Uri "https://login.microsoftonline.com/${{ parameters.tenantId }}/oauth2/v2.0/token" -Method "POST" -Body $body | ConvertFrom-Json
         }
 
-        function CreateAppRegistration($token, $appName) {
+        function CreateAppRegistration($token, $appName, $audience) {
           # Create App Registration
 
           $headers = @{
@@ -57,7 +57,7 @@ steps:
 
           $body = @{
             displayName    = $appName;
-            signInAudience = "AzureADandPersonalMicrosoftAccount"
+            signInAudience = $audience;
           } | ConvertTo-Json
 
           $app = Invoke-WebRequest -Uri "https://graph.microsoft.com/v1.0/applications" -Method "POST" -Headers $headers -Body $body -ContentType "application/json" | ConvertFrom-Json;
@@ -107,17 +107,22 @@ steps:
           @{ appName = "bffnsimplehostbotpython"; variables = @{ appId = "BffnSimpleHostBotPythonAppId"; appSecret = "BffnSimpleHostBotPythonAppSecret"; objectId = "BffnSimpleHostBotPythonAppObjectId" }},
           @{ appName = "bffnechoskillbotpython"; variables = @{ appId = "BffnEchoSkillBotPythonAppId"; appSecret = "BffnEchoSkillBotPythonAppSecret"; objectId = "BffnEchoSkillBotPythonAppObjectId" }},
           @{ appName = "bffnwaterfallhostbotpython"; variables = @{ appId = "BffnWaterfallHostBotPythonAppId"; appSecret = "BffnWaterfallHostBotPythonAppSecret"; objectId = "BffnWaterfallHostBotPythonAppObjectId" }},
-          @{ appName = "bffnwaterfallskillbotpython"; variables = @{ appId = "BffnWaterfallSkillBotPythonAppId"; appSecret = "BffnWaterfallSkillBotPythonAppSecret"; objectId = "BffnWaterfallSkillBotPythonAppObjectId" }}
+          @{ appName = "bffnwaterfallskillbotpython"; variables = @{ appId = "BffnWaterfallSkillBotPythonAppId"; appSecret = "BffnWaterfallSkillBotPythonAppSecret"; objectId = "BffnWaterfallSkillBotPythonAppObjectId" }},
+          @{ appName = "bffnsimplehostbotdotnetst"; variables = @{ appId = "BffnSimpleHostBotDotNetStAppId"; appSecret = "BffnSimpleHostBotDotNetStAppSecret"; objectId = "BffnSimpleHostBotDotNetStAppObjectId"; signInAudience = "AzureADMyOrg" }}
+          @{ appName = "bffnsimplehostbotjsst"; variables = @{ appId = "BffnSimpleHostBotJSStAppId"; appSecret = "BffnSimpleHostBotJSStAppSecret"; objectId = "BffnSimpleHostBotJSStAppObjectId"; signInAudience = "AzureADMyOrg" }},
+          @{ appName = "bffnechoskillbotdotnetst"; variables = @{ appId = "BffnEchoSkillBotDotNetStAppId"; appSecret = "BffnEchoSkillBotDotNetStAppSecret"; objectId = "BffnEchoSkillBotDotNetStObjectId"; signInAudience = "AzureADMyOrg" }},
+          @{ appName = "bffnechoskillbotjsst"; variables = @{ appId = "BffnEchoSkillBotJSStAppId"; appSecret = "BffnEchoSkillBotJSStAppSecret"; objectId = "BffnEchoSkillBotJSStAppObjectId"; signInAudience = "AzureADMyOrg" }}
         )
 
         $token = GetToken
 
         foreach ($bot in $bots) {
           $botName = "$($bot.appName)${{ parameters.resourceSuffix }}"
+          $audience = $($bot.variables.signInAudience) ?? "AzureADMultipleOrgs"
           Write-Host "`n[$botName] Starting"
           Write-Host "Creating App Registration ..."
-          
-          $app = CreateAppRegistration $token $botName
+
+          $app = CreateAppRegistration $token $botName $audience
           Write-Host "
             App Registration:
               Name: $botName
