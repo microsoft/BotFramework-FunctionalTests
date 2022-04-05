@@ -73,6 +73,16 @@ steps:
           $app | Add-Member -MemberType NoteProperty -Name secret -Value $secret.secretText;
 
           $app
+
+          if ($audience -eq "AzureADMyOrg") {
+            # Create Service Principal Object
+
+            $body = @{
+                appId = $app.appId;
+            } | ConvertTo-Json
+
+            $servicePpal = Invoke-WebRequest -Uri "https://graph.microsoft.com/v1.0/servicePrincipals" -Method "POST" -Headers $headers -Body $body -ContentType "application/json" | ConvertFrom-Json;
+          }
         }
 
         function SaveAppRegistrationIntoKeyVault($vaultName, $bot, $app) {
