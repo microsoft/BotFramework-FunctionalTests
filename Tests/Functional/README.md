@@ -9,14 +9,14 @@ Head to [Docs](../../Docs/) directory for more information.
 ## Available Test Cases
 ### Skills
 The following scenarios are being tested with the different host-skill bots combinations:
-- Single Turn (simple echo)
+- Single Turn (simple echo with MultiTenant apps)
 - Waterfall Bots:
    - Cards
    - File Upload
    - Message with Attachments
    - Proactive Messages
    - Sign in
-- Authentication (MultiTenant, SingleTenant, and MSI app types)
+- Authentication (SingleTenant and MSI app types)
 
 ## Branching 
 In this repository, there are branches with pinned versions of the SDK to test patch releases.
