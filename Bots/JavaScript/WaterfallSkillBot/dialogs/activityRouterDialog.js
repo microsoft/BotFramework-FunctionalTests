@@ -32,14 +32,13 @@ class ActivityRouterDialog extends ComponentDialog {
    * @param {import('../config').DefaultConfig} configuration
    * @param {import('botbuilder').ConversationState} conversationState
    * @param {import('botbuilder').SkillConversationIdFactory} conversationIdFactory
-   * @param {import('botbuilder').SkillHttpClient} skillClient
+   * @param {import('botbuilder').BotFrameworkClient} skillClient
    * @param {Object<string, import('./proactive/continuationParameters').ContinuationParameters>} continuationParametersStore
    */
   constructor (configuration, conversationState, conversationIdFactory, skillClient, continuationParametersStore) {
     super(MAIN_DIALOG);
 
     const { ConnectionName, SsoConnectionName, ServerUrl } = configuration;
-    this.skillClient = skillClient.createBotFrameworkClient();
 
     this.addDialog(new CardDialog(CARDS_DIALOG, ServerUrl))
       .addDialog(new WaitForProactiveDialog(PROACTIVE_DIALOG, ServerUrl, continuationParametersStore))
@@ -49,7 +48,7 @@ class ActivityRouterDialog extends ComponentDialog {
       .addDialog(new FileUploadDialog(FILE_UPLOAD_DIALOG))
       .addDialog(new DeleteDialog(DELETE_DIALOG))
       .addDialog(new UpdateDialog(UPDATE_DIALOG))
-      .addDialog(this.createEchoSkillDialog(ECHO_DIALOG, configuration, conversationState, conversationIdFactory, this.skillClient))
+      .addDialog(this.createEchoSkillDialog(ECHO_DIALOG, configuration, conversationState, conversationIdFactory, skillClient))
       .addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
         this.processActivity.bind(this)
       ]));
@@ -62,7 +61,7 @@ class ActivityRouterDialog extends ComponentDialog {
    * @param {import('../config').DefaultConfig} configuration
    * @param {import('botbuilder').ConversationState} conversationState
    * @param {import('botbuilder').SkillConversationIdFactory} conversationIdFactory
-   * @param {import('botbuilder').SkillHttpClient} skillClient
+   * @param {import('botbuilder').BotFrameworkClient} skillClient
    */
   createEchoSkillDialog (dialogId, configuration, conversationState, conversationIdFactory, skillClient) {
     const { MicrosoftAppId, SkillHostEndpoint, EchoSkillInfo: skill } = configuration;

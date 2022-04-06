@@ -182,8 +182,7 @@ async function endSkillConversation (context) {
         endOfConversation, TurnContext.getConversationReference(context.activity), true);
 
       await conversationState.saveChanges(context, true);
-      const client = skillClient.createBotFrameworkClient();
-      await client.postActivity(botId, activeSkill.appId, activeSkill.skillEndpoint, skillsConfig.skillHostEndpoint, endOfConversation.conversation.id, endOfConversation);
+      await skillClient.postActivity(botId, activeSkill.appId, activeSkill.skillEndpoint, skillsConfig.skillHostEndpoint, endOfConversation.conversation.id, endOfConversation);
     }
   } catch (err) {
     console.error(`\n [onTurnError] Exception caught on attempting to send EndOfConversation : ${err}`);
@@ -217,7 +216,7 @@ const conversationState = new ConversationState(memoryStorage);
 const conversationIdFactory = new SkillConversationIdFactory(new MemoryStorage());
 
 // Create the skill client
-const skillClient = botFrameworkAuthentication;
+const skillClient = botFrameworkAuthentication.createBotFrameworkClient();
 
 // Create the main dialog.
 const mainDialog = new MainDialog(skillClient, conversationState, conversationIdFactory, skillsConfig);
@@ -233,7 +232,7 @@ server.post('/api/messages', async (req, res) => {
 });
 
 // Create and initialize the skill classes
-const handler = new TokenExchangeSkillHandler(adapter, (context) => bot.run(context), conversationIdFactory, skillClient, skillsConfig);
+const handler = new TokenExchangeSkillHandler(adapter, (context) => bot.run(context), conversationIdFactory, botFrameworkAuthentication, skillsConfig);
 const skillEndpoint = new ChannelServiceRoutes(handler);
 skillEndpoint.register(server, '/api/skills');
 

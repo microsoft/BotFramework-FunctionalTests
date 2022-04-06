@@ -18,22 +18,22 @@ const SSO_DIALOG_PREFIX = 'Sso';
 
 class MainDialog extends ComponentDialog {
   /**
-   * @param {import('botbuilder').ConfigurationBotFrameworkAuthentication} auth
+   * @param {import('botbuilder').BotFrameworkClient} skillClient
    * @param {import('botbuilder').ConversationState} conversationState
    * @param {import('../skillConversationIdFactory').SkillConversationIdFactory} conversationIdFactory
    * @param {import('../skillsConfiguration').SkillsConfiguration} skillsConfig
    */
-  constructor (auth, conversationState, conversationIdFactory, skillsConfig) {
+  constructor (skillClient, conversationState, conversationIdFactory, skillsConfig) {
     super(MAIN_DIALOG);
 
     const botId = process.env.MicrosoftAppId;
 
-    if (!auth) throw new Error('[MainDialog]: Missing parameter \'auth\' is required');
+    if (!skillClient) throw new Error('[MainDialog]: Missing parameter \'skillClient\' is required');
     if (!conversationState) throw new Error('[MainDialog]: Missing parameter \'conversationState\' is required');
     if (!conversationIdFactory) throw new Error('[MainDialog]: Missing parameter \'conversationIdFactory\' is required');
     if (!skillsConfig) throw new Error('[MainDialog]: Missing parameter \'skillsConfig\' is required');
 
-    this.auth = auth;
+    this.skillClient = skillClient;
     this.deliveryModeProperty = conversationState.createProperty(RootBot.DeliveryModePropertyName);
     this.activeSkillProperty = conversationState.createProperty(RootBot.ActiveSkillPropertyName);
     this.skillsConfig = skillsConfig;
@@ -278,7 +278,7 @@ class MainDialog extends ComponentDialog {
       const skillDialogOptions = {
         botId,
         conversationIdFactory,
-        skillClient: this.auth.createBotFrameworkClient(),
+        skillClient: this.skillClient,
         skillHostEndpoint: process.env.SkillHostEndpoint,
         conversationState,
         skill

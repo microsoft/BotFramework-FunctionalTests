@@ -162,7 +162,7 @@ adapter.use(new SsoSaveStateMiddleware(conversationState));
 const conversationIdFactory = new SkillConversationIdFactory(memoryStorage);
 
 // Create the skill client
-const skillClient = botFrameworkAuthentication;
+const skillClient = botFrameworkAuthentication.createBotFrameworkClient();
 
 // Create the main dialog.
 const dialog = new ActivityRouterDialog(config, conversationState, conversationIdFactory, skillClient, continuationParametersStore);
