@@ -12,6 +12,15 @@ namespace TranscriptConverter
     public class TestScriptItem
     {
         /// <summary>
+        /// Initializes a new instance of the <see cref="TestScriptItem"/> class.
+        /// </summary>
+        /// <param name="assertions">The activity assertion collection.</param>
+        public TestScriptItem(List<string> assertions = default)
+        {
+            Assertions = assertions ?? new List<string>();
+        }
+
+        /// <summary>
         /// Gets or sets the activity type.
         /// </summary>
         /// <value>
