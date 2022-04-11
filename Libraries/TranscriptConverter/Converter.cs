@@ -13,6 +13,12 @@ namespace TranscriptConverter
 {
     public static class Converter
     {
+        private static readonly HashSet<JTokenType> IgnoreTypes = new HashSet<JTokenType>
+        {
+            JTokenType.Array,
+            JTokenType.Object
+        };
+
         /// <summary>
         /// Converts the transcript into a test script.
         /// </summary>
@@ -54,12 +60,6 @@ namespace TranscriptConverter
                 return null;
             }
 
-            var ignoreTypes = new HashSet<JTokenType>
-            {
-                JTokenType.Array,
-                JTokenType.Object
-            };
-
             static bool ShouldRemove(HashSet<string> processedProps, JProperty prop)
             {
                 var key = prop.Name;
@@ -88,7 +88,7 @@ namespace TranscriptConverter
 
             container.DescendantsAndSelf()
                 .OfType<JProperty>()
-                .Where(prop => !ignoreTypes.Contains(prop.Value.Type))
+                .Where(prop => !IgnoreTypes.Contains(prop.Value.Type))
                 .Where(prop => ShouldRemove(processedProps, prop))
                 .ToList()
                 .ForEach(prop => prop.Remove());
@@ -107,12 +107,6 @@ namespace TranscriptConverter
             {
                 return null;
             }
-
-            var ignoreTypes = new HashSet<JTokenType>
-            {
-                JTokenType.Array,
-                JTokenType.Object
-            };
 
             var ignoreFields = new HashSet<string>
             {
@@ -154,7 +148,7 @@ namespace TranscriptConverter
                 };
             }
 
-            var items = container.Select(obj => MapItem(obj, ignoreTypes, ignoreFields)).ToList();
+            var items = container.Select(obj => MapItem(obj, IgnoreTypes, ignoreFields)).ToList();
 
             return new TestScript(items);
         }
