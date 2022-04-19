@@ -6,7 +6,7 @@ using Newtonsoft.Json.Serialization;
 using System.Web.Http;
 using System.Web.Http.Controllers;
 
-namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBotv3
+namespace Microsoft.Bot.Builder.FunctionalTestsBots.EchoSkillBotv3
 {
     public static class WebApiConfig
     {

@@ -3,10 +3,9 @@
 
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
 
-namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBot.Bots
+namespace Microsoft.Bot.Builder.FunctionalTestsBots.EchoSkillBot.Bots
 {
     public class EchoBot : ActivityHandler
     {

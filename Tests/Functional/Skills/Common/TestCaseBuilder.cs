@@ -3,9 +3,8 @@
 
 using System;
 using System.Collections.Generic;
-using TranscriptTestRunner;
 
-namespace SkillFunctionalTests.Skills.Common
+namespace Microsoft.Bot.Builder.Tests.Functional.Skills.Common
 {
     public class TestCaseBuilder
     {

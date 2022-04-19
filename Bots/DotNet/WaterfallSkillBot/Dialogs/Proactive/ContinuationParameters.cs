@@ -4,7 +4,7 @@
 using System.Security.Principal;
 using Microsoft.Bot.Schema;
 
-namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Proactive
+namespace Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallSkillBot.Dialogs.Proactive
 {
     /// <summary>
     /// Stores the information needed to resume a conversation when a proactive message arrives.

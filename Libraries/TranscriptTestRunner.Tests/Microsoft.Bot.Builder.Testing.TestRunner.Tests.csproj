@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Libraries\TranscriptTestRunner\TranscriptTestRunner.csproj" />
+    <ProjectReference Include="..\TranscriptTestRunner\Microsoft.Bot.Builder.Testing.TestRunner.csproj" />
   </ItemGroup>
 
 </Project>

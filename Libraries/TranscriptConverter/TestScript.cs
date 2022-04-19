@@ -4,7 +4,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace TranscriptConverter
+namespace Microsoft.Bot.Builder.Testing.TranscriptConverter
 {
     /// <summary>
     /// A Test Script that can be used for functional testing of bots.

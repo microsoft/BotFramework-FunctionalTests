@@ -5,12 +5,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Newtonsoft.Json;
 
-namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Bots
+namespace Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallHostBot.Bots
 {
     public class RootBot<T> : ActivityHandler
         where T : Dialog

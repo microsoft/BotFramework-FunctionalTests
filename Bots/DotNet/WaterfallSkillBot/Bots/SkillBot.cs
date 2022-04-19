@@ -6,11 +6,10 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 
-namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Bots
+namespace Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallSkillBot.Bots
 {
     public class SkillBot<T> : ActivityHandler
         where T : Dialog
