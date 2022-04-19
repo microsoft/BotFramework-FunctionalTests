@@ -45,12 +45,10 @@ namespace SkillFunctionalTests.Skills.SignIn
 
             var targetSkills = new List<string>
             {
+                SkillBotNames.ComposerSkillBotDotNet,
                 SkillBotNames.WaterfallSkillBotDotNet,
                 SkillBotNames.WaterfallSkillBotJS,
                 SkillBotNames.WaterfallSkillBotPython,
-                
-                // TODO: Enable after fixing issue (The test is failing with timeout after the signIn).
-                //SkillBotNames.ComposerSkillBotDotNet
             };
 
             var scripts = new List<string>
