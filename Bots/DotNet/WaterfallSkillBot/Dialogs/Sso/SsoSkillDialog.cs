@@ -5,13 +5,12 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Choices;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Configuration;
 
-namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Sso
+namespace Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallSkillBot.Dialogs.Sso
 {
     public class SsoSkillDialog : ComponentDialog
     {

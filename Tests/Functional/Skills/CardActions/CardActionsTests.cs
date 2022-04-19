@@ -16,7 +16,6 @@ using Xunit.Abstractions;
 
 namespace Microsoft.Bot.Builder.Tests.Functional.Skills.CardActions
 {
-    [Trait("TestCategory", "CardActions")]
     public class CardActionsTests : ScriptTestBase
     {
         private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/Skills/CardActions/TestScripts";
@@ -38,12 +37,10 @@ namespace Microsoft.Bot.Builder.Tests.Functional.Skills.CardActions
 
             var hostBots = new List<HostBot>
             {
+                HostBot.ComposerHostBotDotNet,
                 HostBot.WaterfallHostBotDotNet,
                 HostBot.WaterfallHostBotJS,
                 HostBot.WaterfallHostBotPython,
-
-                // TODO: Enable this when the port to composer is ready
-                //HostBot.ComposerHostBotDotNet
             };
 
             var targetSkills = new List<string>

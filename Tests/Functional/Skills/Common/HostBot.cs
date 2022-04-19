@@ -6,6 +6,11 @@ namespace Microsoft.Bot.Builder.Tests.Functional.Skills.Common
     public enum HostBot
     {
         /// <summary>
+        /// Waterfall host implemented using Composer and the dotnet runtime.
+        /// </summary>
+        ComposerHostBotDotNet,
+
+        /// <summary>
         /// Simple host implemented using Composer and the dotnet runtime.
         /// </summary>
         SimpleHostBotComposerDotNet,

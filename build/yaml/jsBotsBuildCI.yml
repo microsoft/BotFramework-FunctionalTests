@@ -1,7 +1,7 @@
 steps:
-- script: yarn
+- script: yarn prepareAndInstall
   workingDirectory: Bots/JavaScript
-  displayName: "yarn install"
+  displayName: "yarn prepare & install"
 
 - script: yarn lint
   workingDirectory: Bots/JavaScript

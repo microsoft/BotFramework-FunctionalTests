@@ -110,7 +110,7 @@ stages:
                   $content | ConvertTo-Json | Set-Content $file
 
           # Evaluate dependencies source and version
-          - template: evaluateDependenciesVariables.yml
+          - template: ../../common/dotnet/evaluateDependenciesVariables.yml
             parameters:
               botType: "${{ bot.type }}"
               registry: "${{ bot.dependency.registry }}"
@@ -183,12 +183,12 @@ stages:
           # End of DotNet v3 Install & Build
 
           # Tag BotBuilder package version
-          - template: ../common/tagBotBuilderVersion.yml
+          - template: ../../common/tagBotBuilderVersion.yml
             parameters:
               ${{ if eq(bot.displayName, '') }}:
-                botName: "${{ bot.name }}"
+                name: "${{ bot.name }}"
               ${{ if ne(bot.displayName, '') }}:
-                botName: "${{ bot.displayName }}"
+                name: "${{ bot.displayName }}"
               version: "$(DEPENDENCIESVERSIONNUMBER)"
 
           # Upload zip to artifacts in case we want to debug it

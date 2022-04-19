@@ -17,7 +17,6 @@ using Xunit.Abstractions;
 
 namespace Microsoft.Bot.Builder.Tests.Functional.Skills.ProactiveMessages
 {
-    [Trait("TestCategory", "ProactiveMessages")]
     public class ProactiveTests : ScriptTestBase
     {
         private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/Skills/ProactiveMessages/TestScripts";
@@ -38,12 +37,10 @@ namespace Microsoft.Bot.Builder.Tests.Functional.Skills.ProactiveMessages
 
             var hostBots = new List<HostBot>
             {
+                HostBot.ComposerHostBotDotNet,
                 HostBot.WaterfallHostBotDotNet,
                 HostBot.WaterfallHostBotJS,
                 HostBot.WaterfallHostBotPython,
-
-                // TODO: Enable this when the port to composer is ready
-                //HostBot.ComposerHostBotDotNet
             };
 
             var targetSkills = new List<string>

@@ -16,7 +16,6 @@ using Xunit.Abstractions;
 
 namespace Microsoft.Bot.Builder.Tests.Functional.Skills.MessageWithAttachment
 {
-    [Trait("TestCategory", "Attachments")]
     public class MessageWithAttachmentTests : ScriptTestBase
     {
         private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/Skills/MessageWithAttachment/TestScripts";
@@ -37,12 +36,10 @@ namespace Microsoft.Bot.Builder.Tests.Functional.Skills.MessageWithAttachment
 
             var hostBots = new List<HostBot>
             {
+                HostBot.ComposerHostBotDotNet,
                 HostBot.WaterfallHostBotDotNet,
                 HostBot.WaterfallHostBotJS,
                 HostBot.WaterfallHostBotPython,
-
-                // TODO: Enable this when the port to composer is ready
-                //HostBot.ComposerHostBotDotNet
             };
 
             var targetSkills = new List<string>

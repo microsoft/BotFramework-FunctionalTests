@@ -134,6 +134,8 @@ variables:
   # VirtualNetworkName: (optional) Name of the Virtual Network.
 
   ## Bots Configuration (Define these variables in Azure)
+  # BffnComposerHostBotDotNetAppId: (optional) App Id for BffnComposerHostBotDotNet bot.
+  # BffnComposerHostBotDotNetAppSecret: (optional) App Secret for BffnComposerHostBotDotNet bot.
   # BffnComposerSkillBotDotNetAppId: (optional) App Id for BffnComposerSkillBotDotNet bot.
   # BffnComposerSkillBotDotNetAppSecret: (optional) App Secret for BffnComposerSkillBotDotNet bot.
   # BffnEchoSkillBotComposerDotNetAppId: (optional) App Id for BffnEchoSkillBotComposerDotNet bot.
@@ -326,6 +328,20 @@ stages:
             registry: ${{ parameters.dependenciesRegistryDotNetSkills }}
             version: ${{ parameters.dependenciesVersionDotNetSkills }}
 
+        - name: "bffncomposerhostbotdotnet"
+          dependsOn: "Deploy_bffnechoskillbotdotnetv3"
+          type: "ComposerHost"
+          displayName: "DotNet Composer Host Bot"
+          appId: $(BFFNCOMPOSERHOSTBOTDOTNETAPPID)
+          appSecret: $(BFFNCOMPOSERHOSTBOTDOTNETAPPSECRET)
+          project: 
+            directory: 'Bots/DotNet/ComposerHostBotDotNet'
+            name: "ComposerHostBotDotNet.csproj"
+            netCoreVersion: "3.1.x"
+          dependency:
+            registry: ${{ parameters.dependenciesRegistryDotNetSkills }}
+            version: ${{ parameters.dependenciesVersionDotNetSkills }}
+
         - name: "bffncomposerskillbotdotnet"
           dependsOn: "Deploy_bffnwaterfallhostbotdotnet"
           type: "ComposerSkill"
@@ -506,26 +522,3 @@ stages:
             registry: "$(INTERNALCONTAINERREGISTRYNAME)"
             port: "37420"
             command: "python app.py"
-
-# Publish variables
-  - stage: "Publish_Variables"
-    displayName: "Publish Variables"
-    dependsOn: []
-    jobs:
-      - job: "Publish_Variables"
-        displayName: "Publish Variables"
-        steps:
-          - powershell: |
-              $variables = @{
-                deploymentBuildSuffix = "$(BUILD.BUILDID)"
-              }
-              Write-Host $variables
-              New-Item -Path "$(SYSTEM.DEFAULTWORKINGDIRECTORY)" -Name "variables" -ItemType "directory"
-              $variables | ConvertTo-Json | Out-File "$(SYSTEM.DEFAULTWORKINGDIRECTORY)/Variables/variables.json"
-            displayName: "Create Variables file"
-
-          - task: PublishPipelineArtifact@1
-            displayName: "Publish Variables as artifact"
-            inputs:
-              targetPath: "$(SYSTEM.DEFAULTWORKINGDIRECTORY)/variables"
-              artifactName: Variables

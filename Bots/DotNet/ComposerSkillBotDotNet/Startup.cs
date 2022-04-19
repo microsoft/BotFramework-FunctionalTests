@@ -1,15 +1,13 @@
-﻿using System.Collections.Concurrent;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.StaticFiles;
-using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs.Adaptive.Runtime.Extensions;
 using Microsoft.Bot.Builder.LanguageGeneration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace ComposerSkillBotDotNet
+namespace Microsoft.Bot.Builder.FunctionalTestsBots.ComposerSkillBotDotNet
 {
     public class Startup
     {

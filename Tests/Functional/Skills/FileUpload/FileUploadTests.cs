@@ -17,7 +17,6 @@ using Xunit.Abstractions;
 
 namespace Microsoft.Bot.Builder.Tests.Functional.Skills.FileUpload
 {
-    [Trait("TestCategory", "FileUpload")]
     public class FileUploadTests : ScriptTestBase
     {
         private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/Skills/FileUpload/TestScripts";
@@ -39,12 +38,10 @@ namespace Microsoft.Bot.Builder.Tests.Functional.Skills.FileUpload
 
             var hostBots = new List<HostBot>
             {
+                HostBot.ComposerHostBotDotNet,
                 HostBot.WaterfallHostBotDotNet,
                 HostBot.WaterfallHostBotJS,
                 HostBot.WaterfallHostBotPython
-
-                // TODO: Enable these when the port to composer is ready
-                //HostBotNames.ComposerHostBotDotNet
             };
 
             var targetSkills = new List<string>

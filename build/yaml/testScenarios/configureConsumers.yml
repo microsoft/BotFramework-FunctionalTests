@@ -1,41 +1,38 @@
 parameters:
-- name: appIds
-  displayName: Bot's App Registration Ids
-  type: object
-  default:
-    ComposerSkillBotDotNet: ""
-    EchoSkillBotComposerDotNet: ""
-    EchoSkillBotDotNet: ""
-    EchoSkillBotDotNetV3: ""
-    EchoSkillBotJS: ""
-    EchoSkillBotJSV3: ""
-    EchoSkillBotPython: ""
-    WaterfallSkillBotDotNet: ""
-    WaterfallSkillBotJS: ""
-    WaterfallSkillBotPython: ""
+  - name: appIds
+    displayName: Bot's App Registration Ids
+    type: object
+    default:
+      ComposerSkillBotDotNet: ""
+      EchoSkillBotComposerDotNet: ""
+      EchoSkillBotDotNet: ""
+      EchoSkillBotDotNetV3: ""
+      EchoSkillBotJS: ""
+      EchoSkillBotJSV3: ""
+      EchoSkillBotPython: ""
+      WaterfallSkillBotDotNet: ""
+      WaterfallSkillBotJS: ""
+      WaterfallSkillBotPython: ""
 
-- name: azureSubscription
-  displayName: Azure Service Connection
-  type: string
+  - name: azureSubscription
+    displayName: Azure Service Connection
+    type: string
 
-- name: keyVault
-  displayName: KeyVault name
-  type: string
+  - name: keyVault
+    displayName: KeyVault name
+    type: string
 
-- name: resourceGroup
-  displayName: Resource Group name
-  type: string
+  - name: resourceGroup
+    displayName: Resource Group name
+    type: string
 
-- name: resourceSuffix
-  displayName: Azure resources' name suffix
-  type: string
-
-- name: scenario
-  displayName: Test scenario
-  type: object
+  - name: resourceSuffix
+    displayName: Azure resources' name suffix
+    type: string
 
 steps:
   - task: AzureCLI@2
+    name: "Configure_Consumers"
     displayName: "Set Consumers AppSettings"
     inputs:
       azureSubscription: ${{ parameters.azureSubscription }}
@@ -44,10 +41,10 @@ steps:
       failOnStderr: true
       inlineScript: |
         # Global Variables
-        $scenario = "${{ parameters.scenario }}";
         $resourceGroup = "${{ parameters.resourceGroup }}";
         $keyVault = "${{ parameters.keyVault }}";
         $suffix = "${{ parameters.resourceSuffix }}";
+        $appSettingsPath = "Tests/Functional/appsettings.json";
 
         # Helper Functions.
 
@@ -111,27 +108,18 @@ steps:
           }
         }
 
-        function FilterBotsByScenario {
-          param($bots, $scenarios, $scenario)
-          # Filter bots by a specific test scenario.
+        function FilterBotsByNames {
+          param($bots, $names)
+          # Filter bots by names.
 
           if (-not $bots) {
             Write-Host $(AddTimeStamp -text $noBotsFoundMessage);
             return $bots;
           }
 
-          $scenarioSelected = $scenarios | Where-Object { $_.name -eq $scenario }
-
-          if (-not $scenarioSelected) {
-            Write-Host $(AddTimeStamp -text "$($scenario): Unable to find the Test Scenario.");
-            return @();
-          }
-
           return $bots | Where-Object {
             $bot = $_;
-
-            $scenarioBots = $scenarioSelected.consumers + $scenarioSelected.skills;
-            return $scenarioBots -contains $bot.key;
+            return $names -contains $bot.key;
           }
         }
 
@@ -421,6 +409,12 @@ steps:
             configType    = $types.Composer
           }
           @{
+            key           = "ComposerHostBotDotNet"
+            botName       = "bffncomposerhostbotdotnet"
+            resourceGroup = $groups.DotNet
+            configType    = $types.Composer
+          }
+          @{
             key           = "WaterfallHostBotDotNet"
             botName       = "bffnwaterfallhostbotdotnet"
             resourceGroup = $groups.DotNet
@@ -535,10 +529,9 @@ steps:
           }
         )
 
-        # Bots Test Scenarios
-        $scenarios = @(
-          @{ 
-            name      = "SingleTurn"; 
+        # Bots Test Configurations
+        $configurations = @(
+          @{
             consumers = @(
               "SimpleHostBotComposerDotNet",
               "SimpleHostBotDotNet",
@@ -554,9 +547,9 @@ steps:
               "EchoSkillBotPython"
             );
           }
-          @{ 
-            name      = "Waterfall"; 
+          @{
             consumers = @(
+              "ComposerHostBotDotNet",
               "WaterfallHostBotDotNet",
               "WaterfallHostBotJS",
               "WaterfallHostBotPython"
@@ -571,45 +564,54 @@ steps:
         )
 
         # Pre-configure and filter bots.
-        Write-Host $(AddTimeStamp -text "Filtering bots by '$scenario' scenario ...");
-        $consumersToConfigure = FilterBotsByScenario -bots $consumers -scenarios $scenarios -scenario $scenario;
-        $skillsToConfigure = FilterBotsByScenario -bots $skills -scenarios $scenarios -scenario $scenario;
-
-        Write-Host $(AddTimeStamp -text "Loading the Skills AppIds from the KeyVault '$keyVault' when no Pipeline Variable is provided.");
-        $skillsToConfigure = AddBotsAppIdFromKeyVault -bots $skillsToConfigure -keyVault $keyVault
-
-        Write-Host $(AddTimeStamp -text "Filtering bots that have an AppId assigned ...");
-        $skillsToConfigure = FilterBotsWithAppId -bots $skillsToConfigure
+        $setupConsumers = $consumers;
+        $setupSkills = $skills;
 
         Write-Host $(AddTimeStamp -text "Adding the suffix '$suffix' to the bot resources ...");
-        $consumersToConfigure = AddBotsSuffix -bots $consumersToConfigure -suffix $suffix
-        $skillsToConfigure = AddBotsSuffix -bots $skillsToConfigure -suffix $suffix
+        $setupConsumers = AddBotsSuffix -bots $setupConsumers -suffix $suffix
+        $setupSkills = AddBotsSuffix -bots $setupSkills -suffix $suffix
+
+        Write-Host $(AddTimeStamp -text "Loading the Skills AppIds from the KeyVault '$keyVault' when no Pipeline Variable is provided.");
+        $setupSkills = AddBotsAppIdFromKeyVault -bots $setupSkills -keyVault $keyVault
+
+        Write-Host $(AddTimeStamp -text "Filtering bots that have an AppId assigned ...");
+        $setupSkills = FilterBotsWithAppId -bots $setupSkills
 
         Write-Host $(AddTimeStamp -text "Filtering existing Resource Groups ...");
         $resourceGroups = FilterResourceGroupsByExistence -groups $groups
 
         Write-Host $(AddTimeStamp -text "Filtering deployed bots in Azure ...");
-        $consumersToConfigure = FilterBotsByResourceExistence -groups $resourceGroups -bots $consumersToConfigure
-        $skillsToConfigure = FilterBotsByResourceExistence -groups $resourceGroups -bots $skillsToConfigure
+        $setupConsumers = FilterBotsByResourceExistence -groups $resourceGroups -bots $setupConsumers
+        $setupSkills = FilterBotsByResourceExistence -groups $resourceGroups -bots $setupSkills
 
-        Write-Host $(AddTimeStamp -text "Adding Azure AppSettings to Consumers' configuration.");
-        $consumersToConfigure = AddAzureAppSettings -consumers $consumersToConfigure -skills $skillsToConfigure
-
-        if (-not $consumersToConfigure) {
-          Write-Error $(AddTimeStamp -text "No Consumers were found to configure. Cancelling the configuration ...");
-          return;
-        }
-
-        if (-not $skillsToConfigure) {
-          Write-Error $(AddTimeStamp -text "No Skills were found to configure each Consumer. Cancelling the configuration ...");
-          return;
-        }
+        Write-Host $(AddTimeStamp -text "Configuring the Test Project.");
+        ConfigureTestProjectAppSettings -bots $setupConsumers -appSettingsPath $appSettingsPath;
 
         # Configure steps.
-        Write-Host $(AddTimeStamp -text "Configuring the Test Project.");
-        ConfigureTestProjectAppSettings -bots $consumersToConfigure -appSettingsPath "Tests/Functional/appsettings.json";
+        foreach ($config in $configurations) {
+          Write-Host $(AddTimeStamp -text "Filtering consumers ($($config.consumers -join ', ')) ...");
+          $consumersToConfigure = FilterBotsByNames -bots $setupConsumers -names $config.consumers;
+          $skillsToConfigure = FilterBotsByNames -bots $setupSkills -names $config.skills;
 
-        Write-Host $(AddTimeStamp -text "Configuring the Consumer bots App Settings in Azure.");
-        ConfigureConsumers -consumers $consumersToConfigure -skills $skillsToConfigure
+          Write-Host $(AddTimeStamp -text "Adding Azure AppSettings to Consumers' configuration.");
+          $consumersToConfigure = AddAzureAppSettings -consumers $consumersToConfigure -skills $skillsToConfigure
+
+          if (-not $consumersToConfigure) {
+            Write-Error $(AddTimeStamp -text "No Consumers were found to configure. Cancelling the configuration ...");
+            return;
+          }
+
+          if (-not $skillsToConfigure) {
+            Write-Error $(AddTimeStamp -text "No Skills were found to configure each Consumer. Cancelling the configuration ...");
+            return;
+          }
+
+          Write-Host $(AddTimeStamp -text "Configuring the Consumer bots App Settings in Azure.");
+          ConfigureConsumers -consumers $consumersToConfigure -skills $skillsToConfigure
+        }
 
         Write-Host $(AddTimeStamp -text "Process Finished!");
+
+        # Share appSettings.json file content.
+        $appSettings = Get-Content -Path $appSettingsPath | Out-String | ConvertTo-Json -Compress
+        Write-Host "##vso[task.setvariable variable=ConfigureAppSettingsContent;isOutput=true;isSecret=true]$appSettings"

@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Bot.Builder.Dialogs.Adaptive.Runtime.Extensions;
@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace EchoSkillBotComposer
+namespace Microsoft.Bot.Builder.FunctionalTestsBots.EchoSkillBotComposer
 {
     public class Startup
     {

@@ -1,0 +1,41 @@
+parameters:
+  - name: azureSubscription
+    displayName: Azure Service Connection
+    type: string
+
+  - name: resourceGroup
+    displayName: Name of the group where the CosmosDb resource is located
+    type: string
+
+  - name: resourceName
+    displayName: Name of the CosmosDb resource
+    type: string
+
+steps:
+  - task: AzureCLI@2
+    displayName: "Set CosmosDb connection variables"
+    inputs:
+      azureSubscription: "${{ parameters.azureSubscription }}"
+      scriptType: pscore
+      scriptLocation: inlineScript
+      failOnStderr: true
+      inlineScript: |
+        $connection, $rest = az cosmosdb keys list --name ${{ parameters.resourceName }} --resource-group ${{ parameters.resourceGroup }} --type connection-strings | ConvertFrom-Json | Select-Object -ExpandProperty connectionStrings | Select-Object -ExpandProperty connectionString;
+
+        $AccountEndpoint, $AccountKey = $connection.Trim(";") -split ";";
+        $endpoint = $AccountEndpoint -replace "AccountEndpoint=";
+        $key = $AccountKey -replace "AccountKey=";
+
+        if ([string]::IsNullOrEmpty($endpoint) -or [string]::IsNullOrEmpty($key)) {
+          Write-Host "##vso[task.logissue type=error]CosmosDb ServiceEndpoint and AuthKey couldn't be retrieved from Azure."
+          exit 1 # Force exit
+        }
+
+        Write-Host "CosmosDb connection variables:";
+        [PSCustomObject]@{ 
+          ServiceEndpoint = $endpoint
+          AuthKey = $key.Substring(0, 3) + "***"
+        } | Format-Table -AutoSize
+
+        Write-Host "##vso[task.setvariable variable=CosmosDbServiceEndpoint]$endpoint";
+        Write-Host "##vso[task.setvariable variable=CosmosDbAuthKey]$key";

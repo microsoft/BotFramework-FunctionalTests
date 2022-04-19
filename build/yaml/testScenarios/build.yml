@@ -1,0 +1,49 @@
+parameters:
+  - name: destZip
+    displayName: Path where the .zip file will be saved into Artifacts
+    type: string
+
+  - name: env
+    displayName: (optional) Environment variables to share to the build process
+    type: object
+    default: {}
+
+  - name: project
+    displayName: Path to the .csproj file
+    type: string
+
+steps:
+  - task: UseDotNet@2
+    displayName: "Use .NET Core SDK 3.1"
+    inputs:
+      version: 3.1.x
+
+  - task: DotNetCoreCLI@2
+    displayName: "Build"
+    inputs:
+      command: publish
+      publishWebProjects: false
+      projects: "${{ parameters.project }}"
+      arguments: "--output $(BUILD.ARTIFACTSTAGINGDIRECTORY)/Build"
+      modifyOutputPath: true
+    env: ${{ parameters.env }}
+
+  - task: PowerShell@2
+    displayName: "Prepare Publish"
+    inputs:
+      targetType: inline
+      failOnStderr: true
+      workingDirectory: "$(BUILD.ARTIFACTSTAGINGDIRECTORY)"
+      script: |
+        $originZip = "Build/$('${{ parameters.project }}'.Split('/')[-2]).zip";
+        $destZip = "Publish/${{ parameters.destZip }}";
+        $destFolder = $destZip.Replace($destZip.Split("/")[-1], "");
+
+        New-Item -Path $destFolder -ItemType Directory;
+        Move-Item -Path $originZip -Destination $destZip;
+
+  - task: PublishBuildArtifacts@1
+    displayName: "Publish Build"
+    inputs:
+      pathToPublish: "$(BUILD.ARTIFACTSTAGINGDIRECTORY)/Publish"
+      artifactName: "Build"

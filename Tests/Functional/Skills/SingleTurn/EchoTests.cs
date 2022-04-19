@@ -16,7 +16,6 @@ using Xunit.Abstractions;
 
 namespace Microsoft.Bot.Builder.Tests.Functional.Skills.SingleTurn
 {
-    [Trait("TestCategory", "SingleTurn")]
     public class EchoTests : ScriptTestBase
     {
         private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/Skills/SingleTurn/TestScripts";

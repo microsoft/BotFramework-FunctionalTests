@@ -10,6 +10,7 @@
     "semistandard": "^16.0.0"
   },
   "scripts": {
-    "lint": "semistandard"
+    "lint": "semistandard",
+    "prepareAndInstall": "yarn workspaces foreach run preinstall && yarn install && yarn workspaces foreach run postinstall"
   }
 }

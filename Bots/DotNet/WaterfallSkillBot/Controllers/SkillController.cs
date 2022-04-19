@@ -4,12 +4,11 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Builder.Skills;
 using Microsoft.Bot.Schema;
 
-namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Controllers
+namespace Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallSkillBot.Controllers
 {
     /// <summary>
     /// A controller that handles skill replies to the bot.

@@ -17,7 +17,6 @@ using Xunit.Abstractions;
 
 namespace Microsoft.Bot.Builder.Tests.Functional.Skills.SignIn
 {
-    [Trait("TestCategory", "SignIn")]
     public class SignInTests : ScriptTestBase
     {
         private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/Skills/SignIn/TestScripts";
@@ -38,22 +37,18 @@ namespace Microsoft.Bot.Builder.Tests.Functional.Skills.SignIn
 
             var hostBots = new List<HostBot>
             {
+                HostBot.ComposerHostBotDotNet,
                 HostBot.WaterfallHostBotDotNet,
                 HostBot.WaterfallHostBotJS,
                 HostBot.WaterfallHostBotPython,
-
-                // TODO: Enable this when the port to composer is ready
-                //HostBot.ComposerHostBotDotNet
             };
 
             var targetSkills = new List<string>
             {
+                SkillBotNames.ComposerSkillBotDotNet,
                 SkillBotNames.WaterfallSkillBotDotNet,
                 SkillBotNames.WaterfallSkillBotJS,
                 SkillBotNames.WaterfallSkillBotPython,
-                
-                // TODO: Enable after fixing issue (The test is failing with timeout after the signIn).
-                //SkillBotNames.ComposerSkillBotDotNet
             };
 
             var scripts = new List<string>

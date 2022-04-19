@@ -60,10 +60,19 @@ steps:
             }
           }
 
-          # Add the $source source at the beginning of requirements
+          # Update requirements.txt
           $file = "${{ parameters.source }}/requirements.txt"
           $content = @(Get-Content $file)
+          $rootFile = "Bots/Python/requirements.txt"
 
+          # Replace root requirements.txt reference with file content
+          $matchref = Select-String -Path $file -Pattern "-r ../requirements.txt"
+          if($matchref.LineNumber -gt 0) {
+              $content[$matchinfo.LineNumber - 1] = @(Get-Content $rootFile)
+              Set-Content -Path $file -Value $content
+          }
+
+          # Add the $source source at the beginning of requirements
           if (-not ([string]::IsNullOrEmpty("$extraSource"))) {
             $extraSourceTag = "--extra-index-url $extraSource"
           }
@@ -99,7 +108,7 @@ steps:
           Write-Host "`nSource: $source"
           Write-Host "Extra Source: $extraSource"
           Write-Host "Version Number: $versionNumber"
-      
+
           $content = @(Get-Content $file)
           Write-Host "`nrequirements.txt file:"
           $content
