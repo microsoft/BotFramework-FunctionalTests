@@ -7,19 +7,18 @@ using System.Collections.Generic;
 using System.Globalization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.BotFramework;
+using Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallSkillBot.Bots;
+using Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallSkillBot.Dialogs;
+using Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallSkillBot.Dialogs.Proactive;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Builder.Skills;
 using Microsoft.Bot.Connector.Authentication;
-using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Bots;
-using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs;
-using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Proactive;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot
+namespace Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallSkillBot
 {
     public class Startup
     {

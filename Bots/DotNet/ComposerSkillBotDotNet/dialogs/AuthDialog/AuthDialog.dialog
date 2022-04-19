@@ -120,6 +120,33 @@
           }
         }
       ]
+    },
+    {
+      "$kind": "Microsoft.OnEventActivity",
+      "$designer": {
+        "id": "7kJtr3",
+        "name": "Event received (Event activity)"
+      },
+      "actions": [
+        {
+          "$kind": "Microsoft.IfCondition",
+          "$designer": {
+            "id": "FpQfAQ"
+          },
+          "actions": [
+            {
+              "$kind": "Microsoft.SetProperty",
+              "$designer": {
+                "id": "ulNzSl"
+              },
+              "property": "dialog.token",
+              "value": "turn.activity.value.token"
+            }
+          ],
+          "condition": "=turn.activity.name==tokens/response"
+        }
+      ],
+      "condition": "=not(empty(turn.activity.value))"
     }
   ],
   "generator": "AuthDialog.lg",

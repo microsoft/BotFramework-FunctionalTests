@@ -5,12 +5,11 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 
-namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Middleware
+namespace Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallHostBot.Middleware
 {
     /// <summary>
     /// Uses an ILogger instance to log user and bot messages. It filters out ContinueConversation events coming from skill responses.

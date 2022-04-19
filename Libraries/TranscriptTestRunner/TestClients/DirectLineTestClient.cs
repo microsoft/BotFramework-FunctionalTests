@@ -12,13 +12,13 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Bot.Builder.Testing.TestRunner.Authentication;
 using Microsoft.Bot.Connector.DirectLine;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Rest.TransientFaultHandling;
 using Newtonsoft.Json;
-using TranscriptTestRunner.Authentication;
 using Activity = Microsoft.Bot.Connector.DirectLine.Activity;
 using ActivityTypes = Microsoft.Bot.Schema.ActivityTypes;
 using Attachment = Microsoft.Bot.Connector.DirectLine.Attachment;
@@ -26,7 +26,7 @@ using BotActivity = Microsoft.Bot.Schema.Activity;
 using BotChannelAccount = Microsoft.Bot.Schema.ChannelAccount;
 using ChannelAccount = Microsoft.Bot.Connector.DirectLine.ChannelAccount;
 
-namespace TranscriptTestRunner.TestClients
+namespace Microsoft.Bot.Builder.Testing.TestRunner.TestClients
 {
     /// <summary>
     /// DirectLine implementation of <see cref="TestClientBase"/>.

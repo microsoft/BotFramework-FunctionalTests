@@ -4,10 +4,10 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Bot.Builder.Dialogs;
-using Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Skills;
+using Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallHostBot.Skills;
 using Microsoft.Extensions.Configuration;
 
-namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot
+namespace Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallHostBot
 {
     /// <summary>
     /// A helper class that loads Skills information from configuration.

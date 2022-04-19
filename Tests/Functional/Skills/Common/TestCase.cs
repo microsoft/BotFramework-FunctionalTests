@@ -1,10 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using Microsoft.Bot.Connector;
-using TranscriptTestRunner;
-
-namespace SkillFunctionalTests.Skills.Common
+namespace Microsoft.Bot.Builder.Tests.Functional.Skills.Common
 {
     public class TestCase
     {

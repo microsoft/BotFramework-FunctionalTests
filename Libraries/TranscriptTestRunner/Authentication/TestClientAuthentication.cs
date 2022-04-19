@@ -10,7 +10,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace TranscriptTestRunner.Authentication
+namespace Microsoft.Bot.Builder.Testing.TestRunner.Authentication
 {
     /// <summary>
     /// Authentication class for the Test Client.

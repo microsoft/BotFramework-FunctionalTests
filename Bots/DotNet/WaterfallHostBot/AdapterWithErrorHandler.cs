@@ -4,18 +4,17 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Bot.Builder;
+using Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallHostBot.Dialogs;
+using Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallHostBot.Middleware;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Builder.Skills;
 using Microsoft.Bot.Builder.TraceExtensions;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Bot.Schema;
-using Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs;
-using Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Middleware;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot
+namespace Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallHostBot
 {
     public class AdapterWithErrorHandler : CloudAdapter
     {

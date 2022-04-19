@@ -10,11 +10,11 @@ using System.Web.Http;
 using Autofac;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Internals;
+using Microsoft.Bot.Builder.FunctionalTestsBots.EchoSkillBotv3.Authentication;
 using Microsoft.Bot.Connector;
 using Microsoft.Bot.Connector.SkillAuthentication;
-using Microsoft.BotFrameworkFunctionalTests.EchoSkillBotv3.Authentication;
 
-namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBotv3
+namespace Microsoft.Bot.Builder.FunctionalTestsBots.EchoSkillBotv3
 {
     // Specify which type provides the authentication configuration to allow for validation for skills.
     [SkillBotAuthentication(AuthenticationConfigurationProviderType = typeof(CustomSkillAuthenticationConfiguration))]

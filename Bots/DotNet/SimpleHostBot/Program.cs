@@ -4,7 +4,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot
+namespace Microsoft.Bot.Builder.FunctionalTestsBots.SimpleHostBot
 {
     public class Program
     {

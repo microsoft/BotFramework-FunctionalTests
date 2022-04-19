@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 
-namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Sso
+namespace Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallSkillBot.Dialogs.Sso
 {
     public class SsoSkillSignInDialog : ComponentDialog
     {

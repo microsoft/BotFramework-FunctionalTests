@@ -6,24 +6,24 @@ using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallSkillBot.Dialogs.Auth;
+using Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallSkillBot.Dialogs.Cards;
+using Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallSkillBot.Dialogs.Delete;
+using Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallSkillBot.Dialogs.FileUpload;
+using Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallSkillBot.Dialogs.MessageWithAttachment;
+using Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallSkillBot.Dialogs.Proactive;
+using Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallSkillBot.Dialogs.Sso;
+using Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallSkillBot.Dialogs.Update;
+using Microsoft.Bot.Builder.Integration.AspNet.Core.Skills;
 using Microsoft.Bot.Builder.Skills;
 using Microsoft.Bot.Builder.TraceExtensions;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Bot.Schema;
-using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Auth;
-using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards;
-using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Delete;
-using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.FileUpload;
-using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.MessageWithAttachment;
-using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Proactive;
-using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Sso;
-using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Update;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
-namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs
+namespace Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallSkillBot.Dialogs
 {
     /// <summary>
     /// A root dialog that can route activities sent to the skill to different sub-dialogs.

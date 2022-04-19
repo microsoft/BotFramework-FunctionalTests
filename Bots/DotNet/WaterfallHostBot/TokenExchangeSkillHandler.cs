@@ -8,7 +8,6 @@ using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Skills;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Bot.Schema;
@@ -17,7 +16,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Newtonsoft.Json.Linq;
 
-namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot
+namespace Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallHostBot
 {
     /// <summary>
     /// A <see cref="CloudSkillHandler"/> specialized to support SSO Token exchanges.

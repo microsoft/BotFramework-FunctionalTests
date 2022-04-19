@@ -3,11 +3,10 @@
 
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 
-namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs
+namespace Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallHostBot.Dialogs
 {
     /// <summary>
     /// A simple waterfall dialog used to test triggering tangents from <see cref="MainDialog"/>.

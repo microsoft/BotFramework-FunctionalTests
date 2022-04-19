@@ -4,7 +4,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot
+namespace Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallHostBot
 {
     public class Program
     {

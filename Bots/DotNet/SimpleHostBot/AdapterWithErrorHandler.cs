@@ -4,17 +4,16 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Bot.Builder;
+using Microsoft.Bot.Builder.FunctionalTestsBots.SimpleHostBot.Bots;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Builder.Skills;
 using Microsoft.Bot.Builder.TraceExtensions;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Bot.Schema;
-using Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Bots;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot
+namespace Microsoft.Bot.Builder.FunctionalTestsBots.SimpleHostBot
 {
     public class AdapterWithErrorHandler : CloudAdapter
     {
