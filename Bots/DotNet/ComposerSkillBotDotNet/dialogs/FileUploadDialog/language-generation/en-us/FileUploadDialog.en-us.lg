@@ -3,6 +3,7 @@
 # AttachmentInput_Prompt_JKtU0T()
 [Activity
     Text = ${AttachmentInput_Prompt_JKtU0T_text()}
+    InputHint = acceptingInput
 ]
 
 # AttachmentInput_Prompt_JKtU0T_text()
@@ -10,6 +11,7 @@
 # AttachmentInput_UnrecognizedPrompt_JKtU0T()
 [Activity
     Text = ${AttachmentInput_UnrecognizedPrompt_JKtU0T_text()}
+    InputHint = acceptingInput
 ]
 
 # AttachmentInput_UnrecognizedPrompt_JKtU0T_text()
@@ -17,11 +19,11 @@
 # SendActivity_ZBBqzI()
 [Activity
     Text = ${SendActivity_ZBBqzI_text()}
+    InputHint = acceptingInput
 ]
 
 # SendActivity_ZBBqzI_text()
-- ```Attachment "${dialog.file.Name}" has been received.
-File content: ${dialog.fileContent}```
+- ```Attachment "${dialog.file.Name}" has been received.\r\nFile content: ${dialog.fileContent}```
 # ConfirmInput_Prompt_9WovlS()
 [Activity
     Text = ${ConfirmInput_Prompt_9WovlS_text()}
