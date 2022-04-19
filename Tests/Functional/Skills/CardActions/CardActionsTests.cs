@@ -16,7 +16,6 @@ using Xunit.Abstractions;
 
 namespace SkillFunctionalTests.Skills.CardActions
 {
-    [Trait("TestCategory", "CardActions")]
     public class CardActionsTests : ScriptTestBase
     {
         private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/Skills/CardActions/TestScripts";

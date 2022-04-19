@@ -108,12 +108,12 @@ stages:
               version: "${{ bot.dependency.version }}"
 
           # Tag BotBuilder package version
-          - template: ../common/tagBotBuilderVersion.yml
+          - template: ../../common/tagBotBuilderVersion.yml
             parameters:
               ${{ if eq(bot.displayName, '') }}:
-                botName: "${{ bot.name }}"
+                name: "${{ bot.name }}"
               ${{ if ne(bot.displayName, '') }}:
-                botName: "${{ bot.displayName }}"
+                name: "${{ bot.displayName }}"
               version: "$(DEPENDENCIESVERSIONNUMBER)"
 
           # Set BotBuilder source and version
