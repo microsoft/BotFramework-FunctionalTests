@@ -3,14 +3,13 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Text.RegularExpressions;
 using Microsoft.Bot.Schema;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace TranscriptConverter
+namespace Microsoft.Bot.Builder.Testing.TranscriptConverter
 {
     public static class Converter
     {

@@ -237,7 +237,7 @@ stages:
           appSecret: $(BFFNSIMPLEHOSTBOTDOTNETAPPSECRET)
           project:
             directory: 'Bots/DotNet/SimpleHostBot'
-            name: "SimpleHostBot.csproj"
+            name: "Microsoft.Bot.Builder.FunctionalTestsBots.SimpleHostBot.csproj"
             netCoreVersion: "3.1.x"
           dependency:
             registry: ${{ parameters.dependenciesRegistryDotNetHosts }}
@@ -251,7 +251,7 @@ stages:
           appSecret: $(BFFNECHOSKILLBOTDOTNETAPPSECRET)
           project: 
             directory: 'Bots/DotNet/EchoSkillBot'
-            name: "EchoSkillBot.csproj"
+            name: "Microsoft.Bot.Builder.FunctionalTestsBots.EchoSkillBot.csproj"
             netCoreVersion: "3.1.x"
           dependency:
             registry: ${{ parameters.dependenciesRegistryDotNetSkills }}
@@ -266,7 +266,7 @@ stages:
           appSecret: $(BFFNECHOSKILLBOTDOTNETV3APPSECRET)
           project:
             directory: 'Bots/DotNet/EchoSkillBot-v3'
-            name: "EchoSkillBot-v3.csproj"
+            name: "Microsoft.Bot.Builder.FunctionalTestsBots.EchoSkillBot-v3.csproj"
           dependency:
             registry: ${{ parameters.dependenciesRegistryDotNetSkillsV3 }}
             version: ${{ parameters.dependenciesVersionDotNetSkillsV3 }}
@@ -279,7 +279,7 @@ stages:
           appSecret: $(BFFNWATERFALLHOSTBOTDOTNETAPPSECRET)
           project:
             directory: 'Bots/DotNet/WaterfallHostBot'
-            name: "WaterfallHostBot.csproj"
+            name: "Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallHostBot.csproj"
             netCoreVersion: "3.1.x"
           dependency:
             registry: ${{ parameters.dependenciesRegistryDotNetHosts }}
@@ -293,7 +293,7 @@ stages:
           appSecret: $(BFFNWATERFALLSKILLBOTDOTNETAPPSECRET)
           project: 
             directory: 'Bots/DotNet/WaterfallSkillBot'
-            name: "WaterfallSkillBot.csproj"
+            name: "Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallSkillBot.csproj"
             netCoreVersion: "3.1.x"
           dependency:
             registry: ${{ parameters.dependenciesRegistryDotNetSkills }}
@@ -308,7 +308,7 @@ stages:
           appSecret: $(BFFNSIMPLEHOSTBOTCOMPOSERDOTNETAPPSECRET)
           project: 
             directory: 'Bots/DotNet/SimpleHostBotComposer'
-            name: "SimpleHostBotComposer.csproj"
+            name: "Microsoft.Bot.Builder.FunctionalTestsBots.SimpleHostBotComposer.csproj"
             netCoreVersion: "3.1.x"
           dependency:
             registry: ${{ parameters.dependenciesRegistryDotNetHosts }}
@@ -322,7 +322,7 @@ stages:
           appSecret: $(BFFNECHOSKILLBOTCOMPOSERDOTNETAPPSECRET)
           project: 
             directory: 'Bots/DotNet/EchoSkillBotComposer'
-            name: "EchoSkillBotComposer.csproj"
+            name: "Microsoft.Bot.Builder.FunctionalTestsBots.EchoSkillBotComposer.csproj"
             netCoreVersion: "3.1.x"
           dependency:
             registry: ${{ parameters.dependenciesRegistryDotNetSkills }}
@@ -350,7 +350,7 @@ stages:
           appSecret: $(BFFNCOMPOSERSKILLBOTDOTNETAPPSECRET)
           project: 
             directory: 'Bots/DotNet/ComposerSkillBotDotNet'
-            name: "ComposerSkillBotDotNet.csproj"
+            name: "Microsoft.Bot.Builder.FunctionalTestsBots.ComposerSkillBotDotNet.csproj"
             netCoreVersion: "3.1.x"
           dependency:
             registry: ${{ parameters.dependenciesRegistryDotNetSkills }}
