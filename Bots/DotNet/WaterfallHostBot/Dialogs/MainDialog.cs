@@ -6,19 +6,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Choices;
+using Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallHostBot.Dialogs.Sso;
+using Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallHostBot.Skills;
 using Microsoft.Bot.Builder.Integration.AspNet.Core.Skills;
 using Microsoft.Bot.Builder.Skills;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Bot.Schema;
-using Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs.Sso;
-using Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Skills;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
-namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs
+namespace Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallHostBot.Dialogs
 {
     /// <summary>
     /// The main dialog for this bot. It uses a <see cref="SkillDialog"/> to call skills.

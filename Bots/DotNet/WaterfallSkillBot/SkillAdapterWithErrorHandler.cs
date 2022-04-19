@@ -3,15 +3,14 @@
 
 using System;
 using System.Threading.Tasks;
-using Microsoft.Bot.Builder;
+using Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallSkillBot.Middleware;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Builder.TraceExtensions;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Bot.Schema;
-using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Middleware;
 using Microsoft.Extensions.Logging;
 
-namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot
+namespace Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallSkillBot
 {
     public class SkillAdapterWithErrorHandler : CloudAdapter
     {
