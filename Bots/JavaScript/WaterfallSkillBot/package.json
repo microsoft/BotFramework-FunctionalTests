@@ -7,11 +7,13 @@
   "license": "MIT",
   "scripts": {
     "start": "node index.js",
-    "watch": "nodemon index.js"
+    "watch": "nodemon index.js",
+    "preinstall": "node ../Utils/prepare.mjs replace",
+    "postinstall": "node ../Utils/prepare.mjs restore"
   },
   "dependencies": {
-    "botbuilder": "~4.15.0",
-    "botbuilder-dialogs": "~4.15.0",
+    "botbuilder": "$BotBuilderVersion",
+    "botbuilder-dialogs": "$BotBuilderVersion",
     "dotenv": "^10.0.0",
     "node-fetch": "^2.6.1",
     "restify": "~8.5.1"
