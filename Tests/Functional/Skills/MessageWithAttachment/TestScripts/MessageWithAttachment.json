@@ -236,6 +236,7 @@
         "from.role == 'bot'",
         "recipient.role == 'user'",
         "text == 'This is an inline attachment.'",
+        "inputHint == 'ignoringInput'",
         "attachments[0].contentType == 'image/png'",
         "attachments[0].name == 'Files/architecture-resize.png'"
       ]
@@ -341,6 +342,7 @@
         "from.role == 'bot'",
         "recipient.role == 'user'",
         "text == 'This is an attachment from a HTTP URL.'",
+        "inputHint == 'ignoringInput'",
         "attachments[0].contentType == 'image/png'",
         "endsWith(attachments[0].contentUrl, 'images/architecture-resize.png')",
         "attachments[0].name == 'Files/architecture-resize.png'"

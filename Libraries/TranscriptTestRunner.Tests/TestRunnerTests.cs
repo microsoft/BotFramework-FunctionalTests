@@ -2,10 +2,9 @@
 // Licensed under the MIT License.
 
 using Moq;
-using TranscriptTestRunner;
 using Xunit;
 
-namespace TranscriptTestRunner.Tests
+namespace Microsoft.Bot.Builder.Testing.TestRunner.Tests
 {
     public class TestRunnerTests
     {

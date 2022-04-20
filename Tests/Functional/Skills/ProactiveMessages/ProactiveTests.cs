@@ -5,19 +5,18 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.Bot.Builder.Testing.TestRunner;
+using Microsoft.Bot.Builder.Testing.TestRunner.XUnit;
+using Microsoft.Bot.Builder.Tests.Functional.Skills.Common;
 using Microsoft.Bot.Connector;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using SkillFunctionalTests.Skills.Common;
-using TranscriptTestRunner;
-using TranscriptTestRunner.XUnit;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace SkillFunctionalTests.Skills.ProactiveMessages
+namespace Microsoft.Bot.Builder.Tests.Functional.Skills.ProactiveMessages
 {
-    [Trait("TestCategory", "ProactiveMessages")]
     public class ProactiveTests : ScriptTestBase
     {
         private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/Skills/ProactiveMessages/TestScripts";
@@ -38,12 +37,10 @@ namespace SkillFunctionalTests.Skills.ProactiveMessages
 
             var hostBots = new List<HostBot>
             {
+                HostBot.ComposerHostBotDotNet,
                 HostBot.WaterfallHostBotDotNet,
                 HostBot.WaterfallHostBotJS,
                 HostBot.WaterfallHostBotPython,
-
-                // TODO: Enable this when the port to composer is ready
-                //HostBot.ComposerHostBotDotNet
             };
 
             var targetSkills = new List<string>

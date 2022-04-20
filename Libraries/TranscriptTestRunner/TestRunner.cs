@@ -18,12 +18,15 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Newtonsoft.Json;
 using Activity = Microsoft.Bot.Schema.Activity;
 
-namespace TranscriptTestRunner
+namespace Microsoft.Bot.Builder.Testing.TestRunner
 {
     /// <summary>
     /// Test runner implementation.
     /// </summary>
+
+#pragma warning disable CA1724 // Type names should not match namespaces
     public class TestRunner
+#pragma warning restore CA1724 // Type names should not match namespaces
     {
         private readonly ILogger _logger;
         private readonly int _replyTimeout;

@@ -1,0 +1,212 @@
+[import](common.lg)
+
+# ChoiceInput_Prompt_bGBaUQ()
+[Activity
+    Text = ${ChoiceInput_Prompt_bGBaUQ_text()}
+    Speak = ${ChoiceInput_Prompt_bGBaUQ_text()}
+    InputHint = expectingInput
+]
+
+# ChoiceInput_Prompt_bGBaUQ_text()
+- What group of skills would you like to use?
+# ChoiceInput_Prompt_r1dzSq()
+[Activity
+    Text = ${ChoiceInput_Prompt_r1dzSq_text()}
+]
+
+# ChoiceInput_Prompt_r1dzSq_text()
+- What skill would you like to call?
+# ChoiceInput_Prompt_s6M1vB()
+[Activity
+    Text = ${ChoiceInput_Prompt_s6M1vB_text()}
+    Speak = ${ChoiceInput_Prompt_bz0HFw_text()}
+    InputHint = expectingInput
+]
+
+# ChoiceInput_Prompt_s6M1vB_text()
+- What skill would you like to call?
+# SendActivity_s2Y3dm()
+[Activity
+    Text = ${SendActivity_s2Y3dm_text()}
+]
+
+# SendActivity_s2Y3dm_text()
+- V3 Bots do not support 'expectReplies' delivery mode.
+# ChoiceInput_Prompt_JN3lQF_text()
+- What skill would you like to call?
+# ChoiceInput_Prompt_JN3lQF()
+[Activity
+    Text = ${ChoiceInput_Prompt_JN3lQF_text()}
+]
+
+# ChoiceInput_Prompt_6CZhXf()
+[Activity
+    Text = ${ChoiceInput_Prompt_6CZhXf_text()}
+    Speak = ${ChoiceInput_Prompt_6CZhXf_text()}
+    InputHint = expectingInput
+]
+
+# ChoiceInput_Prompt_6CZhXf_text()
+- Select an action to send to **${dialog.selectedSkill}**.
+# ChoiceInput_Prompt_IU6NEf()
+[Activity
+    Text = ${ChoiceInput_Prompt_IU6NEf_text()}
+    Speak = ${ChoiceInput_Prompt_6CZhXf_text()}
+    InputHint = expectingInput
+]
+
+# ChoiceInput_Prompt_IU6NEf_text()
+- Select an action to send to **${dialog.selectedSkill}**.
+# BeginSkill_Activity_onxlr1()
+[Activity
+    Text = Begin the Echo Skill
+    DeliveryMode = ${dialog.deliveryMode}
+]
+# BeginSkill_Activity_7dUPiO()
+[Activity
+    Type = event
+    Name = ${dialog.skillActivity}
+    DeliveryMode = ${dialog.deliveryMode}
+]
+# BeginSkill_Activity_3Re00E()
+[Activity
+    Text = Begin the Echo Skill
+    DeliveryMode = ${dialog.deliveryMode}
+]
+# BeginSkill_Activity_HGIdXR()
+[Activity
+    Text = Begin the Echo Skill
+    DeliveryMode = ${dialog.deliveryMode}
+]
+# BeginSkill_Activity_uVoFid()
+[Activity
+    Text = Begin the Echo Skill
+    DeliveryMode = ${dialog.deliveryMode}
+]
+# BeginSkill_Activity_uDdZsE()
+[Activity
+    Text = Begin the Echo Skill
+    DeliveryMode = ${dialog.deliveryMode}
+]
+# BeginSkill_Activity_Mo7LPU()
+[Activity
+    Type = event
+    Name = ${dialog.skillActivity}
+    DeliveryMode = ${dialog.deliveryMode}
+]
+# BeginSkill_Activity_wANrC6()
+[Activity
+    Type = event
+    Name = ${dialog.skillActivity}
+    DeliveryMode = ${dialog.deliveryMode}
+]
+# BeginSkill_Activity_CWZ93Z()
+[Activity
+    Type = event
+    Name = ${dialog.skillActivity}
+    DeliveryMode = ${dialog.deliveryMode}
+]
+# BeginSkill_Activity_lXz5s4()
+[Activity
+    Type = event
+    Name = ${dialog.skillActivity}
+    DeliveryMode = ${dialog.deliveryMode}
+]
+# BeginSkill_Activity_yEraYF()
+[Activity
+    Type = event
+    Name = ${dialog.skillActivity}
+    DeliveryMode = ${dialog.deliveryMode}
+]
+# BeginSkill_Activity_JTQiNu()
+[Activity
+    Text = ${BeginSkill_Activity_JTQiNu_text()}
+    DeliveryMode = ${dialog.deliveryMode}
+]
+
+# BeginSkill_Activity_JTQiNu_text()
+- Begin the Echo Skill
+
+# BeginSkill_Activity_H67YQK()
+[Activity
+    Type = event
+    Name = ${dialog.skillActivity}
+    DeliveryMode = ${dialog.deliveryMode}
+]
+
+# BeginSkill_Activity_H67YQK_text()
+- ```[Activity
+    Type = event
+    Name = ${dialog.skillActivity}
+    DeliveryMode = ${dialog.deliveryMode}
+]```
+
+# ChoiceInput_UnrecognizedPrompt_bGBaUQ()
+[Activity
+    Text = ${ChoiceInput_UnrecognizedPrompt_bGBaUQ_text()}
+]
+
+# ChoiceInput_UnrecognizedPrompt_bGBaUQ_text()
+- That was not a valid choice, please select a valid skill group.
+# ChoiceInput_Prompt_bz0HFw()
+[Activity
+    Text = ${ChoiceInput_Prompt_bz0HFw_text()}
+    Speak = ${ChoiceInput_Prompt_bz0HFw_text()}
+    InputHint = expectingInput
+]
+
+# ChoiceInput_Prompt_bz0HFw_text()
+- What skill would you like to call?
+# ChoiceInput_UnrecognizedPrompt_bz0HFw()
+[Activity
+    Text = ${ChoiceInput_UnrecognizedPrompt_bz0HFw_text()}
+]
+
+# ChoiceInput_UnrecognizedPrompt_bz0HFw_text()
+- That was not a valid choice, please select a valid skill.
+# ChoiceInput_UnrecognizedPrompt_s6M1vB()
+[Activity
+    Text = ${ChoiceInput_UnrecognizedPrompt_s6M1vB_text()}
+]
+
+# ChoiceInput_UnrecognizedPrompt_s6M1vB_text()
+- That was not a valid choice, please select a valid skill.
+# ChoiceInput_Prompt_UYSxl6_text()
+- What delivery mode would you like to use?
+# ChoiceInput_Prompt_UYSxl6()
+[Activity
+    Text = ${ChoiceInput_Prompt_UYSxl6_text()}
+    Speak = ${ChoiceInput_Prompt_UYSxl6_text()}
+    InputHint = expectingInput
+]
+
+# ChoiceInput_UnrecognizedPrompt_UYSxl6_text()
+- That was not a valid choice, please select a valid delivery mode.
+# ChoiceInput_UnrecognizedPrompt_UYSxl6()
+[Activity
+    Text = ${ChoiceInput_UnrecognizedPrompt_UYSxl6_text()}
+]
+
+# ChoiceInput_Prompt_vv4fal()
+[Activity
+    Text = ${dialog.initialMessage}
+    InputHint = expectingInput
+]
+
+# ChoiceInput_UnrecognizedPrompt_vv4fal_text()
+- That was not a valid choice, please select a valid delivery mode.
+# ChoiceInput_UnrecognizedPrompt_vv4fal()
+[Activity
+    Text = ${ChoiceInput_UnrecognizedPrompt_vv4fal_text()}
+]
+
+# trim()
+- ```
+```
+# SendActivity_hxrWDN()
+[Activity
+    Text = ${SendActivity_hxrWDN_text()}
+]
+
+# SendActivity_hxrWDN_text()
+- Done with '${dialog.selectedSkill}'.

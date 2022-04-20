@@ -374,4 +374,3 @@ Bots/JavaScript/.yarn/*
 !Bots/JavaScript/.yarn/plugins
 !Bots/JavaScript/.yarn/sdks
 !Bots/JavaScript/.yarn/versions
-Bots/JavaScript/.pnp.*

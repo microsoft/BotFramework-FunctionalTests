@@ -1,0 +1,71 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/BotFramework-Composer/main/Composer/packages/server/schemas/botproject.schema",
+  "name": "ComposerHostBotDotNet",
+  "skills": {
+    "echoSkillBotComposerDotNet": {
+      "manifest": "http://localhost:35410/manifests/echoskillbotcomposer-manifest.json",
+      "remote": true,
+      "endpointName": "default"
+    },
+    "echoSkillBotDotNet": {
+      "manifest": "http://localhost:35400/manifests/echoSkillBotDotNet-manifest.json",
+      "remote": true,
+      "endpointName": "default"
+    },
+    "echoSkillBotDotNetV3": {
+      "manifest": "http://localhost:35407/manifests/echoSkillBotDotNetV3-manifest.json",
+      "remote": true,
+      "endpointName": "default"
+    },
+    "echoSkillBotJs": {
+      "manifest": "http://localhost:36400/manifests/echoSkillBotJs-manifest.json",
+      "remote": true,
+      "endpointName": "default"
+    },
+    "echoSkillBotJsv3": {
+      "manifest": "http://localhost:36407/manifests/echoSkillBotJsv3-manifest.json",
+      "remote": true,
+      "endpointName": "default"
+    },
+    "echoSkillBotPython": {
+      "manifest": "http://localhost:37400/manifests/echoSkillBotPython-manifest.json",
+      "remote": true,
+      "endpointName": "default"
+    },
+    "teamsSkillBotDotNet": {
+      "manifest": "http://localhost:35430/manifests/teamsSkillBotDotNet-manifest.json",
+      "remote": true,
+      "endpointName": "default"
+    },
+    "teamsSkillBotJs": {
+      "manifest": "http://localhost:36430/manifests/teamsSkillBotJs-manifest.json",
+      "remote": true,
+      "endpointName": "default"
+    },
+    "teamsSkillBotPython": {
+      "manifest": "http://localhost:37430/manifests/teamsSkillBotPython-manifest.json",
+      "remote": true,
+      "endpointName": "default"
+    },
+    "waterfallSkillBotDotNet": {
+      "manifest": "http://localhost:35420/manifests/waterfallSkillBotDotNet-manifest.json",
+      "remote": true,
+      "endpointName": "default"
+    },
+    "waterfallSkillBotJs": {
+      "manifest": "http://localhost:36420/manifests/waterfallSkillBotJs-manifest.json",
+      "remote": true,
+      "endpointName": "default"
+    },
+    "waterfallSkillBotPython": {
+      "manifest": "http://localhost:37420/manifests/waterfallSkillBotPython-manifest.json",
+      "remote": true,
+      "endpointName": "default"
+    },
+    "composerSkillBotDotNet": {
+      "manifest": "http://localhost:35440/manifests/composerSkillBotDotNet-manifest.json",
+      "remote": true,
+      "endpointName": "default"
+    }
+  }
+}

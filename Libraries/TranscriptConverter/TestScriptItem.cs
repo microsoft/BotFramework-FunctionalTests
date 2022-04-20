@@ -4,13 +4,22 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace TranscriptConverter
+namespace Microsoft.Bot.Builder.Testing.TranscriptConverter
 {
     /// <summary>
     /// TestRunner's representation of an activity.
     /// </summary>
     public class TestScriptItem
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TestScriptItem"/> class.
+        /// </summary>
+        /// <param name="assertions">The activity assertion collection.</param>
+        public TestScriptItem(List<string> assertions = default)
+        {
+            Assertions = assertions ?? new List<string>();
+        }
+
         /// <summary>
         /// Gets or sets the activity type.
         /// </summary>
