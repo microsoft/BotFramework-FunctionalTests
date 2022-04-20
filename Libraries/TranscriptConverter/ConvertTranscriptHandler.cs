@@ -4,6 +4,7 @@
 using System;
 using System.CommandLine;
 using System.CommandLine.Invocation;
+using System.Diagnostics;
 using System.IO;
 using Newtonsoft.Json;
 
@@ -26,17 +27,24 @@ namespace Microsoft.Bot.Builder.Testing.TranscriptConverter
             {
                 try
                 {
-                    Console.WriteLine("{0}: {1}", "Converting source transcript", source);
+                    var rootStopwatch = new Stopwatch();
+                    var stopwatch = new Stopwatch();
+                    rootStopwatch.Start();
+
+                    Console.WriteLine("Reading TranScript file\n  - Path: {0}", source);
 
                     var testScript = Converter.ConvertTranscript(source);
 
-                    Console.WriteLine("Finished conversion");
-
+                    stopwatch.Start();
                     var targetPath = string.IsNullOrEmpty(target) ? source.Replace(".transcript", ".json", StringComparison.InvariantCulture) : target;
 
                     WriteTestScript(testScript, targetPath);
 
-                    Console.WriteLine("{0}: {1}", "Test script saved as", targetPath);
+                    stopwatch.Stop();
+                    Console.WriteLine("Saving TestScript file ({0}ms)\n  - Path: {1}", stopwatch.ElapsedMilliseconds, targetPath);
+
+                    rootStopwatch.Stop();
+                    Console.WriteLine("\nFinished processing ({0}ms)", rootStopwatch.ElapsedMilliseconds);
                 }
                 catch (FileNotFoundException e)
                 {

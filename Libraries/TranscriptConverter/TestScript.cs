@@ -12,6 +12,15 @@ namespace Microsoft.Bot.Builder.Testing.TranscriptConverter
     public class TestScript
     {
         /// <summary>
+        /// Initializes a new instance of the <see cref="TestScript"/> class.
+        /// </summary>
+        /// <param name="items">The sequence of test scripts to perform to validate the bots behavior.</param>
+        public TestScript(List<TestScriptItem> items = default)
+        {
+            Items = items ?? new List<TestScriptItem>();
+        }
+
+        /// <summary>
         /// Gets the test script items.
         /// </summary>
         /// <value>
