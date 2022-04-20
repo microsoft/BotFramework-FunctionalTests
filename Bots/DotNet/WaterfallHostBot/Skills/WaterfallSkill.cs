@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Bot.Schema;
 
-namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Skills
+namespace Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallHostBot.Skills
 {
     public class WaterfallSkill : SkillDefinition
     {

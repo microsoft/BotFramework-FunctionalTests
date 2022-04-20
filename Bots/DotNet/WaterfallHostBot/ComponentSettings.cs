@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot
+namespace Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallHostBot
 {
     internal class ComponentSettings
     {

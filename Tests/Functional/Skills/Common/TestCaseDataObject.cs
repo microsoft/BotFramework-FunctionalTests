@@ -5,7 +5,7 @@ using System;
 using Newtonsoft.Json;
 using Xunit.Abstractions;
 
-namespace SkillFunctionalTests.Skills.Common
+namespace Microsoft.Bot.Builder.Tests.Functional.Skills.Common
 {
     public class TestCaseDataObject : IXunitSerializable
     {

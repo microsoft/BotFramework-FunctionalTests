@@ -3,6 +3,7 @@
 # SendActivity_kNHtMW()
 [Activity
     Text = ${SendActivity_kNHtMW_text()}
+    InputHint = ignoringInput
 ]
 
 # SendActivity_kNHtMW_text()
@@ -10,6 +11,7 @@
 # ConfirmInput_Prompt_WxLXxu()
 [Activity
     Text = ${ConfirmInput_Prompt_WxLXxu_text()}
+    InputHint = acceptingInput
 ]
 
 # ConfirmInput_Prompt_WxLXxu_text()
@@ -24,6 +26,7 @@
 # SendActivity_oj6Ert()
 [Activity
     Text = ${SendActivity_oj6Ert_text()}
+    InputHint = ignoringInput
 ]
 
 # SendActivity_oj6Ert_text()
@@ -31,6 +34,7 @@
 # ConfirmInput_Prompt_pBqV4a()
 [Activity
     Text = ${ConfirmInput_Prompt_pBqV4a_text()}
+    InputHint = acceptingInput
 ]
 
 # ConfirmInput_Prompt_pBqV4a_text()
@@ -38,6 +42,8 @@
 # SendActivity_ooIaKS()
 [Activity
     Text = ${SendActivity_ooIaKS_text()}
+    Speak = Here is your token:
+    InputHint = ignoringInput
 ]
 
 # SendActivity_ooIaKS_text()

@@ -1,0 +1,77 @@
+parameters:
+  - name: dll
+    displayName: Name of the .dll file to execute the tests from
+    type: string
+
+  - name: namespace
+    displayName: Namespace to filter what tests should be executed, could be full or partial
+    type: string
+
+  - name: trx
+    displayName: Name of the .trx file that will be generated
+    type: string
+
+  - name: zip
+    displayName: Artifacts path to the built project .zip file
+    type: string
+
+  - name: appsettings
+    displayName: (optional) Raw content to set in the appsettings.json file
+    type: string
+    default: ""
+
+  - name: env
+    displayName: (optional) Environment variables to share to the test process
+    type: object
+    default: {}
+
+steps:
+  - task: DownloadBuildArtifacts@0
+    displayName: "Download Build"
+    inputs:
+      artifactName: "Build"
+
+  - task: ExtractFiles@1
+    displayName: "Extract Build"
+    inputs:
+      archiveFilePatterns: "$(BUILD.ARTIFACTSTAGINGDIRECTORY)/Build/${{ parameters.zip }}"
+      destinationFolder: "$(BUILD.ARTIFACTSTAGINGDIRECTORY)/Tests"
+      cleanDestinationFolder: true
+
+  - ${{ if ne(parameters.appsettings, '') }}:
+      - task: PowerShell@2
+        displayName: "Update appsettings.json"
+        inputs:
+          targetType: inline
+          failOnStderr: true
+          workingDirectory: "$(BUILD.ARTIFACTSTAGINGDIRECTORY)/Tests"
+          script: Set-Content -Path appsettings.json -Value ('${{ parameters.appsettings }}' | ConvertFrom-Json);
+
+  - task: DotNetCoreCLI@2
+    displayName: "Test"
+    inputs:
+      command: custom
+      custom: vstest
+      testRunTitle: "${{ parameters.trx }}"
+      arguments: '$(BUILD.ARTIFACTSTAGINGDIRECTORY)/Tests/${{ parameters.dll }} --logger:"trx;LogFileName=${{ parameters.trx }}" --TestCaseFilter:FullyQualifiedName~${{ parameters.namespace }}'
+    env: ${{ parameters.env }}
+
+  - task: PowerShell@2
+    displayName: "Update ${{ parameters.trx }}"
+    condition: succeededOrFailed()
+    inputs:
+      targetType: inline
+      failOnStderr: true
+      workingDirectory: "$(SYSTEM.DEFAULTWORKINGDIRECTORY)/TestResults"
+      script: |
+        [XML]$xml = Get-Content "${{ parameters.trx }}";
+        $xml.TestRun.TestDefinitions.UnitTest | ForEach-Object { $_.TestMethod.name = $_.name; };
+        $xml.save("${{ parameters.trx }}");
+
+  - task: PublishTestResults@2
+    displayName: "Publish Test Result"
+    condition: succeededOrFailed()
+    inputs:
+      testResultsFormat: "VSTest"
+      testResultsFiles: "TestResults/${{ parameters.trx }}"
+      testRunTitle: "${{ parameters.namespace }}-$(BUILD.BUILDNUMBER)"

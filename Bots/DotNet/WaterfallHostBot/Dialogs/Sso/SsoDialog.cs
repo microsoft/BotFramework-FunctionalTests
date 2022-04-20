@@ -5,13 +5,12 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Choices;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Bot.Schema;
 
-namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs.Sso
+namespace Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallHostBot.Dialogs.Sso
 {
     /// <summary>
     /// Helps prepare the host for SSO operations and provides helpers to check the status and invoke the skill.
