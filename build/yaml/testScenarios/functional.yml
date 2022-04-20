@@ -45,7 +45,7 @@ stages:
           - template: build.yml
             parameters:
               destZip: "Functional/Functional.zip"
-              project: "Tests/Functional/FunctionalTests.csproj"
+              project: "Tests/Functional/Microsoft.Bot.Builder.Tests.Functional.csproj"
 
   - stage: "Configure_Functional"
     displayName: "Configure Functional"
@@ -67,8 +67,8 @@ stages:
     dependsOn: Configure_Functional
     variables:
       Zip: "Functional/Functional.zip"
-      Dll: "FunctionalTests.dll"
-      BaseNamespace: "SkillFunctionalTests.Skills"
+      Dll: "Microsoft.Bot.Builder.Tests.Functional.dll"
+      BaseNamespace: "Microsoft.Bot.Builder.Tests.Functional.Skills"
       AppSettings: $[stageDependencies.Configure_Functional.Configure.outputs['Configure_Consumers.ConfigureAppSettingsContent']]
     jobs:
       - job: "Test_Skills_CardActions"
