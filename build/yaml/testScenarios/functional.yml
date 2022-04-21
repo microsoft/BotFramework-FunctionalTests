@@ -40,7 +40,7 @@ stages:
     dependsOn: []
     jobs:
       - job: "Build"
-        displayName: "Build FunctionalTests.csproj"
+        displayName: "Build Microsoft.Bot.Builder.Tests.Functional.csproj"
         steps:
           - template: build.yml
             parameters:
