@@ -18,21 +18,22 @@ const SSO_DIALOG_PREFIX = 'Sso';
 
 class MainDialog extends ComponentDialog {
   /**
+   * @param {import('botbuilder').BotFrameworkClient} skillClient
    * @param {import('botbuilder').ConversationState} conversationState
-   * @param {import('../skillsConfiguration').SkillsConfiguration} skillsConfig
-   * @param {import('botbuilder').SkillHttpClient} skillClient
    * @param {import('../skillConversationIdFactory').SkillConversationIdFactory} conversationIdFactory
+   * @param {import('../skillsConfiguration').SkillsConfiguration} skillsConfig
    */
-  constructor (conversationState, skillsConfig, skillClient, conversationIdFactory) {
+  constructor (skillClient, conversationState, conversationIdFactory, skillsConfig) {
     super(MAIN_DIALOG);
 
     const botId = process.env.MicrosoftAppId;
 
-    if (!conversationState) throw new Error('[MainDialog]: Missing parameter \'conversationState\' is required');
-    if (!skillsConfig) throw new Error('[MainDialog]: Missing parameter \'skillsConfig\' is required');
     if (!skillClient) throw new Error('[MainDialog]: Missing parameter \'skillClient\' is required');
+    if (!conversationState) throw new Error('[MainDialog]: Missing parameter \'conversationState\' is required');
     if (!conversationIdFactory) throw new Error('[MainDialog]: Missing parameter \'conversationIdFactory\' is required');
+    if (!skillsConfig) throw new Error('[MainDialog]: Missing parameter \'skillsConfig\' is required');
 
+    this.skillClient = skillClient;
     this.deliveryModeProperty = conversationState.createProperty(RootBot.DeliveryModePropertyName);
     this.activeSkillProperty = conversationState.createProperty(RootBot.ActiveSkillPropertyName);
     this.skillsConfig = skillsConfig;
@@ -42,7 +43,7 @@ class MainDialog extends ComponentDialog {
     this.addDialog(new TangentDialog(TANGENT_DIALOG));
 
     // Create and add SkillDialog instances for the configured skills.
-    this.addSkillDialogs(conversationState, conversationIdFactory, skillClient, skillsConfig, botId);
+    this.addSkillDialogs(conversationState, conversationIdFactory, skillsConfig, botId);
 
     // Add ChoicePrompt to render available delivery modes.
     this.addDialog(new ChoicePrompt(DELIVERY_PROMPT));
@@ -269,19 +270,18 @@ class MainDialog extends ComponentDialog {
    * Helper method that creates and adds SkillDialog instances for the configured skills.
    * @param {import('botbuilder').ConversationState} conversationState
    * @param {import('../skillConversationIdFactory').SkillConversationIdFactory} conversationIdFactory
-   * @param {import('botbuilder').SkillHttpClient} skillClient
    * @param {import('../skillsConfiguration').SkillsConfiguration} skillsConfig
    * @param {string} botId
    */
-  addSkillDialogs (conversationState, conversationIdFactory, skillClient, skillsConfig, botId) {
+  addSkillDialogs (conversationState, conversationIdFactory, skillsConfig, botId) {
     Object.values(skillsConfig.skills.entries).forEach((skill) => {
       const skillDialogOptions = {
         botId,
         conversationIdFactory,
-        conversationState,
-        skill,
+        skillClient: this.skillClient,
         skillHostEndpoint: process.env.SkillHostEndpoint,
-        skillClient
+        conversationState,
+        skill
       };
 
       // Add a SkillDialog for the selected skill.
