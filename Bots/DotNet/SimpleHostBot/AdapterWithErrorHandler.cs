@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder.FunctionalTestsBots.SimpleHostBot.Bots;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
-using Microsoft.Bot.Builder.Integration.AspNet.Core.Skills;
 using Microsoft.Bot.Builder.Skills;
 using Microsoft.Bot.Builder.TraceExtensions;
 using Microsoft.Bot.Connector.Authentication;
@@ -18,28 +17,27 @@ namespace Microsoft.Bot.Builder.FunctionalTestsBots.SimpleHostBot
 {
     public class AdapterWithErrorHandler : CloudAdapter
     {
+        private readonly BotFrameworkAuthentication _auth;
         private readonly ConversationState _conversationState;
         private readonly IConfiguration _configuration;
         private readonly ILogger _logger;
-        private readonly SkillHttpClient _skillClient;
         private readonly SkillsConfiguration _skillsConfig;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AdapterWithErrorHandler"/> class to handle errors.
         /// </summary>
-        /// <param name="botFrameworkAuthentication">The cloud environment for the bot.</param>
+        /// <param name="auth">The cloud environment for the bot.</param>
         /// <param name="configuration">The configuration properties.</param>
         /// <param name="logger">An instance of a logger.</param>
         /// <param name="conversationState">A state management object for the conversation.</param>
-        /// <param name="skillClient">The HTTP client for the skills.</param>
         /// <param name="skillsConfig">The skills configuration.</param>
-        public AdapterWithErrorHandler(BotFrameworkAuthentication botFrameworkAuthentication, IConfiguration configuration, ILogger<CloudAdapter> logger, ConversationState conversationState = null, SkillHttpClient skillClient = null, SkillsConfiguration skillsConfig = null)
-            : base(botFrameworkAuthentication, logger)
+        public AdapterWithErrorHandler(BotFrameworkAuthentication auth, IConfiguration configuration, ILogger<CloudAdapter> logger, ConversationState conversationState = null, SkillsConfiguration skillsConfig = null)
+            : base(auth, logger)
         {
+            _auth = auth ?? throw new ArgumentNullException(nameof(auth));
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             _conversationState = conversationState;
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _skillClient = skillClient;
             _skillsConfig = skillsConfig;
 
             OnTurnError = HandleTurnErrorAsync;
@@ -102,7 +100,7 @@ namespace Microsoft.Bot.Builder.FunctionalTestsBots.SimpleHostBot
         /// <returns>A <see cref="Task{TResult}"/> representing the result of the asynchronous operation.</returns>
         private async Task EndSkillConversationAsync(ITurnContext turnContext, CancellationToken cancellationToken)
         {
-            if (_conversationState == null || _skillClient == null || _skillsConfig == null)
+            if (_conversationState == null || _skillsConfig == null)
             {
                 return;
             }
@@ -121,7 +119,9 @@ namespace Microsoft.Bot.Builder.FunctionalTestsBots.SimpleHostBot
                     endOfConversation.ApplyConversationReference(turnContext.Activity.GetConversationReference(), true);
 
                     await _conversationState.SaveChangesAsync(turnContext, true, cancellationToken);
-                    await _skillClient.PostActivityAsync(botId, activeSkill, _skillsConfig.SkillHostEndpoint, (Activity)endOfConversation, cancellationToken);
+
+                    using var client = _auth.CreateBotFrameworkClient();
+                    await client.PostActivityAsync(botId, activeSkill.AppId, activeSkill.SkillEndpoint, _skillsConfig.SkillHostEndpoint, endOfConversation.Conversation.Id, (Activity)endOfConversation, cancellationToken);
                 }
             }
             catch (Exception ex)
