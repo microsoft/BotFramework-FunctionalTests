@@ -16,7 +16,6 @@ using Xunit.Abstractions;
 
 namespace Microsoft.Bot.Builder.Tests.Functional.Skills.CardActions
 {
-    [Trait("TestCategory", "CardActions")]
     public class ThumbnailCardTests : ScriptTestBase
     {
         private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/Skills/CardActions/TestScripts";
