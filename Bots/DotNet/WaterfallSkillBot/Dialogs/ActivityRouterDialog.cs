@@ -31,10 +31,13 @@ namespace Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallSkillBot.Dialogs
     public class ActivityRouterDialog : ComponentDialog
     {
         private static readonly string _echoSkill = "EchoSkill";
+        private readonly BotFrameworkAuthentication _auth;
 
-        public ActivityRouterDialog(IConfiguration configuration, IHttpContextAccessor httpContextAccessor, ConversationState conversationState, SkillConversationIdFactoryBase conversationIdFactory, SkillHttpClient skillClient, ConcurrentDictionary<string, ContinuationParameters> continuationParametersStore)
+        public ActivityRouterDialog(BotFrameworkAuthentication auth, IConfiguration configuration, IHttpContextAccessor httpContextAccessor, ConversationState conversationState, SkillConversationIdFactoryBase conversationIdFactory, ConcurrentDictionary<string, ContinuationParameters> continuationParametersStore)
             : base(nameof(ActivityRouterDialog))
         {
+            _auth = auth ?? throw new ArgumentNullException(nameof(auth));
+
             AddDialog(new CardDialog(httpContextAccessor));
             AddDialog(new MessageWithAttachmentDialog(new Uri($"{httpContextAccessor.HttpContext.Request.Scheme}://{httpContextAccessor.HttpContext.Request.Host.Value}")));    
             AddDialog(new WaitForProactiveDialog(httpContextAccessor, continuationParametersStore));
@@ -44,7 +47,7 @@ namespace Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallSkillBot.Dialogs
             AddDialog(new DeleteDialog());
             AddDialog(new UpdateDialog());
 
-            AddDialog(CreateEchoSkillDialog(conversationState, conversationIdFactory, skillClient, configuration));
+            AddDialog(CreateEchoSkillDialog(conversationState, conversationIdFactory, configuration));
 
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[] { ProcessActivityAsync }));
 
@@ -52,7 +55,7 @@ namespace Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallSkillBot.Dialogs
             InitialDialogId = nameof(WaterfallDialog);
         }
 
-        private static SkillDialog CreateEchoSkillDialog(ConversationState conversationState, SkillConversationIdFactoryBase conversationIdFactory, SkillHttpClient skillClient, IConfiguration configuration)
+        private SkillDialog CreateEchoSkillDialog(ConversationState conversationState, SkillConversationIdFactoryBase conversationIdFactory, IConfiguration configuration)
         {
             var botId = configuration.GetSection(MicrosoftAppCredentials.MicrosoftAppIdKey)?.Value;
 
@@ -68,14 +71,13 @@ namespace Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallSkillBot.Dialogs
             {
                 BotId = botId,
                 ConversationIdFactory = conversationIdFactory,
-                SkillClient = skillClient,
+                SkillClient = _auth.CreateBotFrameworkClient(),
                 SkillHostEndpoint = new Uri(skillHostEndpoint),
                 ConversationState = conversationState,
                 Skill = skillInfo
             };
-            var echoSkillDialog = new SkillDialog(skillDialogOptions);
+            var echoSkillDialog = new SkillDialog(skillDialogOptions, _echoSkill);
 
-            echoSkillDialog.Id = _echoSkill;
             return echoSkillDialog;
         }
 
