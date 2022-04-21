@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Xunit;
 
-namespace IntegrationTests.Azure.Cosmos
+namespace Microsoft.Bot.Builder.Tests.Integration.Azure.Cosmos
 {
     [Trait("TestCategory", "Deprecated")]
     public class CosmosDbStorageTests : CosmosDbBaseTests, IClassFixture<CosmosDbStorageFixture>

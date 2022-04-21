@@ -3,7 +3,7 @@
 
 using System;
 
-namespace IntegrationTests.Azure.Cosmos
+namespace Microsoft.Bot.Builder.Tests.Integration.Azure.Cosmos
 {
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
     public class CosmosDbAttribute : Attribute
