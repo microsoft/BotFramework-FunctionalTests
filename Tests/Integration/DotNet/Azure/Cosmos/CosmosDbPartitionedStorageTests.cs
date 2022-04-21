@@ -4,57 +4,25 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Adapters;
 using Microsoft.Bot.Builder.Dialogs;
-using Microsoft.Bot.Schema;
+using Microsoft.Bot.Builder.Tests.Integration.Azure.Storage;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
 namespace Microsoft.Bot.Builder.Tests.Integration.Azure.Cosmos
 {
-    public class CosmosDbPartitionedStorageTests : CosmosDbBaseTests, IClassFixture<CosmosDbPartitionedStorageFixture>
+    public class CosmosDbPartitionedStorageTests : StorageBaseTests, IClassFixture<CosmosDbPartitionedStorageFixture>
     {
-        private readonly CosmosDbPartitionedStorageFixture _cosmosDbFixture;
-
         public CosmosDbPartitionedStorageTests(CosmosDbPartitionedStorageFixture cosmosDbFixture)
         {
-            _cosmosDbFixture = cosmosDbFixture;
-        }
-
-        [Fact]
-        public Task CreateItem()
-        {
-            return CreateItemTest(_cosmosDbFixture.Storage);
-        }
-
-        [Fact]
-        public Task UpdateItem()
-        {
-            return UpdateItemTest(_cosmosDbFixture.Storage);
-        }
-
-        [Fact]
-        public Task ReadUnknownItem()
-        {
-            return ReadUnknownItemTest(_cosmosDbFixture.Storage);
-        }
-
-        [Fact]
-        public Task DeleteItem()
-        {
-            return DeleteItemTest(_cosmosDbFixture.Storage);
-        }
-
-        [Fact]
-        public Task CreateItemWithSpecialCharacters()
-        {
-            return CreateItemWithSpecialCharactersTest(_cosmosDbFixture.Storage);
+            UseStorages(cosmosDbFixture.Storages);
         }
 
         [Fact]
         public async Task CreateItemWithNestingLimit()
         {
+            var storage = Storages[StorageCase.Default];
             async Task TestNestAsync(int depth)
             {
                 // This creates nested data with both objects and arrays
@@ -70,7 +38,7 @@ namespace Microsoft.Bot.Builder.Tests.Integration.Azure.Cosmos
                     { "nestingLimit", CreateNestedData(depth) },
                 };
 
-                await _cosmosDbFixture.Storage.WriteAsync(dict);
+                await storage.WriteAsync(dict);
             }
 
             // Should not throw
@@ -92,6 +60,7 @@ namespace Microsoft.Bot.Builder.Tests.Integration.Azure.Cosmos
         [Fact]
         public async Task CreateItemWithDialogsNestingLimit()
         {
+            var storage = Storages[StorageCase.Default];
             async Task TestDialogNestAsync(int dialogDepth)
             {
                 static Dialog CreateNestedDialog(int depth) => new ComponentDialog(nameof(ComponentDialog))
@@ -106,7 +75,7 @@ namespace Microsoft.Bot.Builder.Tests.Integration.Azure.Cosmos
 
                 var dialog = CreateNestedDialog(dialogDepth);
 
-                var convoState = new ConversationState(_cosmosDbFixture.Storage);
+                var convoState = new ConversationState(storage);
 
                 var adapter = new TestAdapter(TestAdapter.CreateConversation("nestingTest"))
                     .Use(new AutoSaveStateMiddleware(convoState));
