@@ -20,8 +20,8 @@ parameters:
   displayName: Azure Service Connection
   type: string
 
-- name: buildIdSuffix
-  displayName: Build Id Suffix
+- name: deployBuildId
+  displayName: Deploy pipeline BuildId
   type: string
 
 - name: keyVault
@@ -56,7 +56,7 @@ steps:
       arguments: >
         -Scenario "${{ parameters.scenario }}"
         -ResourceGroup "${{ parameters.resourceGroup }}"
-        -ResourceSuffix "${{ parameters.resourceSuffix }}${{ parameters.buildIdSuffix }}"
+        -ResourceSuffix "${{ parameters.resourceSuffix }}${{ parameters.deployBuildId }}"
         -SharedResourceGroup "${{ parameters.sharedResourceGroup }}"
         -SharedResourceSuffix "${{ parameters.resourceSuffix }}"
         -KeyVault "${{ parameters.keyVault }}"

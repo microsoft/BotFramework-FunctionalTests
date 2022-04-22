@@ -6,8 +6,10 @@ parameters:
       ComposerSkillBotDotNet: ""
       EchoSkillBotComposerDotNet: ""
       EchoSkillBotDotNet: ""
+      EchoSkillBotDotNetST: ""
       EchoSkillBotDotNetV3: ""
       EchoSkillBotJS: ""
+      EchoSkillBotJSST: ""
       EchoSkillBotJSV3: ""
       EchoSkillBotPython: ""
       WaterfallSkillBotDotNet: ""
@@ -34,6 +36,10 @@ parameters:
     displayName: Azure resources' name suffix
     type: string
 
+  - name: sharedResourceGroup
+    displayName: Shared Resource Group
+    type: string
+
 stages:
   - stage: "Build_Functional"
     displayName: "Build Functional"
@@ -58,9 +64,11 @@ stages:
             parameters:
               appIds: "${{ parameters.appIds }}"
               azureSubscription: "${{ parameters.azureSubscription }}"
+              deployBuildId: "${{ parameters.deployBuildId }}"
               keyVault: "${{ parameters.keyVault }}"
               resourceGroup: "${{ parameters.resourceGroup }}"
-              resourceSuffix: "${{ parameters.resourceSuffix }}-${{ parameters.deployBuildId }}"
+              resourceSuffix: "${{ parameters.resourceSuffix }}"
+              sharedResourceGroup: "${{ parameters.sharedResourceGroup }}"
 
   - stage: "Test_Functional"
     displayName: "Test Functional"
