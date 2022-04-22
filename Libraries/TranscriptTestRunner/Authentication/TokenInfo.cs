@@ -3,7 +3,7 @@
 
 using Newtonsoft.Json;
 
-namespace TranscriptTestRunner.Authentication
+namespace Microsoft.Bot.Builder.Testing.TestRunner.Authentication
 {
     /// <summary>
     /// Token definition.

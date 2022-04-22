@@ -3,17 +3,22 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
-using Microsoft.Bot.Schema;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace TranscriptConverter
+namespace Microsoft.Bot.Builder.Testing.TranscriptConverter
 {
     public static class Converter
     {
+        private static readonly HashSet<JTokenType> IgnoreTypes = new HashSet<JTokenType>
+        {
+            JTokenType.Array,
+            JTokenType.Object
+        };
+
         /// <summary>
         /// Converts the transcript into a test script.
         /// </summary>
@@ -21,43 +26,74 @@ namespace TranscriptConverter
         /// <returns>The test script created.</returns>
         public static TestScript ConvertTranscript(string transcriptPath)
         {
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+
             using var reader = new StreamReader(Path.GetFullPath(transcriptPath));
 
             var transcript = reader.ReadToEnd();
+            var json = JToken.Parse(transcript);
+            var cleanedTranscript = RemoveUndesiredFields(json);
 
-            var cleanedTranscript = RemoveUndesiredFields(transcript);
+            stopwatch.Stop();
+            Console.WriteLine("Removing undesired fields ({0}ms)", stopwatch.ElapsedMilliseconds);
+            stopwatch.Reset();
+            stopwatch.Start();
 
-            return CreateTestScript(cleanedTranscript);
+            var result = CreateTestScript(cleanedTranscript);
+
+            stopwatch.Stop();
+            Console.WriteLine("Creating TestScript ({0}ms)", stopwatch.ElapsedMilliseconds);
+
+            return result;
         }
 
         /// <summary>
-        /// Recursively goes through the json content removing the undesired elements.
+        /// Removes variable fields like IDs, Dates and urls from the transcript file.
         /// </summary>
-        /// <param name="token">The JToken element to process.</param>
-        /// <param name="callback">The recursive function to iterate over the JToken.</param>
-        private static void RemoveFields(JToken token, Func<JProperty, bool> callback)
+        /// <param name="json">The transcript file content.</param>
+        /// <returns>The transcript content without the undesired fields.</returns>
+        private static JToken RemoveUndesiredFields(JToken json)
         {
-            if (!(token is JContainer container))
+            if (!(json is JContainer container))
             {
-                return;
+                return null;
             }
 
-            var removeList = new List<JToken>();
-
-            foreach (var element in container.Children())
+            static bool ShouldRemove(HashSet<string> processedProps, JProperty prop)
             {
-                if (element is JProperty prop && callback(prop))
+                var key = prop.Name;
+                var value = prop.Value.ToString();
+
+                if (processedProps.Contains(key))
                 {
-                    removeList.Add(element);
+                    return true;
                 }
 
-                RemoveFields(element, callback);
+                var result = string.IsNullOrEmpty(value)
+                    || IsDateTime(value)
+                    || IsUrl(value)
+                    || IsBase64Image(value)
+                    || IsId(key, value);
+
+                if (result)
+                {
+                    processedProps.Add(key);
+                }
+
+                return result;
             }
 
-            foreach (var element in removeList)
-            {
-                element.Remove();
-            }
+            var processedProps = new HashSet<string>();
+
+            container.DescendantsAndSelf()
+                .OfType<JProperty>()
+                .Where(prop => !IgnoreTypes.Contains(prop.Value.Type))
+                .Where(prop => ShouldRemove(processedProps, prop))
+                .ToList()
+                .ForEach(prop => prop.Remove());
+
+            return container;
         }
 
         /// <summary>
@@ -65,86 +101,56 @@ namespace TranscriptConverter
         /// </summary>
         /// <param name="json">Json containing the transcript's activities.</param>
         /// <returns>The test script created.</returns>
-        private static TestScript CreateTestScript(string json)
+        private static TestScript CreateTestScript(JToken json)
         {
-            var activities = JsonConvert.DeserializeObject<IEnumerable<Activity>>(json);
-            var testScript = new TestScript();
-
-            foreach (var activity in activities)
+            if (!(json is JContainer container))
             {
-                var scriptItem = new TestScriptItem
+                return null;
+            }
+
+            var ignoreFields = new HashSet<string>
+            {
+                "from.name"
+            };
+
+            static string MapAssert(JProperty prop)
+            {
+                var value = prop.Value.Type == JTokenType.String
+                    ? $"'{prop.Value.ToString().Replace("'", "\\'", StringComparison.InvariantCulture)}'"
+                    : prop.Value;
+
+                return $"{prop.Path} == {value}";
+            }
+
+            static TestScriptItem MapItem(JToken obj, HashSet<JTokenType> ignoreTypes, HashSet<string> ignoreFields)
+            {
+                // Detach from the container.
+                var activityJson = JToken.Parse(obj.ToString());
+                var assertions = new List<string>();
+
+                var role = activityJson["from"].Value<string>("role");
+                if (role == "bot")
                 {
-                    Type = activity.Type,
-                    Role = activity.From.Role,
-                    Text = activity.Text
+                    assertions = (activityJson as JContainer)
+                        .DescendantsAndSelf()
+                        .OfType<JProperty>()
+                        .Where(prop => !ignoreTypes.Contains(prop.Value.Type))
+                        .Where(prop => !ignoreFields.Contains(prop.Path))
+                        .Select(MapAssert)
+                        .ToList();
+                }
+
+                return new TestScriptItem(assertions)
+                {
+                    Type = activityJson.Value<string>("type"),
+                    Role = role,
+                    Text = activityJson.Value<string>("text"),
                 };
-
-                if (scriptItem.Role == "bot")
-                {
-                    var assertionsList = CreateAssertionsList(activity);
-
-                    foreach (var assertion in assertionsList)
-                    {
-                        scriptItem.Assertions.Add(assertion);
-                    }
-                }
-
-                testScript.Items.Add(scriptItem);
             }
 
-            return testScript;
-        }
+            var items = container.Select(obj => MapItem(obj, IgnoreTypes, ignoreFields)).ToList();
 
-        /// <summary>
-        /// Creates a list of assertions with the activity's properties.
-        /// </summary>
-        /// <param name="activity">The activity to parse as assertions.</param>
-        /// <returns>The list of assertions.</returns>
-        private static IEnumerable<string> CreateAssertionsList(IActivity activity)
-        {
-            var json = JsonConvert.SerializeObject(
-                activity,
-                Formatting.None,
-                new JsonSerializerSettings
-                {
-                    NullValueHandling = NullValueHandling.Ignore
-                });
-
-            var token = JToken.Parse(json);
-            var assertionsList = new List<string>();
-
-            AddAssertions(token, assertionsList);
-
-            return assertionsList;
-        }
-
-        /// <summary>
-        /// Goes over the Jtoken object adding assertions to the list for each property found.
-        /// </summary>
-        /// <param name="token">The JToken object containing the properties.</param>
-        /// <param name="assertionsList">The list of assertions.</param>
-        private static void AddAssertions(JToken token, ICollection<string> assertionsList)
-        {
-            foreach (var property in token)
-            {
-                if (property is JProperty prop && !IsJsonObject(prop.Value.ToString()))
-                {
-                    if (prop.Path == "from.name")
-                    {
-                        continue;
-                    }
-
-                    var value = prop.Value.Type == JTokenType.String
-                        ? $"'{prop.Value.ToString().Replace("'", "\\'", StringComparison.InvariantCulture)}'"
-                        : prop.Value;
-
-                    assertionsList.Add($"{prop.Path} == {value}");
-                }
-                else
-                {
-                    AddAssertions(property, assertionsList);
-                }
-            }
+            return new TestScript(items);
         }
 
         /// <summary>
@@ -202,24 +208,6 @@ namespace TranscriptConverter
         }
 
         /// <summary>
-        /// Checks if a string is a JSON Object.
-        /// </summary>
-        /// <param name="value">The string to check.</param>
-        /// <returns>True if the string is a JSON Object, otherwise, returns false.</returns>
-        private static bool IsJsonObject(string value)
-        {
-            try
-            {
-                var json = JsonConvert.DeserializeObject<JToken>(value);
-                return json != null && (json.Type == JTokenType.Object || json.Type == JTokenType.Array);
-            }
-            catch (JsonException)
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
         /// Checks if a string is a DateTime value.
         /// </summary>
         /// <param name="datetime">The string to check.</param>
@@ -228,35 +216,6 @@ namespace TranscriptConverter
         {
             var dateMatch = DateTime.TryParse(datetime, out _);
             return dateMatch;
-        }
-
-        /// <summary>
-        /// Removes variable fields like IDs, Dates and urls from the transcript file.
-        /// </summary>
-        /// <param name="transcript">The transcript file content.</param>
-        /// <returns>The transcript content without the undesired fields.</returns>
-        private static string RemoveUndesiredFields(string transcript)
-        {
-            var token = JToken.Parse(transcript);
-
-            RemoveFields(token, (attr) =>
-            {
-                var name = attr.Name.ToString();
-                var value = attr.Value.ToString();
-
-                if (IsJsonObject(value))
-                {
-                    return false;
-                }
-
-                return string.IsNullOrEmpty(value)
-                    || IsDateTime(value)
-                    || IsUrl(value)
-                    || IsBase64Image(value)
-                    || IsId(name, value);
-            });
-
-            return token.ToString();
         }
     }
 }

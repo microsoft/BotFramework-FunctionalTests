@@ -4,7 +4,7 @@
 using System.IO;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Controllers
+namespace Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallSkillBot.Controllers
 {
     // This ASP Controller is created to handle a request. Dependency Injection will provide the Adapter and IBot
     // implementation at runtime. Multiple different IBot implementations running at different endpoints can be

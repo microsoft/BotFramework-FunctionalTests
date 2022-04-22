@@ -4,13 +4,22 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace TranscriptConverter
+namespace Microsoft.Bot.Builder.Testing.TranscriptConverter
 {
     /// <summary>
     /// A Test Script that can be used for functional testing of bots.
     /// </summary>
     public class TestScript
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TestScript"/> class.
+        /// </summary>
+        /// <param name="items">The sequence of test scripts to perform to validate the bots behavior.</param>
+        public TestScript(List<TestScriptItem> items = default)
+        {
+            Items = items ?? new List<TestScriptItem>();
+        }
+
         /// <summary>
         /// Gets the test script items.
         /// </summary>

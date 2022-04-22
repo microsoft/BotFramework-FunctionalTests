@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-namespace SkillFunctionalTests.Skills.Common
+namespace Microsoft.Bot.Builder.Tests.Functional.Skills.Common
 {
     public enum HostBot
     {
