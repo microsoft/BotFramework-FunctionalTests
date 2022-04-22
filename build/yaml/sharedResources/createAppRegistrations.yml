@@ -73,6 +73,16 @@ steps:
           $app | Add-Member -MemberType NoteProperty -Name secret -Value $secret.secretText;
 
           $app
+
+          if ($audience -eq "AzureADMyOrg") {
+            # Create Service Principal Object
+
+            $body = @{
+                appId = $app.appId;
+            } | ConvertTo-Json
+
+            $servicePpal = Invoke-WebRequest -Uri "https://graph.microsoft.com/v1.0/servicePrincipals" -Method "POST" -Headers $headers -Body $body -ContentType "application/json" | ConvertFrom-Json;
+          }
         }
 
         function SaveAppRegistrationIntoKeyVault($vaultName, $bot, $app) {
@@ -108,10 +118,10 @@ steps:
           @{ appName = "bffnechoskillbotpython"; variables = @{ appId = "BffnEchoSkillBotPythonAppId"; appSecret = "BffnEchoSkillBotPythonAppSecret"; objectId = "BffnEchoSkillBotPythonAppObjectId" }},
           @{ appName = "bffnwaterfallhostbotpython"; variables = @{ appId = "BffnWaterfallHostBotPythonAppId"; appSecret = "BffnWaterfallHostBotPythonAppSecret"; objectId = "BffnWaterfallHostBotPythonAppObjectId" }},
           @{ appName = "bffnwaterfallskillbotpython"; variables = @{ appId = "BffnWaterfallSkillBotPythonAppId"; appSecret = "BffnWaterfallSkillBotPythonAppSecret"; objectId = "BffnWaterfallSkillBotPythonAppObjectId" }},
-          @{ appName = "bffnsimplehostbotdotnetst"; variables = @{ appId = "BffnSimpleHostBotDotNetStAppId"; appSecret = "BffnSimpleHostBotDotNetStAppSecret"; objectId = "BffnSimpleHostBotDotNetStAppObjectId"; signInAudience = "AzureADMyOrg" }}
-          @{ appName = "bffnsimplehostbotjsst"; variables = @{ appId = "BffnSimpleHostBotJSStAppId"; appSecret = "BffnSimpleHostBotJSStAppSecret"; objectId = "BffnSimpleHostBotJSStAppObjectId"; signInAudience = "AzureADMyOrg" }},
-          @{ appName = "bffnechoskillbotdotnetst"; variables = @{ appId = "BffnEchoSkillBotDotNetStAppId"; appSecret = "BffnEchoSkillBotDotNetStAppSecret"; objectId = "BffnEchoSkillBotDotNetStObjectId"; signInAudience = "AzureADMyOrg" }},
-          @{ appName = "bffnechoskillbotjsst"; variables = @{ appId = "BffnEchoSkillBotJSStAppId"; appSecret = "BffnEchoSkillBotJSStAppSecret"; objectId = "BffnEchoSkillBotJSStAppObjectId"; signInAudience = "AzureADMyOrg" }}
+          @{ appName = "bffnsimplehostbotdotnetst"; variables = @{ appId = "BffnSimpleHostBotDotNetSTAppId"; appSecret = "BffnSimpleHostBotDotNetSTAppSecret"; objectId = "BffnSimpleHostBotDotNetSTAppObjectId"; signInAudience = "AzureADMyOrg" }},
+          @{ appName = "bffnsimplehostbotjsst"; variables = @{ appId = "BffnSimpleHostBotJSSTAppId"; appSecret = "BffnSimpleHostBotJSSTAppSecret"; objectId = "BffnSimpleHostBotJSSTAppObjectId"; signInAudience = "AzureADMyOrg" }},
+          @{ appName = "bffnechoskillbotdotnetst"; variables = @{ appId = "BffnEchoSkillBotDotNetSTAppId"; appSecret = "BffnEchoSkillBotDotNetSTAppSecret"; objectId = "BffnEchoSkillBotDotNetSTObjectId"; signInAudience = "AzureADMyOrg" }},
+          @{ appName = "bffnechoskillbotjsst"; variables = @{ appId = "BffnEchoSkillBotJSSTAppId"; appSecret = "BffnEchoSkillBotJSSTAppSecret"; objectId = "BffnEchoSkillBotJSSTAppObjectId"; signInAudience = "AzureADMyOrg" }}
         )
 
         $token = GetToken
