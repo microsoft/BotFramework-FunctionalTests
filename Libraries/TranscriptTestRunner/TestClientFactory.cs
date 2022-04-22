@@ -1,13 +1,12 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using System;
 using System.ComponentModel;
+using Microsoft.Bot.Builder.Testing.TestRunner.TestClients;
 using Microsoft.Bot.Connector;
 using Microsoft.Extensions.Logging;
-using TranscriptTestRunner.TestClients;
 
-namespace TranscriptTestRunner
+namespace Microsoft.Bot.Builder.Testing.TestRunner
 {
     /// <summary>
     /// Factory class to create instances of <see cref="TestClientBase"/>.

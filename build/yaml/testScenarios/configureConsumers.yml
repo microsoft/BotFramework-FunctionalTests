@@ -46,6 +46,7 @@ parameters:
 
 steps:
   - task: AzureCLI@2
+    name: "Configure_Consumers"
     displayName: "Set Consumers AppSettings"
     inputs:
       azureSubscription: ${{ parameters.azureSubscription }}

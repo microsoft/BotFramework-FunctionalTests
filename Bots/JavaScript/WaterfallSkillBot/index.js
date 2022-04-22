@@ -14,21 +14,19 @@ const {
   ActivityTypes,
   ChannelServiceRoutes,
   CloudAdapter,
+  CloudSkillHandler,
   ConversationState,
-  ConfigurationBotFrameworkAuthentication,
+  ConfigurationServiceClientCredentialFactory,
+  createBotFrameworkAuthenticationFromConfiguration,
   InputHints,
   MemoryStorage,
   MessageFactory,
-  SkillConversationIdFactory,
-  SkillHandler,
-  SkillHttpClient,
-  TurnContext
+  SkillConversationIdFactory
 } = require('botbuilder');
 const {
   allowedCallersClaimsValidator,
   AuthenticationConfiguration,
-  PasswordServiceClientCredentialFactory,
-  SimpleCredentialProvider
+  AuthenticationConstants
 } = require('botframework-connector');
 
 const { SkillBot } = require('./bots/skillBot');
@@ -56,21 +54,41 @@ const maxTotalSockets = (preallocatedSnatPorts, procCount = 1, weight = 0.5, ove
     preallocatedSnatPorts
   );
 
-const authConfig = new AuthenticationConfiguration(
-  [],
-  allowedCallersClaimsValidator(config.AllowedCallers)
-);
+const allowedCallers = (process.env.AllowedCallers || '').split(',').filter((val) => val) || [];
 
-const credentialsFactory = new PasswordServiceClientCredentialFactory(
-  config.MicrosoftAppId,
-  config.MicrosoftAppPassword
-);
+const claimsValidators = allowedCallersClaimsValidator(allowedCallers);
 
-const botFrameworkAuthentication = new ConfigurationBotFrameworkAuthentication(
-  {},
+// If the MicrosoftAppTenantId is specified in the environment config, add the tenant as a valid JWT token issuer for Bot to Skill conversation.
+// The token issuer for MSI and single tenant scenarios will be the tenant where the bot is registered.
+let validTokenIssuers = [];
+const { MicrosoftAppTenantId } = process.env;
+
+if (MicrosoftAppTenantId) {
+  // For SingleTenant/MSI auth, the JWT tokens will be issued from the bot's home tenant.
+  // Therefore, these issuers need to be added to the list of valid token issuers for authenticating activity requests.
+  validTokenIssuers = [
+    `${AuthenticationConstants.ValidTokenIssuerUrlTemplateV1}${MicrosoftAppTenantId}/`,
+    `${AuthenticationConstants.ValidTokenIssuerUrlTemplateV2}${MicrosoftAppTenantId}/v2.0/`,
+    `${AuthenticationConstants.ValidGovernmentTokenIssuerUrlTemplateV1}${MicrosoftAppTenantId}/`,
+    `${AuthenticationConstants.ValidGovernmentTokenIssuerUrlTemplateV2}${MicrosoftAppTenantId}/v2.0/`
+  ];
+}
+
+// Define our authentication configuration.
+const authConfig = new AuthenticationConfiguration([], claimsValidators, validTokenIssuers);
+
+const credentialsFactory = new ConfigurationServiceClientCredentialFactory({
+  MicrosoftAppId: process.env.MicrosoftAppId,
+  MicrosoftAppPassword: process.env.MicrosoftAppPassword,
+  MicrosoftAppType: process.env.MicrosoftAppType,
+  MicrosoftAppTenantId: process.env.MicrosoftAppTenantId
+});
+
+const botFrameworkAuthentication = createBotFrameworkAuthenticationFromConfiguration(
+  null,
   credentialsFactory,
   authConfig,
-  null,
+  undefined,
   {
     agentSettings: {
       http: new http.Agent({
@@ -143,11 +161,8 @@ adapter.use(new SsoSaveStateMiddleware(conversationState));
 // Create the conversationIdFactory
 const conversationIdFactory = new SkillConversationIdFactory(memoryStorage);
 
-// Create the credential provider;
-const credentialProvider = new SimpleCredentialProvider(config.MicrosoftAppId, config.MicrosoftAppPassword);
-
 // Create the skill client
-const skillClient = new SkillHttpClient(credentialProvider, conversationIdFactory);
+const skillClient = botFrameworkAuthentication.createBotFrameworkClient();
 
 // Create the main dialog.
 const dialog = new ActivityRouterDialog(config, conversationState, conversationIdFactory, skillClient, continuationParametersStore);
@@ -169,48 +184,10 @@ server.post('/api/messages', async (req, res) => {
   });
 });
 
-// Create and initialize the skill classes.
-
-// Workaround for communicating back to the Host without throwing Unauthorized error due to the creation of a new Connector Client in the Adapter when the continueConvesation happens.
-
-// Uncomment this when resolved.
-// const handler = new SkillHandler(adapter, bot, conversationIdFactory, credentialProvider, authConfig);
-// const skillEndpoint = new ChannelServiceRoutes(handler);
-// skillEndpoint.register(server, '/api/skills');
-
-// Remove this when resolved
-const handler = new SkillHandler(adapter, bot, conversationIdFactory, credentialProvider, authConfig);
-server.post('/api/skills/v3/conversations/:conversationId/activities/:activityId', async (req, res) => {
-  try {
-    const authHeader = req.headers.authorization || req.headers.Authorization || '';
-    const activity = await ChannelServiceRoutes.readActivity(req);
-    const ref = await handler.inner.conversationIdFactory.getSkillConversationReference(req.params.conversationId);
-    const claimsIdentity = await handler.authenticate(authHeader);
-
-    const response = await new Promise(resolve => {
-      return adapter.continueConversationAsync(config.MicrosoftAppId || '', ref.conversationReference, ref.oAuthScope, async context => {
-        context.turnState.set(adapter.BotIdentityKey, claimsIdentity);
-        context.turnState.set(adapter.SkillConversationReferenceKey, ref);
-
-        const newActivity = TurnContext.applyConversationReference(activity, ref.conversationReference);
-
-        if (newActivity.type === ActivityTypes.EndOfConversation) {
-          await handler.inner.conversationIdFactory.deleteConversationReference(req.params.conversationId);
-          handler.inner.applySkillActivityToTurnContext(context, newActivity);
-          resolve(await bot.run(context));
-        }
-
-        resolve(await context.sendActivity(newActivity));
-      });
-    });
-
-    res.status(200);
-    res.send(response);
-    res.end();
-  } catch (error) {
-    ChannelServiceRoutes.handleError(error, res);
-  }
-});
+// Create and initialize the skill classes
+const handler = new CloudSkillHandler(adapter, (context) => bot.run(context), conversationIdFactory, botFrameworkAuthentication);
+const skillEndpoint = new ChannelServiceRoutes(handler);
+skillEndpoint.register(server, '/api/skills');
 
 // Listen for incoming requests.
 server.get('/api/music', restify.plugins.serveStatic({ directory: 'dialogs/cards/files', file: 'music.mp3' }));

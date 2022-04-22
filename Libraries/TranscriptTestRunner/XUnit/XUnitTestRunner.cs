@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Xunit;
 
-namespace TranscriptTestRunner.XUnit
+namespace Microsoft.Bot.Builder.Testing.TestRunner.XUnit
 {
     /// <summary>
     /// XUnit extension of <see cref="TestRunner"/>.

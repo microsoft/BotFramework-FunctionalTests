@@ -9,17 +9,30 @@ pr: none
 
 resources:
   pipelines:
-  - pipeline: "02ADeploySkillBots"
-    source: "02.A. Deploy skill bots (daily)"
-    trigger:
-      branches:
-        include:
-        - main
-        - releases/*
+    - pipeline: "02ADeploySkillBots"
+      source: "02.A. Deploy skill bots (daily)"
+      trigger:
+        branches:
+          include:
+            - main
+            - releases/*
+
+parameters:
+  - name: dependenciesVersionDotNet
+    displayName: DotNet Version
+    type: string
+    default: $env:DEPENDENCIESVERSIONDOTNET
+
+  - name: dependenciesRegistryDotNet
+    displayName: DotNet Registry
+    type: string
+    default: Artifacts
+    values:
+      - Artifacts
+      - MyGet
+      - NuGet
 
 variables:
-  BuildConfiguration: "Debug"
-
   ## Azure Resources (Define these variables in Azure)
   # AzureSubscription: Service Connection Name to Manage Azure resources.
   # ResourceGroup: (optional) Name of the Resource Group where the bots are deployed.
@@ -39,9 +52,12 @@ variables:
   # BffnWaterfallSkillBotDotNetAppId: (optional) App Id for BffnWaterfallSkillBotDotNet bot.
   # BffnWaterfallSkillBotJSAppId: (optional) App Id for BffnWaterfallSkillBotJS bot.
   # BffnWaterfallSkillBotPythonAppId: (optional) App Id for BffnWaterfallSkillBotPython bot.
-  # DeployBotResourcesGuid: (optional) Deploy Bot Resources pipeline GUID.
+
+  ## DependenciesVersion (Define these variables in Azure) Possible values are: Latest (default), Stable, or specific version numbers.
+  # DependenciesVersionDotNet: (optional) Bot Builder dependency version to use for DotNet.
 
   ## Internal variables
+  InternalCosmosDbName: "bffnbotstatedb$(INTERNALRESOURCESUFFIX)"
   InternalKeyVaultName: "bffnbotkeyvault$(INTERNALRESOURCESUFFIX)"
   InternalResourceGroupName: $[coalesce(variables['RESOURCEGROUP'], 'BFFN')]
   InternalResourceSuffix: $[coalesce(variables['RESOURCESUFFIX'], '')]
@@ -51,38 +67,7 @@ pool:
   vmImage: "windows-2019"
 
 stages:
-  - stage: "Download_Variables"
-    displayName: "Download Variables"
-    jobs:
-      - job: "Download_Variables"
-        displayName: "Download Variables"
-        steps:
-          - checkout: none
-          - powershell: |
-              $pipelineGuid = if ([string]::IsNullOrEmpty("$env:DEPLOYBOTRESOURCESGUID")) { "02.A. Deploy skill bots (daily)" } else { "$(DEPLOYBOTRESOURCESGUID)" }
-              Write-Host "Deploy Bot Resources Pipeline GUID: " $pipelineGuid
-              Write-Host "##vso[task.setvariable variable=PipelineGuid]$pipelineGuid"
-            displayName: "Set Deploy Bot Resources GUID"
-
-          - task: DownloadPipelineArtifact@2
-            displayName: "Download Variables artifact"
-            inputs:
-              source: "specific"
-              project: "$(SYSTEM.TEAMPROJECT)"
-              pipeline: "$(PIPELINEGUID)"
-              allowPartiallySucceededBuilds: true
-              allowFailedBuilds: true
-              artifact: "Variables"
-              path: "$(SYSTEM.DEFAULTWORKINGDIRECTORY)/Variables/"
-
-          - powershell: |
-              $deploymentBuildSuffix = (Get-Content -Path "$(SYSTEM.DEFAULTWORKINGDIRECTORY)/Variables/variables.json" | ConvertFrom-Json).deploymentBuildSuffix
-              Write-Host "Deployment Build Suffix: " $deploymentBuildSuffix
-              Write-Host "##vso[task.setvariable variable=DeploymentBuildSuffix;isOutput=true]-$deploymentBuildSuffix"
-            displayName: "Set variables"
-            name: "Set_Variables"
-
-  - template: runScenario.yml
+  - template: functional.yml
     parameters:
       appIds:
         ComposerSkillBotDotNet: "$(BFFNCOMPOSERSKILLBOTDOTNETAPPID)"
@@ -98,28 +83,17 @@ stages:
         WaterfallSkillBotJS: "$(BFFNWATERFALLSKILLBOTJSAPPID)"
         WaterfallSkillBotPython: "$(BFFNWATERFALLSKILLBOTPYTHONAPPID)"
       azureSubscription: "$(AZURESUBSCRIPTION)"
-      buildConfiguration: "$(BUILDCONFIGURATION)"
-      buildIdSuffix: $[stageDependencies.Download_Variables.Download_Variables.outputs['Set_Variables.DeploymentBuildSuffix']]
+      deployBuildId: "$(resources.pipeline.02ADeploySkillBots.runID)"
       keyVault: "$(INTERNALKEYVAULTNAME)"
       resourceGroup: "$(INTERNALRESOURCEGROUPNAME)"
       resourceSuffix: "$(INTERNALRESOURCESUFFIX)"
       sharedResourceGroup: "$(INTERNALSHAREDRESOURCEGROUPNAME)"
-      scenarios:
-        - name: Waterfall
-          dependsOn: [Download_Variables]
-          testCategories:
-            - Attachments
-            - CardActions
-            - ProactiveMessages
-            - FileUpload
-            - SignIn
 
-        - name: SingleTurn
-          dependsOn: [Download_Variables]
-          testCategories:
-            - SingleTurn
-
-        - name: Authentication
-          dependsOn: [Download_Variables]
-          testCategories:
-            - Authentication
+  - template: integration.yml
+    parameters:
+      azureSubscription: "$(AZURESUBSCRIPTION)"
+      cosmosDb: "$(INTERNALCOSMOSDBNAME)"
+      resourceGroup: "$(INTERNALSHAREDRESOURCEGROUPNAME)"
+      dotnet:
+        registry: ${{ parameters.dependenciesRegistryDotNet }}
+        version: ${{ parameters.dependenciesVersionDotNet }}

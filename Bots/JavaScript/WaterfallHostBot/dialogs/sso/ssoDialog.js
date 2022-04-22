@@ -56,10 +56,15 @@ class SsoDialog extends ComponentDialog {
    */
   async getPromptChoices (stepContext) {
     const promptChoices = new Set();
-    const adapter = stepContext.context.adapter;
-    const token = await adapter.getUserToken(stepContext.context, this.connectionName);
+    const userTokenClient = stepContext.context.turnState.get(stepContext.context.adapter.UserTokenClientKey);
+    const tokenResponse = await userTokenClient.getUserToken(
+      stepContext.context.activity.from.id,
+      this.connectionName,
+      stepContext.context.activity.channelId,
+      null
+    );
 
-    if (!token) {
+    if (!tokenResponse || !tokenResponse.token) {
       promptChoices.add('Login');
       // Token exchange will fail when the host is not logged on and the skill should
       // show a regular OAuthPrompt.
@@ -80,25 +85,31 @@ class SsoDialog extends ComponentDialog {
    */
   async handleActionStep (stepContext) {
     const action = stepContext.result.value;
+    const userTokenClient = stepContext.context.turnState.get(stepContext.context.adapter.UserTokenClientKey);
 
     switch (action.toLowerCase()) {
       case 'login':
         return stepContext.beginDialog(SSO_SIGNIN_DIALOG);
 
       case 'logout': {
-        const adapter = stepContext.context.adapter;
-        await adapter.signOutUser(stepContext.context, this.connectionName);
+        const { activity } = stepContext.context;
+        await userTokenClient.signOutUser(activity.from.id, this.connectionName, activity.channelId);
         await stepContext.context.sendActivity('You have been signed out.');
         return stepContext.next();
       }
 
       case 'show token': {
-        const tokenProvider = stepContext.context.adapter;
-        const token = await tokenProvider.getUserToken(stepContext.context, this.connectionName);
-        if (!token) {
+        const tokenResponse = await userTokenClient.getUserToken(
+          stepContext.context.activity.from.id,
+          this.connectionName,
+          stepContext.context.activity.channelId,
+          null
+        );
+
+        if (!tokenResponse || !tokenResponse.token) {
           await stepContext.context.sendActivity('User has no cached token.');
         } else {
-          await stepContext.context.sendActivity(`Here is your current SSO token: ${token.token}`);
+          await stepContext.context.sendActivity(`Here is your current SSO token: ${tokenResponse.token}`);
         }
         return stepContext.next();
       }

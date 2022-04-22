@@ -8,13 +8,12 @@ using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallSkillBot.Dialogs;
+using Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallSkillBot.Dialogs.Proactive;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
-using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs;
-using Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Proactive;
 
-namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Controllers
+namespace Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallSkillBot.Controllers
 {
     [Route("api/notify")]
     [ApiController]

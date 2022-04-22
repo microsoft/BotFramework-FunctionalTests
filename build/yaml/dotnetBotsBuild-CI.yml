@@ -28,13 +28,13 @@ steps:
 - task: NuGetCommand@2
   displayName: "NuGet restore"
   inputs:
-    restoreSolution: "Bots/DotNet/FunctionalTestsBots.sln"
+    restoreSolution: "Bots/DotNet/Microsoft.Bot.Builder.FunctionalTestsBots.sln"
     restoreDirectory: "${{ parameters.solutionDir }}packages"
 
 - task: MSBuild@1
   displayName: "Build"
   inputs:
-    solution: "Bots/DotNet/FunctionalTestsBots.sln"
+    solution: "Bots/DotNet/Microsoft.Bot.Builder.FunctionalTestsBots.sln"
     vsVersion: 16.0
     platform: "${{ parameters.buildPlatform }}"
     configuration: "${{ parameters.buildConfiguration }}"

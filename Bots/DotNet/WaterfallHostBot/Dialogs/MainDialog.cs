@@ -6,19 +6,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Choices;
-using Microsoft.Bot.Builder.Integration.AspNet.Core.Skills;
+using Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallHostBot.Dialogs.Sso;
+using Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallHostBot.Skills;
 using Microsoft.Bot.Builder.Skills;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Bot.Schema;
-using Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs.Sso;
-using Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Skills;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
-namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs
+namespace Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallHostBot.Dialogs
 {
     /// <summary>
     /// The main dialog for this bot. It uses a <see cref="SkillDialog"/> to call skills.
@@ -32,23 +30,20 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs
         private readonly IStatePropertyAccessor<BotFrameworkSkill> _activeSkillProperty;
         private readonly string _deliveryMode = $"{typeof(MainDialog).FullName}.DeliveryMode";
         private readonly string _selectedSkillKey = $"{typeof(MainDialog).FullName}.SelectedSkillKey";
+        private readonly BotFrameworkAuthentication _auth;
         private readonly SkillsConfiguration _skillsConfig;
         private readonly IConfiguration _configuration;
 
         // Dependency injection uses this constructor to instantiate MainDialog.
-        public MainDialog(ConversationState conversationState, SkillConversationIdFactoryBase conversationIdFactory, SkillHttpClient skillClient, SkillsConfiguration skillsConfig, IConfiguration configuration)
+        public MainDialog(BotFrameworkAuthentication auth, ConversationState conversationState, SkillConversationIdFactoryBase conversationIdFactory, SkillsConfiguration skillsConfig, IConfiguration configuration)
             : base(nameof(MainDialog))
         {
+            _auth = auth ?? throw new ArgumentNullException(nameof(auth));
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
 
             var botId = configuration.GetSection(MicrosoftAppCredentials.MicrosoftAppIdKey)?.Value;
 
             _skillsConfig = skillsConfig ?? throw new ArgumentNullException(nameof(skillsConfig));
-
-            if (skillClient == null)
-            {
-                throw new ArgumentNullException(nameof(skillClient));
-            }
 
             if (conversationState == null)
             {
@@ -62,7 +57,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs
             AddDialog(new TangentDialog());
 
             // Create and add SkillDialog instances for the configured skills.
-            AddSkillDialogs(conversationState, conversationIdFactory, skillClient, skillsConfig, botId);
+            AddSkillDialogs(conversationState, conversationIdFactory, skillsConfig, botId);
 
             // Add ChoicePrompt to render available delivery modes.
             AddDialog(new ChoicePrompt("DeliveryModePrompt"));
@@ -304,7 +299,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs
         }
 
         // Helper method that creates and adds SkillDialog instances for the configured skills.
-        private void AddSkillDialogs(ConversationState conversationState, SkillConversationIdFactoryBase conversationIdFactory, SkillHttpClient skillClient, SkillsConfiguration skillsConfig, string botId)
+        private void AddSkillDialogs(ConversationState conversationState, SkillConversationIdFactoryBase conversationIdFactory, SkillsConfiguration skillsConfig, string botId)
         {
             foreach (var skillInfo in _skillsConfig.Skills.Values)
             {
@@ -313,7 +308,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.WaterfallHostBot.Dialogs
                 {
                     BotId = botId,
                     ConversationIdFactory = conversationIdFactory,
-                    SkillClient = skillClient,
+                    SkillClient = _auth.CreateBotFrameworkClient(),
                     SkillHostEndpoint = skillsConfig.SkillHostEndpoint,
                     ConversationState = conversationState,
                     Skill = skillInfo

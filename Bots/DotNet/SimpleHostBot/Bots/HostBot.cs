@@ -3,21 +3,19 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
-using Microsoft.Bot.Builder.Integration.AspNet.Core.Skills;
+using Microsoft.Bot.Builder.FunctionalTestsBots.SimpleHostBot.Dialogs;
 using Microsoft.Bot.Builder.Skills;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Bot.Schema;
-using Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Dialogs;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
-namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Bots
+namespace Microsoft.Bot.Builder.FunctionalTestsBots.SimpleHostBot.Bots
 {
     public class HostBot : ActivityHandler
     {
@@ -28,24 +26,27 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Bots
         private readonly IStatePropertyAccessor<BotFrameworkSkill> _activeSkillProperty;
         private readonly IStatePropertyAccessor<DialogState> _dialogStateProperty;
         private readonly string _botId;
+        private readonly BotFrameworkAuthentication _auth;
         private readonly ConversationState _conversationState;
-        private readonly SkillHttpClient _skillClient;
         private readonly SkillsConfiguration _skillsConfig;
+        private readonly SkillConversationIdFactoryBase _conversationIdFactory;
         private readonly Dialog _dialog;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HostBot"/> class.
         /// </summary>
+        /// <param name="auth">The cloud environment for the bot.</param>
         /// <param name="conversationState">A state management object for the conversation.</param>
         /// <param name="skillsConfig">The skills configuration.</param>
-        /// <param name="skillClient">The HTTP client for the skills.</param>
         /// <param name="configuration">The configuration properties.</param>
+        /// <param name="conversationIdFactory">The conversation id factory.</param>
         /// <param name="dialog">The dialog to use.</param>
-        public HostBot(ConversationState conversationState, SkillsConfiguration skillsConfig, SkillHttpClient skillClient, IConfiguration configuration, SetupDialog dialog)
+        public HostBot(BotFrameworkAuthentication auth, ConversationState conversationState, SkillsConfiguration skillsConfig, SkillConversationIdFactoryBase conversationIdFactory, IConfiguration configuration, SetupDialog dialog)
         {
+            _auth = auth ?? throw new ArgumentNullException(nameof(auth));
             _conversationState = conversationState ?? throw new ArgumentNullException(nameof(conversationState));
             _skillsConfig = skillsConfig ?? throw new ArgumentNullException(nameof(skillsConfig));
-            _skillClient = skillClient ?? throw new ArgumentNullException(nameof(skillClient));
+            _conversationIdFactory = conversationIdFactory ?? throw new ArgumentNullException(nameof(conversationIdFactory));
             _dialog = dialog ?? throw new ArgumentNullException(nameof(dialog));
             _dialogStateProperty = _conversationState.CreateProperty<DialogState>("DialogState");
             if (configuration == null)
@@ -196,14 +197,28 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Bots
             // will have access to current accurate state.
             await _conversationState.SaveChangesAsync(turnContext, force: true, cancellationToken: cancellationToken);
 
+            // Route the activity to the skill.
+            using var client = _auth.CreateBotFrameworkClient();
+
+            // Create a conversationId to interact with the skill and send the activity
+            var options = new SkillConversationIdFactoryOptions
+            {
+                FromBotOAuthScope = turnContext.TurnState.Get<string>(BotAdapter.OAuthScopeKey),
+                FromBotId = _botId,
+                Activity = turnContext.Activity,
+                BotFrameworkSkill = targetSkill
+            };
+
+            var skillConversationId = await _conversationIdFactory.CreateSkillConversationIdAsync(options, cancellationToken);
+
             if (deliveryMode == DeliveryModes.ExpectReplies)
             {
                 // Clone activity and update its delivery mode.
                 var activity = JsonConvert.DeserializeObject<Activity>(JsonConvert.SerializeObject(turnContext.Activity));
                 activity.DeliveryMode = deliveryMode;
 
-                // Route the activity to the skill.
-                var expectRepliesResponse = await _skillClient.PostActivityAsync<ExpectedReplies>(_botId, targetSkill, _skillsConfig.SkillHostEndpoint, activity, cancellationToken);
+                // route the activity to the skill
+                var expectRepliesResponse = await client.PostActivityAsync(_botId, targetSkill.AppId, targetSkill.SkillEndpoint, _skillsConfig.SkillHostEndpoint, skillConversationId, activity, cancellationToken);
 
                 // Check response status.
                 if (!expectRepliesResponse.IsSuccessStatusCode())
@@ -212,7 +227,9 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Bots
                 }
 
                 // Route response activities back to the channel.
-                var responseActivities = expectRepliesResponse.Body?.Activities;
+                var response = expectRepliesResponse.Body as JObject;
+                var activities = response["activities"];
+                var responseActivities = activities.ToObject<IList<Activity>>();
 
                 foreach (var responseActivity in responseActivities)
                 {
@@ -229,7 +246,7 @@ namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot.Bots
             else
             {
                 // Route the activity to the skill.
-                var response = await _skillClient.PostActivityAsync(_botId, targetSkill, _skillsConfig.SkillHostEndpoint, (Activity)turnContext.Activity, cancellationToken);
+                var response = await client.PostActivityAsync(_botId, targetSkill.AppId, targetSkill.SkillEndpoint, _skillsConfig.SkillHostEndpoint, skillConversationId, turnContext.Activity, cancellationToken);
 
                 // Check response status
                 if (!response.IsSuccessStatusCode())
