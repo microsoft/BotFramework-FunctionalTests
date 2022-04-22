@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-namespace TranscriptTestRunner.TestClients
+namespace Microsoft.Bot.Builder.Testing.TestRunner.TestClients
 {
     /// <summary>
     /// Class with the options needed to run a test against a TesClient.

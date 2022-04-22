@@ -2,6 +2,7 @@ parameters:
   - name: botType
     displayName: Bot type
     type: string
+    default: ""
 
   - name: registry
     displayName: Registry source

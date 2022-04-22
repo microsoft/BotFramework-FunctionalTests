@@ -3,7 +3,7 @@
 
 using System.Net;
 
-namespace TranscriptTestRunner.Authentication
+namespace Microsoft.Bot.Builder.Testing.TestRunner.Authentication
 {
     /// <summary>
     /// Session information definition.

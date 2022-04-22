@@ -5,11 +5,10 @@ using System.IO;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 
-namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.FileUpload
+namespace Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallSkillBot.Dialogs.FileUpload
 {
     public class FileUploadDialog : ComponentDialog
     {

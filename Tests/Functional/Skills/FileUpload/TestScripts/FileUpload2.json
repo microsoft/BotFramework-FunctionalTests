@@ -8,7 +8,8 @@
         "type == 'message'",
         "from.role == 'bot'",
         "recipient.role == 'user'",
-        "startsWith(text, 'Attachment \"${FileName}\" has been received.\r\nFile content: GUID:${TestGuid}')"
+        "startsWith(text, 'Attachment \"${FileName}\" has been received.\r\nFile content: GUID:${TestGuid}')",
+        "inputHint == 'acceptingInput'"
       ]
     },
     {

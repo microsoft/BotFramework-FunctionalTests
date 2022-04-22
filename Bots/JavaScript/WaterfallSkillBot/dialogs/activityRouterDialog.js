@@ -32,7 +32,7 @@ class ActivityRouterDialog extends ComponentDialog {
    * @param {import('../config').DefaultConfig} configuration
    * @param {import('botbuilder').ConversationState} conversationState
    * @param {import('botbuilder').SkillConversationIdFactory} conversationIdFactory
-   * @param {import('botbuilder').SkillHttpClient} skillClient
+   * @param {import('botbuilder').BotFrameworkClient} skillClient
    * @param {Object<string, import('./proactive/continuationParameters').ContinuationParameters>} continuationParametersStore
    */
   constructor (configuration, conversationState, conversationIdFactory, skillClient, continuationParametersStore) {
@@ -61,7 +61,7 @@ class ActivityRouterDialog extends ComponentDialog {
    * @param {import('../config').DefaultConfig} configuration
    * @param {import('botbuilder').ConversationState} conversationState
    * @param {import('botbuilder').SkillConversationIdFactory} conversationIdFactory
-   * @param {import('botbuilder').SkillHttpClient} skillClient
+   * @param {import('botbuilder').BotFrameworkClient} skillClient
    */
   createEchoSkillDialog (dialogId, configuration, conversationState, conversationIdFactory, skillClient) {
     const { MicrosoftAppId, SkillHostEndpoint, EchoSkillInfo: skill } = configuration;

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using Microsoft.Bot.Builder.Skills;
 using Microsoft.Extensions.Configuration;
 
-namespace Microsoft.BotFrameworkFunctionalTests.SimpleHostBot
+namespace Microsoft.Bot.Builder.FunctionalTestsBots.SimpleHostBot
 {
     /// <summary>
     /// A helper class that loads Skills information from configuration.
