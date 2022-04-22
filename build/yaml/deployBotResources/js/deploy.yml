@@ -146,8 +146,10 @@ stages:
                 $container = "${{ bot.container.registry }}.azurecr.io/${{ bot.name }}:v$(DEPENDENCIESVERSIONNUMBER)";
 
                 # Move Utils and Dockerfile
-                move "$(SYSTEM.DEFAULTWORKINGDIRECTORY)/Bots/JavaScript/Utils" .
-                move "$(SYSTEM.DEFAULTWORKINGDIRECTORY)/Bots/JavaScript/Dockerfile" .
+                if("SkillV3" -ne "${{ bot.type }}"){
+                  move "$(SYSTEM.DEFAULTWORKINGDIRECTORY)/Bots/JavaScript/Utils" .
+                  move "$(SYSTEM.DEFAULTWORKINGDIRECTORY)/Bots/JavaScript/Dockerfile" .
+                }
 
                 # Delete Container
                 $repositories = az acr repository list --name ${{ bot.container.registry }} | ConvertFrom-Json;
