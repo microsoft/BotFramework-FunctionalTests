@@ -383,7 +383,7 @@ stages:
           appType: "SingleTenant"
           project:
             directory: 'Bots/DotNet/SimpleHostBot'
-            name: "SimpleHostBot.csproj"
+            name: "Microsoft.Bot.Builder.FunctionalTestsBots.SimpleHostBot.csproj"
             netCoreVersion: "3.1.x"
           dependency:
             registry: ${{ parameters.dependenciesRegistryDotNetHosts }}
@@ -398,7 +398,7 @@ stages:
           appType: "SingleTenant"
           project: 
             directory: 'Bots/DotNet/EchoSkillBot'
-            name: "EchoSkillBot.csproj"
+            name: "Microsoft.Bot.Builder.FunctionalTestsBots.EchoSkillBot.csproj"
             netCoreVersion: "3.1.x"
           dependency:
             registry: ${{ parameters.dependenciesRegistryDotNetSkills }}
@@ -412,7 +412,7 @@ stages:
           appType: "UserAssignedMSI"
           project:
             directory: 'Bots/DotNet/SimpleHostBot'
-            name: "SimpleHostBot.csproj"
+            name: "Microsoft.Bot.Builder.FunctionalTestsBots.SimpleHostBot.csproj"
             netCoreVersion: "3.1.x"
           dependency:
             registry: ${{ parameters.dependenciesRegistryDotNetHosts }}
@@ -425,7 +425,7 @@ stages:
           appType: "UserAssignedMSI"
           project: 
             directory: 'Bots/DotNet/EchoSkillBot'
-            name: "EchoSkillBot.csproj"
+            name: "Microsoft.Bot.Builder.FunctionalTestsBots.EchoSkillBot.csproj"
             netCoreVersion: "3.1.x"
           dependency:
             registry: ${{ parameters.dependenciesRegistryDotNetSkills }}
