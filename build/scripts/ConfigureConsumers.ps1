@@ -1,8 +1,6 @@
 
 param (
   [Parameter(Mandatory = $true)]
-  [string]$Scenario,
-  [Parameter(Mandatory = $true)]
   [string]$ResourceGroup,
   [Parameter(Mandatory = $true)]
   [string]$ResourceSuffix,
@@ -39,7 +37,7 @@ param (
 )
 
 # Helper Functions.
-
+$appSettingsPath = "Tests/Functional/appsettings.json";
 $noBotsFoundMessage = "No bots were found in the configuration.";
 
 function AddTimeStamp {
@@ -108,27 +106,18 @@ function AddBotsAppIdFromKeyVault {
   }
 }
 
-function FilterBotsByScenario {
-  param($bots, $scenarios, $scenario)
-  # Filter bots by a specific test scenario.
+function FilterBotsByNames {
+  param($bots, $names)
+  # Filter bots by names.
 
   if (-not $bots) {
     Write-Host $(AddTimeStamp -text $noBotsFoundMessage);
     return $bots;
   }
 
-  $scenarioSelected = $scenarios | Where-Object { $_.name -eq $scenario }
-
-  if (-not $scenarioSelected) {
-    Write-Host $(AddTimeStamp -text "$($scenario): Unable to find the Test Scenario.");
-    return @();
-  }
-
   return $bots | Where-Object {
     $bot = $_;
-
-    $scenarioBots = $scenarioSelected.consumers + $scenarioSelected.skills;
-    return $scenarioBots -contains $bot.key;
+    return $names -contains $bot.key;
   }
 }
 
@@ -615,10 +604,9 @@ $skills = @(
   }
 )
 
-# Bots Test Scenarios
-$scenarios = @(
+# Bots Test Configurations
+$configurations = @(
   @{ 
-    name      = "SingleTurn"; 
     consumers = @(
       "SimpleHostBotComposerDotNet",
       "SimpleHostBotDotNet",
@@ -635,7 +623,6 @@ $scenarios = @(
     );
   }
   @{ 
-    name      = "Authentication"; 
     consumers = @(
       "SimpleHostBotDotNetMSI",
       "SimpleHostBotDotNetST",
@@ -650,7 +637,6 @@ $scenarios = @(
     );
   }
   @{ 
-    name      = "Waterfall"; 
     consumers = @(
       "ComposerHostBotDotNet",
       "WaterfallHostBotDotNet",
@@ -667,45 +653,54 @@ $scenarios = @(
 )
 
 # Pre-configure and filter bots.
-Write-Host $(AddTimeStamp -text "Filtering bots by '$Scenario' scenario ...");
-$consumersToConfigure = FilterBotsByScenario -bots $consumers -scenarios $scenarios -scenario $Scenario;
-$skillsToConfigure = FilterBotsByScenario -bots $skills -scenarios $scenarios -scenario $Scenario;
+$setupConsumers = $consumers;
+$setupSkills = $skills;
 
 Write-Host $(AddTimeStamp -text "Adding the suffix '$ResourceSuffix' to the bot resources ...");
-$consumersToConfigure = AddBotsSuffix -bots $consumersToConfigure -suffix $ResourceSuffix
-$skillsToConfigure = AddBotsSuffix -bots $skillsToConfigure -suffix $ResourceSuffix
+$setupConsumers = AddBotsSuffix -bots $setupConsumers -suffix $ResourceSuffix
+$setupSkills = AddBotsSuffix -bots $setupSkills -suffix $ResourceSuffix
 
 Write-Host $(AddTimeStamp -text "Loading the Skills AppIds from the KeyVault '$KeyVault' when no Pipeline Variable is provided.");
-$skillsToConfigure = AddBotsAppIdFromKeyVault -bots $skillsToConfigure -keyVault $KeyVault
+$setupSkills = AddBotsAppIdFromKeyVault -bots $setupSkills -keyVault $KeyVault
 
 Write-Host $(AddTimeStamp -text "Filtering bots that have an AppId assigned ...");
-$skillsToConfigure = FilterBotsWithAppId -bots $skillsToConfigure
+$setupSkills = FilterBotsWithAppId -bots $setupSkills
 
 Write-Host $(AddTimeStamp -text "Filtering existing Resource Groups ...");
 $resourceGroups = FilterResourceGroupsByExistence -groups $groups
 
 Write-Host $(AddTimeStamp -text "Filtering deployed bots in Azure ...");
-$consumersToConfigure = FilterBotsByResourceExistence -groups $resourceGroups -bots $consumersToConfigure
-$skillsToConfigure = FilterBotsByResourceExistence -groups $resourceGroups -bots $skillsToConfigure
+$setupConsumers = FilterBotsByResourceExistence -groups $resourceGroups -bots $setupConsumers
+$setupSkills = FilterBotsByResourceExistence -groups $resourceGroups -bots $setupSkills
 
-Write-Host $(AddTimeStamp -text "Adding Azure AppSettings to Consumers' configuration.");
-$consumersToConfigure = AddAzureAppSettings -consumers $consumersToConfigure -skills $skillsToConfigure
-
-if (-not $consumersToConfigure) {
-  Write-Error $(AddTimeStamp -text "No Consumers were found to configure. Cancelling the configuration ...");
-  return;
-}
-
-if (-not $skillsToConfigure) {
-  Write-Error $(AddTimeStamp -text "No Skills were found to configure each Consumer. Cancelling the configuration ...");
-  return;
-}
+Write-Host $(AddTimeStamp -text "Configuring the Test Project.");
+ConfigureTestProjectAppSettings -bots $setupConsumers -appSettingsPath $appSettingsPath;
 
 # Configure steps.
-Write-Host $(AddTimeStamp -text "Configuring the Test Project.");
-ConfigureTestProjectAppSettings -bots $consumersToConfigure -appSettingsPath "Tests/Functional/appsettings.json";
+foreach ($config in $configurations) {
+  Write-Host $(AddTimeStamp -text "Filtering consumers ($($config.consumers -join ', ')) ...");
+  $consumersToConfigure = FilterBotsByNames -bots $setupConsumers -names $config.consumers;
+  $skillsToConfigure = FilterBotsByNames -bots $setupSkills -names $config.skills;
 
-Write-Host $(AddTimeStamp -text "Configuring the Consumer bots App Settings in Azure.");
-ConfigureConsumers -consumers $consumersToConfigure -skills $skillsToConfigure
+  Write-Host $(AddTimeStamp -text "Adding Azure AppSettings to Consumers' configuration.");
+  $consumersToConfigure = AddAzureAppSettings -consumers $consumersToConfigure -skills $skillsToConfigure
+
+  if (-not $consumersToConfigure) {
+    Write-Error $(AddTimeStamp -text "No Consumers were found to configure. Cancelling the configuration ...");
+    return;
+  }
+
+  if (-not $skillsToConfigure) {
+    Write-Error $(AddTimeStamp -text "No Skills were found to configure each Consumer. Cancelling the configuration ...");
+    return;
+  }
+
+  Write-Host $(AddTimeStamp -text "Configuring the Consumer bots App Settings in Azure.");
+  ConfigureConsumers -consumers $consumersToConfigure -skills $skillsToConfigure
+}
 
 Write-Host $(AddTimeStamp -text "Process Finished!");
+
+# Share appSettings.json file content.
+$appSettings = Get-Content -Path $appSettingsPath | Out-String | ConvertTo-Json -Compress
+Write-Host "##vso[task.setvariable variable=ConfigureAppSettingsContent;isOutput=true;isSecret=true]$appSettings"

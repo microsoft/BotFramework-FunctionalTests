@@ -40,10 +40,6 @@ parameters:
   displayName: Shared Resource Group
   type: string
 
-- name: scenario
-  displayName: Test scenario
-  type: object
-
 steps:
   - task: AzureCLI@2
     name: "Configure_Consumers"
@@ -54,9 +50,8 @@ steps:
       scriptLocation: scriptPath
       scriptPath: "$(SYSTEM.DEFAULTWORKINGDIRECTORY)/build/scripts/ConfigureConsumers.ps1"
       arguments: >
-        -Scenario "${{ parameters.scenario }}"
         -ResourceGroup "${{ parameters.resourceGroup }}"
-        -ResourceSuffix "${{ parameters.resourceSuffix }}${{ parameters.deployBuildId }}"
+        -ResourceSuffix "${{ parameters.resourceSuffix }}-${{ parameters.deployBuildId }}"
         -SharedResourceGroup "${{ parameters.sharedResourceGroup }}"
         -SharedResourceSuffix "${{ parameters.resourceSuffix }}"
         -KeyVault "${{ parameters.keyVault }}"

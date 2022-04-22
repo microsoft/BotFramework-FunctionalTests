@@ -145,3 +145,14 @@ stages:
               namespace: "$(BASENAMESPACE).SingleTurn"
               trx: "$(BASENAMESPACE).SingleTurn-$(BUILD.BUILDNUMBER).trx"
               zip: "$(ZIP)"
+      - job: "Test_Skills_Authentication"
+        displayName: "Test Skills.Authentication"
+        steps:
+          - checkout: none
+          - template: test.yml
+            parameters:
+              appsettings: "$(APPSETTINGS)"
+              dll: "$(DLL)"
+              namespace: "$(BASENAMESPACE).Authentication"
+              trx: "$(BASENAMESPACE).Authentication-$(BUILD.BUILDNUMBER).trx"
+              zip: "$(ZIP)"
