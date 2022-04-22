@@ -22,6 +22,7 @@
 # SendActivity_uWZAVE()
 [Activity
     Text = ${SendActivity_uWZAVE_text()}
+    InputHint = ignoringInput
     Attachments = ${AttachmentTemplate('Files/architecture-resize.png', 'image/png', `${conversation.HostUrl}/images/architecture-resize.png`)}
 ]
 # SendActivity_uWZAVE_text()
@@ -43,6 +44,7 @@
 # SendActivity_4HOnje()
 [Activity
     Text = ${SendActivity_4HOnje_text()}
+    InputHint = ignoringInput
     Attachments = ${AttachmentTemplate('Files/architecture-resize.png', 'image/png', `data:image/png;base64,${base64(GetFile())}`)}
 ]
 

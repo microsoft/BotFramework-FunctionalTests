@@ -4,7 +4,7 @@
 using System.Collections.Generic;
 using Microsoft.Bot.Connector;
 
-namespace Microsoft.BotFrameworkFunctionalTests.WaterfallSkillBot.Dialogs.Cards
+namespace Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallSkillBot.Dialogs.Cards
 {
     public static class ChannelSupportedCards
     {

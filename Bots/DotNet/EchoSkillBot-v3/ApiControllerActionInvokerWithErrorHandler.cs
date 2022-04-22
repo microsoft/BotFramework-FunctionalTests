@@ -10,7 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http.Controllers;
 
-namespace Microsoft.BotFrameworkFunctionalTests.EchoSkillBotv3
+namespace Microsoft.Bot.Builder.FunctionalTestsBots.EchoSkillBotv3
 {
     /// <summary>
     /// Web Api Controller to intersect HTTP operations when the Action Invoker is triggered to capture exceptions and send it to the bot as an Activity.

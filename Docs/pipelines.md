@@ -110,11 +110,40 @@ Supported Version inputs are:
 | **AppServicePlanDotNetName**                  | User / Create Shared Resources                                                                                | Name of the App Service Plan for DotNet bots.                                                                                                                    | -                             | appservicedotnet                   |
 | **AppServicePlanJSName**                      | User / Create Shared Resources                                                                                | Name of the App Service Plan for JavaScript bots.                                                                                                                | -                             | appservicejs                       |
 | **AppServicePlanPythonName**                  | User / Create Shared Resources                                                                                | Name of the App Service Plan for Python bots.                                                                                                                    | -                             | appservicepython                   |
-| **DeployResourceGroup**                       | User                                                                                                          | (optional) Name of the Resource Group where the bots are deployed.                                                                                               | **BFFN**                      | bots-group                         |
+| **ResourceGroup**                             | User                                                                                                          | (optional) Name of the Resource Group where the bots are deployed.                                                                                               | **BFFN**                      | bots-group                         |
 | **ResourceSuffix**                            | Create Shared Resources                                                                                       | (optional) Suffix to add to the resources' name to avoid collitions (use lowercase, only letters and numbers).                                                   |                               | suffix                             |
-| **SharedResourceGroup**                       | Create Shared Resources                                                                                       | (optional) Name of the Shared Resource Group.                                                                                                                    | **BFFN-Shared**               | shared-resource-group |
+| **SharedResourceGroup**                       | Create Shared Resources                                                                                       | (optional) Name of the Shared Resource Group.                                                                                                                    | **BFFN-Shared**               | shared-resource-group              |
 | **[BotName](./availableBotsList.md) + AppId** | [App Registration Portal](https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade) | (optional) Skill Bot App ID to use. If not configured, it will be retrieved from the key vault.                                                                  |                               | x0x000x-000x-000x-xxx0-x00x0000xxx |
-| **DeployBotResourcesGuid**                    | Deploy Bot Resources                                                                                          | (optional) Name set for the Deploy Bot Resources pipeline.                                                                                                       | **02.A. Deploy skill bots (daily)** | 02 - Deploy Bot Resources          |
+
+### Dependency Variables
+
+The following parameters will be displayed in the run pipeline blade.
+
+The version parameters can be set here or you can create variables to set the values for the next pipeline's runs.
+Supported values are: LATEST (default), STABLE, or a specific version.
+For example:
+DEPENDENCIESVERSIONDOTNET = 4.13.1
+
+![dependenciesParameters](./media/dependenciesParametersTest.png)
+
+| Parameter Name                | Source | Description                                                                   | Default value | Example |
+| ----------------------------- | ------ | ----------------------------------------------------------------------------- | ------------- | ------- |
+| **DependenciesVersionDotNet** | User   | (optional) Source from which the Bot Builder dependencies will be downloaded. | -             | NuGet   |
+
+These are the available registry options:
+
+- DotNet
+  - Artifacts (default)
+  - MyGet
+  - NuGet
+
+Supported Version inputs are:
+
+| Name                 | Description                                                                                                                 | Example |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------- | ------- |
+| **LATEST**           | (default for Artifacts and MyGet) The latest published version available in the chosen registry, it will search for `stable` or `preview` versions. | LATEST  |
+| **STABLE**           | (default for NuGet, npm, and PyPI) The latest stable published version available in the chosen registry, it only will search for `stable` versions.            | STABLE  |
+| **Specific Version** | Version format based on how it's published in the chosen registry.                                                          | 4.15.2  |
 
 ## 04 - Cleanup Resources Pipeline
 

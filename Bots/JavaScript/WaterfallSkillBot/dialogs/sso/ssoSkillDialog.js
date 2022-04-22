@@ -49,9 +49,15 @@ class SsoSkillDialog extends ComponentDialog {
    */
   async getPromptChoices (stepContext) {
     const choices = new Set();
-    const token = await stepContext.context.adapter.getUserToken(stepContext.context, this.connectionName);
+    const userTokenClient = stepContext.context.turnState.get(stepContext.context.adapter.UserTokenClientKey);
+    const tokenResponse = await userTokenClient.getUserToken(
+      stepContext.context.activity.from.id,
+      this.connectionName,
+      stepContext.context.activity.channelId,
+      null
+    );
 
-    if (!token) {
+    if (!tokenResponse || !tokenResponse.token) {
       choices.add('Login');
     } else {
       choices.add('Logout');
@@ -68,23 +74,31 @@ class SsoSkillDialog extends ComponentDialog {
    */
   async handleActionStep (stepContext) {
     const action = stepContext.result.value.toLowerCase();
+    const userTokenClient = stepContext.context.turnState.get(stepContext.context.adapter.UserTokenClientKey);
 
     switch (action) {
       case 'login':
         return stepContext.beginDialog(SSO_SKILL_DIALOG);
 
-      case 'logout':
-        await stepContext.context.adapter.signOutUser(stepContext.context, this.connectionName);
+      case 'logout': {
+        const { activity } = stepContext.context;
+        await userTokenClient.signOutUser(activity.from.id, this.connectionName, activity.channelId);
         await stepContext.context.sendActivity('You have been signed out.');
         return stepContext.next();
+      }
 
       case 'show token': {
-        const token = await stepContext.context.adapter.getUserToken(stepContext.context, this.connectionName);
+        const tokenResponse = await userTokenClient.getUserToken(
+          stepContext.context.activity.from.id,
+          this.connectionName,
+          stepContext.context.activity.channelId,
+          null
+        );
 
-        if (!token) {
+        if (!tokenResponse || !tokenResponse.token) {
           await stepContext.context.sendActivity('User has no cached token.');
         } else {
-          await stepContext.context.sendActivity(`Here is your current SSO token: ${token.token}`);
+          await stepContext.context.sendActivity(`Here is your current SSO token: ${tokenResponse.token}`);
         }
 
         return stepContext.next();

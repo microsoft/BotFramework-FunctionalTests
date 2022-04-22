@@ -16,6 +16,7 @@
 # ChoiceInput_Prompt_CQChcR()
 [Activity
     Text = ${ChoiceInput_Prompt_CQChcR_text()}
+    Speak = ${ChoiceInput_Prompt_CQChcR_text()}
 ]
 
 # ChoiceInput_Prompt_CQChcR_text()

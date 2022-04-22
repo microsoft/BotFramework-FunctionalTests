@@ -189,7 +189,8 @@
         "type == 'message'",
         "from.role == 'bot'",
         "recipient.role == 'user'",
-        "text == 'Please upload a file to continue.'"
+        "text == 'Please upload a file to continue.'",
+        "inputHint == 'acceptingInput'"
       ]
     },
     {
