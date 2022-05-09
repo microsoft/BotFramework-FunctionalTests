@@ -3,6 +3,7 @@
 
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder.Dialogs;
@@ -36,6 +37,7 @@ namespace Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallSkillBot.Dialogs.Fi
         private async Task<DialogTurnResult> HandleAttachmentStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             var fileText = string.Empty;
+            using var client = new HttpClient();
 
             foreach (var file in stepContext.Context.Activity.Attachments)
             {
@@ -43,12 +45,14 @@ namespace Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallSkillBot.Dialogs.Fi
                 var localFileName = Path.Combine(Path.GetTempPath(), file.Name);
                 string fileContent;
 
-                using (var webClient = new WebClient())
+                using var stream = await client.GetStreamAsync(remoteFileUrl, cancellationToken);
+                using (var fs = new FileStream(localFileName, FileMode.Create))
                 {
-                    webClient.DownloadFile(remoteFileUrl, localFileName);
-                    using var reader = new StreamReader(localFileName);
-                    fileContent = await reader.ReadToEndAsync();
+                    await stream.CopyToAsync(fs, cancellationToken);
                 }
+
+                using var reader = new StreamReader(localFileName);
+                fileContent = await reader.ReadToEndAsync();
 
                 fileText += $"Attachment \"{file.Name}\" has been received.\r\n";
                 fileText += $"File content: {fileContent}\r\n";
