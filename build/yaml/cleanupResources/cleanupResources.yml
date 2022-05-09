@@ -30,7 +30,7 @@ variables:
   InternalStorageAccountName: "bffnstorageaccount$($env:RESOURCESUFFIX)"
 
 pool:
-  vmImage: "windows-2019"
+  vmImage: "windows-2022"
 
 stages:
 - stage: "Delete_DotNet_Resource_Group"

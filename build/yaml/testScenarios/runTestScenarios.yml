@@ -62,7 +62,7 @@ variables:
   InternalSharedResourceGroupName: $[coalesce(variables['SHAREDRESOURCEGROUP'], 'BFFN-Shared')]
 
 pool:
-  vmImage: "windows-2019"
+  vmImage: "windows-2022"
 
 stages:
   - template: functional.yml

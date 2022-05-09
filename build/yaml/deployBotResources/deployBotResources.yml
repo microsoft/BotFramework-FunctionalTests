@@ -7,7 +7,7 @@ trigger: none
 pr: none
 
 pool:
-  vmImage: "windows-2019"
+  vmImage: "windows-2022"
 
 parameters:
   - name: dependenciesVersionDotNetHosts
@@ -238,7 +238,7 @@ stages:
           project:
             directory: 'Bots/DotNet/SimpleHostBot'
             name: "Microsoft.Bot.Builder.FunctionalTestsBots.SimpleHostBot.csproj"
-            netCoreVersion: "3.1.x"
+            netCoreVersion: "6.0.x"
           dependency:
             registry: ${{ parameters.dependenciesRegistryDotNetHosts }}
             version: ${{ parameters.dependenciesVersionDotNetHosts }}
@@ -252,7 +252,7 @@ stages:
           project: 
             directory: 'Bots/DotNet/EchoSkillBot'
             name: "Microsoft.Bot.Builder.FunctionalTestsBots.EchoSkillBot.csproj"
-            netCoreVersion: "3.1.x"
+            netCoreVersion: "6.0.x"
           dependency:
             registry: ${{ parameters.dependenciesRegistryDotNetSkills }}
             version: ${{ parameters.dependenciesVersionDotNetSkills }}
@@ -280,7 +280,7 @@ stages:
           project:
             directory: 'Bots/DotNet/WaterfallHostBot'
             name: "Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallHostBot.csproj"
-            netCoreVersion: "3.1.x"
+            netCoreVersion: "6.0.x"
           dependency:
             registry: ${{ parameters.dependenciesRegistryDotNetHosts }}
             version: ${{ parameters.dependenciesVersionDotNetHosts }}
@@ -294,7 +294,7 @@ stages:
           project: 
             directory: 'Bots/DotNet/WaterfallSkillBot'
             name: "Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallSkillBot.csproj"
-            netCoreVersion: "3.1.x"
+            netCoreVersion: "6.0.x"
           dependency:
             registry: ${{ parameters.dependenciesRegistryDotNetSkills }}
             version: ${{ parameters.dependenciesVersionDotNetSkills }}
@@ -309,7 +309,7 @@ stages:
           project: 
             directory: 'Bots/DotNet/SimpleHostBotComposer'
             name: "Microsoft.Bot.Builder.FunctionalTestsBots.SimpleHostBotComposer.csproj"
-            netCoreVersion: "3.1.x"
+            netCoreVersion: "6.0.x"
           dependency:
             registry: ${{ parameters.dependenciesRegistryDotNetHosts }}
             version: ${{ parameters.dependenciesVersionDotNetHosts }}
@@ -323,7 +323,7 @@ stages:
           project: 
             directory: 'Bots/DotNet/EchoSkillBotComposer'
             name: "Microsoft.Bot.Builder.FunctionalTestsBots.EchoSkillBotComposer.csproj"
-            netCoreVersion: "3.1.x"
+            netCoreVersion: "6.0.x"
           dependency:
             registry: ${{ parameters.dependenciesRegistryDotNetSkills }}
             version: ${{ parameters.dependenciesVersionDotNetSkills }}
@@ -337,7 +337,7 @@ stages:
           project: 
             directory: 'Bots/DotNet/ComposerHostBotDotNet'
             name: "ComposerHostBotDotNet.csproj"
-            netCoreVersion: "3.1.x"
+            netCoreVersion: "6.0.x"
           dependency:
             registry: ${{ parameters.dependenciesRegistryDotNetSkills }}
             version: ${{ parameters.dependenciesVersionDotNetSkills }}
@@ -351,7 +351,7 @@ stages:
           project: 
             directory: 'Bots/DotNet/ComposerSkillBotDotNet'
             name: "Microsoft.Bot.Builder.FunctionalTestsBots.ComposerSkillBotDotNet.csproj"
-            netCoreVersion: "3.1.x"
+            netCoreVersion: "6.0.x"
           dependency:
             registry: ${{ parameters.dependenciesRegistryDotNetSkills }}
             version: ${{ parameters.dependenciesVersionDotNetSkills }}
