@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM python:3.8-buster
+FROM mcr.microsoft.com/oryx/python:3.10
 
 # Specify the bot folder.
 # When executing `docker build` remember to use the `--build-arg folder=./<bot-folder>`.
