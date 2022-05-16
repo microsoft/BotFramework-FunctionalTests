@@ -21,6 +21,11 @@ namespace Microsoft.Bot.Builder.Tests.Functional.Skills.Common
         SimpleHostBotDotNet,
 
         /// <summary>
+        /// Simple host implemented using dotnet 3.1.
+        /// </summary>
+        SimpleHostBotDotNet31,
+
+        /// <summary>
         /// Simple host implemented using JS.
         /// </summary>
         SimpleHostBotJS,

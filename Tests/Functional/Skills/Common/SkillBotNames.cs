@@ -7,6 +7,7 @@ namespace Microsoft.Bot.Builder.Tests.Functional.Skills.Common
     {
         public const string EchoSkillBotComposerDotNet = "EchoSkillBotComposerDotNet";
         public const string EchoSkillBotDotNet = "EchoSkillBotDotNet";
+        public const string EchoSkillBotDotNet31 = "EchoSkillBotDotNet31";
         public const string EchoSkillBotDotNetV3 = "EchoSkillBotDotNetV3";
         public const string EchoSkillBotJS = "EchoSkillBotJS";
         public const string EchoSkillBotJSV3 = "EchoSkillBotJSV3";

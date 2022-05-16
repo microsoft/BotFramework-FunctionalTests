@@ -6,6 +6,7 @@ parameters:
       ComposerSkillBotDotNet: ""
       EchoSkillBotComposerDotNet: ""
       EchoSkillBotDotNet: ""
+      EchoSkillBotDotNet31: ""
       EchoSkillBotDotNetV3: ""
       EchoSkillBotJS: ""
       EchoSkillBotJSV3: ""
@@ -403,6 +404,12 @@ steps:
             configType    = $types.Appsettings
           }
           @{
+            key           = "SimpleHostBotDotNet31"
+            botName       = "bffnsimplehostbotdotnet31"
+            resourceGroup = $groups.DotNet
+            configType    = $types.Appsettings
+          }
+          @{
             key           = "SimpleHostBotComposerDotNet"
             botName       = "bffnsimplehostbotcomposerdotnet"
             resourceGroup = $groups.DotNet
@@ -452,6 +459,14 @@ steps:
             keyComposer   = "echoSkillBotDotNet" 
             botName       = "bffnechoskillbotdotnet"
             appId         = "${{ parameters.appIds.EchoSkillBotDotNet }}"
+            resourceGroup = $groups.DotNet
+            group         = "Echo"
+          }
+          @{
+            key           = "EchoSkillBotDotNet31"
+            keyComposer   = "echoSkillBotDotNet31" 
+            botName       = "bffnechoskillbotdotnet31"
+            appId         = "${{ parameters.appIds.EchoSkillBotDotNet31 }}"
             resourceGroup = $groups.DotNet
             group         = "Echo"
           }
@@ -535,12 +550,14 @@ steps:
             consumers = @(
               "SimpleHostBotComposerDotNet",
               "SimpleHostBotDotNet",
+              "SimpleHostBotDotNet31",
               "SimpleHostBotJS",
               "SimpleHostBotPython"
             );
             skills    = @(
               "EchoSkillBotComposerDotNet",
               "EchoSkillBotDotNet",
+              "EchoSkillBotDotNet31",
               "EchoSkillBotDotNetV3",
               "EchoSkillBotJS",
               "EchoSkillBotJSV3",

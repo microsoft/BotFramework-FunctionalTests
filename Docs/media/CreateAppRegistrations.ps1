@@ -2,7 +2,7 @@ Write-Host "You will be prompted to login into your Azure account to create App 
 az login
 
 $defaultPrefix = "generic-app-registration"
-$defaultAmount = 18
+$defaultAmount = 20
 $appRegistrations = @()
 do {
     $prefix = Read-Host -Prompt "App Registrations prefix ('$defaultPrefix' by default)"

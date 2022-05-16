@@ -38,6 +38,7 @@ namespace Microsoft.Bot.Builder.Tests.Functional.Skills.SingleTurn
             {
                 HostBot.SimpleHostBotComposerDotNet,
                 HostBot.SimpleHostBotDotNet,
+                HostBot.SimpleHostBotDotNet31,
                 HostBot.SimpleHostBotJS,
                 HostBot.SimpleHostBotPython,
             };
@@ -46,6 +47,7 @@ namespace Microsoft.Bot.Builder.Tests.Functional.Skills.SingleTurn
             {
                 SkillBotNames.EchoSkillBotComposerDotNet,
                 SkillBotNames.EchoSkillBotDotNet,
+                SkillBotNames.EchoSkillBotDotNet31,
                 SkillBotNames.EchoSkillBotDotNetV3,
                 SkillBotNames.EchoSkillBotJS,
                 SkillBotNames.EchoSkillBotJSV3,
