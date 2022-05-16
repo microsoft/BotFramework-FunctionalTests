@@ -54,3 +54,11 @@
 [Activity
     Text = ${dialog.firstUtterance}
 ]
+
+# BeginSkill_Activity_ZqK525()
+[Activity
+    Text = ${BeginSkill_Activity_ZqK525_text()}
+]
+
+# BeginSkill_Activity_ZqK525_text()
+- ${dialog.firstUtterance}
