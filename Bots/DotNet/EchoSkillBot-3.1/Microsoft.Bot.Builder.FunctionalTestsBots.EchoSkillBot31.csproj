@@ -3,8 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <LangVersion>latest</LangVersion>
-    <AssemblyName>Microsoft.BotFrameworkFunctionalTests.EchoSkillBot</AssemblyName>
-    <RootNamespace>Microsoft.BotFrameworkFunctionalTests.EchoSkillBot</RootNamespace>
+    <AssemblyName>Microsoft.BotFrameworkFunctionalTests.EchoSkillBot31</AssemblyName>
+    <RootNamespace>Microsoft.BotFrameworkFunctionalTests.EchoSkillBot31</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
