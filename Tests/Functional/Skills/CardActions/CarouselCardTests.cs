@@ -16,7 +16,6 @@ using Xunit.Abstractions;
 
 namespace Microsoft.Bot.Builder.Tests.Functional.Skills.CardActions
 {
-    [Trait("TestCategory", "CardActions")]
     public class CarouselCardTests : ScriptTestBase
     {
         private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/Skills/CardActions/TestScripts";
