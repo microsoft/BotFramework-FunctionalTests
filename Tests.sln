@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29806.167
@@ -14,19 +14,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TranscriptConverter", "Libraries\TranscriptConverter\Microsoft.Bot.Builder.Testing.TranscriptConverter.csproj", "{EF963904-79CB-4222-811A-E24B73E5DC1A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Bot.Builder.Testing.TranscriptConverter", "Libraries\TranscriptConverter\Microsoft.Bot.Builder.Testing.TranscriptConverter.csproj", "{EF963904-79CB-4222-811A-E24B73E5DC1A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{B5E35C94-0880-4AEB-8F3C-940FECA7A8C7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{5A0C68F1-6CA7-43D7-8F01-70A484D8D412}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TranscriptTestRunner.Tests", "Libraries\TranscriptTestRunner.Tests\Microsoft.Bot.Builder.Testing.TestRunner.Tests.csproj", "{5CAE9F80-9BD3-480C-8504-552B31B265E0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Bot.Builder.Testing.TestRunner.Tests", "Libraries\TranscriptTestRunner.Tests\Microsoft.Bot.Builder.Testing.TestRunner.Tests.csproj", "{5CAE9F80-9BD3-480C-8504-552B31B265E0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Functional", "Functional", "{DDEE53CF-F094-4009-B198-AA656CB7A009}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Integration", "Integration", "{9027483A-C2FD-48FF-922A-9050ED490B03}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationTests", "Tests\Integration\DotNet\IntegrationTests.csproj", "{BF885B2E-942C-43F3-BECA-64EFBB0598F4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Bot.Builder.Tests.Integration", "Tests\Integration\DotNet\Microsoft.Bot.Builder.Tests.Integration.csproj", "{BF885B2E-942C-43F3-BECA-64EFBB0598F4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

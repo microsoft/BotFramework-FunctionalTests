@@ -11,7 +11,7 @@ using Microsoft.Bot.Schema;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
-namespace IntegrationTests.Azure.Cosmos
+namespace Microsoft.Bot.Builder.Tests.Integration.Azure.Cosmos
 {
     public class CosmosDbPartitionedStorageTests : CosmosDbBaseTests, IClassFixture<CosmosDbPartitionedStorageFixture>
     {

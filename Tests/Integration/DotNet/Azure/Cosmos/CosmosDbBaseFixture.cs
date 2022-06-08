@@ -8,7 +8,7 @@ using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Documents.Client;
 using Xunit;
 
-namespace IntegrationTests.Azure.Cosmos
+namespace Microsoft.Bot.Builder.Tests.Integration.Azure.Cosmos
 {
     public abstract class CosmosDbBaseFixture : ConfigurationFixture, IAsyncLifetime
     {
