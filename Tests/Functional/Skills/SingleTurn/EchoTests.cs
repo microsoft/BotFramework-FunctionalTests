@@ -2,100 +2,37 @@
 // Licensed under the MIT License.
 
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
-using Microsoft.Bot.Builder.Testing.TestRunner;
-using Microsoft.Bot.Builder.Testing.TestRunner.XUnit;
+using Microsoft.Bot.Builder.Tests.Functional.Common;
 using Microsoft.Bot.Builder.Tests.Functional.Skills.Common;
-using Microsoft.Bot.Connector;
-using Microsoft.Bot.Schema;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace Microsoft.Bot.Builder.Tests.Functional.Skills.SingleTurn
 {
-    public class EchoTests : ScriptTestBase
+    public class EchoTests : EchoBaseTests
     {
-        private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/Skills/SingleTurn/TestScripts";
-
         public EchoTests(ITestOutputHelper output)
             : base(output)
         {
         }
 
-        public static IEnumerable<object[]> TestCases()
+        public static bool Exclude(SkillsTestCase test)
         {
-            var channelIds = new List<string> { Channels.Directline };
-            var deliverModes = new List<string>
-            {
-                DeliveryModes.Normal,
-                DeliveryModes.ExpectReplies
-            };
-
-            var hostBots = new List<HostBot>
-            {
-                HostBot.SimpleHostBotComposerDotNet,
-                HostBot.SimpleHostBotDotNet,
-                HostBot.SimpleHostBotJS,
-                HostBot.SimpleHostBotPython,
-            };
-
-            var targetSkills = new List<string>
-            {
-                SkillBotNames.EchoSkillBotComposerDotNet,
-                SkillBotNames.EchoSkillBotDotNet,
-                SkillBotNames.EchoSkillBotDotNetV3,
-                SkillBotNames.EchoSkillBotJS,
-                SkillBotNames.EchoSkillBotJSV3,
-                SkillBotNames.EchoSkillBotPython
-            };
-
-            var scripts = new List<string> { "EchoMultiSkill.json" };
-
-            var testCaseBuilder = new TestCaseBuilder();
-
             // This local function is used to exclude ExpectReplies test cases for v3 bots
-            static bool ShouldExclude(TestCase testCase)
+            if (test.DeliveryMode == Schema.DeliveryModes.ExpectReplies)
             {
-                if (testCase.DeliveryMode == DeliveryModes.ExpectReplies)
-                {
-                    // Note: ExpectReplies is not supported by DotNetV3 and JSV3 skills.
-                    if (testCase.TargetSkill == SkillBotNames.EchoSkillBotDotNetV3 || testCase.TargetSkill == SkillBotNames.EchoSkillBotJSV3)
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
+                // Note: ExpectReplies is not supported by DotNetV3 and JSV3 skills.
+                return test.Skill == SkillBot.EchoSkillBotDotNetV3 || test.Skill == SkillBot.EchoSkillBotJSV3;
             }
 
-            var testCases = testCaseBuilder.BuildTestCases(channelIds, deliverModes, hostBots, targetSkills, scripts, ShouldExclude);
-            foreach (var testCase in testCases)
-            {
-                yield return testCase;
-            }
+            return false;
         }
+
+        public static IEnumerable<object[]> TestCases() => BuildTestCases(scripts: Scripts, hosts: SimpleHostBots, skills: EchoSkillBots, exclude: Exclude);
 
         [Theory]
         [MemberData(nameof(TestCases))]
-        public async Task RunTestCases(TestCaseDataObject testData)
-        {
-            var testCase = testData.GetObject<TestCase>();
-            Logger.LogInformation(JsonConvert.SerializeObject(testCase, Formatting.Indented));
-
-            var options = TestClientOptions[testCase.HostBot];
-
-            var runner = new XUnitTestRunner(new TestClientFactory(testCase.ChannelId, options, Logger).GetTestClient(), TestRequestTimeout, ThinkTime, Logger);
-
-            var testParams = new Dictionary<string, string>
-            {
-                { "DeliveryMode", testCase.DeliveryMode },
-                { "TargetSkill", testCase.TargetSkill }
-            };
-
-            await runner.RunTestAsync(Path.Combine(_testScriptsFolder, testCase.Script), testParams);
-        }
+        public override Task RunTestCases(TestCaseDataObject<SkillsTestCase> testData) => base.RunTestCases(testData);
     }
 }
