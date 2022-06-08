@@ -1,25 +1,20 @@
 # syntax=docker/dockerfile:1
-FROM mcr.microsoft.com/oryx/python:3.10
+FROM mcr.microsoft.com/oryx/node:16
+
+# Set BotBuilder version env variable
+ARG BotBuilderVersion
+ENV BotBuilderVersion ${BotBuilderVersion}
 
 # Specify the bot folder.
 # When executing `docker build` remember to use the `--build-arg folder=./<bot-folder>`.
 ARG folder=./ # Optional, default value to be `./` (current folder).
-
-# Set virtual environment
-ENV VIRTUAL_ENV=/app/venv
-RUN python3 -m venv $VIRTUAL_ENV
-ENV PATH="$VIRTUAL_ENV/bin:$PATH"
-
-# Update pip
-RUN python -m pip install --upgrade pip
 
 # Copy Source Code into the container
 WORKDIR /app
 COPY ${folder} .
 
 # Install dependencies
-RUN pip install -r requirements.txt
+RUN npm install
 
 # Run the application
-CMD python app.py
-
+CMD npm start
