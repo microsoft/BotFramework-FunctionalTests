@@ -10,7 +10,6 @@ using Xunit.Abstractions;
 
 namespace Microsoft.Bot.Builder.Tests.Functional.Skills.CardActions
 {
-    [Trait("TestCategory", "CardActions")]
     public class ListCardTests : CardBaseTests
     {
         private static readonly List<string> Scripts = new List<string>

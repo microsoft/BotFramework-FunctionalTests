@@ -60,6 +60,7 @@ variables:
   InternalResourceGroupName: $[coalesce(variables['RESOURCEGROUP'], 'BFFN')]
   InternalResourceSuffix: $[coalesce(variables['RESOURCESUFFIX'], '')]
   InternalSharedResourceGroupName: $[coalesce(variables['SHAREDRESOURCEGROUP'], 'BFFN-Shared')]
+  InternalStorageAccountName: "bffnstorageaccount$(INTERNALRESOURCESUFFIX)"
 
 pool:
   vmImage: "windows-2019"
@@ -89,6 +90,7 @@ stages:
       azureSubscription: "$(AZURESUBSCRIPTION)"
       cosmosDb: "$(INTERNALCOSMOSDBNAME)"
       resourceGroup: "$(INTERNALSHAREDRESOURCEGROUPNAME)"
+      storageAccount: "$(INTERNALSTORAGEACCOUNTNAME)"
       dotnet:
         registry: ${{ parameters.dependenciesRegistryDotNet }}
         version: ${{ parameters.dependenciesVersionDotNet }}

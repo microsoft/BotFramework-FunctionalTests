@@ -2,15 +2,17 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
-using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Azure;
+using Microsoft.Bot.Builder.Tests.Integration.Azure.Storage;
+using Newtonsoft.Json;
 using Xunit;
 
-namespace IntegrationTests.Azure.Cosmos
+namespace Microsoft.Bot.Builder.Tests.Integration.Azure.Cosmos
 {
     [CosmosDb(databaseId: "CosmosDbStorageTests")]
     public class CosmosDbStorageFixture : CosmosDbBaseFixture, IAsyncLifetime
@@ -20,21 +22,27 @@ namespace IntegrationTests.Azure.Cosmos
             PartitionedContainerId = "CosmosPartitionedContainer";
         }
 
-        public IStorage Storage { get; private set; }
-
         public string PartitionedContainerId { get; private set; }
+
+        public IDictionary<StorageCase, IStorage> Storages { get; private set; }
 
         public new async Task InitializeAsync()
         {
             await base.InitializeAsync();
 
-            Storage = new CosmosDbStorage(new CosmosDbStorageOptions
+            var options = new CosmosDbStorageOptions
             {
                 AuthKey = AuthKey,
                 CollectionId = ContainerId,
                 CosmosDBEndpoint = new Uri(ServiceEndpoint),
                 DatabaseId = DatabaseId,
-            });
+            };
+
+            Storages = new Dictionary<StorageCase, IStorage>
+            {
+                { StorageCase.Default, new CosmosDbStorage(options) },
+                { StorageCase.TypeNameHandlingNone, new CosmosDbStorage(options, new JsonSerializer() { TypeNameHandling = TypeNameHandling.None }) }
+            };
         }
 
         public IStorage GetStoragePartitionedContainer(string partitionKey)

@@ -23,7 +23,7 @@
     <Copyright>© Microsoft Corporation. All rights reserved.</Copyright>
   </PropertyGroup>
 
-  <PropertyGroup>    
+  <PropertyGroup>
     <RepositoryUrl>https://github.com/microsoft/BotFramework-FunctionalTests</RepositoryUrl>
     <LicenseUrl>https://github.com/microsoft/BotFramework-FunctionalTests/blob/main/LICENSE</LicenseUrl>
     <RepositoryType />
@@ -36,4 +36,22 @@
     <BotBuilderVersion Condition="'$(BotBuilderVersion)' != ''">$(BotBuilderVersion)</BotBuilderVersion>
     <RestoreAdditionalProjectSources>$(BotBuilderRegistry)</RestoreAdditionalProjectSources>
   </PropertyGroup>
+
+  <Choose>
+    <When Condition="$(BotBuilderVersion.Contains('daily'))">
+      <PropertyGroup>
+        <BotBuilderVersionPreview>$(BotBuilderVersion.Replace('daily', 'daily.preview'))</BotBuilderVersionPreview>
+      </PropertyGroup>
+    </When>
+    <When Condition="$(BotBuilderVersion.Contains('rc'))">
+      <PropertyGroup>
+        <BotBuilderVersionPreview>$(BotBuilderVersion).preview</BotBuilderVersionPreview>
+      </PropertyGroup>
+    </When>
+    <Otherwise>
+      <PropertyGroup>
+        <BotBuilderVersionPreview>$(BotBuilderVersion)-preview</BotBuilderVersionPreview>
+      </PropertyGroup>
+    </Otherwise>
+  </Choose>
 </Project>
