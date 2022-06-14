@@ -7,6 +7,9 @@ name: $(BUILD.BUILDID)
 trigger: none
 pr: none
 
+pool:
+  vmImage: "windows-latest"
+
 resources:
   pipelines:
     - pipeline: "02ADeploySkillBots"
@@ -61,9 +64,6 @@ variables:
   InternalResourceSuffix: $[coalesce(variables['RESOURCESUFFIX'], '')]
   InternalSharedResourceGroupName: $[coalesce(variables['SHAREDRESOURCEGROUP'], 'BFFN-Shared')]
   InternalStorageAccountName: "bffnstorageaccount$(INTERNALRESOURCESUFFIX)"
-
-pool:
-  vmImage: "windows-2019"
 
 stages:
   - template: functional.yml
