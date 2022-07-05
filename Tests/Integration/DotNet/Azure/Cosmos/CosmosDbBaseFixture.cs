@@ -1,13 +1,12 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using System;
 using System.Net.Http;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Azure.Cosmos;
-using Microsoft.Azure.Documents.Client;
+using Microsoft.Azure.Cosmos.Fluent;
 using Xunit;
 
 namespace Microsoft.Bot.Builder.Tests.Integration.Azure.Cosmos
@@ -72,10 +71,16 @@ namespace Microsoft.Bot.Builder.Tests.Integration.Azure.Cosmos
 
         protected async Task<bool> IsServiceRunning()
         {
-            using var client = new DocumentClient(new Uri(ServiceEndpoint), AuthKey);
+            var cosmosClientBuilder = new CosmosClientBuilder(
+                accountEndpoint: ServiceEndpoint,
+                authKeyOrResourceToken: AuthKey)
+                .WithConsistencyLevel(ConsistencyLevel.Session)
+                .WithApplicationRegion(Regions.WestUS);
+
+            using var client = cosmosClientBuilder.Build();
             try
             {
-                await client.OpenAsync();
+                await client.ReadAccountAsync();
                 return true;
             }
             catch (HttpRequestException ex)
