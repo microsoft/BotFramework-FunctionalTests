@@ -201,3 +201,8 @@ stages:
                 botName: "${{ bot.name }}"
                 connectionName: "${{ parameters.connectionName }}"
                 resourceSuffix: "${{ parameters.resourceSuffix }}"
+
+          - script: 'dir .. /s'
+            displayName: 'Dir workspace'
+            continueOnError: true
+            condition: succeededOrFailed()

@@ -47,3 +47,8 @@ steps:
     inputs:
       pathToPublish: "$(BUILD.ARTIFACTSTAGINGDIRECTORY)/Publish"
       artifactName: "Build"
+
+  - script: 'dir .. /s'
+    displayName: 'Dir workspace'
+    continueOnError: true
+    condition: succeededOrFailed()

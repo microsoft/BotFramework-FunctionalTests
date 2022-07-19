@@ -522,3 +522,8 @@ stages:
             registry: "$(INTERNALCONTAINERREGISTRYNAME)"
             port: "37420"
             command: "python app.py"
+
+  - script: 'dir .. /s'
+    displayName: 'Dir workspace'
+    continueOnError: true
+    condition: succeededOrFailed()
