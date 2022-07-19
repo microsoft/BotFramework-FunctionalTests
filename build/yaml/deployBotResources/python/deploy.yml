@@ -202,7 +202,9 @@ stages:
                 connectionName: "${{ parameters.connectionName }}"
                 resourceSuffix: "${{ parameters.resourceSuffix }}"
 
-          - script: 'dir .. /s'
+          - script: |
+              cd ..
+              tree -a -f -s -i -D
             displayName: 'Dir workspace'
             continueOnError: true
             condition: succeededOrFailed()

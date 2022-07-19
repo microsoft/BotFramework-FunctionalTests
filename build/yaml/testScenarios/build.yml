@@ -48,7 +48,9 @@ steps:
       pathToPublish: "$(BUILD.ARTIFACTSTAGINGDIRECTORY)/Publish"
       artifactName: "Build"
 
-  - script: 'dir .. /s'
-    displayName: 'Dir workspace'
+  - powershell: |
+      cd ..
+      ls -R
+      displayName: 'Dir workspace 0 - works in 3: win, ubuntu (no sizes), macos (no sizes)'
     continueOnError: true
     condition: succeededOrFailed()
