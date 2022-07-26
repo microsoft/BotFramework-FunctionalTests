@@ -32,7 +32,8 @@ steps:
     continueOnError: true
     inputs:
       script: |
-        Write-Host "tests dll:" "${{ parameters.dll }}";
+        $x = "tests dll:" + "${{ parameters.dll }}";
+        Write-Host $x";
         #Write-Host "tests filter:" "${{ parameters.namespace }}";
         #Write-Host "trx output:" "${{ parameters.trx }}";
         #Write-Host "project zip:" "${{ parameters.zip }}";
