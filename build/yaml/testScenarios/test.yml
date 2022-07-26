@@ -32,6 +32,7 @@ steps:
     continueOnError: true
     inputs:
       script: |
+        Write-Host 'tests dll: ' -NoNewline;
 
   - task: DownloadBuildArtifacts@0
     displayName: "Download Build"
