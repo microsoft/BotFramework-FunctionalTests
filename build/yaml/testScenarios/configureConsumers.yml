@@ -38,7 +38,7 @@ steps:
       azureSubscription: ${{ parameters.azureSubscription }}
       scriptType: pscore
       scriptLocation: inlineScript
-      failOnStderr: true
+      failOnStandardError: true
       inlineScript: |
         # Global Variables
         $resourceGroup = "${{ parameters.resourceGroup }}";
