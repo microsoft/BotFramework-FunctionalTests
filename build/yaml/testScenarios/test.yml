@@ -33,7 +33,7 @@ steps:
     inputs:
       script: |
         #Write-Host 'tests dll: ' -NoNewline;
-        ${{ parameters.dll }};
+        #${{ parameters.dll }};
         #Write-Host "tests filter:" "${{ parameters.namespace }}";
         #Write-Host "trx output:" "${{ parameters.trx }}";
         #Write-Host "project zip:" "${{ parameters.zip }}";
