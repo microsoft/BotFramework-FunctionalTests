@@ -26,6 +26,19 @@ parameters:
     default: {}
 
 steps:
+  - task: PowerShell@2
+    displayName: "Show parameters"
+    condition: succeededOrFailed()
+    inputs:
+      targetType: inline
+      script: |
+        Write-Host "tests dll: [${{ parameters.dll }}]";
+        Write-Host "tests filter: [${{ parameters.namespace }}]";
+        Write-Host "trx output: [${{ parameters.trx }}]";
+        Write-Host "project zip: [${{ parameters.zip }}]";
+        Write-Host "appsettings: [${{ parameters.appsettings }}]";
+        Write-Host "env vars: [${{ parameters.env }}]";
+
   - task: DownloadBuildArtifacts@0
     displayName: "Download Build"
     inputs:
