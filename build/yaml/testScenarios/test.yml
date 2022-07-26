@@ -37,6 +37,7 @@ steps:
         Write-Host "trx output: [${{ parameters.trx }}]";
         Write-Host "project zip: [${{ parameters.zip }}]";
         Write-Host "appsettings: [${{ parameters.appsettings }}]";
+        $x = Out-String -InputObject ${{ parameters.env }};
 
   - task: DownloadBuildArtifacts@0
     displayName: "Download Build"
