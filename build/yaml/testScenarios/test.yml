@@ -32,8 +32,7 @@ steps:
     continueOnError: true
     inputs:
       script: |
-        Write-Host 'tests dll: ' -NoNewline;
-        ${{ parameters.dll }};
+        Write-Host "tests dll: [${{ parameters.dll }}]";
 
   - task: DownloadBuildArtifacts@0
     displayName: "Download Build"
