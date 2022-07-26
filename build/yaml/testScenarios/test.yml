@@ -33,10 +33,10 @@ steps:
     inputs:
       script: |
         Write-Host "tests dll:" "${{ parameters.dll }}";
-        Write-Host "tests filter:" "${{ parameters.namespace }}";
-        Write-Host "trx output:" "${{ parameters.trx }}";
-        Write-Host "project zip:" "${{ parameters.zip }}";
-        Write-Host "appsettings:" "${{ parameters.appsettings }}";
+        #Write-Host "tests filter:" "${{ parameters.namespace }}";
+        #Write-Host "trx output:" "${{ parameters.trx }}";
+        #Write-Host "project zip:" "${{ parameters.zip }}";
+        #Write-Host "appsettings:" "${{ parameters.appsettings }}";
         #$env = Out-String -InputObject ${{ parameters.env }};
         #Write-Host "env vars: [$env]";
 
