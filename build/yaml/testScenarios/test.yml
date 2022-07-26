@@ -33,6 +33,10 @@ steps:
     inputs:
       script: |
         Write-Host "tests dll: [${{ parameters.dll }}]";
+        Write-Host "tests filter: [${{ parameters.namespace }}]";
+        Write-Host "trx output: [${{ parameters.trx }}]";
+        Write-Host "project zip: [${{ parameters.zip }}]";
+        Write-Host "appsettings: [${{ parameters.appsettings }}]";
 
   - task: DownloadBuildArtifacts@0
     displayName: "Download Build"
