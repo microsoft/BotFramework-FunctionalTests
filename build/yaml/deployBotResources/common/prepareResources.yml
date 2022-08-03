@@ -24,6 +24,11 @@ stages:
             displayName: "Show resource names"
             continueOnError: true
 
+          - powershell: |
+              Get-ChildItem env:* | sort-object name | Format-Table -AutoSize -Wrap;
+            displayName: "Show env vars"
+            continueOnError: true
+
           - template: ../../common/deleteResourceGroup.yml 
             parameters:
               azureSubscription: "${{ parameters.azureSubscription }}"
