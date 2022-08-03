@@ -74,6 +74,7 @@ stages:
               Write-Host ("parameters.keyVault: " + "${{ parameters.keyVault }}");
               Write-Host ("parameters.resourceGroup: " + "${{ parameters.resourceGroup }}");
               Write-Host ("parameters.resourceSuffix: " + "${{ parameters.resourceSuffix }}");
+              Write-Host ("parameters.sharedResourceGroup: " + "${{ parameters.sharedResourceGroup }}");
               Write-Host ("bot.name: " + "${{ bot.name }}");
               Write-Host ("bot.project.directory: " + "${{ bot.project.directory }}");
               Write-Host ("bot.container.registry: " + "${{ bot.container.registry }}");
