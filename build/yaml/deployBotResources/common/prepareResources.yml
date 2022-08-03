@@ -17,6 +17,13 @@ stages:
         displayName: "Prepare steps"
         steps:
           - checkout: none
+
+          - powershell: |
+              Write-Host ("resourceGroup.name: " + "${{ resourceGroup.name }}");
+              Write-Host ("parameters.azureSubscription: " + "${{ parameters.azureSubscription }}");
+            displayName: "Show resource names"
+            continueOnError: true
+
           - template: ../../common/deleteResourceGroup.yml 
             parameters:
               azureSubscription: "${{ parameters.azureSubscription }}"
