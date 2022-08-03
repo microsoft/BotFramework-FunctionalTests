@@ -65,6 +65,22 @@ stages:
           vmImage: "ubuntu-latest"
         displayName: "Deploy steps"
         steps:
+          - powershell: |
+              Write-Host ("parameters.appServicePlan: " + "${{ parameters.appServicePlan }}");
+              Write-Host ("parameters.azureSubscription: " + "${{ parameters.azureSubscription }}");
+              Write-Host ("parameters.connectionName: " + "${{ parameters.connectionName }}");
+              Write-Host ("parameters.keyVault: " + "${{ parameters.keyVault }}");
+              Write-Host ("parameters.resourceGroup: " + "${{ parameters.resourceGroup }}");
+              Write-Host ("parameters.resourceSuffix: " + "${{ parameters.resourceSuffix }}");
+              Write-Host ("bot.name: " + "${{ bot.name }}");
+              Write-Host ("bot.project.directory: " + "${{ bot.project.directory }}");
+              Write-Host ("bot.container.registry: " + "${{ bot.container.registry }}");
+              Write-Host ("bot.type: " + "${{ bot.type }}");
+              Write-Host ("bot.dependency.registry: " + "${{ bot.type }}");
+              Write-Host ("bot.dependency.version: " + "${{ bot.type }}");
+            displayName: "Show resource names"
+            continueOnError: true
+
           # Delete Bot Resources
           - template: ../common/deleteResources.yml
             parameters:
