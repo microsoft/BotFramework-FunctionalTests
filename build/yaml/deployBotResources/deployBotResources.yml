@@ -142,10 +142,14 @@ variables:
   # BffnEchoSkillBotComposerDotNetAppSecret: (optional) App Secret for BffnEchoSkillBotComposerDotNet bot.
   # BffnEchoSkillBotDotNetAppId: (optional) App Id for BffnEchoSkillBotDotNet bot.
   # BffnEchoSkillBotDotNetAppSecret: (optional) App Secret for BffnEchoSkillBotDotNet bot.
+  # BffnEchoSkillBotDotNetSTAppId: (optional) App Id for BffnEchoSkillBotDotNetST bot.
+  # BffnEchoSkillBotDotNetSTAppSecret: (optional) App Secret for BffnEchoSkillBotDotNetST bot.
   # BffnEchoSkillBotDotNetV3AppId: (optional) App Id for BffnEchoSkillBotDotNetV3 bot.
   # BffnEchoSkillBotDotNetV3AppSecret: (optional) App Secret for BffnEchoSkillBotDotNetV3 bot.
   # BffnEchoSkillBotJSAppId: (optional) App Id for BffnEchoSkillBotJS bot.
   # BffnEchoSkillBotJSAppSecret: (optional) App Secret for BffnEchoSkillBotJS bot.
+  # BffnEchoSkillBotJSSTAppId: (optional) App Id for BffnEchoSkillBotJSST bot.
+  # BffnEchoSkillBotJSSTAppSecret: (optional) App Secret for BffnEchoSkillBotJSST bot.
   # BffnEchoSkillBotJSV3AppId: (optional) App Id for BffnEchoSkillBotJSV3 bot.
   # BffnEchoSkillBotJSV3AppSecret: (optional) App Secret for BffnEchoSkillBotJSV3 bot.
   # BffnEchoSkillBotPythonAppId: (optional) App Id for BffnEchoSkillBotPython bot.
@@ -154,8 +158,12 @@ variables:
   # BffnSimpleHostBotComposerDotNetAppSecret: (optional) App Secret for BffnSimpleHostBotComposerDotNet bot.
   # BffnSimpleHostBotDotNetAppId: (optional) App Id for BffnSimpleHostBotDotNet bot.
   # BffnSimpleHostBotDotNetAppSecret: (optional) App Secret for BffnSimpleHostBotDotNet bot.
+  # BffnSimpleHostBotDotNetSTAppId: (optional) App Id for BffnSimpleHostBotDotNetST bot.
+  # BffnSimpleHostBotDotNetSTAppSecret: (optional) App Secret for BffnSimpleHostBotDotNetST bot.
   # BffnSimpleHostBotJSAppId: (optional) App Id for BffnSimpleHostBotJS bot.
   # BffnSimpleHostBotJSAppSecret: (optional) App Secret for BffnSimpleHostBotJS bot.
+  # BffnSimpleHostBotJSSTAppId: (optional) App Id for BffnSimpleHostBotJSST bot.
+  # BffnSimpleHostBotJSSTAppSecret: (optional) App Secret for BffnSimpleHostBotJSST bot.
   # BffnSimpleHostBotPythonAppId: (optional) App Id for BffnSimpleHostBotPython bot.
   # BffnSimpleHostBotPythonAppSecret: (optional) App Secret for BffnSimpleHostBotPython bot.
   # BffnWaterfallHostBotDotNetAppId: (optional) App Id for BffnWaterfallHostBotDotNet bot.
@@ -235,6 +243,7 @@ stages:
           displayName: "DotNet Simple Host Bot"
           appId: $(BFFNSIMPLEHOSTBOTDOTNETAPPID)
           appSecret: $(BFFNSIMPLEHOSTBOTDOTNETAPPSECRET)
+          appType: "MultiTenant"
           project:
             directory: 'Bots/DotNet/SimpleHostBot'
             name: "Microsoft.Bot.Builder.FunctionalTestsBots.SimpleHostBot.csproj"
@@ -249,6 +258,7 @@ stages:
           displayName: "DotNet Echo Skill Bot"
           appId: $(BFFNECHOSKILLBOTDOTNETAPPID)
           appSecret: $(BFFNECHOSKILLBOTDOTNETAPPSECRET)
+          appType: "MultiTenant"
           project: 
             directory: 'Bots/DotNet/EchoSkillBot'
             name: "Microsoft.Bot.Builder.FunctionalTestsBots.EchoSkillBot.csproj"
@@ -264,6 +274,7 @@ stages:
           displayName: "DotNet Echo Skill Bot v3"
           appId: $(BFFNECHOSKILLBOTDOTNETV3APPID)
           appSecret: $(BFFNECHOSKILLBOTDOTNETV3APPSECRET)
+          appType: "MultiTenant"
           project:
             directory: 'Bots/DotNet/EchoSkillBot-v3'
             name: "Microsoft.Bot.Builder.FunctionalTestsBots.EchoSkillBot-v3.csproj"
@@ -277,6 +288,7 @@ stages:
           displayName: "DotNet Waterfall Host Bot"
           appId: $(BFFNWATERFALLHOSTBOTDOTNETAPPID)
           appSecret: $(BFFNWATERFALLHOSTBOTDOTNETAPPSECRET)
+          appType: "MultiTenant"
           project:
             directory: 'Bots/DotNet/WaterfallHostBot'
             name: "Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallHostBot.csproj"
@@ -291,6 +303,7 @@ stages:
           displayName: "DotNet Waterfall Skill Bot"
           appId: $(BFFNWATERFALLSKILLBOTDOTNETAPPID)
           appSecret: $(BFFNWATERFALLSKILLBOTDOTNETAPPSECRET)
+          appType: "MultiTenant"
           project: 
             directory: 'Bots/DotNet/WaterfallSkillBot'
             name: "Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallSkillBot.csproj"
@@ -306,6 +319,7 @@ stages:
           displayName: "DotNet Simple Composer Host Bot"
           appId: $(BFFNSIMPLEHOSTBOTCOMPOSERDOTNETAPPID)
           appSecret: $(BFFNSIMPLEHOSTBOTCOMPOSERDOTNETAPPSECRET)
+          appType: "MultiTenant"
           project: 
             directory: 'Bots/DotNet/SimpleHostBotComposer'
             name: "Microsoft.Bot.Builder.FunctionalTestsBots.SimpleHostBotComposer.csproj"
@@ -320,6 +334,7 @@ stages:
           displayName: "DotNet Echo Composer Skill Bot"
           appId: $(BFFNECHOSKILLBOTCOMPOSERDOTNETAPPID)
           appSecret: $(BFFNECHOSKILLBOTCOMPOSERDOTNETAPPSECRET)
+          appType: "MultiTenant"
           project: 
             directory: 'Bots/DotNet/EchoSkillBotComposer'
             name: "Microsoft.Bot.Builder.FunctionalTestsBots.EchoSkillBotComposer.csproj"
@@ -334,6 +349,7 @@ stages:
           displayName: "DotNet Composer Host Bot"
           appId: $(BFFNCOMPOSERHOSTBOTDOTNETAPPID)
           appSecret: $(BFFNCOMPOSERHOSTBOTDOTNETAPPSECRET)
+          appType: "MultiTenant"
           project: 
             directory: 'Bots/DotNet/ComposerHostBotDotNet'
             name: "ComposerHostBotDotNet.csproj"
@@ -348,9 +364,68 @@ stages:
           displayName: "DotNet Composer Skill Bot"
           appId: $(BFFNCOMPOSERSKILLBOTDOTNETAPPID)
           appSecret: $(BFFNCOMPOSERSKILLBOTDOTNETAPPSECRET)
+          appType: "MultiTenant"
           project: 
             directory: 'Bots/DotNet/ComposerSkillBotDotNet'
             name: "Microsoft.Bot.Builder.FunctionalTestsBots.ComposerSkillBotDotNet.csproj"
+            netCoreVersion: "3.1.x"
+          dependency:
+            registry: ${{ parameters.dependenciesRegistryDotNetSkills }}
+            version: ${{ parameters.dependenciesVersionDotNetSkills }}
+
+        # DotNet SingleTenant bots
+        - name: "bffnsimplehostbotdotnetst"
+          dependsOn: "Deploy_bffnechoskillbotcomposerdotnet"
+          type: "Host"
+          displayName: "DotNet Simple Host Bot SingleTenant"
+          appId: $(BFFNSIMPLEHOSTBOTDOTNETSTAPPID)
+          appSecret: $(BFFNSIMPLEHOSTBOTDOTNETSTAPPSECRET)
+          appType: "SingleTenant"
+          project:
+            directory: 'Bots/DotNet/SimpleHostBot'
+            name: "Microsoft.Bot.Builder.FunctionalTestsBots.SimpleHostBot.csproj"
+            netCoreVersion: "3.1.x"
+          dependency:
+            registry: ${{ parameters.dependenciesRegistryDotNetHosts }}
+            version: ${{ parameters.dependenciesVersionDotNetHosts }}
+
+        - name: "bffnechoskillbotdotnetst"
+          dependsOn: "Deploy_bffncomposerhostbotdotnet"
+          type: "Skill"
+          displayName: "DotNet Echo Skill Bot SingleTenant"
+          appId: $(BFFNECHOSKILLBOTDOTNETSTAPPID)
+          appSecret: $(BFFNECHOSKILLBOTDOTNETSTAPPSECRET)
+          appType: "SingleTenant"
+          project: 
+            directory: 'Bots/DotNet/EchoSkillBot'
+            name: "Microsoft.Bot.Builder.FunctionalTestsBots.EchoSkillBot.csproj"
+            netCoreVersion: "3.1.x"
+          dependency:
+            registry: ${{ parameters.dependenciesRegistryDotNetSkills }}
+            version: ${{ parameters.dependenciesVersionDotNetSkills }}
+
+        # DotNet UserAssignedMSI bots
+        - name: "bffnsimplehostbotdotnetmsi"
+          dependsOn: "Deploy_bffnwaterfallskillbotdotnet"
+          type: "Host"
+          displayName: "DotNet Simple Host Bot UserAssignedMSI"
+          appType: "UserAssignedMSI"
+          project:
+            directory: 'Bots/DotNet/SimpleHostBot'
+            name: "Microsoft.Bot.Builder.FunctionalTestsBots.SimpleHostBot.csproj"
+            netCoreVersion: "3.1.x"
+          dependency:
+            registry: ${{ parameters.dependenciesRegistryDotNetHosts }}
+            version: ${{ parameters.dependenciesVersionDotNetHosts }}
+
+        - name: "bffnechoskillbotdotnetmsi"
+          dependsOn: "Deploy_bffnsimplehostbotcomposerdotnet"
+          type: "Skill"
+          displayName: "DotNet Echo Skill Bot UserAssignedMSI"
+          appType: "UserAssignedMSI"
+          project: 
+            directory: 'Bots/DotNet/EchoSkillBot'
+            name: "Microsoft.Bot.Builder.FunctionalTestsBots.EchoSkillBot.csproj"
             netCoreVersion: "3.1.x"
           dependency:
             registry: ${{ parameters.dependenciesRegistryDotNetSkills }}
@@ -372,11 +447,13 @@ stages:
       sharedResourceGroup: "$(INTERNALSHAREDRESOURCEGROUPNAME)"
       virtualNetwork: "$(INTERNALVIRTUALNETWORKNAME)"
       bots:
+        # JS bots
         - name: "bffnsimplehostbotjs"
           type: "Host"
           displayName: "JS Simple Host Bot"
           appId: $(BFFNSIMPLEHOSTBOTJSAPPID)
           appSecret: $(BFFNSIMPLEHOSTBOTJSAPPSECRET)
+          appType: "MultiTenant"
           project:
             directory: 'Bots/JavaScript/SimpleHostBot'
           dependency:
@@ -392,6 +469,7 @@ stages:
           displayName: "JS Echo Skill Bot"
           appId: $(BFFNECHOSKILLBOTJSAPPID)
           appSecret: $(BFFNECHOSKILLBOTJSAPPSECRET)
+          appType: "MultiTenant"
           project: 
             directory: 'Bots/JavaScript/EchoSkillBot'
           dependency:
@@ -407,6 +485,7 @@ stages:
           displayName: "JS Echo Skill Bot v3"
           appId: $(BFFNECHOSKILLBOTJSV3APPID)
           appSecret: $(BFFNECHOSKILLBOTJSV3APPSECRET)
+          appType: "MultiTenant"
           project:
             directory: 'Bots/JavaScript/EchoSkillBot-v3'
           dependency:
@@ -422,6 +501,7 @@ stages:
           displayName: "JS Waterfall Host Bot"
           appId: $(BFFNWATERFALLHOSTBOTJSAPPID)
           appSecret: $(BFFNWATERFALLHOSTBOTJSAPPSECRET)
+          appType: "MultiTenant"
           project:
             directory: 'Bots/JavaScript/WaterfallHostBot'
           dependency:
@@ -437,6 +517,7 @@ stages:
           displayName: "JS Waterfall Skill Bot"
           appId: $(BFFNWATERFALLSKILLBOTJSAPPID)
           appSecret: $(BFFNWATERFALLSKILLBOTJSAPPSECRET)
+          appType: "MultiTenant"
           project: 
             directory: 'Bots/JavaScript/WaterfallSkillBot'
           dependency:
@@ -445,6 +526,68 @@ stages:
           container:
             registry: "$(INTERNALCONTAINERREGISTRYNAME)"
             port: "36420"
+            command: "npm start"
+
+        # JS SingleTenant bots
+        - name: "bffnsimplehostbotjsst"
+          type: "Host"
+          displayName: "JS Simple Host Bot SingleTenant"
+          appId: $(BFFNSIMPLEHOSTBOTJSSTAPPID)
+          appSecret: $(BFFNECHOSKILLBOTJSSTAPPSECRET)
+          appType: "SingleTenant"
+          project:
+            directory: 'Bots/JavaScript/SimpleHostBot'
+          dependency:
+            registry: ${{ parameters.dependenciesRegistryJSHosts }}
+            version: ${{ parameters.dependenciesVersionJSHosts }}
+          container:
+            registry: "$(INTERNALCONTAINERREGISTRYNAME)"
+            port: "36000"
+            command: "npm start"
+
+        - name: "bffnechoskillbotjsst"
+          type: "Skill"
+          displayName: "JS Echo Skill Bot SingleTenant"
+          appId: $(BFFNECHOSKILLBOTJSSTAPPID)
+          appSecret: $(BFFNECHOSKILLBOTJSSTAPPSECRET)
+          appType: "SingleTenant"
+          project: 
+            directory: 'Bots/JavaScript/EchoSkillBot'
+          dependency:
+            registry: ${{ parameters.dependenciesRegistryJSSkills }}
+            version: ${{ parameters.dependenciesVersionJSSkills }}
+          container:
+            registry: "$(INTERNALCONTAINERREGISTRYNAME)"
+            port: "36400"
+            command: "npm start"
+
+        # JS UserAssignedMSI bots
+        - name: "bffnsimplehostbotjsmsi"
+          type: "Host"
+          displayName: "JS Simple Host Bot UserAssignedMSI"
+          appType: "UserAssignedMSI"
+          project:
+            directory: 'Bots/JavaScript/SimpleHostBot'
+          dependency:
+            registry: ${{ parameters.dependenciesRegistryJSHosts }}
+            version: ${{ parameters.dependenciesVersionJSHosts }}
+          container:
+            registry: "$(INTERNALCONTAINERREGISTRYNAME)"
+            port: "36000"
+            command: "npm start"
+
+        - name: "bffnechoskillbotjsmsi"
+          type: "Skill"
+          displayName: "JS Echo Skill Bot UserAssignedMSI"
+          appType: "UserAssignedMSI"
+          project: 
+            directory: 'Bots/JavaScript/EchoSkillBot'
+          dependency:
+            registry: ${{ parameters.dependenciesRegistryJSSkills }}
+            version: ${{ parameters.dependenciesVersionJSSkills }}
+          container:
+            registry: "$(INTERNALCONTAINERREGISTRYNAME)"
+            port: "36400"
             command: "npm start"
 
 # Python
@@ -468,6 +611,7 @@ stages:
           displayName: "Python Simple Host Bot"
           appId: $(BFFNSIMPLEHOSTBOTPYTHONAPPID)
           appSecret: $(BFFNSIMPLEHOSTBOTPYTHONAPPSECRET)
+          appType: "MultiTenant"
           project:
             directory: 'Bots/Python/SimpleHostBot'
           dependency:
@@ -483,6 +627,7 @@ stages:
           displayName: "Python Echo Skill Bot"
           appId: $(BFFNECHOSKILLBOTPYTHONAPPID)
           appSecret: $(BFFNECHOSKILLBOTPYTHONAPPSECRET)
+          appType: "MultiTenant"
           project: 
             directory: 'Bots/Python/EchoSkillBot'
           dependency:
@@ -498,6 +643,7 @@ stages:
           displayName: "Python Waterfall Host Bot"
           appId: $(BFFNWATERFALLHOSTBOTPYTHONAPPID)
           appSecret: $(BFFNWATERFALLHOSTBOTPYTHONAPPSECRET)
+          appType: "MultiTenant"
           project:
             directory: 'Bots/Python/WaterfallHostBot'
           dependency:
@@ -513,6 +659,7 @@ stages:
           displayName: "Python Waterfall Skill Bot"
           appId: $(BFFNWATERFALLSKILLBOTPYTHONAPPID)
           appSecret: $(BFFNWATERFALLSKILLBOTPYTHONAPPSECRET)
+          appType: "MultiTenant"
           project: 
             directory: 'Bots/Python/WaterfallSkillBot'
           dependency:
