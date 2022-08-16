@@ -18,13 +18,17 @@ parameters:
     displayName: Resource Group name
     type: string
 
+  - name: storageAccount
+    displayName: StorageAccount name
+    type: string
+
 stages:
   - stage: "Build_DotNet_Integration"
     displayName: "Build DotNet Integration"
     dependsOn: []
     jobs:
       - job: "Build"
-        displayName: "Build IntegrationTests.csproj"
+        displayName: "Build Microsoft.Bot.Builder.Tests.Integration.csproj"
         steps:
           - template: ../common/dotnet/evaluateDependenciesVariables.yml
             parameters:
@@ -40,15 +44,15 @@ stages:
               env:
                 BotBuilderVersion: "$(DEPENDENCIESVERSIONNUMBER)"
                 BotBuilderRegistry: "$(DEPENDENCIESSOURCE)"
-              project: "Tests/Integration/DotNet/IntegrationTests.csproj"
+              project: "Tests/Integration/DotNet/Microsoft.Bot.Builder.Tests.Integration.csproj"
 
   - stage: "Test_DotNet_Integration"
     displayName: "Test DotNet Integration"
     dependsOn: Build_DotNet_Integration
     variables:
       Zip: "Integration/DotNet.zip"
-      Dll: "IntegrationTests.dll"
-      BaseNamespace: "IntegrationTests.Azure"
+      Dll: "Microsoft.Bot.Builder.Tests.Integration.dll"
+      BaseNamespace: "Microsoft.Bot.Builder.Tests.Integration.Azure"
     jobs:
       - job: "Test_Azure_Cosmos"
         displayName: "Test Azure.Cosmos"
@@ -67,4 +71,21 @@ stages:
                 Azure:Cosmos:AuthKey: "$(COSMOSDBAUTHKEY)"
               namespace: "$(BASENAMESPACE).Cosmos"
               trx: "$(BASENAMESPACE).Cosmos-$(BUILD.BUILDNUMBER).trx"
+              zip: "$(ZIP)"
+      - job: "Test_Azure_Storage"
+        displayName: "Test Azure.Storage"
+        steps:
+          - checkout: none
+          - template: ../common/getStorageAccountConnectionVariables.yml
+            parameters:
+              azureSubscription: "${{ parameters.azureSubscription }}"
+              resourceName: "${{ parameters.storageAccount }}"
+              resourceGroup: "${{ parameters.resourceGroup }}"
+          - template: test.yml
+            parameters:
+              dll: "$(DLL)"
+              env:
+                Azure:Storage:ConnectionString: "$(STORAGEACCOUNTCONNECTIONSTRING)"
+              namespace: "$(BASENAMESPACE).Storage"
+              trx: "$(BASENAMESPACE).Storage-$(BUILD.BUILDNUMBER).trx"
               zip: "$(ZIP)"

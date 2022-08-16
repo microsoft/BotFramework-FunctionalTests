@@ -46,7 +46,7 @@ stages:
     dependsOn: []
     jobs:
       - job: "Build"
-        displayName: "Build FunctionalTests.csproj"
+        displayName: "Build Microsoft.Bot.Builder.Tests.Functional.csproj"
         steps:
           - template: build.yml
             parameters:
@@ -81,6 +81,7 @@ stages:
     jobs:
       - job: "Test_Skills_CardActions"
         displayName: "Test Skills.CardActions"
+        timeoutInMinutes: 20
         steps:
           - checkout: none
           - template: test.yml
@@ -92,6 +93,7 @@ stages:
               zip: "$(ZIP)"
       - job: "Test_Skills_FileUpload"
         displayName: "Test Skills.FileUpload"
+        timeoutInMinutes: 20
         steps:
           - checkout: none
           - template: test.yml
@@ -103,6 +105,7 @@ stages:
               zip: "$(ZIP)"
       - job: "Test_Skills_MessageWithAttachment"
         displayName: "Test Skills.MessageWithAttachment"
+        timeoutInMinutes: 20
         steps:
           - checkout: none
           - template: test.yml
@@ -114,6 +117,7 @@ stages:
               zip: "$(ZIP)"
       - job: "Test_Skills_ProactiveMessages"
         displayName: "Test Skills.ProactiveMessages"
+        timeoutInMinutes: 20
         steps:
           - checkout: none
           - template: test.yml
@@ -125,6 +129,7 @@ stages:
               zip: "$(ZIP)"
       - job: "Test_Skills_SignIn"
         displayName: "Test Skills.SignIn"
+        timeoutInMinutes: 20
         steps:
           - checkout: none
           - template: test.yml
@@ -136,6 +141,7 @@ stages:
               zip: "$(ZIP)"
       - job: "Test_Skills_SingleTurn"
         displayName: "Test Skills.SingleTurn"
+        timeoutInMinutes: 20
         steps:
           - checkout: none
           - template: test.yml

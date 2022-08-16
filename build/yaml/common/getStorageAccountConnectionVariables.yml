@@ -1,0 +1,44 @@
+parameters:
+  - name: azureSubscription
+    displayName: Azure Service Connection
+    type: string
+
+  - name: resourceGroup
+    displayName: Name of the group where the StorageAccount resource is located
+    type: string
+
+  - name: resourceName
+    displayName: Name of the StorageAccount resource
+    type: string
+
+steps:
+  - task: AzureCLI@2
+    displayName: "Set StorageAccount connection variables"
+    inputs:
+      azureSubscription: "${{ parameters.azureSubscription }}"
+      scriptType: pscore
+      scriptLocation: inlineScript
+      failOnStderr: true
+      inlineScript: |
+        $connection = az storage account show-connection-string --name ${{ parameters.resourceName }} --resource-group ${{ parameters.resourceGroup }} | ConvertFrom-Json | Select-Object -ExpandProperty connectionString;
+
+        if ([string]::IsNullOrEmpty($connection)) {
+          Write-Host "##vso[task.logissue type=error]StorageAccount connection string couldn't be retrieved from Azure."
+          exit 1 # Force exit
+        }
+
+        $secretKeys = @("AccountKey");
+        $connectionPreview = $connection.Trim(";") -split ";" | ForEach-Object { 
+          $value = $_;
+          if($value -match $secretKeys){
+            return $value.Substring(0, $value.IndexOf("=") + 4) + "***";
+          }
+          return $value;
+        } | Join-String -Separator ";"
+
+        Write-Host "StorageAccount connection variables:";
+        [PSCustomObject]@{ 
+          ConnectionString = $connectionPreview
+        } | Format-Table -AutoSize
+
+        Write-Host "##vso[task.setvariable variable=StorageAccountConnectionString]$connection";

@@ -1,14 +1,15 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using System;
+using System.Net.Http;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Azure.Cosmos;
-using Microsoft.Azure.Documents.Client;
+using Microsoft.Azure.Cosmos.Fluent;
 using Xunit;
 
-namespace IntegrationTests.Azure.Cosmos
+namespace Microsoft.Bot.Builder.Tests.Integration.Azure.Cosmos
 {
     public abstract class CosmosDbBaseFixture : ConfigurationFixture, IAsyncLifetime
     {
@@ -53,31 +54,39 @@ namespace IntegrationTests.Azure.Cosmos
             await DeleteDatabase(DatabaseId);
         }
 
-        protected Task<DatabaseResponse> DeleteDatabase(string name)
+        protected async Task<bool> DeleteDatabase(string name)
         {
             try
             {
-                return Client.GetDatabase(name).DeleteAsync();
+                using var cancellation = new CancellationTokenSource(Timeout);
+                await Client.GetDatabase(name).DeleteAsync(cancellationToken: cancellation.Token);
+                return true;
             }
-            catch (Exception ex)
+            catch (TaskCanceledException ex)
             {
                 const string message = "Cosmos: Error cleaning up resources.";
-                throw new Exception(message, ex);
+                throw new TaskCanceledException(message, ex);
             }
         }
 
         protected async Task<bool> IsServiceRunning()
         {
-            using var client = new DocumentClient(new Uri(ServiceEndpoint), AuthKey);
+            var cosmosClientBuilder = new CosmosClientBuilder(
+                accountEndpoint: ServiceEndpoint,
+                authKeyOrResourceToken: AuthKey)
+                .WithConsistencyLevel(ConsistencyLevel.Session)
+                .WithApplicationRegion(Regions.WestUS);
+
+            using var client = cosmosClientBuilder.Build();
             try
             {
-                await client.OpenAsync();
+                await client.ReadAccountAsync();
                 return true;
             }
-            catch (Exception ex)
+            catch (HttpRequestException ex)
             {
                 var message = $"Cosmos: Unable to connect to the '{ServiceEndpoint}' endpoint.";
-                throw new Exception(message, ex);
+                throw new TaskCanceledException(message, ex);
             }
         }
     }

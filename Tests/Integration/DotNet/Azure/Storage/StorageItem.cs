@@ -1,12 +1,11 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using Microsoft.Bot.Builder;
 using Newtonsoft.Json;
 
-namespace IntegrationTests.Azure.Cosmos
+namespace Microsoft.Bot.Builder.Tests.Integration.Azure.Storage
 {
-    public class CosmosDbStorageItem : IStoreItem
+    public class StorageItem : IStoreItem
     {
         [JsonProperty(PropertyName = "messageList")]
         public string[] MessageList { get; set; }
