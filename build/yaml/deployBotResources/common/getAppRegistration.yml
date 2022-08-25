@@ -43,13 +43,13 @@ steps:
       inlineScript: |
         Set-PSDebug -Trace 1;
 
-        $secret = New-Object -TypeName psobject
-        $source = ""
+        $secret = New-Object -TypeName psobject;
+        $source = "";
         $withAppSecret = $true;
 
         if("UserAssignedMSI" -eq "${{ parameters.appType }}") {
           $appId = (az identity show --name "${{ parameters.botName }}${{ parameters.resourceSuffix }}" --resource-group "${{ parameters.sharedResourceGroup }}" | ConvertFrom-Json).clientId;
-          $secret | Add-Member -MemberType NoteProperty -Name AppId -Value $appId
+          $secret | Add-Member -MemberType NoteProperty -Name AppId -Value $appId;
           $source = "UserAssignedMSI ${{ parameters.botName }}${{ parameters.resourceSuffix }}";
           $withAppSecret = $false;
 
@@ -58,29 +58,29 @@ steps:
           $entries = az keyvault secret list --vault-name "${{ parameters.keyVault }}" | ConvertFrom-Json | Where-Object {$_.name -like "${{ parameters.botName }}*"};
 
           foreach ($entry in $entries) {
-            $secretVault = az keyvault secret show --id $entry.id | ConvertFrom-Json
-            $secret | Add-Member -MemberType NoteProperty -Name ($secretVault.name -replace "${{ parameters.botName }}", "") -Value "$($secretVault.value)"
+            $secretVault = az keyvault secret show --id $entry.id | ConvertFrom-Json;
+            $secret | Add-Member -MemberType NoteProperty -Name ($secretVault.name -replace "${{ parameters.botName }}", "") -Value "$($secretVault.value)";
           }
         } else {
-          $source = "Pipeline Variables"
-          $secret | Add-Member -MemberType NoteProperty -Name AppId -Value "${{ parameters.appId }}"
-          $secret | Add-Member -MemberType NoteProperty -Name AppSecret -Value "${{ parameters.appSecret }}"
+          $source = "Pipeline Variables";
+          $secret | Add-Member -MemberType NoteProperty -Name AppId -Value "${{ parameters.appId }}";
+          $secret | Add-Member -MemberType NoteProperty -Name AppSecret -Value "${{ parameters.appSecret }}";
         }
 
         if ([string]::IsNullOrEmpty($secret.AppId)) {
-          Write-Host  "##vso[task.LogIssue type=error;]AppId is Null or Empty"
-          Write-Host "##vso[task.complete result=Failed;]DONE"
+          Write-Host  "##vso[task.LogIssue type=error;]AppId is Null or Empty";
+          Write-Host "##vso[task.complete result=Failed;]DONE";
         }
 
         if ($withAppSecret -and [string]::IsNullOrEmpty($secret.AppSecret)) {
-          Write-Host  "##vso[task.LogIssue type=error;]AppSecret is Null or Empty"
-          Write-Host "##vso[task.complete result=Failed;]DONE"
+          Write-Host  "##vso[task.LogIssue type=error;]AppSecret is Null or Empty";
+          Write-Host "##vso[task.complete result=Failed;]DONE";
         }
 
         Write-Host "Source: $source;"
         Write-Host "AppId: $($secret.AppId);"
 
-        Write-Host "##vso[task.setvariable variable=AppId]$($secret.AppId)"
-        Write-Host "##vso[task.setvariable variable=AppSecret]$($secret.AppSecret)"
+        Write-Host "##vso[task.setvariable variable=AppId]$($secret.AppId)";
+        Write-Host "##vso[task.setvariable variable=AppSecret]$($secret.AppSecret)";
 
         Set-PSDebug -Trace 0;
