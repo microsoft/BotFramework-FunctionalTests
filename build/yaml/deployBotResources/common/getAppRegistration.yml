@@ -41,6 +41,8 @@ steps:
       failOnStandardError: true
       scriptLocation: inlineScript
       inlineScript: |
+        Set-PSDebug -Trace 1;
+
         $secret = New-Object -TypeName psobject
         $source = ""
         $withAppSecret = $true;
@@ -80,3 +82,5 @@ steps:
 
         Write-Host "##vso[task.setvariable variable=AppId]$($secret.AppId)"
         Write-Host "##vso[task.setvariable variable=AppSecret]$($secret.AppSecret)"
+
+        Set-PSDebug -Trace 0;
