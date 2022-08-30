@@ -262,6 +262,7 @@ stages:
           displayName: "DotNet Simple Host Bot 3.1"
           appId: $(BFFNSIMPLEHOSTBOTDOTNET31APPID)
           appSecret: $(BFFNSIMPLEHOSTBOTDOTNET31APPSECRET)
+          appType: "MultiTenant"
           project:
             directory: 'Bots/DotNet/SimpleHostBot-3.1'
             name: "Microsoft.Bot.Builder.FunctionalTestsBots.SimpleHostBot31.csproj"
@@ -291,6 +292,7 @@ stages:
           displayName: "DotNet Echo Skill Bot 3.1"
           appId: $(BFFNECHOSKILLBOTDOTNET31APPID)
           appSecret: $(BFFNECHOSKILLBOTDOTNET31APPSECRET)
+          appType: "MultiTenant"
           project: 
             directory: 'Bots/DotNet/EchoSkillBot-3.1'
             name: "Microsoft.Bot.Builder.FunctionalTestsBots.EchoSkillBot31.csproj"
@@ -416,7 +418,7 @@ stages:
           project:
             directory: 'Bots/DotNet/SimpleHostBot'
             name: "Microsoft.Bot.Builder.FunctionalTestsBots.SimpleHostBot.csproj"
-            netCoreVersion: "3.1.x"
+            netCoreVersion: "6.0.x"
           dependency:
             registry: ${{ parameters.dependenciesRegistryDotNetHosts }}
             version: ${{ parameters.dependenciesVersionDotNetHosts }}
@@ -431,7 +433,7 @@ stages:
           project: 
             directory: 'Bots/DotNet/EchoSkillBot'
             name: "Microsoft.Bot.Builder.FunctionalTestsBots.EchoSkillBot.csproj"
-            netCoreVersion: "3.1.x"
+            netCoreVersion: "6.0.x"
           dependency:
             registry: ${{ parameters.dependenciesRegistryDotNetSkills }}
             version: ${{ parameters.dependenciesVersionDotNetSkills }}
@@ -445,7 +447,7 @@ stages:
           project:
             directory: 'Bots/DotNet/SimpleHostBot'
             name: "Microsoft.Bot.Builder.FunctionalTestsBots.SimpleHostBot.csproj"
-            netCoreVersion: "3.1.x"
+            netCoreVersion: "6.0.x"
           dependency:
             registry: ${{ parameters.dependenciesRegistryDotNetHosts }}
             version: ${{ parameters.dependenciesVersionDotNetHosts }}
@@ -458,7 +460,7 @@ stages:
           project: 
             directory: 'Bots/DotNet/EchoSkillBot'
             name: "Microsoft.Bot.Builder.FunctionalTestsBots.EchoSkillBot.csproj"
-            netCoreVersion: "3.1.x"
+            netCoreVersion: "6.0.x"
           dependency:
             registry: ${{ parameters.dependenciesRegistryDotNetSkills }}
             version: ${{ parameters.dependenciesVersionDotNetSkills }}

@@ -16,6 +16,11 @@ namespace Microsoft.Bot.Builder.Tests.Functional.Skills.Common
         EchoSkillBotDotNet,
 
         /// <summary>
+        /// Echo MultiTenant skill implemented using dotnet 3.1.
+        /// </summary>
+        EchoSkillBotDotNet31,
+
+        /// <summary>
         /// Echo UserAssignedMSI skill implemented using DotNet 3.1.
         /// </summary>
         EchoSkillBotDotNetMSI,
