@@ -10,6 +10,9 @@ ENV VIRTUAL_ENV=/app/venv
 RUN python3 -m venv $VIRTUAL_ENV
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
+RUN apt update
+RUN apt install gcc -y
+
 # Update pip
 RUN python -m pip install --upgrade pip
 
