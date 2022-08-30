@@ -78,9 +78,12 @@ stages:
             parameters:
               appId: ${{ bot.appId }}
               appSecret: ${{ bot.appSecret }}
+              appType: ${{ bot.appType }}
               azureSubscription: "${{ parameters.azureSubscription }}"
               botName: "${{ bot.name }}"
               keyVault: "${{ parameters.keyVault }}"
+              resourceSuffix: "${{ parameters.resourceSuffix }}"
+              sharedResourceGroup: "${{ parameters.sharedResourceGroup }}"
 
           # Prepare .env file, deleting all the declared skills, so it uses only the settings define in Azure
           - ${{ if eq(bot.type, 'Host') }}:
@@ -137,7 +140,7 @@ stages:
             inputs:
               azureSubscription: "${{ parameters.azureSubscription }}"
               addSpnToEnvironment: true
-              failOnStderr: true
+              failOnStandardError: true
               scriptType: pscore
               scriptLocation: inlineScript
               workingDirectory: $(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ bot.project.directory }}
@@ -184,13 +187,14 @@ stages:
               pathToPublish: "$(SYSTEM.DEFAULTWORKINGDIRECTORY)/${{ bot.name }}.zip"
               artifactName: javascript-$(BUILD.BUILDID)
 
-          # Create App Service and Bot Channel Registration
+          # Create App Service and Azure Bot
           - template: ../common/createAppService.yml
             parameters:
               appId: $(APPID)
               appSecret: $(APPSECRET)
               appInsight: "${{ parameters.appInsight }}"
               appServicePlan: "${{ parameters.appServicePlan }}"
+              appType: "${{ bot.appType }}"
               azureSubscription: "${{ parameters.azureSubscription }}"
               botGroup: "${{ parameters.resourceGroup }}"
               botName: "${{ bot.name }}"

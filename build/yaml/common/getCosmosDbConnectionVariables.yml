@@ -18,7 +18,7 @@ steps:
       azureSubscription: "${{ parameters.azureSubscription }}"
       scriptType: pscore
       scriptLocation: inlineScript
-      failOnStderr: true
+      failOnStandardError: true
       inlineScript: |
         $connection, $rest = az cosmosdb keys list --name ${{ parameters.resourceName }} --resource-group ${{ parameters.resourceGroup }} --type connection-strings | ConvertFrom-Json | Select-Object -ExpandProperty connectionStrings | Select-Object -ExpandProperty connectionString;
 

@@ -253,3 +253,22 @@ stages:
           scriptType: pscore
           scriptLocation: inlineScript
           inlineScript: "az deployment group create --name $(INTERNALSTORAGEACCOUNTNAME) --resource-group $(INTERNALRESOURCEGROUPNAME) --template-file build/templates/template-storage-account-resources.json --parameters storageAccountName=$(INTERNALSTORAGEACCOUNTNAME)"
+
+- stage: Create_User_Identities
+  displayName: "Create User Assigned Managed Identities"
+  dependsOn: Create_Resource_Group
+  jobs:
+    - job: Deploy_User_Identities
+      displayName: "Deploy steps"
+      steps:
+      - task: AzureCLI@2
+        displayName: "Deploy User Assigned Managed Identities"
+        inputs:
+          azureSubscription: $(AZURESUBSCRIPTION)
+          scriptType: pscore
+          scriptLocation: inlineScript
+          inlineScript: |
+            az identity create -g "$(INTERNALRESOURCEGROUPNAME)" -n "bffnsimplehostbotdotnetmsi$($env:RESOURCESUFFIX)"
+            az identity create -g "$(INTERNALRESOURCEGROUPNAME)" -n "bffnsimplehostbotjsmsi$($env:RESOURCESUFFIX)"
+            az identity create -g "$(INTERNALRESOURCEGROUPNAME)" -n "bffnechoskillbotdotnetmsi$($env:RESOURCESUFFIX)"
+            az identity create -g "$(INTERNALRESOURCEGROUPNAME)" -n "bffnechoskillbotjsmsi$($env:RESOURCESUFFIX)"

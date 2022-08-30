@@ -8,12 +8,14 @@ These are the bots currently available. This list will be expanded in the future
     - BffnSimpleHostBotDotNet
     - BffnSimpleHostBotDotNet31
     - BffnWaterfallHostBotDotNet
+    - BffnComposerHostBotDotNet
   - Skills
     - BffnEchoComposerSkillBotDotNet
     - BffnEchoSkillBotDotNet
     - BffnEchoSkillBotDotNet31
     - BffnEchoSkillBotDotNetV3
     - BffnWaterfallSkillBotDotNet
+    - BffnComposerSkillBotDotNet
 
 - JS
   - Consumers

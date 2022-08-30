@@ -7,6 +7,11 @@ parameters:
     displayName: Bot's App Registration Secret
     type: string
 
+  - name: appType
+    displayName: Type of Bot Authentication. MultiTenant, SingleTenant, UserAssignedMSI.
+    type: string
+    default: "MultiTenant"
+
   - name: azureSubscription
     displayName: Azure Service Connection
     type: string
@@ -17,6 +22,14 @@ parameters:
 
   - name: keyVault
     displayName: KeyVault name
+    type: string
+
+  - name: resourceSuffix
+    displayName: Azure resources' name suffix
+    type: string
+
+  - name: sharedResourceGroup
+    displayName: Shared Resource Group
     type: string
 
 steps:
@@ -30,8 +43,15 @@ steps:
       inlineScript: |
         $secret = New-Object -TypeName psobject
         $source = ""
+        $withAppSecret = $true;
 
-        if ([string]::IsNullOrEmpty("${{ parameters.appId }}")) {
+        if("UserAssignedMSI" -eq "${{ parameters.appType }}") {
+          $appId = (az identity show --name "${{ parameters.botName }}${{ parameters.resourceSuffix }}" --resource-group "${{ parameters.sharedResourceGroup }}" | ConvertFrom-Json).clientId;
+          $secret | Add-Member -MemberType NoteProperty -Name AppId -Value $appId
+          $source = "UserAssignedMSI ${{ parameters.botName }}${{ parameters.resourceSuffix }}";
+          $withAppSecret = $false;
+
+        } elseif ([string]::IsNullOrEmpty("${{ parameters.appId }}")) {
           $source = "KeyVault ${{ parameters.keyVault }}";
           $entries = az keyvault secret list --vault-name "${{ parameters.keyVault }}" | ConvertFrom-Json | Where-Object {$_.name -like "${{ parameters.botName }}*"};
 
@@ -50,7 +70,7 @@ steps:
           Write-Host "##vso[task.complete result=Failed;]DONE"
         }
 
-        if ([string]::IsNullOrEmpty($secret.AppSecret)) {
+        if ($withAppSecret -and [string]::IsNullOrEmpty($secret.AppSecret)) {
           Write-Host  "##vso[task.LogIssue type=error;]AppSecret is Null or Empty"
           Write-Host "##vso[task.complete result=Failed;]DONE"
         }

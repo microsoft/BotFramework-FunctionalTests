@@ -12,11 +12,16 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Bot.Builder" Version="$(BotBuilderVersion)" />
+    <PackageReference Include="Microsoft.Bot.Builder" Version="$(BotBuilderVersion)">
+      <NoWarn>NU1605</NoWarn>
+    </PackageReference>
     <PackageReference Include="Microsoft.Bot.Builder.Dialogs" Version="$(BotBuilderVersion)" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive" Version="$(BotBuilderVersion)" />
     <PackageReference Include="Microsoft.Bot.Builder.Azure" Version="$(BotBuilderVersion)" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="3.1.9" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.9" />
+    <PackageReference Include="Microsoft.Bot.Builder.Azure.Queues" Version="$(BotBuilderVersionPreview)"/>
+    <PackageReference Include="Microsoft.Bot.Builder.Azure.Blobs" Version="$(BotBuilderVersion)" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="3.1.22" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.22" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,4 +1,4 @@
-# Skills Functional Tests
+# Functional Tests
 
 ## Summary
 
@@ -6,9 +6,21 @@ Skill functional testing aims to automate the testing of Host and Skill interact
 
 Head to [Docs](../../Docs/) directory for more information.
 
-### Branching 
+## Available Test Cases
+### Skills
+The following scenarios are being tested with the different host-skill bots combinations:
+- Single Turn (simple echo with MultiTenant apps)
+- Waterfall Bots:
+   - Cards
+   - File Upload
+   - Message with Attachments
+   - Proactive Messages
+   - Sign in
+- Authentication (SingleTenant and MSI app types)
+
+## Branching 
 In this repository, there are branches with pinned versions of the SDK to test patch releases.
-From R9 to R14, each branch contains the yamls and tests adapted to run the current implementation of the pipelines against older versions of the BotBuilder packages.
+From 4.9 to 4.15, each branch contains the yamls and tests adapted to run the current implementation of the pipelines against older versions of the BotBuilder packages.
 
 
 This image describes the bots included in the different branches.
