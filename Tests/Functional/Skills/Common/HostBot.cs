@@ -26,12 +26,12 @@ namespace Microsoft.Bot.Builder.Tests.Functional.Skills.Common
         SimpleHostBotDotNet31,
 
         /// <summary>
-        /// Simple UserAssignedMSI host implemented using DotNet 3.1.
+        /// Simple UserAssignedMSI host implemented using DotNet 6.0.
         /// </summary>
         SimpleHostBotDotNetMSI,
 
         /// <summary>
-        /// Simple SingleTenant host implemented using DotNet 3.1.
+        /// Simple SingleTenant host implemented using DotNet 6.0.
         /// </summary>
         SimpleHostBotDotNetST,
 
