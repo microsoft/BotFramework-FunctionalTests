@@ -316,6 +316,29 @@ stages:
                 Write-Host "No pre-existing $(INTERNALSTORAGEACCOUNTNAME) resource found."
               }
 
+- stage: "Delete_User_Identities"
+  displayName: "Delete User Assigned Managed Identities"
+  dependsOn:
+    - Delete_App_Service_Plan_DotNet
+    - Delete_App_Service_Plan_JS
+    - Delete_App_Service_Plan_Python
+  jobs:
+    - job: "Delete"
+      displayName: "Delete steps"
+      steps:
+        - checkout: none
+        - task: AzureCLI@2
+          displayName: "Delete User Assigned Managed Identities"
+          inputs:
+            azureSubscription: $(AZURESUBSCRIPTION)
+            scriptType: pscore
+            scriptLocation: inlineScript
+            inlineScript: |
+              az identity delete -n "bffnsimplehostbotdotnetmsi$($env:RESOURCESUFFIX)" -g "$(INTERNALSHAREDRESOURCEGROUPNAME)"
+              az identity delete -n "bffnsimplehostbotjsmsi$($env:RESOURCESUFFIX)" -g "$(INTERNALSHAREDRESOURCEGROUPNAME)"
+              az identity delete -n "bffnechoskillbotdotnetmsi$($env:RESOURCESUFFIX)" -g "$(INTERNALSHAREDRESOURCEGROUPNAME)"
+              az identity delete -n "bffnechoskillbotjsmsi$($env:RESOURCESUFFIX)" -g "$(INTERNALSHAREDRESOURCEGROUPNAME)"
+
 - stage: "Delete_Shared_Resource_Group"
   displayName: "Delete Shared Resource Group"
   dependsOn:
@@ -326,6 +349,7 @@ stages:
     - Delete_CosmosDB
     - Delete_Container_Registry
     - Delete_Storage_Account
+    - Delete_User_Identities
   jobs:
     - job: "Delete"
       displayName: "Delete steps"

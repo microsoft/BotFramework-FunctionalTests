@@ -5,15 +5,15 @@ using System;
 using Newtonsoft.Json;
 using Xunit.Abstractions;
 
-namespace Microsoft.Bot.Builder.Tests.Functional.Skills.Common
+namespace Microsoft.Bot.Builder.Tests.Functional.Common
 {
-    public class TestCaseDataObject : IXunitSerializable
+    public class TestCaseDataObject<TClass> : IXunitSerializable
     {
         private const string TestObjectKey = "TestObjectKey";
         private string _testObject;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TestCaseDataObject"/> class.
+        /// Initializes a new instance of the <see cref="TestCaseDataObject{TClass}"/> class.
         /// </summary>
         public TestCaseDataObject()
         {
@@ -21,7 +21,7 @@ namespace Microsoft.Bot.Builder.Tests.Functional.Skills.Common
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TestCaseDataObject"/> class.
+        /// Initializes a new instance of the <see cref="TestCaseDataObject{TClass}"/> class.
         /// </summary>
         /// <param name="testData">An object with the data to be used in the test.</param>
         public TestCaseDataObject(object testData)
@@ -50,19 +50,17 @@ namespace Microsoft.Bot.Builder.Tests.Functional.Skills.Common
         /// <summary>
         /// Gets the test data object for the specified .Net type.
         /// </summary>
-        /// <typeparam name="T">The type of the object to be returned.</typeparam>
         /// <returns>The test object instance.</returns>
-        public T GetObject<T>()
+        public TClass GetObject()
         {
-            return JsonConvert.DeserializeObject<T>(_testObject);
+            return JsonConvert.DeserializeObject<TClass>(_testObject);
         }
 
         public override string ToString()
         {
             try
             {
-                var testCase = GetObject<TestCase>();
-                return testCase.Description;
+                return GetObject().ToString();
             }
             catch (Exception)
             {

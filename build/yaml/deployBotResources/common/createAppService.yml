@@ -16,6 +16,11 @@ parameters:
     displayName: App Service Plan name
     type: string
 
+  - name: appType
+    displayName: Type of Bot Authentication. MultiTenant, SingleTenant, UserAssignedMSI.
+    type: string
+    default: "MultiTenant"
+
   - name: azureSubscription
     displayName: Azure Service Connection
     type: string
@@ -78,11 +83,13 @@ steps:
         $settings = @(
           @{ key="appId"                        ; value="${{ parameters.appId }}" }
           @{ key="appSecret"                    ; value="${{ parameters.appSecret }}" }
+          @{ key="appType"                      ; value="${{ parameters.appType }}" }
           @{ key="botName"                      ; value="${{ parameters.botName }}${{ parameters.resourceSuffix }}-$(BUILD.BUILDID)" }
           @{ key="appServicePlanName"           ; value="${{ parameters.appServicePlan }}" }
           @{ key="projectTag"                   ; value="${{ parameters.projectTag }}" }
           @{ key="sharedResourceGroup"          ; value="${{ parameters.sharedResourceGroup }}" }
           @{ key="botLocation"                  ; value="westus" }
+          @{ key="userAssignedMSIName"          ; value="${{ parameters.botName }}${{ parameters.resourceSuffix }}" }
         )
 
         # Pricing Tier

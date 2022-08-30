@@ -7,8 +7,8 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder.Testing.TestRunner;
 using Microsoft.Bot.Builder.Testing.TestRunner.XUnit;
+using Microsoft.Bot.Builder.Tests.Functional.Common;
 using Microsoft.Bot.Builder.Tests.Functional.Skills.Common;
-using Microsoft.Bot.Connector;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -17,8 +17,13 @@ using Xunit.Abstractions;
 
 namespace Microsoft.Bot.Builder.Tests.Functional.Skills.ProactiveMessages
 {
-    public class ProactiveTests : ScriptTestBase
+    public class ProactiveTests : SkillsTestBase
     {
+        private static readonly List<string> Scripts = new List<string>
+        {
+            "ProactiveStart.json"
+        };
+
         private readonly string _testScriptsFolder = Directory.GetCurrentDirectory() + @"/Skills/ProactiveMessages/TestScripts";
 
         public ProactiveTests(ITestOutputHelper output)
@@ -26,64 +31,28 @@ namespace Microsoft.Bot.Builder.Tests.Functional.Skills.ProactiveMessages
         {
         }
 
-        public static IEnumerable<object[]> TestCases()
-        {
-            var channelIds = new List<string> { Channels.Directline };
-            var deliverModes = new List<string>
-            {
-                DeliveryModes.Normal,
-                DeliveryModes.ExpectReplies
-            };
+        // TODO: Enable after Composer supports proactive messages.
+        public static bool Exclude(SkillsTestCase test) => test.Skill == SkillBot.ComposerSkillBotDotNet;
 
-            var hostBots = new List<HostBot>
-            {
-                HostBot.ComposerHostBotDotNet,
-                HostBot.WaterfallHostBotDotNet,
-                HostBot.WaterfallHostBotJS,
-                HostBot.WaterfallHostBotPython,
-            };
-
-            var targetSkills = new List<string>
-            {
-                SkillBotNames.WaterfallSkillBotDotNet,
-                SkillBotNames.WaterfallSkillBotJS,
-                SkillBotNames.WaterfallSkillBotPython,
-
-                // TODO: Enable these when the ports to JS, and composer are ready
-                //SkillBotNames.ComposerSkillBotDotNet
-            };
-
-            var scripts = new List<string>
-            {
-                "ProactiveStart.json",
-            };
-
-            var testCaseBuilder = new TestCaseBuilder();
-
-            var testCases = testCaseBuilder.BuildTestCases(channelIds, deliverModes, hostBots, targetSkills, scripts);
-            foreach (var testCase in testCases)
-            {
-                yield return testCase;
-            }
-        }
+        public static IEnumerable<object[]> TestCases() => BuildTestCases(scripts: Scripts, hosts: WaterfallHostBots, skills: WaterfallSkillBots, exclude: Exclude);
 
         [Theory]
         [MemberData(nameof(TestCases))]
-        public async Task RunTestCases(TestCaseDataObject testData)
+        public async Task RunTestCases(TestCaseDataObject<SkillsTestCase> testData)
         {
             var userId = string.Empty;
             var url = string.Empty;
 
-            var testCase = testData.GetObject<TestCase>();
+            var testCase = testData.GetObject();
             Logger.LogInformation(JsonConvert.SerializeObject(testCase, Formatting.Indented));
 
-            var options = TestClientOptions[testCase.HostBot];
-            var runner = new XUnitTestRunner(new TestClientFactory(testCase.ChannelId, options, Logger).GetTestClient(), TestRequestTimeout, ThinkTime, Logger);
+            var options = TestClientOptions[testCase.Bot];
+            var runner = new XUnitTestRunner(new TestClientFactory(testCase.Channel, options, Logger).GetTestClient(), TestRequestTimeout, ThinkTime, Logger);
             
             var testParamsStart = new Dictionary<string, string>
             {
                 { "DeliveryMode", testCase.DeliveryMode },
-                { "TargetSkill", testCase.TargetSkill }
+                { "TargetSkill", testCase.Skill.ToString() }
             };
 
             // Execute the first part of the conversation.
@@ -108,7 +77,7 @@ namespace Microsoft.Bot.Builder.Tests.Functional.Skills.ProactiveMessages
             var testParamsEnd = new Dictionary<string, string>
             {
                 { "UserId", userId },
-                { "TargetSkill", testCase.TargetSkill }
+                { "TargetSkill", testCase.Skill.ToString() }
             };
 
             // Execute the rest of the conversation passing the messageId.

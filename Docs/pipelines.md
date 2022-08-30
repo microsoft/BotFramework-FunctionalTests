@@ -63,9 +63,9 @@ This repo contains a script to create badges of App Registrations to ease pipeli
 The following parameters will be displayed in the run pipeline blade.
 
 The version parameters can be set here or you can create variables to set the values for the next pipeline's runs.
-Supported values are: LATEST (default), STABLE, or a specific version.
+Supported values are: LATEST (default for Artifacts and MyGet), STABLE (default for NuGet, npm and PyPI), or a specific version.
 For example:
-DEPENDENCIESVERSIONDOTNETHOSTS = 4.13.1
+DEPENDENCIESVERSIONDOTNETHOSTS = 4.15.2
 
 ![dependenciesParameters](./media/dependenciesParameters.png)
 
@@ -89,31 +89,31 @@ These are the available registry options for each bot language:
   - Npm
 - Python (Not available for SkillsV3)
   - Artifacts (default)
-  - Pypi
-  - Test.Pypi
+  - PyPI
+  - Test.PyPI
 
 Supported Version inputs are:
 
 | Name                 | Description                                                                                                                 | Example |
 | -------------------- | --------------------------------------------------------------------------------------------------------------------------- | ------- |
-| **LATEST**           | (default) The latest published version available in the chosen registry, it will search for `stable` or `preview` versions. | LATEST  |
-| **STABLE**           | The latest stable published version available in the chosen registry, it will only search for `stable` versions.            | STABLE  |
-| **Specific Version** | Version format based on how it's published in the chosen registry.                                                          | 4.13.0  |
+| **LATEST**           | (default for Artifacts and MyGet) The latest published version available in the chosen registry, it will search for `stable` or `preview` versions. | LATEST  |
+| **STABLE**           | (default for NuGet, npm, and PyPI) The latest stable published version available in the chosen registry, it only will search for `stable` versions.            | STABLE  |
+| **Specific Version** | Version format based on how it's published in the chosen registry.                                                          | 4.15.2  |
 
 ## 03 - Run Test Scenarios Pipeline
 
 - **YAML**: [build\yaml\testScenarios\runTestScenarios.yml](../build/yaml/testScenarios/runTestScenarios.yml)
 
-| Variable Name                                 | Source                                                                                                        | Description                                                                                                                                                      | Default value   | Example                            |
-| --------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- | ---------------------------------- |
-| **AzureSubscription**                         | Azure DevOps                                                                                                  | Name of the Azure Resource Manager Service Connection configured in the DevOps organization. Click [here](./addARMServiceConnection.md) to see how to set it up. |                 | TestSubscription                   |
-| **AppServicePlanDotNetName**                  | User / Create Shared Resources                                                                                | Name of the App Service Plan for DotNet bots.                                                                                                                    | -               | appservicedotnet                   |
-| **AppServicePlanJSName**                      | User / Create Shared Resources                                                                                | Name of the App Service Plan for JavaScript bots.                                                                                                                | -               | appservicejs                       |
-| **AppServicePlanPythonName**                  | User / Create Shared Resources                                                                                | Name of the App Service Plan for Python bots.                                                                                                                    | -               | appservicepython                   |
-| **ResourceGroup**                             | User                                                                                                          | (optional) Name of the Resource Group where the bots are deployed.                                                                                               |                 | bots-group                         |
-| **ResourceSuffix**                            | Create Shared Resources                                                                                       | (optional) Suffix to add to the resources' name to avoid collitions (use lowercase, only letters and numbers).                                                   |                 | suffix                             |
-| **[BotName](./availableBotsList.md) + AppId** | [App Registration Portal](https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade) | (optional) Skill Bot App ID to use. If not configured, it will be retrieved from the key vault.                                                                  |                 | x0x000x-000x-000x-xxx0-x00x0000xxx |
-| **SharedResourceGroup**                       | Create Shared Resources                                                                                       | (optional) Name of the Shared Resource Group where the shared resources are deployed.                                                                            | **BFFN-Shared** | shared-resource-group              |
+| Variable Name                                 | Source                                                                                                        | Description                                                                                                                                                      | Default value                 | Example                            |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------- | ---------------------------------- |
+| **AzureSubscription**                         | Azure DevOps                                                                                                  | Name of the Azure Resource Manager Service Connection configured in the DevOps organization. Click [here](./addARMServiceConnection.md) to see how to set it up. |                               | TestSubscription                   |
+| **AppServicePlanDotNetName**                  | User / Create Shared Resources                                                                                | Name of the App Service Plan for DotNet bots.                                                                                                                    | -                             | appservicedotnet                   |
+| **AppServicePlanJSName**                      | User / Create Shared Resources                                                                                | Name of the App Service Plan for JavaScript bots.                                                                                                                | -                             | appservicejs                       |
+| **AppServicePlanPythonName**                  | User / Create Shared Resources                                                                                | Name of the App Service Plan for Python bots.                                                                                                                    | -                             | appservicepython                   |
+| **ResourceGroup**                             | User                                                                                                          | (optional) Name of the Resource Group where the bots are deployed.                                                                                               | **BFFN**                      | bots-group                         |
+| **ResourceSuffix**                            | Create Shared Resources                                                                                       | (optional) Suffix to add to the resources' name to avoid collitions (use lowercase, only letters and numbers).                                                   |                               | suffix                             |
+| **SharedResourceGroup**                       | Create Shared Resources                                                                                       | (optional) Name of the Shared Resource Group.                                                                                                                    | **BFFN-Shared**               | shared-resource-group              |
+| **[BotName](./availableBotsList.md) + AppId** | [App Registration Portal](https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade) | (optional) Skill Bot App ID to use. If not configured, it will be retrieved from the key vault.                                                                  |                               | x0x000x-000x-000x-xxx0-x00x0000xxx |
 
 ### Dependency Variables
 
@@ -141,9 +141,9 @@ Supported Version inputs are:
 
 | Name                 | Description                                                                                                                 | Example |
 | -------------------- | --------------------------------------------------------------------------------------------------------------------------- | ------- |
-| **LATEST**           | (default) The latest published version available in the chosen registry, it will search for `stable` or `preview` versions. | LATEST  |
-| **STABLE**           | The latest stable published version available in the chosen registry, it will only search for `stable` versions.            | STABLE  |
-| **Specific Version** | Version format based on how it's published in the chosen registry.                                                          | 4.13.0  |
+| **LATEST**           | (default for Artifacts and MyGet) The latest published version available in the chosen registry, it will search for `stable` or `preview` versions. | LATEST  |
+| **STABLE**           | (default for NuGet, npm, and PyPI) The latest stable published version available in the chosen registry, it only will search for `stable` versions.            | STABLE  |
+| **Specific Version** | Version format based on how it's published in the chosen registry.                                                          | 4.15.2  |
 
 ## 04 - Cleanup Resources Pipeline
 

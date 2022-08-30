@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM node:lts-buster
+FROM mcr.microsoft.com/oryx/node:16
 
 # Set BotBuilder version env variable
 ARG BotBuilderVersion
