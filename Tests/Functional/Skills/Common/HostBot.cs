@@ -16,7 +16,7 @@ namespace Microsoft.Bot.Builder.Tests.Functional.Skills.Common
         SimpleHostBotComposerDotNet,
 
         /// <summary>
-        /// Simple MultiTenant host implemented using DotNet 3.1.
+        /// Simple host implemented using dotnet 6.0.
         /// </summary>
         SimpleHostBotDotNet,
 

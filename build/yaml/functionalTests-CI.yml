@@ -28,4 +28,4 @@ jobs:
           buildPlatform: "$(BUILDPLATFORM)"
 
 pool:
-    vmImage: "windows-2019"
+    vmImage: "windows-2022"
