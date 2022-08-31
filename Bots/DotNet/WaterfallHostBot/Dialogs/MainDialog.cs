@@ -103,7 +103,7 @@ namespace Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallHostBot.Dialogs
             // This is an example on how to cancel a SkillDialog that is currently in progress from the parent bot.
             var activeSkill = await _activeSkillProperty.GetAsync(innerDc.Context, () => null, cancellationToken);
             var activity = innerDc.Context.Activity;
-            if (activeSkill != null && activity.Type == ActivityTypes.Message && !string.IsNullOrWhiteSpace(activity.Text) && activity.Text.Equals("abort", StringComparison.CurrentCultureIgnoreCase))
+            if (activeSkill != null && activity.Type == ActivityTypes.Message && !string.IsNullOrWhiteSpace(activity.Text) && activity.Text.Equals("abort", StringComparison.OrdinalIgnoreCase))
             {
                 // Cancel all dialogs when the user says abort.
                 // The SkillDialog automatically sends an EndOfConversation message to the skill to let the
@@ -113,7 +113,7 @@ namespace Microsoft.Bot.Builder.FunctionalTestsBots.WaterfallHostBot.Dialogs
             }
 
             // Sample to test a tangent when in the middle of a skill conversation.
-            if (activeSkill != null && activity.Type == ActivityTypes.Message && !string.IsNullOrWhiteSpace(activity.Text) && activity.Text.Equals("tangent", StringComparison.CurrentCultureIgnoreCase))
+            if (activeSkill != null && activity.Type == ActivityTypes.Message && !string.IsNullOrWhiteSpace(activity.Text) && activity.Text.Equals("tangent", StringComparison.OrdinalIgnoreCase))
             {
                 // Start tangent.
                 return await innerDc.BeginDialogAsync(nameof(TangentDialog), cancellationToken: cancellationToken);

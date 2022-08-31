@@ -10,6 +10,7 @@ Transcript based functional tests aim to allow us to test complex conversation f
 - [Design notes](#design-notes)
 - [Implementation notes](#implementation-notes)
 - [Other considerations and TODOs](#other-considerations-and-todos)
+- [Test Script file](#test-script-file)
 
 ## Requirements
 
@@ -39,7 +40,7 @@ Here is a high level class diagram to get started
 
 ## Implementation notes
 
-1. The first version of the runner will be in C# targeting DotNet Core 3.1
+1. The first version of the runner will be in C# targeting DotNet Core 6.0
 2. We will rely on XUnit to write the tests but let's try to keep it out of the base classes (if possible)
 3. The test runner should be able to load its settings from configuration using IConfiguration
 4. The code should follow the SyleCop and FxCop ruleset used by the dotnet SDK
