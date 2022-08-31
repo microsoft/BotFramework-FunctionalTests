@@ -6,6 +6,7 @@ parameters:
       ComposerSkillBotDotNet: ""
       EchoSkillBotComposerDotNet: ""
       EchoSkillBotDotNet: ""
+      EchoSkillBotDotNet31: ""
       EchoSkillBotDotNetST: ""
       EchoSkillBotDotNetV3: ""
       EchoSkillBotJS: ""

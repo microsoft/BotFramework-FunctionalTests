@@ -142,6 +142,8 @@ variables:
   # BffnEchoSkillBotComposerDotNetAppSecret: (optional) App Secret for BffnEchoSkillBotComposerDotNet bot.
   # BffnEchoSkillBotDotNetAppId: (optional) App Id for BffnEchoSkillBotDotNet bot.
   # BffnEchoSkillBotDotNetAppSecret: (optional) App Secret for BffnEchoSkillBotDotNet bot.
+  # BffnEchoSkillBotDotNet31AppId: (optional) App Id for BffnEchoSkillBotDotNet31 bot.
+  # BffnEchoSkillBotDotNet31AppSecret: (optional) App Secret for BffnEchoSkillBotDotNet31 bot.
   # BffnEchoSkillBotDotNetSTAppId: (optional) App Id for BffnEchoSkillBotDotNetST bot.
   # BffnEchoSkillBotDotNetSTAppSecret: (optional) App Secret for BffnEchoSkillBotDotNetST bot.
   # BffnEchoSkillBotDotNetV3AppId: (optional) App Id for BffnEchoSkillBotDotNetV3 bot.
@@ -158,6 +160,8 @@ variables:
   # BffnSimpleHostBotComposerDotNetAppSecret: (optional) App Secret for BffnSimpleHostBotComposerDotNet bot.
   # BffnSimpleHostBotDotNetAppId: (optional) App Id for BffnSimpleHostBotDotNet bot.
   # BffnSimpleHostBotDotNetAppSecret: (optional) App Secret for BffnSimpleHostBotDotNet bot.
+  # BffnSimpleHostBotDotNet31AppId: (optional) App Id for BffnSimpleHostBotDotNet31 bot.
+  # BffnSimpleHostBotDotNet31AppSecret: (optional) App Secret for BffnSimpleHostBotDotNet31 bot.
   # BffnSimpleHostBotDotNetSTAppId: (optional) App Id for BffnSimpleHostBotDotNetST bot.
   # BffnSimpleHostBotDotNetSTAppSecret: (optional) App Secret for BffnSimpleHostBotDotNetST bot.
   # BffnSimpleHostBotJSAppId: (optional) App Id for BffnSimpleHostBotJS bot.
@@ -252,6 +256,21 @@ stages:
             registry: ${{ parameters.dependenciesRegistryDotNetHosts }}
             version: ${{ parameters.dependenciesVersionDotNetHosts }}
 
+        - name: "bffnsimplehostbotdotnet31"
+          dependsOn: "Prepare_DotNetGroup"
+          type: "Host"
+          displayName: "DotNet Simple Host Bot 3.1"
+          appId: $(BFFNSIMPLEHOSTBOTDOTNET31APPID)
+          appSecret: $(BFFNSIMPLEHOSTBOTDOTNET31APPSECRET)
+          appType: "MultiTenant"
+          project:
+            directory: 'Bots/DotNet/SimpleHostBot-3.1'
+            name: "Microsoft.Bot.Builder.FunctionalTestsBots.SimpleHostBot31.csproj"
+            netCoreVersion: "3.1.x"
+          dependency:
+            registry: ${{ parameters.dependenciesRegistryDotNetHosts }}
+            version: ${{ parameters.dependenciesVersionDotNetHosts }}
+
         - name: "bffnechoskillbotdotnet"
           dependsOn: "Prepare_DotNetGroup"
           type: "Skill"
@@ -263,6 +282,21 @@ stages:
             directory: 'Bots/DotNet/EchoSkillBot'
             name: "Microsoft.Bot.Builder.FunctionalTestsBots.EchoSkillBot.csproj"
             netCoreVersion: "6.0.x"
+          dependency:
+            registry: ${{ parameters.dependenciesRegistryDotNetSkills }}
+            version: ${{ parameters.dependenciesVersionDotNetSkills }}
+
+        - name: "bffnechoskillbotdotnet31"
+          dependsOn: "Prepare_DotNetGroup"
+          type: "Skill"
+          displayName: "DotNet Echo Skill Bot 3.1"
+          appId: $(BFFNECHOSKILLBOTDOTNET31APPID)
+          appSecret: $(BFFNECHOSKILLBOTDOTNET31APPSECRET)
+          appType: "MultiTenant"
+          project: 
+            directory: 'Bots/DotNet/EchoSkillBot-3.1'
+            name: "Microsoft.Bot.Builder.FunctionalTestsBots.EchoSkillBot31.csproj"
+            netCoreVersion: "3.1.x"
           dependency:
             registry: ${{ parameters.dependenciesRegistryDotNetSkills }}
             version: ${{ parameters.dependenciesVersionDotNetSkills }}
@@ -283,7 +317,7 @@ stages:
             version: ${{ parameters.dependenciesVersionDotNetSkillsV3 }}
 
         - name: "bffnwaterfallhostbotdotnet"
-          dependsOn: "Prepare_DotNetGroup"
+          dependsOn: "Deploy_bffnsimplehostbotdotnet"
           type: "Host"
           displayName: "DotNet Waterfall Host Bot"
           appId: $(BFFNWATERFALLHOSTBOTDOTNETAPPID)
@@ -298,7 +332,7 @@ stages:
             version: ${{ parameters.dependenciesVersionDotNetHosts }}
 
         - name: "bffnwaterfallskillbotdotnet"
-          dependsOn: "Prepare_DotNetGroup"
+          dependsOn: "Deploy_bffnsimplehostbotdotnet31"
           type: "Skill"
           displayName: "DotNet Waterfall Skill Bot"
           appId: $(BFFNWATERFALLSKILLBOTDOTNETAPPID)
@@ -314,7 +348,7 @@ stages:
 
         # DotNet Composer bots
         - name: "bffnsimplehostbotcomposerdotnet"
-          dependsOn: "Deploy_bffnsimplehostbotdotnet"
+          dependsOn: "Deploy_bffnechoskillbotdotnet"
           type: "ComposerHost"
           displayName: "DotNet Simple Composer Host Bot"
           appId: $(BFFNSIMPLEHOSTBOTCOMPOSERDOTNETAPPID)
@@ -329,7 +363,7 @@ stages:
             version: ${{ parameters.dependenciesVersionDotNetHosts }}
 
         - name: "bffnechoskillbotcomposerdotnet"
-          dependsOn: "Deploy_bffnechoskillbotdotnet"
+          dependsOn: "Deploy_bffnechoskillbotdotnet31"
           type: "ComposerSkill"
           displayName: "DotNet Echo Composer Skill Bot"
           appId: $(BFFNECHOSKILLBOTCOMPOSERDOTNETAPPID)
@@ -384,7 +418,7 @@ stages:
           project:
             directory: 'Bots/DotNet/SimpleHostBot'
             name: "Microsoft.Bot.Builder.FunctionalTestsBots.SimpleHostBot.csproj"
-            netCoreVersion: "3.1.x"
+            netCoreVersion: "6.0.x"
           dependency:
             registry: ${{ parameters.dependenciesRegistryDotNetHosts }}
             version: ${{ parameters.dependenciesVersionDotNetHosts }}
@@ -399,7 +433,7 @@ stages:
           project: 
             directory: 'Bots/DotNet/EchoSkillBot'
             name: "Microsoft.Bot.Builder.FunctionalTestsBots.EchoSkillBot.csproj"
-            netCoreVersion: "3.1.x"
+            netCoreVersion: "6.0.x"
           dependency:
             registry: ${{ parameters.dependenciesRegistryDotNetSkills }}
             version: ${{ parameters.dependenciesVersionDotNetSkills }}
@@ -413,7 +447,7 @@ stages:
           project:
             directory: 'Bots/DotNet/SimpleHostBot'
             name: "Microsoft.Bot.Builder.FunctionalTestsBots.SimpleHostBot.csproj"
-            netCoreVersion: "3.1.x"
+            netCoreVersion: "6.0.x"
           dependency:
             registry: ${{ parameters.dependenciesRegistryDotNetHosts }}
             version: ${{ parameters.dependenciesVersionDotNetHosts }}
@@ -426,7 +460,7 @@ stages:
           project: 
             directory: 'Bots/DotNet/EchoSkillBot'
             name: "Microsoft.Bot.Builder.FunctionalTestsBots.EchoSkillBot.csproj"
-            netCoreVersion: "3.1.x"
+            netCoreVersion: "6.0.x"
           dependency:
             registry: ${{ parameters.dependenciesRegistryDotNetSkills }}
             version: ${{ parameters.dependenciesVersionDotNetSkills }}

@@ -11,22 +11,27 @@ namespace Microsoft.Bot.Builder.Tests.Functional.Skills.Common
         EchoSkillBotComposerDotNet,
 
         /// <summary>
-        /// Echo MultiTenant skill implemented using DotNet 3.1.
+        /// Echo MultiTenant skill implemented using DotNet 6.0.
         /// </summary>
         EchoSkillBotDotNet,
 
         /// <summary>
-        /// Echo UserAssignedMSI skill implemented using DotNet 3.1.
+        /// Echo MultiTenant skill implemented using dotnet 3.1.
+        /// </summary>
+        EchoSkillBotDotNet31,
+
+        /// <summary>
+        /// Echo UserAssignedMSI skill implemented using DotNet 6.0.
         /// </summary>
         EchoSkillBotDotNetMSI,
 
         /// <summary>
-        /// Echo SingleTenant skill implemented using DotNet 3.1.
+        /// Echo SingleTenant skill implemented using DotNet 6.0.
         /// </summary>
         EchoSkillBotDotNetST,
 
         /// <summary>
-        /// Echo MultiTenant v3 skill implemented using DotNet 3.1.
+        /// Echo MultiTenant v3 skill implemented using DotNet 6.0.
         /// </summary>
         EchoSkillBotDotNetV3,
 
@@ -56,7 +61,7 @@ namespace Microsoft.Bot.Builder.Tests.Functional.Skills.Common
         EchoSkillBotPython,
 
         /// <summary>
-        /// Waterfall MultiTenant skill implemented using DotNet 3.1.
+        /// Waterfall MultiTenant skill implemented using DotNet 6.0.
         /// </summary>
         WaterfallSkillBotDotNet,
 

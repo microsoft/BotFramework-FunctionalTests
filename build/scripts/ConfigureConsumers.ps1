@@ -15,6 +15,8 @@ param (
   [Parameter(Mandatory = $false)]
   [string]$EchoSkillBotDotNetAppId,
   [Parameter(Mandatory = $false)]
+  [string]$EchoSkillBotDotNet31AppId,
+  [Parameter(Mandatory = $false)]
   [string]$EchoSkillBotDotNetSTAppId,
   [Parameter(Mandatory = $false)]
   [string]$EchoSkillBotDotNetV3AppId,
@@ -408,6 +410,12 @@ $consumers = @(
     configType    = $types.Appsettings
   }
   @{
+    key           = "SimpleHostBotDotNet31"
+    botName       = "bffnsimplehostbotdotnet31"
+    resourceGroup = $groups.DotNet
+    configType    = $types.Appsettings
+  }
+  @{
     key           = "SimpleHostBotDotNetMSI"
     botName       = "bffnsimplehostbotdotnetmsi"
     resourceGroup = $groups.DotNet
@@ -482,6 +490,15 @@ $skills = @(
     keyComposer   = "echoSkillBotDotNet" 
     botName       = "bffnechoskillbotdotnet"
     appId         = $EchoSkillBotDotNetAppId
+    resourceGroup = $groups.DotNet
+    group         = "Echo"
+  }
+  @{
+    appType       = $appTypes.MultiTenant
+    key           = "EchoSkillBotDotNet31"
+    keyComposer   = "echoSkillBotDotNet31" 
+    botName       = "bffnechoskillbotdotnet31"
+    appId         = $EchoSkillBotDotNet31AppId
     resourceGroup = $groups.DotNet
     group         = "Echo"
   }
@@ -610,12 +627,14 @@ $configurations = @(
     consumers = @(
       "SimpleHostBotComposerDotNet",
       "SimpleHostBotDotNet",
+      "SimpleHostBotDotNet31",
       "SimpleHostBotJS",
       "SimpleHostBotPython"
     );
     skills    = @(
       "EchoSkillBotComposerDotNet",
       "EchoSkillBotDotNet",
+      "EchoSkillBotDotNet31",
       "EchoSkillBotDotNetV3",
       "EchoSkillBotJS",
       "EchoSkillBotJSV3",

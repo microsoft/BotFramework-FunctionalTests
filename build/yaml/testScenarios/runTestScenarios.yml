@@ -43,6 +43,7 @@ variables:
   # BffnComposerSkillBotDotNetAppId: (optional) App Id for BffnComposerSkillBotDotNet bot.
   # BffnEchoSkillBotComposerDotNetAppId: (optional) App Id for BffnEchoSkillBotComposerDotNet bot.
   # BffnEchoSkillBotDotNetAppId: (optional) App Id for BffnEchoSkillBotDotNet bot.
+  # BffnEchoSkillBotDotNet31AppId: (optional) App Id for BffnEchoSkillBotDotNet31 bot.
   # BffnEchoSkillBotDotNetSTAppId: (optional) App Id for BffnEchoSkillBotDotNetST bot.
   # BffnEchoSkillBotDotNetV3AppId: (optional) App Id for BffnEchoSkillBotDotNetV3 bot.
   # BffnEchoSkillBotJSAppId: (optional) App Id for BffnEchoSkillBotJS bot.
@@ -74,6 +75,7 @@ stages:
         ComposerSkillBotDotNet: "$(BFFNCOMPOSERSKILLBOTDOTNETAPPID)"
         EchoSkillBotComposerDotNet: "$(BFFNECHOSKILLBOTCOMPOSERDOTNETAPPID)"
         EchoSkillBotDotNet: "$(BFFNECHOSKILLBOTDOTNETAPPID)"
+        EchoSkillBotDotNet31: "$(BFFNECHOSKILLBOTDOTNET31APPID)"
         EchoSkillBotDotNetST: "$(BFFNECHOSKILLBOTDOTNETSTAPPID)"
         EchoSkillBotDotNetV3: "$(BFFNECHOSKILLBOTDOTNETV3APPID)"
         EchoSkillBotJS: "$(BFFNECHOSKILLBOTJSAPPID)"
