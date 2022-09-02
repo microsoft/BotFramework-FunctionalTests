@@ -34,6 +34,7 @@ steps:
       scriptLocation: inlineScript
       inlineScript: |
         # Using Microsoft Graph REST API to create App Registrations (https://docs.microsoft.com/en-us/graph/api/application-post-applications) instead of Azure CLI due to Azure Active Directory Graph API has been deprecated and still in a migration process to Microsoft Graph API, more information can be found in this link (https://github.com/Azure/azure-cli/issues/12946).
+        Set-PSDebug -Trace 1;
 
         function GetToken() {
           # Get Token
@@ -130,3 +131,5 @@ steps:
           SaveAppRegistrationIntoKeyVault "${{ parameters.keyVault }}" $bot.variables $app
           Write-Host "[$botName] Ending"
         }
+
+        Set-PSDebug -Trace 0;
