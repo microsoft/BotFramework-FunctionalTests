@@ -154,6 +154,7 @@ stages:
               zip: "$(ZIP)"
       - job: "Test_Skills_Authentication"
         displayName: "Test Skills.Authentication"
+        timeoutInMinutes: 20
         steps:
           - checkout: none
           - template: test.yml
