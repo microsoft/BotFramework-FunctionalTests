@@ -143,6 +143,7 @@ stages:
               if ($exists) {
                 Write-Host "Deleting $(INTERNALAPPSERVICEPLANPYTHONNAME)..."
                 az appservice plan delete --name "$(INTERNALAPPSERVICEPLANPYTHONNAME)" --resource-group "$(INTERNALSHAREDRESOURCEGROUPNAME)" --yes
+                Start-Sleep -Milliseconds 3000
               } else {
                 Write-Host "No pre-existing $(INTERNALAPPSERVICEPLANPYTHONNAME) resource found."
               }
@@ -170,6 +171,7 @@ stages:
               if ($exists) {
                 Write-Host "Deleting $(INTERNALVIRTUALNETWORKNAME)..."
                 az network vnet delete --name "$(INTERNALVIRTUALNETWORKNAME)" --resource-group "$(INTERNALSHAREDRESOURCEGROUPNAME)"
+                Start-Sleep -Milliseconds 3000
               } else {
                 Write-Host "No pre-existing $(INTERNALVIRTUALNETWORKNAME) resource found."
               }
