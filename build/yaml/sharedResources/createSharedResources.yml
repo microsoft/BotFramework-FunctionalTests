@@ -84,39 +84,39 @@ stages:
   displayName: "Create Key Vault and App Registrations"
   dependsOn: Create_Resource_Group
   jobs:
-    - job: Check_Key_Vault_Object_Id
-      displayName: Check KeyVaultObjectId value
-      steps:
-        - checkout: none
-        - powershell: |
-              $keyVaultObjectId = '$(INTERNALKEYVAULTOBJECTID)'
-              if ($keyVaultObjectId -ne '') {
-                Write-Host "keyVaultObjectId set. The KeyVault and App Registrations will be created."
-                Write-Host "##vso[task.setvariable variable=createKeyVault;isOutput=true]$true"
-              }
-              else {
-                Write-Host "keyVaultObjectId not set. The KeyVault and App Registrations won't be created."
-                Write-Host "##vso[task.setvariable variable=createKeyVault;isOutput=true]$false"
-              }
-          name: checkKeyVaultObjectIdValue
-          failOnStderr: true
+    # - job: Check_Key_Vault_Object_Id
+    #   displayName: Check KeyVaultObjectId value
+    #   steps:
+    #     - checkout: none
+    #     - powershell: |
+    #           $keyVaultObjectId = '$(INTERNALKEYVAULTOBJECTID)'
+    #           if ($keyVaultObjectId -ne '') {
+    #             Write-Host "keyVaultObjectId set. The KeyVault and App Registrations will be created."
+    #             Write-Host "##vso[task.setvariable variable=createKeyVault;isOutput=true]$true"
+    #           }
+    #           else {
+    #             Write-Host "keyVaultObjectId not set. The KeyVault and App Registrations won't be created."
+    #             Write-Host "##vso[task.setvariable variable=createKeyVault;isOutput=true]$false"
+    #           }
+    #       name: checkKeyVaultObjectIdValue
+    #       failOnStderr: true
 
-    - job: Deploy_Key_Vault
-      displayName: "Deploy Key Vault"
-      dependsOn: Check_Key_Vault_Object_Id
-      condition: eq(dependencies.Check_Key_Vault_Object_Id.outputs['checkKeyVaultObjectIdValue.createKeyVault'], true)
-      steps:
-      - task: AzureCLI@2
-        displayName: "Deploy Key Vault"
-        inputs:
-          azureSubscription: $(AZURESUBSCRIPTION)
-          scriptType: pscore
-          scriptLocation: inlineScript
-          inlineScript: "az deployment group create --name $(INTERNALKEYVAULTNAME) --resource-group $(INTERNALRESOURCEGROUPNAME) --template-file build/templates/template-key-vault-resources.json --parameters keyVaultName=$(INTERNALKEYVAULTNAME) objectId=$(INTERNALKEYVAULTOBJECTID)"
+    # - job: Deploy_Key_Vault
+    #   displayName: "Deploy Key Vault"
+    #   dependsOn: Check_Key_Vault_Object_Id
+    #   condition: eq(dependencies.Check_Key_Vault_Object_Id.outputs['checkKeyVaultObjectIdValue.createKeyVault'], true)
+    #   steps:
+    #   - task: AzureCLI@2
+    #     displayName: "Deploy Key Vault"
+    #     inputs:
+    #       azureSubscription: $(AZURESUBSCRIPTION)
+    #       scriptType: pscore
+    #       scriptLocation: inlineScript
+    #       inlineScript: "az deployment group create --name $(INTERNALKEYVAULTNAME) --resource-group $(INTERNALRESOURCEGROUPNAME) --template-file build/templates/template-key-vault-resources.json --parameters keyVaultName=$(INTERNALKEYVAULTNAME) objectId=$(INTERNALKEYVAULTOBJECTID)"
 
     - job: Create_App_Registrations
       displayName: "Create App Registrations"
-      dependsOn: Deploy_Key_Vault
+      # dependsOn: Deploy_Key_Vault
       steps:
       - checkout: none
       - template: createAppRegistrations.yml
